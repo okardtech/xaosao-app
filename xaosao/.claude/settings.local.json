@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(Get-ChildItem -Path \"d:\\\\okardteeh\\\\xaosao\\\\lib\\\\pages\\\\register\" -Recurse)",
+      "Bash(Select-Object -Property FullName, PSIsContainer)",
+      "Bash(Sort-Object FullName)",
+      "Bash(Get-ChildItem -Path \"d:\\\\okardteeh\\\\xaosao\\\\lib\\\\utils\\\\\" -ErrorAction SilentlyContinue | Select-Object Name)",
+      "Bash(xargs grep -l \"pickAvatar\")",
+      "Bash(Get-ChildItem -Path \"d:\\\\okardteeh\\\\xaosao\\\\lib\" -Recurse -Directory)",
+      "Bash(Select-Object -ExpandProperty FullName)",
+      "Bash(dart analyze *)"
+    ]
+  }
+}
