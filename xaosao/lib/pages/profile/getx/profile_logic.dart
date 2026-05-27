@@ -1,5 +1,7 @@
+import 'package:flutter/scheduler.dart';
 import 'package:get/get.dart';
 import 'package:xaosao/models/gallerys_model.dart';
+import 'package:xaosao/pages/home/getx/home_logic.dart';
 import 'package:xaosao/pages/login/getx/login_logic.dart';
 import 'package:xaosao/pages/profile/getx/profile_state.dart';
 import 'package:xaosao/repository/gallery_repo.dart';
@@ -11,6 +13,10 @@ import 'package:xaosao/utils/image_picker_util.dart';
 import '../../../constants/app_routes.dart';
 import '../../../repository/register_repo.dart';
 import '../../../widgets/show_loading_alert.dart';
+import '../../feedback/getx/feedback_logic.dart';
+import '../../model_discover/getx/model_discover_logic.dart';
+import '../../notification/getx/notification_setting_logic.dart';
+import '../../services_manage/getx/service_logic.dart';
 
 class ProfileLogic extends GetxController {
   final _galleryRepo = GalleryRepo();
@@ -24,14 +30,14 @@ class ProfileLogic extends GetxController {
 
   static const _maxPhotos = 6;
 
-  late final bool _isClient;
+  bool get _isClient =>
+      Get.find<StorageService>().read<String>('role') == 'customer';
   bool _togglingHidden = false;
 
   @override
   void onInit() {
     super.onInit();
-    _isClient = Get.find<StorageService>().read<String>('role') == 'customer';
-    _loadFromProfile();
+    SchedulerBinding.instance.addPostFrameCallback((_) => _loadFromProfile());
   }
 
   void _loadFromProfile() {
@@ -172,6 +178,15 @@ class ProfileLogic extends GetxController {
     }
   }
 
+  void _deleteUserControllers() {
+    Get.delete<HomeLogic>(force: true);
+    Get.delete<ProfileLogic>(force: true);
+    Get.delete<ServiceLogic>(force: true);
+    Get.delete<FeedbackLogic>(force: true);
+    Get.delete<NotifSettingLogic>(force: true);
+    Get.delete<ModelDiscoverLogic>(force: true);
+  }
+
   Future<void> deleteAccount() async {
     showLoadingDialog();
     try {
@@ -185,6 +200,8 @@ class ProfileLogic extends GetxController {
       }
       final storage = Get.find<StorageService>();
       await storage.clear();
+      Get.find<LoginLogic>().clearState();
+      _deleteUserControllers();
       Get.offAllNamed(AppRoutes.login);
     } catch (e) {
       hideLoadingDialog();

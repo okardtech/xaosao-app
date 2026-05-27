@@ -56,18 +56,20 @@ class Shell extends StatelessWidget {
   final Color accent;
   final Widget child;
   final double? height;
+  final bool autoHeight;
 
   const Shell({
     required this.focused,
     required this.accent,
     required this.child,
     this.height,
+    this.autoHeight = false,
   });
 
   @override
   Widget build(BuildContext context) => AnimatedContainer(
     duration: const Duration(milliseconds: 180),
-    height: (height ?? AppFieldStyle.height).h,
+    height: autoHeight ? null : (height ?? AppFieldStyle.height).h,
     decoration: BoxDecoration(
       color: Colors.white,
       borderRadius: BorderRadius.circular(AppFieldStyle.radius.r),
@@ -100,6 +102,7 @@ class AppTextField extends StatefulWidget {
   final TextInputAction action;
   final String? suffixLabel;
   final bool enabled;
+  final int maxLines;
   final void Function(String)? onChanged;
 
   const AppTextField({
@@ -115,6 +118,7 @@ class AppTextField extends StatefulWidget {
     this.action = TextInputAction.next,
     this.suffixLabel,
     this.enabled = true,
+    this.maxLines = 1,
     this.onChanged,
   });
 
@@ -142,56 +146,71 @@ class _AppTextFieldState extends State<AppTextField> {
   }
 
   @override
-  Widget build(BuildContext context) => Shell(
-    focused: _focused,
-    accent: widget.accent,
-    child: Row(children: [
-      if (widget.prefixIcon != null)
-        Padding(
-          padding: EdgeInsets.symmetric(horizontal: 12.w),
-          child: Icon(widget.prefixIcon,
-              size: AppFieldStyle.iconSize.r,
-              color: _focused ? widget.accent : AppFieldStyle.hint),
-        ),
-      Expanded(
-        child: TextField(
-          controller: widget.controller,
-          focusNode: widget.focusNode,
-          keyboardType: widget.keyboardType,
-          inputFormatters: widget.formatters,
-          textInputAction: widget.action,
-          enabled: widget.enabled,
-          onChanged: widget.onChanged,
-          onSubmitted: (_) {
-            if (widget.nextFocusNode != null) {
-              FocusScope.of(context).requestFocus(widget.nextFocusNode);
-            } else {
-              FocusScope.of(context).unfocus();
-            }
-          },
-          decoration: InputDecoration(
-            hintText: widget.hint,
-            hintStyle: TextStyle(
-                fontSize: AppFieldStyle.textSize.sp,
-                color: AppFieldStyle.hint),
-            border: InputBorder.none,
-            enabledBorder: InputBorder.none,
-            focusedBorder: InputBorder.none,
-            isDense: true,
-            contentPadding: EdgeInsets.symmetric(
-                horizontal: widget.prefixIcon != null ? 0 : 14.w,
-                vertical: 0),
-            suffixText: widget.suffixLabel,
-            suffixStyle: TextStyle(fontSize: 12.sp, color: AppFieldStyle.hint),
+  Widget build(BuildContext context) {
+    final multiline = widget.maxLines > 1;
+    return Shell(
+      focused: _focused,
+      accent: widget.accent,
+      autoHeight: multiline,
+      child: Row(
+        crossAxisAlignment: multiline
+            ? CrossAxisAlignment.start
+            : CrossAxisAlignment.center,
+        children: [
+          if (widget.prefixIcon != null)
+            Padding(
+              padding: EdgeInsets.only(
+                left: 12.w,
+                right: 12.w,
+                top: multiline ? 13.h : 0,
+              ),
+              child: Icon(widget.prefixIcon,
+                  size: AppFieldStyle.iconSize.r,
+                  color: _focused ? widget.accent : AppFieldStyle.hint),
+            ),
+          Expanded(
+            child: TextField(
+              controller: widget.controller,
+              focusNode: widget.focusNode,
+              keyboardType: widget.keyboardType,
+              inputFormatters: widget.formatters,
+              textInputAction: widget.action,
+              enabled: widget.enabled,
+              maxLines: widget.maxLines,
+              onChanged: widget.onChanged,
+              onSubmitted: (_) {
+                if (widget.nextFocusNode != null) {
+                  FocusScope.of(context).requestFocus(widget.nextFocusNode);
+                } else {
+                  FocusScope.of(context).unfocus();
+                }
+              },
+              decoration: InputDecoration(
+                hintText: widget.hint,
+                hintStyle: TextStyle(
+                    fontSize: AppFieldStyle.textSize.sp,
+                    color: AppFieldStyle.hint),
+                border: InputBorder.none,
+                enabledBorder: InputBorder.none,
+                focusedBorder: InputBorder.none,
+                isDense: true,
+                contentPadding: EdgeInsets.symmetric(
+                    horizontal: widget.prefixIcon != null ? 0 : 14.w,
+                    vertical: multiline ? 12.h : 0),
+                suffixText: widget.suffixLabel,
+                suffixStyle:
+                    TextStyle(fontSize: 12.sp, color: AppFieldStyle.hint),
+              ),
+              style: TextStyle(
+                  fontSize: AppFieldStyle.textSize.sp,
+                  color: AppFieldStyle.navy),
+            ),
           ),
-          style: TextStyle(
-              fontSize: AppFieldStyle.textSize.sp,
-              color: AppFieldStyle.navy),
-        ),
+          if (widget.suffixLabel != null) SizedBox(width: 8.w),
+        ],
       ),
-      if (widget.suffixLabel != null) SizedBox(width: 8.w),
-    ]),
-  );
+    );
+  }
 }
 
 // ═══════════════════════════════════════════════════════════════

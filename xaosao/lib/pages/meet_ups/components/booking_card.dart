@@ -1,418 +1,628 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'booking_model.dart';
+import 'package:get/get.dart';
+import 'package:xaosao/constants/app_color.dart';
+import 'package:xaosao/models/my_booking_model.dart';
+import 'package:xaosao/pages/meet_ups/getx/meet_ups_logic.dart';
+import 'package:xaosao/utils/app_snackbar.dart';
+import 'package:xaosao/widgets/confirm_sheet.dart';
+import 'package:xaosao/utils/currency_formatter.dart';
+import 'package:xaosao/utils/date_time_formatter.dart';
+import 'package:xaosao/widgets/app_button.dart';
+import 'package:xaosao/widgets/app_network_image.dart';
+import 'package:xaosao/widgets/app_text_field.dart';
 
-// ═══════════════════════════════════════════════════════════════
-//  BookingCard — redesigned
-//  ສີ semantic border ຊ້າຍ + badge + countdown chip + reject note
-//    upcoming   → left border blue   · ຍົກເລີກ + ຂໍ້ຄວາມ
-//    completed  → left border green  · ດູຂໍ້ມູນ + ຈອງອີກ
-//    rejected   → left border amber  · ຫາຄົນໃໝ່ + ຈອງວັນໃໝ່
-//    cancelled  → left border grey   · opacity 0.55 · no actions
-// ═══════════════════════════════════════════════════════════════
 class BookingCard extends StatelessWidget {
-  final BookingModel booking;
-  final VoidCallback? onCancel;
+  final MyBookingModel booking;
+  final bool isCustomer;
   final VoidCallback? onMessage;
-  final VoidCallback? onRebook;
-  final VoidCallback? onViewDetail;
-  final VoidCallback? onFindOther;
-  final VoidCallback? onNewDate;
-  final VoidCallback? onMapTap;
   final VoidCallback? onTap;
 
   const BookingCard({
     super.key,
     required this.booking,
-    this.onCancel,
+    required this.isCustomer,
     this.onMessage,
-    this.onRebook,
-    this.onViewDetail,
-    this.onFindOther,
-    this.onNewDate,
-    this.onMapTap,
     this.onTap,
   });
 
-  // ── Status colors ─────────────────────────────────────────
-  static Color _borderColor(BookingStatus s) => switch (s) {
-        BookingStatus.upcoming   => const Color(0xFF3B82F6),
-        BookingStatus.completed  => const Color(0xFF22C55E),
-        BookingStatus.rejected   => const Color(0xFFF59E0B),
-        BookingStatus.cancelled  => const Color(0xFFE0E0E0),
-      };
+  MeetUpLogic get _logic => Get.find<MeetUpLogic>();
 
-  static Color _badgeBg(BookingStatus s) => switch (s) {
-        BookingStatus.upcoming   => const Color(0xFFEFF6FF),
-        BookingStatus.completed  => const Color(0xFFEDFAF3),
-        BookingStatus.rejected   => const Color(0xFFFFFBEB),
-        BookingStatus.cancelled  => const Color(0xFFF0F0F5),
-      };
+  // ── Status helpers ─────────────────────────────────────────────
+  static bool _isCancelled(String? s) => s == 'cancelled';
+  static bool _isCompleted(String? s) => s == 'completed';
+  static bool _isRejected(String? s) => s == 'rejected' || s == 'disputed';
 
-  static Color _badgeFg(BookingStatus s) => switch (s) {
-        BookingStatus.upcoming   => const Color(0xFF1D4ED8),
-        BookingStatus.completed  => const Color(0xFF15803D),
-        BookingStatus.rejected   => const Color(0xFF92400E),
-        BookingStatus.cancelled  => const Color(0xFF9B9BAD),
-      };
+  static Color _accentColor(String? s) {
+    const active = {
+      'pending',
+      'confirmed',
+      'in_progress',
+      'awaiting_confirmation',
+    };
+    if (active.contains(s)) return const Color(0xFF3B82F6);
+    if (_isCompleted(s)) return const Color(0xFF22C55E);
+    if (_isRejected(s)) return const Color(0xFFF59E0B);
+    return const Color(0xFFE0E0E0);
+  }
+
+  static Color _badgeBg(String? s) {
+    const active = {
+      'pending',
+      'confirmed',
+      'in_progress',
+      'awaiting_confirmation',
+    };
+    if (active.contains(s)) return const Color(0xFFEFF6FF);
+    if (_isCompleted(s)) return const Color(0xFFEDFAF3);
+    if (_isRejected(s)) return const Color(0xFFFFFBEB);
+    return const Color(0xFFF0F0F5);
+  }
+
+  static Color _badgeFg(String? s) {
+    const active = {
+      'pending',
+      'confirmed',
+      'in_progress',
+      'awaiting_confirmation',
+    };
+    if (active.contains(s)) return const Color(0xFF1D4ED8);
+    if (_isCompleted(s)) return const Color(0xFF15803D);
+    if (_isRejected(s)) return const Color(0xFF92400E);
+    return const Color(0xFF9B9BAD);
+  }
+
+  static String _statusLabel(String? s) => switch (s) {
+    'pending' => 'ລໍຖ້າ',
+    'confirmed' => 'ຢືນຢັນ',
+    'in_progress' => 'ກຳລັງດຳເນີນ',
+    'awaiting_confirmation' => 'ລໍຢືນຢັນ',
+    'completed' => 'ສຳເລັດ',
+    'cancelled' => 'ຍົກເລີກ',
+    'rejected' => 'ຖືກປະຕິເສດ',
+    'disputed' => 'ຂໍ້ຂັດແຍ້ງ',
+    _ => '-',
+  };
+
+  static String _serviceTypeName(MyBookingModel b) {
+    final svc = b.modelService;
+    if (svc != null) {
+      if (svc.customRate != null) return 'ບໍລິການລາຍວັນ';
+      if (svc.customHourlyRate != null) return 'ບໍລິການລາຍຊົ່ວໂມງ';
+      if (svc.customOneTimePrice != null) return 'ບໍລິການຄັ້ງດຽວ';
+      if (svc.customOneNightPrice != null) return 'ບໍລິການຄືນດຽວ';
+      if (svc.customMinuteRate != null) return 'ບໍລິການລາຍນາທີ';
+    }
+    if (b.dayAmount != null) return 'ບໍລິການລາຍວັນ';
+    if (b.hours != null) return 'ບໍລິການລາຍຊົ່ວໂມງ';
+    return 'ບໍລິການ';
+  }
 
   static const _divider = Color(0x0F000000);
-  static const _dark    = Color(0xFF1A1A2E);
-  static const _hint    = Color(0xFF9B9BAD);
-  static const _bg      = Color(0xFFF8F8FC);
+  static const _dark = Color(0xFF1A1A2E);
 
+  // ── Build ──────────────────────────────────────────────────────
   @override
   Widget build(BuildContext context) {
     final b = booking;
+    final accent = _accentColor(b.status);
+
     return Opacity(
-      opacity: b.status == BookingStatus.cancelled ? 0.55 : 1.0,
+      opacity: _isCancelled(b.status) ? 1.0 : 1.0,
       child: GestureDetector(
         onTap: onTap,
-        child: Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(22.r),
-            border: Border.all(color: _divider, width: 0.5),
-          ),
-          // ClipRRect wraps everything so borderRadius ຮັກສາ
-          child: ClipRRect(
-          borderRadius: BorderRadius.circular(22.r),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(20.r),
           child: Stack(
             children: [
-              // White card with uniform border
               Container(
                 decoration: BoxDecoration(
                   color: Colors.white,
+                  borderRadius: BorderRadius.circular(20.r),
                   border: Border.all(color: _divider, width: 0.5),
                 ),
-                child: Column(mainAxisSize: MainAxisSize.min, children: [
-                  _buildPersonRow(b),
-                  _buildMetaRow(b),
-                  _buildLocationRow(b),
-                  if (b.status == BookingStatus.upcoming && b.countdown != null)
-                    _buildCountdown(b),
-                  if (b.status == BookingStatus.rejected &&
-                      b.rejectedReason != null)
-                    _buildRejectNote(b.rejectedReason!),
-                  _buildPriceActions(b),
-                ]),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    _buildTop(b, accent),
+                    _buildDateRow(b),
+                    _buildLocation(b),
+                    _buildBottom(context, b),
+                  ],
+                ),
               ),
-              // Left accent bar — ClipRRect handles corner rounding
               Positioned(
-                left: 0, top: 0, bottom: 0,
-                child: Container(
-                  width: 3.5.w,
-                  color: _borderColor(b.status),
+                left: 0,
+                top: 0,
+                bottom: 0,
+                child: Container(width: 3.5.w, color: accent),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  // ── Top ────────────────────────────────────────────────────────
+  Widget _buildTop(MyBookingModel b, Color accent) {
+    final model = b.model;
+    final name = [
+      model?.firstName,
+      model?.lastName,
+    ].where((s) => s != null && s.isNotEmpty).join(' ');
+    final displayName = name.isEmpty ? 'ບໍ່ມີຊື່' : name;
+    final age = model?.age;
+
+    return Container(
+      padding: EdgeInsets.fromLTRB(16.w, 14.h, 14.w, 4.h),
+      // decoration: BoxDecoration(color: accent.withOpacity(0.04)),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                child: Text(
+                  _serviceTypeName(b),
+                  style: TextStyle(
+                    fontSize: 17.sp,
+                    fontWeight: FontWeight.w900,
+                    color: _dark,
+                    letterSpacing: -0.4,
+                  ),
+                ),
+              ),
+              SizedBox(width: 10.w),
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 5.h),
+                decoration: BoxDecoration(
+                  color: _badgeBg(b.status),
+                  borderRadius: BorderRadius.circular(20.r),
+                ),
+                child: Text(
+                  _statusLabel(b.status),
+                  style: TextStyle(
+                    fontSize: 12.sp,
+                    fontWeight: FontWeight.w800,
+                    color: _badgeFg(b.status),
+                  ),
                 ),
               ),
             ],
-          ),   // Stack
-          ),   // ClipRRect
-        ),     // outer Container
-      ),       // GestureDetector
-    );         // Opacity
-  }
-
-  // ── Person row ─────────────────────────────────────────────
-  Widget _buildPersonRow(BookingModel b) {
-    return Padding(
-      padding: EdgeInsets.fromLTRB(14.w, 14.h, 14.w, 10.h),
-      child: Row(children: [
-        _Avatar(b: b),
-        SizedBox(width: 11.w),
-        Expanded(
-          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Text('${b.companionName}, ${b.companionAge}',
-                style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w800,
-                    color: _dark, letterSpacing: -0.2)),
-            SizedBox(height: 2.h),
-            Text(b.services.join(' · '),
-                style: TextStyle(fontSize: 10.sp, color: _hint)),
-            if (b.status == BookingStatus.completed && b.rating != null) ...[
-              SizedBox(height: 3.h),
-              _StarsRow(rating: b.rating!),
+          ),
+          SizedBox(height: 10.h),
+          Row(
+            children: [
+              ClipOval(
+                child: AppNetworkImage(
+                  imageUrl: model?.profile ?? '',
+                  width: 32.r,
+                  height: 32.r,
+                  accentColor: accent == const Color(0xFFE0E0E0)
+                      ? AppColors.primary
+                      : accent,
+                ),
+              ),
+              SizedBox(width: 9.w),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      age != null ? '$displayName · $age ປີ' : displayName,
+                      style: TextStyle(
+                        fontSize: 14.sp,
+                        fontWeight: FontWeight.w700,
+                        color: _dark,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    if (b.hasTip == true) ...[
+                      Container(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 8.w,
+                          vertical: 3.h,
+                        ),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFFFF7ED),
+                          borderRadius: BorderRadius.circular(20.r),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(
+                              Icons.volunteer_activism_outlined,
+                              size: 10.r,
+                              color: const Color(0xFFF59E0B),
+                            ),
+                            SizedBox(width: 3.w),
+                            Text(
+                              'ມີທິບໃຫ້ພ້ອມ',
+                              style: TextStyle(
+                                fontSize: 10.sp,
+                                fontWeight: FontWeight.w400,
+                                color: const Color(0xFFF59E0B),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ],
+                ),
+              ),
             ],
-          ]),
-        ),
-        _StatusBadge(
-          label: b.status.label,
-          bg: _badgeBg(b.status),
-          fg: _badgeFg(b.status),
-        ),
-      ]),
-    );
-  }
-
-  // ── Meta: date + duration ──────────────────────────────────
-  Widget _buildMetaRow(BookingModel b) {
-    return Container(
-      margin: EdgeInsets.symmetric(horizontal: 14.w),
-      padding: EdgeInsets.symmetric(vertical: 11.h),
-      decoration: BoxDecoration(
-        border: Border(
-          top:    BorderSide(color: _divider, width: 0.5),
-          bottom: BorderSide(color: _divider, width: 0.5),
-        ),
-      ),
-      child: Row(children: [
-        Expanded(
-          child: _MetaCell(
-            icon: Icons.calendar_month_outlined,
-            label: 'ວັນທີ · ເວລາ',
-            value: b.formattedDate,
           ),
-        ),
-        Container(
-          width: 0.5, height: 38.h,
-          margin: EdgeInsets.symmetric(horizontal: 14.w),
-          color: _divider,
-        ),
-        Expanded(
-          child: _MetaCell(
-            icon: Icons.access_time_rounded,
-            label: 'ໄລຍະເວລາ',
-            value: '${b.durationHours} ຊົ່ວໂມງ',
+        ],
+      ),
+    );
+  }
+
+  // ── Date row ───────────────────────────────────────────────────
+  Widget _buildDateRow(MyBookingModel b) {
+    final start = DateTimeFormatter.dateFormatter(b.startDate) ?? '-';
+    final end = DateTimeFormatter.dateFormatter(b.endDate);
+    final dateStr = (end != null && end != start) ? '$start → $end' : start;
+
+    return Container(
+      padding: EdgeInsets.fromLTRB(14.w, 10.h, 14.w, 0.h),
+      // decoration: const BoxDecoration(
+      //   border: Border(top: BorderSide(color: _divider, width: 0.5)),
+      // ),
+      child: Row(
+        children: [
+          Icon(
+            Icons.calendar_month_outlined,
+            size: 14.r,
+            color: const Color(0xFF3B82F6),
           ),
-        ),
-      ]),
-    );
-  }
-
-  // ── Location ────────────────────────────────────────────────
-  Widget _buildLocationRow(BookingModel b) {
-    final showMap = b.status == BookingStatus.upcoming ||
-        b.status == BookingStatus.completed;
-    return Container(
-      padding: EdgeInsets.fromLTRB(14.w, 10.h, 14.w, 10.h),
-      decoration: BoxDecoration(
-        border: Border(bottom: BorderSide(color: _divider, width: 0.5)),
-      ),
-      child: Row(children: [
-        Icon(Icons.location_on_outlined, size: 13.r, color: _hint),
-        SizedBox(width: 7.w),
-        Expanded(
-          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Text(b.locationName,
-                style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w700,
-                    color: _dark, height: 1.3)),
-            SizedBox(height: 1.h),
-            Text(b.locationSub,
-                style: TextStyle(fontSize: 10.sp, color: _hint)),
-          ]),
-        ),
-        if (showMap)
-          GestureDetector(
-            onTap: onMapTap,
-            child: Text('ແຜນທີ່ ›',
-                style: TextStyle(fontSize: 10.sp, fontWeight: FontWeight.w700,
-                    color: const Color(0xFFF06292))),
+          SizedBox(width: 7.w),
+          Expanded(
+            child: Text(
+              dateStr,
+              style: TextStyle(
+                fontSize: 14.sp,
+                fontWeight: FontWeight.w400,
+                color: _dark,
+                height: 1.4,
+              ),
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+            ),
           ),
-      ]),
-    );
-  }
-
-  // ── Countdown chip (upcoming only) ─────────────────────────
-  Widget _buildCountdown(BookingModel b) {
-    return Container(
-      margin: EdgeInsets.fromLTRB(14.w, 10.h, 14.w, 0),
-      padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 9.h),
-      decoration: BoxDecoration(
-        color: const Color(0xFFEFF6FF),
-        borderRadius: BorderRadius.circular(10.r),
-        border: Border.all(color: const Color(0xFF3B82F6).withOpacity(0.20)),
+        ],
       ),
-      child: Row(children: [
-        Icon(Icons.access_time_rounded, size: 12.r, color: const Color(0xFF3B82F6)),
-        SizedBox(width: 7.w),
-        Text(b.countdownText,
-            style: TextStyle(fontSize: 11.sp, fontWeight: FontWeight.w700,
-                color: const Color(0xFF3B82F6))),
-        const Spacer(),
-        Text(b.countdownDateSub,
-            style: TextStyle(fontSize: 10.sp, color: const Color(0xFF93C5FD))),
-      ]),
     );
   }
 
-  // ── Reject note ─────────────────────────────────────────────
-  Widget _buildRejectNote(String reason) {
-    return Container(
-      margin: EdgeInsets.fromLTRB(14.w, 10.h, 14.w, 0),
-      padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 9.h),
-      decoration: BoxDecoration(
-        color: const Color(0xFFFFFBEB),
-        borderRadius: BorderRadius.circular(10.r),
-        border: Border.all(color: const Color(0xFFF59E0B).withOpacity(0.25)),
-      ),
-      child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Padding(
-          padding: EdgeInsets.only(top: 1.h),
-          child: Icon(Icons.info_outline_rounded,
-              size: 12.r, color: const Color(0xFFF59E0B)),
-        ),
-        SizedBox(width: 7.w),
-        Expanded(
-          child: Text(reason,
-              style: TextStyle(fontSize: 10.sp,
-                  color: const Color(0xFF78350F), height: 1.5)),
-        ),
-      ]),
-    );
-  }
-
-  // ── Price + Actions ─────────────────────────────────────────
-  Widget _buildPriceActions(BookingModel b) {
-    final isStrike = b.status == BookingStatus.cancelled ||
-        b.status == BookingStatus.rejected;
-
+  // ── Location ───────────────────────────────────────────────────
+  Widget _buildLocation(MyBookingModel b) {
     return Padding(
-      padding: EdgeInsets.fromLTRB(14.w, 12.h, 14.w, 14.h),
-      child: Row(children: [
-        Text(
-          b.formattedPrice,
-          style: TextStyle(
-            fontSize: 17.sp, fontWeight: FontWeight.w900,
-            letterSpacing: -0.5,
-            color: isStrike ? const Color(0xFFD1D1E0) : _dark,
-            decoration: isStrike ? TextDecoration.lineThrough : null,
-            decorationColor: const Color(0xFFD1D1E0),
-            decorationThickness: 2,
+      padding: EdgeInsets.fromLTRB(14.w, 6.h, 14.w, 6.h),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: EdgeInsets.only(top: 1.h),
+            child: Icon(
+              Icons.location_on_outlined,
+              size: 14.r,
+              color: AppColors.primary,
+            ),
           ),
-        ),
-        const Spacer(),
-        ..._buildActions(b),
-      ]),
+          SizedBox(width: 7.w),
+          Expanded(
+            child: Text(
+              b.location ?? '-',
+              style: TextStyle(
+                fontSize: 14.sp,
+                fontWeight: FontWeight.w400,
+                color: _dark,
+                height: 1.4,
+              ),
+              maxLines: 3,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+        ],
+      ),
     );
   }
 
-  List<Widget> _buildActions(BookingModel b) {
-    switch (b.status) {
-      case BookingStatus.upcoming:
+  // ── Bottom: price + actions ────────────────────────────────────
+  Widget _buildBottom(BuildContext context, MyBookingModel b) {
+    final actions = _buildActions(context, b);
+    final isStrike = _isCancelled(b.status) || _isRejected(b.status);
+
+    return Container(
+      padding: EdgeInsets.fromLTRB(14.w, 10.h, 14.w, 12.h),
+      // decoration: const BoxDecoration(
+      //   border: Border(top: BorderSide(color: _divider, width: 0.5)),
+      // ),
+      child: Row(
+        children: [
+          Text(
+            b.price != null ? CurrFormatter.kip(b.price!) : '-',
+            style: TextStyle(
+              fontSize: 16.sp,
+              fontWeight: FontWeight.w900,
+              letterSpacing: -0.3,
+              color: isStrike ? const Color(0xFFD1D1E0) : AppColors.primary,
+              decoration: isStrike ? TextDecoration.lineThrough : null,
+              decorationColor: const Color(0xFFD1D1E0),
+              decorationThickness: 2,
+            ),
+          ),
+          const Spacer(),
+          ...actions,
+        ],
+      ),
+    );
+  }
+
+  // ── Action buttons ─────────────────────────────────────────────
+  List<Widget> _buildActions(BuildContext context, MyBookingModel b) {
+    
+    final now = DateTime.now();
+    final start = b.startDate;
+    final end = b.endDate;
+    final status = b.status;
+    final id = b.id ?? '';
+    final msgBtn = _Btn(
+      label: 'ຂໍ້ຄວາມ',
+      icon: Icons.chat_bubble_outline_rounded,
+      style: _BtnStyle.outline,
+      onTap: onMessage,
+    );
+
+    void showReason(String title, Future<bool> Function(String) onSubmit) {
+      showModalBottomSheet(
+        context: context,
+        isScrollControlled: true,
+        backgroundColor: Colors.transparent,
+        builder: (_) => _ReasonSheet(title: title, onSubmit: onSubmit),
+      );
+    }
+
+    final callBtn = _Btn(
+      label: 'ໂທ',
+      icon: Icons.phone_outlined,
+      style: _BtnStyle.dark,
+      onTap: onMessage,
+    );
+
+    // ── Confirmed + booking not yet ended — both roles ────────────
+    if (status == 'confirmed') {
+      final bookingEnded = end != null && now.isAfter(end);
+      if (!bookingEnded) {
+        return [callBtn, SizedBox(width: 6.w), msgBtn];
+      }
+    }
+
+    if (isCustomer) {
+      // ── CUSTOMER ──────────────────────────────────────────────
+      if (status == 'pending') {
         return [
-          _Btn(label: 'ຍົກເລີກ', style: _BtnStyle.ghost, onTap: onCancel),
+          _Btn(
+            label: 'ຍົກເລີກ',
+            style: _BtnStyle.ghost,
+            onTap: () => _logic.cancelBooking(id),
+          ),
           SizedBox(width: 6.w),
-          _Btn(label: 'ຂໍ້ຄວາມ', icon: Icons.chat_bubble_outline_rounded,
-              style: _BtnStyle.dark, onTap: onMessage),
+          msgBtn,
         ];
-      case BookingStatus.completed:
+      }
+
+      if (status == 'confirmed') {
+        final inDisputeWindow =
+            start != null &&
+            now.isAfter(start) &&
+            now.isBefore(start.add(const Duration(minutes: 30)));
+
+        final canCancel =
+            start != null &&
+            now.isBefore(start.subtract(const Duration(minutes: 30)));
+
+        if (inDisputeWindow) {
+          return [
+            _Btn(
+              label: 'ເງິນຄືນ',
+              style: _BtnStyle.amber,
+              onTap: () => showReason(
+                'ເຫດຜົນການຮ້ອງຂໍເງິນຄືນ',
+                (reason) => _logic.disputeBooking(id, reason),
+              ),
+            ),
+            SizedBox(width: 6.w),
+            msgBtn,
+          ];
+        }
+
+        if (canCancel) {
+          return [
+            _Btn(
+              label: 'ຍົກເລີກ',
+              style: _BtnStyle.ghost,
+              onTap: () => _logic.cancelBooking(id),
+            ),
+            SizedBox(width: 6.w),
+            msgBtn,
+          ];
+        }
+
         return [
-          _Btn(label: 'ດູຂໍ້ມູນ', style: _BtnStyle.ghost, onTap: onViewDetail),
+          _Btn(
+            label: 'ປ່ອຍເງີນ',
+            style: _BtnStyle.green,
+            onTap: () => _logic.releasePayment(id),
+          ),
           SizedBox(width: 6.w),
-          _Btn(label: 'ຈອງອີກ', style: _BtnStyle.pink, onTap: onRebook),
+          msgBtn,
         ];
-      case BookingStatus.rejected:
+      }
+    } else {
+      
+      // ── MODEL ──────────────────────────────────────────────────
+      if (status == 'pending') {
         return [
-          _Btn(label: 'ຫາຄົນໃໝ່', style: _BtnStyle.ghost, onTap: onFindOther),
+          _Btn(
+            label: 'ປະຕິເສດ',
+            style: _BtnStyle.red,
+            onTap: () => showReason(
+              'ເຫດຜົນການປະຕິເສດ',
+              (reason) => _logic.rejectBooking(id, reason),
+            ),
+          ),
           SizedBox(width: 6.w),
-          _Btn(label: 'ຈອງວັນໃໝ່', style: _BtnStyle.dark, onTap: onNewDate),
+          _Btn(
+            label: 'ຢືນຢັນ',
+            style: _BtnStyle.green,
+            onTap: () => _logic.confirmBooking(id),
+          ),
         ];
-      case BookingStatus.cancelled:
-        return [];
+      }
+
+      if (status == 'confirmed') {
+        final bookingEnded = end != null && now.isAfter(end);
+        if (bookingEnded) {
+          return [
+            _Btn(
+              label: 'ຮັບເງີນ',
+              style: _BtnStyle.pink,
+              onTap: () => _logic.receiveMoney(id),
+            ),
+          ];
+        }
+      }
+    }
+
+    // ── DELETE — completed / cancelled / rejected ────────────────
+    if (_isCompleted(status) || _isCancelled(status) || _isRejected(status)) {
+      return [
+        _Btn(
+          label: 'ລຶບ',
+          icon: Icons.delete_outline_rounded,
+          style: _BtnStyle.red,
+          onTap: () async {
+            final confirmed = await ConfirmSheet.show(
+              context,
+              title: 'ລຶບລາຍການ',
+              message: 'ທ່ານຕ້ອງການລຶບລາຍການນີ້ແທ້ບໍ່?',
+              confirmLabel: 'ລຶບ',
+              icon: Icons.delete_outline_rounded,
+              isDanger: true,
+            );
+            if (confirmed == true) _logic.deleteBooking(id);
+          },
+        ),
+      ];
+    }
+
+    return [];
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  _ReasonSheet
+// ═══════════════════════════════════════════════════════════════
+class _ReasonSheet extends StatefulWidget {
+  final String title;
+  final Future<bool> Function(String reason) onSubmit;
+  const _ReasonSheet({required this.title, required this.onSubmit});
+
+  @override
+  State<_ReasonSheet> createState() => _ReasonSheetState();
+}
+
+class _ReasonSheetState extends State<_ReasonSheet> {
+  final _ctrl = TextEditingController();
+  final _focus = FocusNode();
+  bool _loading = false;
+
+  @override
+  void dispose() {
+    _ctrl.dispose();
+    _focus.dispose();
+    super.dispose();
+  }
+
+  Future<void> _submit() async {
+    final reason = _ctrl.text.trim();
+    if (reason.length < 10) {
+      AppSnackbar.info('ເຫດຜົນຕ້ອງມີຢ່າງໜ້ອຍ 10 ຕົວອັກສອນ', title: 'ກະລຸນາ');
+      return;
+    }
+    setState(() => _loading = true);
+    final success = await widget.onSubmit(reason);
+    if (!mounted) return;
+    if (success) {
+      Navigator.of(context).pop();
+    } else {
+      setState(() => _loading = false);
     }
   }
-}
-
-// ═══════════════════════════════════════════════════════════════
-//  Sub-widgets
-// ═══════════════════════════════════════════════════════════════
-
-class _Avatar extends StatelessWidget {
-  final BookingModel b;
-  const _Avatar({required this.b});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: 46.r, height: 46.r,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(14.r),
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: b.companionGradient,
-        ),
+    return Padding(
+      padding: EdgeInsets.only(
+        bottom: MediaQuery.of(context).viewInsets.bottom,
       ),
-      child: b.companionImageUrl != null && b.companionImageUrl!.isNotEmpty
-          ? ClipRRect(
-              borderRadius: BorderRadius.circular(14.r),
-              child: Image.network(b.companionImageUrl!, fit: BoxFit.cover,
-                  errorBuilder: (_, __, ___) => const SizedBox()))
-          : null,
-    );
-  }
-}
-
-class _StarsRow extends StatelessWidget {
-  final double rating;
-  const _StarsRow({required this.rating});
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: List.generate(5, (i) => Padding(
-        padding: EdgeInsets.only(right: 2.w),
-        child: Icon(
-          Icons.star_rounded, size: 10.r,
-          color: i < rating.floor()
-              ? const Color(0xFFF9C846)
-              : const Color(0xFFE5E7EB),
-        ),
-      )),
-    );
-  }
-}
-
-class _StatusBadge extends StatelessWidget {
-  final String label;
-  final Color bg;
-  final Color fg;
-  const _StatusBadge({required this.label, required this.bg, required this.fg});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 11.w, vertical: 5.h),
-      decoration: BoxDecoration(color: bg, borderRadius: BorderRadius.circular(20.r)),
-      child: Text(label, style: TextStyle(
-          fontSize: 14.sp, fontWeight: FontWeight.w800, color: fg, letterSpacing: 0.1)),
-    );
-  }
-}
-
-class _MetaCell extends StatelessWidget {
-  final IconData icon;
-  final String label;
-  final String value;
-  const _MetaCell({required this.icon, required this.label, required this.value});
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      Container(
-        width: 30.r, height: 30.r,
+      child: Container(
         decoration: BoxDecoration(
-          color: const Color(0xFFF8F8FC),
-          borderRadius: BorderRadius.circular(9.r),
+          color: Colors.white,
+          borderRadius: BorderRadius.vertical(top: Radius.circular(24.r)),
         ),
-        child: Icon(icon, size: 13.r, color: const Color(0xFF1A1A2E)),
+        padding: EdgeInsets.fromLTRB(20.w, 20.h, 20.w, 28.h),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              width: 36.w,
+              height: 4.h,
+              decoration: BoxDecoration(
+                color: const Color(0xFFE0E0E0),
+                borderRadius: BorderRadius.circular(4.r),
+              ),
+            ),
+            SizedBox(height: 18.h),
+            Text(
+              widget.title,
+              style: TextStyle(
+                fontSize: 16.sp,
+                fontWeight: FontWeight.w800,
+                color: const Color(0xFF1A1A2E),
+              ),
+            ),
+            SizedBox(height: 16.h),
+            AppTextField(
+              controller: _ctrl,
+              focusNode: _focus,
+              hint: 'ກະລຸນາລະບຸເຫດຜົນ (ຢ່າງໜ້ອຍ 10 ຕົວອັກສອນ)',
+              accent: AppColors.primary,
+              maxLines: 4,
+              action: TextInputAction.done,
+            ),
+            SizedBox(height: 16.h),
+            AppPrimaryButton(
+              label: 'ຢືນຢັນ',
+              loading: _loading,
+              onTap: _submit,
+            ),
+          ],
+        ),
       ),
-      SizedBox(width: 8.w),
-      Expanded(
-        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Text(label, style: TextStyle(
-              fontSize: 12.sp, fontWeight: FontWeight.w600,
-              color: const Color(0xFF9B9BAD), letterSpacing: 0.2)),
-          SizedBox(height: 2.h),
-          Text(value, style: TextStyle(
-              fontSize: 12.sp, fontWeight: FontWeight.w800,
-              color: const Color(0xFF1A1A2E), height: 1.25)),
-        ]),
-      ),
-    ]);
+    );
   }
 }
 
-enum _BtnStyle { ghost, dark, pink }
+// ═══════════════════════════════════════════════════════════════
+//  Button primitives
+// ═══════════════════════════════════════════════════════════════
+enum _BtnStyle { ghost, dark, pink, green, red, amber, outline }
 
 class _Btn extends StatelessWidget {
   final String label;
@@ -423,25 +633,54 @@ class _Btn extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final (bg, fg) = switch (style) {
-      _BtnStyle.ghost => (const Color(0xFFF0F0F5), const Color(0xFF1A1A2E)),
-      _BtnStyle.dark  => (const Color(0xFF1A1A2E), Colors.white),
-      _BtnStyle.pink  => (const Color(0xFFF06292),  Colors.white),
+    final (bg, fg, border) = switch (style) {
+      _BtnStyle.ghost => (
+        const Color(0xFFF0F0F5),
+        const Color(0xFF1A1A2E),
+        null,
+      ),
+      _BtnStyle.dark => (const Color(0xFF1A1A2E), Colors.white, null),
+      _BtnStyle.pink => (AppColors.primary, Colors.white, null),
+      _BtnStyle.green => (const Color(0xFF22C55E), Colors.white, null),
+      _BtnStyle.red => (const Color(0xFFFEF2F2), const Color(0xFFDC2626), null),
+      _BtnStyle.amber => (
+        const Color(0xFFFFFBEB),
+        const Color(0xFFD97706),
+        null,
+      ),
+      _BtnStyle.outline => (
+        Colors.transparent,
+        const Color(0xFF1A1A2E),
+        Border.all(color: const Color(0xFFE0E0E0), width: 1),
+      ),
     };
     return GestureDetector(
       onTap: onTap,
       child: Container(
         height: 34.h,
-        padding: EdgeInsets.symmetric(horizontal: 14.w),
-        decoration: BoxDecoration(color: bg, borderRadius: BorderRadius.circular(10.r)),
-        child: Row(mainAxisSize: MainAxisSize.min, children: [
-          if (icon != null) ...[
-            Icon(icon, size: 12.r, color: fg),
-            SizedBox(width: 4.w),
+        padding: EdgeInsets.symmetric(horizontal: 13.w),
+        decoration: BoxDecoration(
+          color: bg,
+          borderRadius: BorderRadius.circular(10.r),
+          border: border,
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (icon != null) ...[
+              Icon(icon, size: 12.r, color: fg),
+              SizedBox(width: 4.w),
+            ],
+            Text(
+              label,
+              style: TextStyle(
+                fontSize: 12.sp,
+                fontWeight: FontWeight.w700,
+                color: fg,
+              ),
+            ),
           ],
-          Text(label, style: TextStyle(
-              fontSize: 12.sp, fontWeight: FontWeight.w700, color: fg)),
-        ]),
+        ),
       ),
     );
   }

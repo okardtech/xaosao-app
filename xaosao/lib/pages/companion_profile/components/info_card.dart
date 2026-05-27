@@ -27,7 +27,7 @@ class InfoCard extends StatelessWidget {
           Text(
             label,
             style: TextStyle(
-              fontSize: 12.sp,
+              fontSize: 14.sp,
               fontWeight: FontWeight.normal,
               color: AppColors.textHint,
               letterSpacing: 0.5,
@@ -37,9 +37,9 @@ class InfoCard extends StatelessWidget {
           Text(
             value,
             style: TextStyle(
-              fontSize: 12.sp,
+              fontSize: 14.sp,
               fontWeight: FontWeight.normal,
-              color: valueColor ?? AppColors.primary,
+              color: valueColor ?? AppColors.textPrimary,
             ),
           ),
         ],

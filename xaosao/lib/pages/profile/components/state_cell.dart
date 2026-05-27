@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:xaosao/pages/profile/components/profile_constant.dart';
+import '../../../constants/app_color.dart';
 
 class StatCell extends StatelessWidget {
   final String value;
   final String label;
-  const StatCell({super.key, required this.value, required this.label});
+  final bool isBorder;
+  const StatCell({super.key, required this.value, required this.label,this.isBorder = true});
 
   @override
   Widget build(BuildContext context) {
@@ -13,9 +14,9 @@ class StatCell extends StatelessWidget {
       child: Container(
         padding: EdgeInsets.symmetric(vertical: 10.h),
         decoration: BoxDecoration(
-          border: Border(
+          border:isBorder ? Border(
             left: BorderSide(color: Colors.black.withOpacity(0.09), width: 0.5),
-          ),
+          ): null,
         ),
         child: Column(
           children: [
@@ -24,7 +25,7 @@ class StatCell extends StatelessWidget {
               style: TextStyle(
                 fontSize: 15.sp,
                 fontWeight: FontWeight.w900,
-                color: PColor.navy,
+                color: AppColors.primaryVariant,
                 letterSpacing: -0.3,
               ),
             ),
@@ -34,7 +35,7 @@ class StatCell extends StatelessWidget {
               style: TextStyle(
                 fontSize: 10.sp,
                 fontWeight: FontWeight.w600,
-                color: PColor.hint,
+                color: AppColors.textHint,
               ),
             ),
           ],

@@ -1,18 +1,17 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:xaosao/constants/app_color.dart';
+import 'package:xaosao/constants/app_routes.dart';
 import 'package:xaosao/pages/topup/components/topup_constant.dart';
-import 'package:xaosao/pages/topup/components/topup_success.dart';
+import 'package:xaosao/pages/topup/getx/topup_logic.dart';
+import 'package:xaosao/widgets/app_button.dart';
+import 'package:xaosao/widgets/gradient_app_bar.dart';
 
-// ═══════════════════════════════════════════════════════════════
-//  topup_upload_page.dart — Page 3: ອັບໂຫຼດ Slip
-//  Supports up to 3 slip images.
-//  Thumbnail strip shown after upload.
-// ═══════════════════════════════════════════════════════════════
 class TopUpUploadSlipPage extends StatefulWidget {
-  final int amountKip;
-  const TopUpUploadSlipPage({super.key, required this.amountKip});
+  const TopUpUploadSlipPage({super.key});
 
   @override
   State<TopUpUploadSlipPage> createState() => _UploadState();
@@ -20,116 +19,111 @@ class TopUpUploadSlipPage extends StatefulWidget {
 
 class _UploadState extends State<TopUpUploadSlipPage> {
   final _picker = ImagePicker();
-  final _slips = <File>[];
+  late final TopupLogic _logic;
   static const _maxSlips = 3;
 
-  Future<void> _pickImage() async {
-    if (_slips.length >= _maxSlips) return;
-    final x = await _picker.pickImage(source: ImageSource.gallery);
-    if (x != null && mounted) {
-      setState(() => _slips.add(File(x.path)));
-    }
+  @override
+  void initState() {
+    super.initState();
+    _logic = Get.find<TopupLogic>();
   }
 
-  void _removeSlip(int i) => setState(() => _slips.removeAt(i));
+  Future<void> _pickImage() async {
+    if (_logic.state.slips.length >= _maxSlips) return;
+    final x = await _picker.pickImage(source: ImageSource.gallery);
+    if (x != null) _logic.addSlip(File(x.path));
+  }
 
-  void _submit() {
-    if (_slips.isEmpty) return;
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (_) => TopUpSuccessPage(amountKip: widget.amountKip),
-      ),
-    );
+  Future<void> _submit() async {
+    final ok = await _logic.submitTopUp();
+    if (!ok || !mounted) return;
+    Get.toNamed(AppRoutes.topupSuccess);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: kBg,
-      appBar: TopUpGradientAppBar(
+      backgroundColor: AppColors.bg,
+      appBar: GradientAppBar(
         title: 'ອັບໂຫຼດ Slip',
-        sub: 'ຢືນຢັນການຊຳລະ',
-        step: '3',
-        onBack: () => Navigator.pop(context),
+        subtitle: 'ຢືນຢັນການຊຳລະ',
+        actions: [const TopUpStepBadge('3')],
       ),
       body: SafeArea(
-        child: SingleChildScrollView(
-          physics: const BouncingScrollPhysics(),
-          padding: EdgeInsets.fromLTRB(16.w, 16.h, 16.w, 28.h),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // ── Upload zone ─────────────────────────
-              GestureDetector(
-                onTap: _pickImage,
-                child: _UploadZone(
-                  slipCount: _slips.length,
-                  maxSlips: _maxSlips,
+        child: Obx(() {
+          final st = _logic.state;
+          return SingleChildScrollView(
+            physics: const BouncingScrollPhysics(),
+            padding: EdgeInsets.fromLTRB(16.w, 16.h, 16.w, 28.h),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // ── Upload zone ─────────────────────────────────
+                GestureDetector(
+                  onTap: _pickImage,
+                  child: _UploadZone(
+                    slipCount: st.slips.length,
+                    maxSlips: _maxSlips,
+                  ),
                 ),
-              ),
-              SizedBox(height: 8.h),
-                
-              // ── Thumbnails ──────────────────────────
-              if (_slips.isNotEmpty) ...[
-                SizedBox(height: 4.h),
-                SizedBox(
-                  height: 70.h,
-                  child: ListView.separated(
-                    scrollDirection: Axis.horizontal,
-                    itemCount: _slips.length,
-                    separatorBuilder: (_, __) => SizedBox(width: 8.w),
-                    itemBuilder: (_, i) => _Thumbnail(
-                      file: _slips[i],
-                      onRemove: () => _removeSlip(i),
+                SizedBox(height: 8.h),
+
+                // ── Thumbnails ───────────────────────────────────
+                if (st.slips.isNotEmpty) ...[
+                  SizedBox(height: 4.h),
+                  SizedBox(
+                    height: 70.h,
+                    child: ListView.separated(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: st.slips.length,
+                      separatorBuilder: (_, __) => SizedBox(width: 8.w),
+                      itemBuilder: (_, i) => _Thumbnail(
+                        file: st.slips[i],
+                        onRemove: () => _logic.removeSlip(i),
+                      ),
                     ),
                   ),
-                ),
-                SizedBox(height: 4.h),
-              ],
-                
-              // ── Format note ─────────────────────────
-              SizedBox(height: 8.h),
-              Row(
-                children: [
-                  Icon(
-                    Icons.info_outline_rounded,
-                    size: 13.r,
-                    color: kHint,
-                  ),
-                  SizedBox(width: 6.w),
-                  Text(
-                    'ຮອງຮັບຮູບແບບ: JPG, PNG, PDF (ຂຸງສຸດ 10MB)',
-                    style: TextStyle(fontSize: 12.sp, color: kHint),
-                  ),
+                  SizedBox(height: 4.h),
                 ],
-              ),
-              SizedBox(height: 12.h),
-                
-              // ── Guide card ──────────────────────────
-              _GuideCard(),
-              SizedBox(height: 12.h),
-                
-              // ── Info note ───────────────────────────
-              _AmberNote(),
-              SizedBox(height: 20.h),
-                
-              // ── Submit ──────────────────────────────
-              TopUpPinkBtn(
-                label: 'ສົ່ງ ແລະ ຢືນຢັນ',
-                icon: Icons.check_rounded,
-                enabled: _slips.isNotEmpty,
-                onTap: _submit,
-              ),
-            ],
-          ),
-        ),
+
+                SizedBox(height: 8.h),
+                Row(
+                  children: [
+                    Icon(
+                      Icons.info_outline_rounded,
+                      size: 13.r,
+                      color: AppColors.textHint,
+                    ),
+                    SizedBox(width: 6.w),
+                    Text(
+                      'ຮອງຮັບຮູບແບບ: JPG, PNG, PDF (ຂຸງສຸດ 10MB)',
+                      style: TextStyle(fontSize: 12.sp, color: AppColors.textHint),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 12.h),
+                // _GuideCard(),
+                // SizedBox(height: 12.h),
+                _AmberNote(),
+                SizedBox(height: 20.h),
+
+                // ── Submit ────────────────────────────────────────
+                AppPrimaryButton(
+                  label: 'ສົ່ງ ແລະ ຢືນຢັນ',
+                  trailingIcon: Icons.check_rounded,
+                  enabled: st.slips.isNotEmpty,
+                  onTap: _submit,
+                ),
+              ],
+            ),
+          );
+        }),
       ),
     );
   }
 }
 
-// ── Upload zone widget ─────────────────────────────────────────
+// ── Upload zone ────────────────────────────────────────────────
 class _UploadZone extends StatelessWidget {
   final int slipCount;
   final int maxSlips;
@@ -149,22 +143,19 @@ class _UploadZone extends StatelessWidget {
         borderRadius: BorderRadius.circular(18.r),
         border: Border.all(
           color: _hasSlips
-              ? const Color(0xFF22C55E)
-              : Colors.black.withOpacity(0.12),
-          width: _hasSlips ? 1.2 : 1.5,
+              ? AppColors.online
+              : Colors.black.withValues(alpha: 0.12),
+          width: _hasSlips ? 1.2 :0,
           strokeAlign: BorderSide.strokeAlignInside,
         ),
       ),
       child: Column(
         children: [
-          // Icon
           Container(
             width: 48.r,
             height: 48.r,
             decoration: BoxDecoration(
-              color: _hasSlips
-                  ? const Color(0xFFDCFCE7)
-                  : const Color(0xFFF8F8FC),
+              color: _hasSlips ? const Color(0xFFDCFCE7) : AppColors.bg,
               borderRadius: BorderRadius.circular(14.r),
             ),
             child: Icon(
@@ -172,7 +163,7 @@ class _UploadZone extends StatelessWidget {
                   ? Icons.check_circle_outline_rounded
                   : Icons.upload_outlined,
               size: 22.r,
-              color: _hasSlips ? const Color(0xFF16A34A) : kHint,
+              color: _hasSlips ? AppColors.online : AppColors.textHint,
             ),
           ),
           SizedBox(height: 10.h),
@@ -181,16 +172,15 @@ class _UploadZone extends StatelessWidget {
             style: TextStyle(
               fontSize: 14.sp,
               fontWeight: FontWeight.w700,
-              color: kNavy,
+              color: AppColors.textPrimary,
             ),
           ),
           SizedBox(height: 4.h),
           Text(
             'ສາມາດອັບໃບຍືນຢັນໄດ້ທີ່ນີ້',
-            style: TextStyle(fontSize: 12.sp, color: kHint),
+            style: TextStyle(fontSize: 12.sp, color: AppColors.textHint),
           ),
           SizedBox(height: 12.h),
-          // Counter dots
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -203,8 +193,8 @@ class _UploadZone extends StatelessWidget {
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     color: i < slipCount
-                        ? kPink
-                        : Colors.black.withOpacity(0.12),
+                        ? AppColors.primary
+                        : Colors.black.withValues(alpha: 0.12),
                   ),
                 ),
               ),
@@ -214,18 +204,17 @@ class _UploadZone extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 12.sp,
                   fontWeight: FontWeight.w600,
-                  color: kHint,
+                  color: AppColors.textHint,
                 ),
               ),
             ],
           ),
           SizedBox(height: 12.h),
-          // Button inside zone
           Container(
             height: 36.h,
             padding: EdgeInsets.symmetric(horizontal: 22.w),
             decoration: BoxDecoration(
-              color: _isFull ? const Color(0xFFE0E0E0) : kPink,
+              color: _isFull ? const Color(0xFFE0E0E0) : AppColors.primary,
               borderRadius: BorderRadius.circular(11.r),
             ),
             child: Center(
@@ -234,7 +223,7 @@ class _UploadZone extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 12.sp,
                   fontWeight: FontWeight.w700,
-                  color: _isFull ? kHint : Colors.white,
+                  color: _isFull ? AppColors.textHint : Colors.white,
                 ),
               ),
             ),
@@ -288,13 +277,13 @@ class _GuideCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(13.r),
-        border: Border.all(color: kBorder, width: 0.5),
+        border: Border.all(color: AppColors.borderMedium, width: 0.5),
       ),
       child: Material(
         color: Colors.transparent,
         child: InkWell(
           borderRadius: BorderRadius.circular(13.r),
-          onTap: () {}, // TODO: show guide
+          onTap: () {},
           child: Padding(
             padding: EdgeInsets.symmetric(horizontal: 13.w, vertical: 11.h),
             child: Row(
@@ -303,10 +292,14 @@ class _GuideCard extends StatelessWidget {
                   width: 32.r,
                   height: 32.r,
                   decoration: BoxDecoration(
-                    color: const Color(0xFFFFF0F6),
+                    color: AppColors.socialBg,
                     borderRadius: BorderRadius.circular(9.r),
                   ),
-                  child: Icon(Icons.monitor_outlined, size: 15.r, color: kPink),
+                  child: Icon(
+                    Icons.monitor_outlined,
+                    size: 15.r,
+                    color: AppColors.primary,
+                  ),
                 ),
                 SizedBox(width: 11.w),
                 Expanded(
@@ -318,13 +311,13 @@ class _GuideCard extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 12.sp,
                           fontWeight: FontWeight.w700,
-                          color: kNavy,
+                          color: AppColors.textPrimary,
                         ),
                       ),
                       SizedBox(height: 1.h),
                       Text(
                         'ກົດເພື່ອເບິ່ງຕົວຢ່າງ',
-                        style: TextStyle(fontSize: 10.sp, color: kHint),
+                        style: TextStyle(fontSize: 10.sp, color: AppColors.textHint),
                       ),
                     ],
                   ),
@@ -332,7 +325,7 @@ class _GuideCard extends StatelessWidget {
                 Icon(
                   Icons.chevron_right_rounded,
                   size: 18.r,
-                  color: Colors.black.withOpacity(0.2),
+                  color: Colors.black.withValues(alpha: 0.2),
                 ),
               ],
             ),
@@ -352,10 +345,10 @@ class _AmberNote extends StatelessWidget {
       decoration: BoxDecoration(
         color: const Color(0xFFFFFBEB),
         borderRadius: BorderRadius.circular(13.r),
-        border: Border.all(
-          color: const Color(0xFFF59E0B).withOpacity(0.22),
-          width: 0.5,
-        ),
+        // border: Border.all(
+        //   color: const Color(0xFFF59E0B).withValues(alpha: 0.22),
+        //   width: 0.5,
+        // ),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -378,7 +371,7 @@ class _AmberNote extends StatelessWidget {
             child: Text(
               'ຂອບໃຈສຳລັບຄວາມໄວ້ວາງໃຈ: ທີມງານຈະກວດສອບ ແລະ ເຕີມເງິນໃຫ້ທ່ານ ພາຍໃນ 1–2 ຊ.ມ. ຫຼັງຈາກໄດ້ຮັບໃບຍືນຢັນແລ້ວ.',
               style: TextStyle(
-                fontSize: 11.sp,
+                fontSize: 12.sp,
                 color: const Color(0xFF78350F),
                 height: 1.55,
               ),
@@ -389,3 +382,4 @@ class _AmberNote extends StatelessWidget {
     );
   }
 }
+

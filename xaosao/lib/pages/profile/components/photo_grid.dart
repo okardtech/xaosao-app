@@ -51,14 +51,14 @@ class PhotoGrid extends StatelessWidget {
       height: 40.h,
       width: 40.w,
       decoration: BoxDecoration(
-        color: PColor.bg,
+        color: AppColors.bg,
         borderRadius: BorderRadius.circular(11.r),
         border: Border.all(
-            color: AppColors.textDisabled.withAlpha(50), width: 0.5),
+          color: AppColors.textDisabled.withAlpha(50),
+          width: 0.5,
+        ),
       ),
-      child: const Center(
-        child: CircularProgressIndicator(strokeWidth: 2),
-      ),
+      child: const Center(child: CircularProgressIndicator(strokeWidth: 2)),
     );
   }
 
@@ -72,13 +72,15 @@ class PhotoGrid extends StatelessWidget {
             photo.url ?? '',
             fit: BoxFit.cover,
             errorBuilder: (_, __, ___) => Container(
-              color: PColor.bg,
-              child: const Icon(Icons.broken_image_outlined,
-                  color: PColor.hint),
+              color: AppColors.bg,
+              child: Icon(
+                Icons.broken_image_outlined,
+                color: AppColors.textHint,
+              ),
             ),
             loadingBuilder: (_, child, progress) {
               if (progress == null) return child;
-              return Container(color: PColor.bg);
+              return Container(color: AppColors.bg);
             },
           ),
           Positioned(
@@ -115,7 +117,9 @@ class PhotoGrid extends StatelessWidget {
           color: Colors.white,
           borderRadius: BorderRadius.circular(11.r),
           border: Border.all(
-              color: AppColors.textDisabled.withAlpha(50), width: 0.5),
+            color: AppColors.textDisabled.withAlpha(50),
+            width: 0.5,
+          ),
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -124,13 +128,13 @@ class PhotoGrid extends StatelessWidget {
               width: 24.r,
               height: 24.r,
               decoration: BoxDecoration(
-                color: PColor.bg,
+                color: AppColors.bg,
                 borderRadius: BorderRadius.circular(7.r),
               ),
               child: Icon(
                 Icons.add_rounded,
                 size: 14.r,
-                color: PColor.hint,
+                color: AppColors.textHint,
               ),
             ),
             SizedBox(height: 6.h),
@@ -138,7 +142,7 @@ class PhotoGrid extends StatelessWidget {
               'ເພີ່ມ',
               style: TextStyle(
                 fontSize: 12.sp,
-                color: const Color(0xFFC4C4D0),
+                color: AppColors.textPrimary,
                 fontWeight: FontWeight.w400,
               ),
             ),

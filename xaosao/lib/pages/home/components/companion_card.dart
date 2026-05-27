@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:xaosao/utils/currency_formatter.dart';
+import 'package:xaosao/widgets/app_like_button.dart';
+import 'package:xaosao/widgets/app_network_image.dart';
+
+import '../../../constants/app_color.dart';
 
 // ── Service type enum ─────────────────────────────────────────────────────────
 enum ServiceType { social, massage, travel }
@@ -95,6 +99,7 @@ class CompanionModel {
   final bool isNew;
   final String gender; // 'male' | 'female'
   final List<Color> gradientColors; // placeholder gradient
+  final bool isLiked;
 
   const CompanionModel({
     required this.id,
@@ -112,6 +117,7 @@ class CompanionModel {
     this.isNew = false,
     required this.gender,
     required this.gradientColors,
+    this.isLiked = false,
   });
 }
 
@@ -119,8 +125,14 @@ class CompanionModel {
 class CompanionCardLarge extends StatefulWidget {
   final CompanionModel companion;
   final VoidCallback? onTap;
+  final VoidCallback? onLikeTap;
 
-  const CompanionCardLarge({super.key, required this.companion, this.onTap});
+  const CompanionCardLarge({
+    super.key,
+    required this.companion,
+    this.onTap,
+    this.onLikeTap,
+  });
 
   @override
   State<CompanionCardLarge> createState() => _CompanionCardLargeState();
@@ -130,7 +142,6 @@ class _CompanionCardLargeState extends State<CompanionCardLarge>
     with SingleTickerProviderStateMixin {
   late final AnimationController _ctrl;
   late final Animation<double> _scale;
-  bool _liked = false;
 
   @override
   void initState() {
@@ -217,7 +228,17 @@ class _CompanionCardLargeState extends State<CompanionCardLarge>
                       if (c.isVipElite) _vipBadge(),
                       if (c.isNew && !c.isVipElite) _newBadge(),
                       const Spacer(),
-                      _likeButton(),
+                      AppLikeButton(
+                        initialLiked: widget.companion.isLiked,
+                        size: 34,
+                        iconSize: 16,
+                        onToggle: widget.onLikeTap != null
+                            ? () async {
+                                widget.onLikeTap!();
+                                return true;
+                              }
+                            : null,
+                      ),
                     ],
                   ),
                 ),
@@ -332,16 +353,11 @@ class _CompanionCardLargeState extends State<CompanionCardLarge>
     );
   }
 
-  Widget _buildBackground(CompanionModel c) {
-    if (c.imageUrl.isNotEmpty) {
-      return Image.network(
-        c.imageUrl,
-        fit: BoxFit.cover,
-        errorBuilder: (_, __, ___) => _gradientBg(c),
-      );
-    }
-    return _gradientBg(c);
-  }
+  Widget _buildBackground(CompanionModel c) => AppNetworkImage(
+    imageUrl: c.imageUrl,
+    fit: BoxFit.cover,
+    errorWidget: _gradientBg(c),
+  );
 
   Widget _gradientBg(CompanionModel c) => Container(
     decoration: BoxDecoration(
@@ -427,50 +443,6 @@ class _CompanionCardLargeState extends State<CompanionCardLarge>
     ),
   );
 
-  Widget _likeButton() => GestureDetector(
-    onTap: () => setState(() => _liked = !_liked),
-    child: Container(
-      width: 34.r,
-      height: 34.r,
-      decoration: BoxDecoration(
-        color: _liked
-            ? const Color(0xFFF06292)
-            : Colors.black.withOpacity(0.30),
-        shape: BoxShape.circle,
-        border: Border.all(color: Colors.white.withOpacity(0.20)),
-      ),
-      child: Icon(
-        _liked ? Icons.favorite_rounded : Icons.favorite_border_rounded,
-        size: 16.r,
-        color: Colors.white,
-      ),
-    ),
-  );
-
-  Widget _serviceChip(ServiceType s) => Container(
-    padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 3.h),
-    decoration: BoxDecoration(
-      color: s.color.withOpacity(0.25),
-      borderRadius: BorderRadius.circular(20.r),
-      border: Border.all(color: s.color.withOpacity(0.50)),
-    ),
-    child: Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Icon(s.icon, size: 10.r, color: Colors.white),
-        SizedBox(width: 4.w),
-        Text(
-          s.label,
-          style: TextStyle(
-            fontSize: 9.sp,
-            fontWeight: FontWeight.w700,
-            color: Colors.white,
-          ),
-        ),
-      ],
-    ),
-  );
-
   String _formatLikes(int n) {
     if (n >= 1000) return '${(n / 1000).toStringAsFixed(1)}k';
     return '$n';
@@ -481,8 +453,14 @@ class _CompanionCardLargeState extends State<CompanionCardLarge>
 class CompanionCardSmall extends StatefulWidget {
   final CompanionModel companion;
   final VoidCallback? onTap;
+  final VoidCallback? onLikeTap;
 
-  const CompanionCardSmall({super.key, required this.companion, this.onTap});
+  const CompanionCardSmall({
+    super.key,
+    required this.companion,
+    this.onTap,
+    this.onLikeTap,
+  });
 
   @override
   State<CompanionCardSmall> createState() => _CompanionCardSmallState();
@@ -492,7 +470,6 @@ class _CompanionCardSmallState extends State<CompanionCardSmall>
     with SingleTickerProviderStateMixin {
   late final AnimationController _ctrl;
   late final Animation<double> _scale;
-  bool _liked = false;
 
   @override
   void initState() {
@@ -531,13 +508,11 @@ class _CompanionCardSmallState extends State<CompanionCardSmall>
             fit: StackFit.expand,
             children: [
               // Background
-              c.imageUrl.isNotEmpty
-                  ? Image.network(
-                      c.imageUrl,
-                      fit: BoxFit.cover,
-                      errorBuilder: (_, _, _) => _gradient(c),
-                    )
-                  : _gradient(c),
+              AppNetworkImage(
+                imageUrl: c.imageUrl,
+                fit: BoxFit.cover,
+                errorWidget: _gradient(c),
+              ),
 
               // Bottom gradient
               Positioned(
@@ -556,52 +531,29 @@ class _CompanionCardSmallState extends State<CompanionCardSmall>
                 ),
               ),
 
-              // Top row: service dots + like/bell
+              // Top row: badge left + like right
               Positioned(
                 top: 10.h,
                 left: 10.w,
                 right: 10.w,
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    // Service color dots
-                    // ...c.services.map((s) => Padding(
-                    //       padding: EdgeInsets.only(right: 4.w),
-                    //       child: Container(
-                    //         width: 8.r,
-                    //         height: 8.r,
-                    //         decoration: BoxDecoration(
-                    //           color: s.color,
-                    //           shape: BoxShape.circle,
-                    //           boxShadow: [
-                    //             BoxShadow(
-                    //                 color: s.color.withOpacity(0.6),
-                    //                 blurRadius: 4)
-                    //           ],
-                    //         ),
-                    //       ),
-                    //     )),
-                    // const Spacer(),
-                    // Notification / like icon
-                    GestureDetector(
-                      onTap: () => setState(() => _liked = !_liked),
-                      child: Container(
-                        width: 28.r,
-                        height: 28.r,
-                        decoration: BoxDecoration(
-                          color: Colors.black.withOpacity(0.28),
-                          shape: BoxShape.circle,
-                        ),
-                        child: Icon(
-                          _liked
-                              ? Icons.favorite_rounded
-                              : Icons.favorite_border_rounded,
-                          size: 14.r,
-                          color: _liked
-                              ? const Color(0xFFF06292)
-                              : Colors.white,
-                        ),
-                      ),
+                    if (c.isVipElite)
+                      _vipBadge()
+                    else if (c.isOnline)
+                      _onlineDot(),
+                    const Spacer(),
+                    AppLikeButton(
+                      initialLiked: widget.companion.isLiked,
+                      size: 28,
+                      iconSize: 14,
+                      onToggle: widget.onLikeTap != null
+                          ? () async {
+                              widget.onLikeTap!();
+                              return true;
+                            }
+                          : null,
                     ),
                   ],
                 ),
@@ -685,6 +637,33 @@ class _CompanionCardSmallState extends State<CompanionCardSmall>
       ),
     );
   }
+
+  Widget _vipBadge() => Container(
+    padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
+    decoration: BoxDecoration(
+      color: const Color(0xFF1A1A2E),
+      borderRadius: BorderRadius.circular(20.r),
+    ),
+    child: Text(
+      'VIP',
+      style: TextStyle(
+        fontSize: 9.sp,
+        fontWeight: FontWeight.w800,
+        color: AppColors.vipGold,
+        letterSpacing: 0.5,
+      ),
+    ),
+  );
+
+  Widget _onlineDot() => Container(
+    width: 10.r,
+    height: 10.r,
+    decoration: BoxDecoration(
+      color: const Color(0xFF22C55E),
+      shape: BoxShape.circle,
+      border: Border.all(color: Colors.white, width: 1.5),
+    ),
+  );
 
   Widget _gradient(CompanionModel c) => Container(
     decoration: BoxDecoration(

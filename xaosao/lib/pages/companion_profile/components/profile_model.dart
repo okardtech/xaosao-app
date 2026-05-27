@@ -1,58 +1,6 @@
 import 'package:flutter/material.dart';
-
 import '../../home/components/companion_card.dart';
 
-// enum ServiceType { social, massage, travel }
-
-// extension ServiceTypeExt on ServiceType {
-//   String get label {
-//     switch (this) {
-//       case ServiceType.social:   return 'ເພື່ອນສັງຄົມ';
-//       case ServiceType.massage:  return 'ນວດ';
-//       case ServiceType.travel:   return 'ເພື່ອນທ່ຽວ';
-//     }
-//   }
-//   String get description {
-//     switch (this) {
-//       case ServiceType.social:   return 'ທ່ຽວ, ງານລ້ຽງ, ທຸກໂອກາດ';
-//       case ServiceType.massage:  return 'ນວດສຸຂະພາບໂດຍມືອາຊີບ';
-//       case ServiceType.travel:   return 'Guide ໃນ ແລະ ຕ່າງປະເທດ';
-//     }
-//   }
-//   int get pricePerHour {
-//     switch (this) {
-//       case ServiceType.social:   return 150000;
-//       case ServiceType.massage:  return 180000;
-//       case ServiceType.travel:   return 200000;
-//     }
-//   }
-//   IconData get icon {
-//     switch (this) {
-//       case ServiceType.social:   return Icons.people_outline_rounded;
-//       case ServiceType.massage:  return Icons.spa_outlined;
-//       case ServiceType.travel:   return Icons.flight_takeoff_outlined;
-//     }
-//   }
-//   Color get color {
-//     switch (this) {
-//       case ServiceType.social:   return const Color(0xFFF06292);
-//       case ServiceType.massage:  return const Color(0xFF42A5F5);
-//       case ServiceType.travel:   return const Color(0xFFAB47BC);
-//     }
-//   }
-//   Color get bgColor {
-//     switch (this) {
-//       case ServiceType.social:   return const Color(0xFFFFF0F6);
-//       case ServiceType.massage:  return const Color(0xFFF0F7FF);
-//       case ServiceType.travel:   return const Color(0xFFF3F0FF);
-//     }
-//   }
-//   String get formattedPrice {
-//     final n = pricePerHour;
-//     if (n >= 1000000) return '${(n / 1000000).toStringAsFixed(1)}M';
-//     return '${n ~/ 1000}k';
-//   }
-// }
 
 class ReviewModel {
   final String id;

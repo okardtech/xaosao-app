@@ -6,6 +6,8 @@ import 'package:xaosao/constants/app_routes.dart';
 import 'package:xaosao/services/initial_binding.dart';
 import 'package:xaosao/services/storage_service.dart';
 
+import 'constants/app_color.dart';
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Get.putAsync(() => StorageService().init(), permanent: true);
@@ -33,7 +35,7 @@ class MyApp extends StatelessWidget {
           title: 'Xaosao',
           theme: ThemeData(
             primarySwatch: Colors.blue,
-            scaffoldBackgroundColor: Colors.white,
+            scaffoldBackgroundColor: AppColors.bg,
           ),
           initialBinding: InitialBinding(),
           initialRoute: AppRoutes.splash,

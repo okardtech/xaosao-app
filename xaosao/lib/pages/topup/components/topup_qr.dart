@@ -1,33 +1,39 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
+import 'package:shimmer/shimmer.dart';
+import 'package:xaosao/constants/app_color.dart';
+import 'package:xaosao/constants/app_routes.dart';
 import 'package:xaosao/pages/topup/components/topup_constant.dart';
-import 'package:xaosao/pages/topup/components/topup_upload.dart';
+import 'package:xaosao/pages/topup/getx/topup_logic.dart';
+import 'package:xaosao/widgets/app_button.dart';
+import 'package:xaosao/widgets/gradient_app_bar.dart';
 
-// ═══════════════════════════════════════════════════════════════
-//  topup_qr_page.dart — Page 2: ສະແກນ QR
-//  Styled after BcelOneQRScan (insurance app pattern):
-//    · gradient background
-//    · pink radial orbs
-//    · dot grid painter
-//    · white card + pink top stripe + border
-//
-//  QR image: ໃຊ້ _QrImagePlaceholder() ຕອນນີ້
-//  TODO: ປ່ຽນດ້ວຍ Image.asset('assets/images/xaosao_qr.png')
-//        ຫຼື Image.network(qrUrl)
-// ═══════════════════════════════════════════════════════════════
-class TopUpQRPage extends StatelessWidget {
-  final int amountKip;
-  const TopUpQRPage({super.key, required this.amountKip});
+class TopUpQRPage extends StatefulWidget {
+  const TopUpQRPage({super.key});
+
+  @override
+  State<TopUpQRPage> createState() => _TopUpQRPageState();
+}
+
+class _TopUpQRPageState extends State<TopUpQRPage> {
+  late final TopupLogic _logic;
+
+  @override
+  void initState() {
+    super.initState();
+    _logic = Get.find<TopupLogic>();
+    _logic.fetchQr();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFFFF5F8),
-      appBar: TopUpGradientAppBar(
+      backgroundColor: AppColors.bg,
+      appBar: GradientAppBar(
         title: 'ສະແກນ QR',
-        sub: 'ຊຳລະຜ່ານ app ທະນາຄານ',
-        step: '2',
-        onBack: () => Navigator.pop(context),
+        subtitle: 'ຊຳລະຜ່ານ app ທະນາຄານ',
+        actions: [const TopUpStepBadge('2')],
       ),
       body: SafeArea(
         child: Column(
@@ -45,7 +51,7 @@ class TopUpQRPage extends StatelessWidget {
                           colors: [
                             Color(0xFFFFF5F8),
                             Color(0xFFFFFFFF),
-                            Color(0xFFF8F8FC),
+                            AppColors.bg,
                           ],
                           stops: [0.0, 0.5, 1.0],
                         ),
@@ -56,17 +62,17 @@ class TopUpQRPage extends StatelessWidget {
                   Positioned(
                     top: -80.h,
                     right: -60.w,
-                    child: TopUpOrb(220.w, kPink, 0.14),
+                    child: TopUpOrb(220.w, AppColors.primary, 0.14),
                   ),
                   Positioned(
                     top: 120.h,
                     left: -80.w,
-                    child: TopUpOrb(200.w, kPinkLight, 0.09),
+                    child: TopUpOrb(200.w, AppColors.secondary, 0.09),
                   ),
                   Positioned(
                     bottom: 80.h,
                     right: -50.w,
-                    child: TopUpOrb(180.w, kPink, 0.07),
+                    child: TopUpOrb(180.w, AppColors.primary, 0.07),
                   ),
                   // Dot grid
                   Positioned.fill(
@@ -79,26 +85,24 @@ class TopUpQRPage extends StatelessWidget {
                         horizontal: 22.w,
                         vertical: 12.h,
                       ),
-                      child: _QrCard(amountKip: amountKip),
+                      child: Obx(() => _logic.state.loadingQr
+                          ? _QrCardShimmer()
+                          : _QrCard(
+                              amountKip: _logic.state.amount,
+                              qrUrl: _logic.state.qrUrl,
+                            )),
                     ),
                   ),
                 ],
               ),
             ),
-
             // CTA
             Padding(
               padding: EdgeInsets.fromLTRB(16.w, 0, 16.w, 16.h),
-              child: TopUpPinkBtn(
+              child: AppPrimaryButton(
                 label: 'ຊຳລະແລ້ວ — ອັບ slip',
-                icon: Icons.arrow_forward_ios_rounded,
-                enabled: true,
-                onTap: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => TopUpUploadSlipPage(amountKip: amountKip),
-                  ),
-                ),
+                trailingIcon: Icons.arrow_forward_ios_rounded,
+                onTap: () => Get.toNamed(AppRoutes.topupUpload),
               ),
             ),
           ],
@@ -108,10 +112,30 @@ class TopUpQRPage extends StatelessWidget {
   }
 }
 
-// ── QR white card ──────────────────────────────────────────────
+// ── QR card shimmer ─────────────────────────────────────────────
+class _QrCardShimmer extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Shimmer.fromColors(
+      baseColor: const Color(0xFFE8E8F0),
+      highlightColor: const Color(0xFFF5F5FA),
+      child: Container(
+        width: double.infinity,
+        height: 440.h,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(28.r),
+        ),
+      ),
+    );
+  }
+}
+
+// ── QR white card ───────────────────────────────────────────────
 class _QrCard extends StatelessWidget {
   final int amountKip;
-  const _QrCard({required this.amountKip});
+  final String? qrUrl;
+  const _QrCard({required this.amountKip, required this.qrUrl});
 
   @override
   Widget build(BuildContext context) {
@@ -120,16 +144,19 @@ class _QrCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(28.r),
-        border: Border.all(color: kPink.withOpacity(0.18), width: 1.5),
+        border: Border.all(
+          color: AppColors.primary.withValues(alpha: 0.18),
+          width: 1.5,
+        ),
         boxShadow: [
           BoxShadow(
-            color: kPink.withOpacity(0.12),
+            color: AppColors.primary.withValues(alpha: 0.12),
             blurRadius: 40,
             spreadRadius: 2,
             offset: const Offset(0, 12),
           ),
           BoxShadow(
-            color: Colors.black.withOpacity(0.04),
+            color: Colors.black.withValues(alpha: 0.04),
             blurRadius: 20,
             offset: const Offset(0, 4),
           ),
@@ -147,7 +174,7 @@ class _QrCard extends StatelessWidget {
               child: Container(
                 height: 4.h,
                 decoration: const BoxDecoration(
-                  gradient: LinearGradient(colors: [kPink, kPinkLight]),
+                  gradient: LinearGradient(colors: AppColors.pinkGradient),
                 ),
               ),
             ),
@@ -160,7 +187,7 @@ class _QrCard extends StatelessWidget {
                 height: 130.w,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: kPink.withOpacity(0.035),
+                  color: AppColors.primary.withValues(alpha: 0.035),
                 ),
               ),
             ),
@@ -172,7 +199,7 @@ class _QrCard extends StatelessWidget {
                 height: 110.w,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: kPink.withOpacity(0.035),
+                  color: AppColors.primary.withValues(alpha: 0.035),
                 ),
               ),
             ),
@@ -192,7 +219,7 @@ class _QrCard extends StatelessWidget {
                           gradient: const LinearGradient(
                             begin: Alignment.topLeft,
                             end: Alignment.bottomRight,
-                            colors: [kPink, kPinkLight],
+                            colors: AppColors.pinkGradient,
                           ),
                           borderRadius: BorderRadius.circular(9.r),
                         ),
@@ -208,19 +235,18 @@ class _QrCard extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 13.sp,
                           fontWeight: FontWeight.w700,
-                          color: kNavy,
+                          color: AppColors.textPrimary,
                         ),
                       ),
                     ],
                   ),
                   SizedBox(height: 16.h),
-                  // Amount label
                   Text(
                     'ຈຳນວນທີ່ຕ້ອງຊຳລະ',
                     style: TextStyle(
                       fontSize: 11.sp,
                       fontWeight: FontWeight.w700,
-                      color: kHint,
+                      color: AppColors.textHint,
                       letterSpacing: 0.4,
                     ),
                   ),
@@ -230,7 +256,7 @@ class _QrCard extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 28.sp,
                       fontWeight: FontWeight.w900,
-                      color: kNavy,
+                      color: AppColors.textPrimary,
                       letterSpacing: -0.5,
                     ),
                   ),
@@ -242,7 +268,7 @@ class _QrCard extends StatelessWidget {
                       gradient: LinearGradient(
                         colors: [
                           Colors.transparent,
-                          Colors.black.withOpacity(0.08),
+                          Colors.black.withValues(alpha: 0.08),
                           Colors.transparent,
                         ],
                       ),
@@ -256,38 +282,34 @@ class _QrCard extends StatelessWidget {
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(18.r),
                       border: Border.all(
-                        color: const Color(0xFFFFF0F6),
+                        color: AppColors.socialBg,
                         width: 2,
                       ),
                       boxShadow: [
                         BoxShadow(
-                          color: kPink.withOpacity(0.10),
+                          color: AppColors.primary.withValues(alpha: 0.10),
                           blurRadius: 18,
                           offset: const Offset(0, 4),
                         ),
                       ],
                     ),
-                    // ═══════════════════════════════════════════
-                    //  TODO: ປ່ຽນ _QrImagePlaceholder() ດ້ວຍ
-                    //  Image.asset('assets/images/xaosao_qr.png',
-                    //    width: 210.w, height: 210.w,
-                    //    fit: BoxFit.cover)
-                    // ═══════════════════════════════════════════
-                    child: Image.network(
-                      "https://manabi.chiaranai.co/wp-content/uploads/2026/02/CHRNQR-1-768x1024.jpg",
-                      width: 210.w,
-                      height: 210.w,
-                      fit: BoxFit.cover,
-                    ),
+                    child: qrUrl != null
+                        ? Image.network(
+                            qrUrl!,
+                            width: 210.w,
+                            height: 210.w,
+                            fit: BoxFit.cover,
+                            errorBuilder: (_, __, ___) => _QrError(),
+                          )
+                        : _QrError(),
                   ),
                   SizedBox(height: 18.h),
-                  // Hint
                   Text(
                     'ສະແກນ QR ດ້ວຍ app ທະນາຄານ\nຈາກນັ້ນກົດ "ຊຳລະແລ້ວ" ເພື່ອອັບ slip',
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: 12.sp,
-                      color: kHint,
+                      color: AppColors.textHint,
                       height: 1.6,
                     ),
                   ),
@@ -299,7 +321,7 @@ class _QrCard extends StatelessWidget {
                       vertical: 5.h,
                     ),
                     decoration: BoxDecoration(
-                      color: const Color(0xFFFFF0F6),
+                      color: AppColors.socialBg,
                       borderRadius: BorderRadius.circular(20.r),
                     ),
                     child: Row(
@@ -310,7 +332,7 @@ class _QrCard extends StatelessWidget {
                           height: 7.r,
                           decoration: const BoxDecoration(
                             shape: BoxShape.circle,
-                            color: kPink,
+                            color: AppColors.primary,
                           ),
                         ),
                         SizedBox(width: 6.w),
@@ -319,7 +341,7 @@ class _QrCard extends StatelessWidget {
                           style: TextStyle(
                             fontSize: 10.sp,
                             fontWeight: FontWeight.w700,
-                            color: kPink,
+                            color: AppColors.primary,
                           ),
                         ),
                       ],
@@ -330,6 +352,28 @@ class _QrCard extends StatelessWidget {
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+// ── QR error/empty placeholder ──────────────────────────────────
+class _QrError extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: 210.w,
+      height: 210.w,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(Icons.qr_code_2_rounded, size: 48.r, color: AppColors.textHint),
+          SizedBox(height: 8.h),
+          Text(
+            'ບໍ່ສາມາດໂຫຼດ QR',
+            style: TextStyle(fontSize: 12.sp, color: AppColors.textHint),
+          ),
+        ],
       ),
     );
   }

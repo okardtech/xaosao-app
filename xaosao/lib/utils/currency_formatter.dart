@@ -1,7 +1,9 @@
 import 'package:intl/intl.dart';
 
 class CurrFormatter {
-  static String format(num amount) {
-    return NumberFormat.currency(symbol: '', decimalDigits: 0).format(amount);
-  }
+  static final _fmt = NumberFormat('#,###', 'en_US');
+
+  static String format(num amount) => _fmt.format(amount);
+
+  static String kip(num amount) => '${_fmt.format(amount)} ກີບ';
 }

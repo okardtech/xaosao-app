@@ -123,4 +123,20 @@ class RegisterRepo extends BaseRepository {
       fromJson: (json) => true,
     );
   }
+
+  Future<ApiResponse<bool>> changePassword({
+    required bool isCustomer,
+    required String currentPass,
+    required String newPass,
+  }) {
+    return safeCall(
+      () => api.patch(
+        isCustomer
+            ? ApiConstants.clientChangePass
+            : ApiConstants.modelChangePass,
+        data: {"oldPassword": currentPass, "newPassword": newPass},
+      ),
+      fromJson: (json) => true,
+    );
+  }
 }

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -8,9 +10,9 @@ import 'package:xaosao/pages/home/components/companion_filter.dart';
 import 'package:xaosao/pages/home/components/home_shimmer.dart';
 import 'package:xaosao/pages/home/getx/home_logic.dart';
 import 'package:xaosao/pages/home/getx/home_state.dart';
+import 'package:xaosao/widgets/app_search_field.dart';
 
-import '../companion_profile/companion_profile_page.dart';
-import '../companion_profile/components/profile_model.dart';
+import 'package:xaosao/constants/app_routes.dart';
 import '../view_companion/view_companions_page.dart';
 
 // ═════════════════════════════════════════════════════════════════════════════
@@ -26,12 +28,18 @@ class ExplorePage extends StatefulWidget {
 class _ExplorePageState extends State<ExplorePage> {
   late final HomeLogic _logic;
   late final ScrollController _scrollCtrl;
+  late final TextEditingController _searchCtrl;
+  late final StreamSubscription<bool> _searchSub;
 
   @override
   void initState() {
     super.initState();
     _logic = Get.find<HomeLogic>();
     _scrollCtrl = ScrollController()..addListener(_onScroll);
+    _searchCtrl = TextEditingController();
+    _searchSub = _logic.searchOpen.listen((open) {
+      if (!open) _searchCtrl.clear();
+    });
     SystemChrome.setSystemUIOverlayStyle(
       const SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,
@@ -45,6 +53,8 @@ class _ExplorePageState extends State<ExplorePage> {
     _scrollCtrl
       ..removeListener(_onScroll)
       ..dispose();
+    _searchCtrl.dispose();
+    _searchSub.cancel();
     super.dispose();
   }
 
@@ -59,9 +69,9 @@ class _ExplorePageState extends State<ExplorePage> {
   void _onGenderChanged(String gender) => _logic.setGender(gender);
 
   Future<void> _onRefresh() => Future.wait([
-        _logic.fetchRecommended(refresh: true),
-        _logic.fetchOnline(refresh: true),
-      ]);
+    _logic.fetchRecommended(refresh: true),
+    _logic.fetchOnline(refresh: true),
+  ]);
 
   // ═══════════════════════════════════════════════════════════════════════════
   @override
@@ -72,6 +82,7 @@ class _ExplorePageState extends State<ExplorePage> {
         child: Column(
           children: [
             _buildTopBar(),
+            _buildSearchField(),
             Expanded(
               child: RefreshIndicator(
                 onRefresh: _onRefresh,
@@ -117,12 +128,23 @@ class _ExplorePageState extends State<ExplorePage> {
               ),
               Text(
                 'ຄົ້ນພົບຜູ້ຮ່ວມທາງຂອງທ່ານ',
-                style: TextStyle(fontSize: 12.sp, color: const Color(0xFF9B9BAD)),
+                style: TextStyle(
+                  fontSize: 12.sp,
+                  color: const Color(0xFF9B9BAD),
+                ),
               ),
             ],
           ),
           const Spacer(),
-          _iconBtn(Icons.search_rounded, () {}),
+          Obx(
+            () => _iconBtn(
+              _logic.searchOpen.value
+                  ? Icons.close_rounded
+                  : Icons.search_rounded,
+              _logic.toggleSearch,
+              active: _logic.searchOpen.value,
+            ),
+          ),
           SizedBox(width: 10.w),
           _iconBtn(Icons.tune_rounded, _showFilterSheet),
         ],
@@ -130,24 +152,66 @@ class _ExplorePageState extends State<ExplorePage> {
     );
   }
 
-  Widget _iconBtn(IconData icon, VoidCallback onTap) {
+  // ── Collapsible search bar ─────────────────────────────────────────────────
+  Widget _buildSearchField() {
+    return Obx(() {
+      final open = _logic.searchOpen.value;
+      return AnimatedOpacity(
+        opacity: open ? 1.0 : 0.0,
+        duration: const Duration(milliseconds: 200),
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 200),
+          curve: Curves.easeOut,
+          height: open ? 48.h : 0,
+          margin: open
+              ? EdgeInsets.fromLTRB(18.w, 0, 18.w, 8.h)
+              : EdgeInsets.zero,
+          child: open
+              ? AppSearchField(
+                  controller: _searchCtrl,
+                  onChanged: _logic.onSearchChanged,
+                  hintText: 'ຄົ້ນຫາດ້ວຍຊື່...',
+                  autofocus: true,
+                )
+              : const SizedBox.shrink(),
+        ),
+      );
+    });
+  }
+
+  Widget _iconBtn(IconData icon, VoidCallback onTap, {bool active = false}) {
     return GestureDetector(
       onTap: onTap,
-      child: Container(
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
         width: 42.r,
         height: 42.r,
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: active
+              ? const Color(0xFFF43F5E).withValues(alpha: 0.10)
+              : Colors.white,
           borderRadius: BorderRadius.circular(13.r),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.07),
-              blurRadius: 10,
-              offset: const Offset(0, 3),
-            ),
-          ],
+          border: active
+              ? Border.all(
+                  color: const Color(0xFFF43F5E).withValues(alpha: 0.30),
+                  width: 0.5,
+                )
+              : null,
+          boxShadow: active
+              ? null
+              : [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.07),
+                    blurRadius: 10,
+                    offset: const Offset(0, 3),
+                  ),
+                ],
         ),
-        child: Icon(icon, size: 20.r, color: const Color(0xFF1A1A2E)),
+        child: Icon(
+          icon,
+          size: 20.r,
+          color: active ? const Color(0xFFF43F5E) : const Color(0xFF1A1A2E),
+        ),
       ),
     );
   }
@@ -156,17 +220,24 @@ class _ExplorePageState extends State<ExplorePage> {
   Widget _buildFilterBar() {
     return Obx(() {
       final gender = _logic.state.gender;
-      return Container(
-        color: const Color(0xFFF8F8FC),
-        padding: EdgeInsets.symmetric(horizontal: 18.w),
-        child: Column(
-          children: [
-            GenderTabBar(selected: gender, onChanged: _onGenderChanged),
-            SizedBox(height: 12.h),
-            CategoryPillRow(selected: 'new', onChanged: (_) {}),
-            SizedBox(height: 10.h),
-          ],
-        ),
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Gender tabs on white bg so the underline border is visible
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: 18.w),
+            child: GenderTabBar(selected: gender, onChanged: _onGenderChanged),
+          ),
+          SizedBox(height: 14.h),
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 18.w),
+            child: CategoryPillRow(
+              selected: _logic.state.sort,
+              onChanged: _logic.setSort,
+            ),
+          ),
+          SizedBox(height: 10.h),
+        ],
       );
     });
   }
@@ -175,7 +246,8 @@ class _ExplorePageState extends State<ExplorePage> {
   Widget _buildOnlineSection() {
     return Obx(() {
       final st = _logic.state;
-      final isLoading = st.onlineStatus == HomeStatus.loading ||
+      final isLoading =
+          st.onlineStatus == HomeStatus.loading ||
           st.onlineStatus == HomeStatus.initial;
       if (isLoading) {
         return Column(
@@ -201,10 +273,7 @@ class _ExplorePageState extends State<ExplorePage> {
             title: 'ອອນລາຍດຽວນີ້',
             onViewAll: () => Navigator.push(
               context,
-              MaterialPageRoute(
-                builder: (_) =>
-                    const ViewAllCompanionsPage(title: 'ອອນລາຍດຽວນີ້'),
-              ),
+              MaterialPageRoute(builder: (_) => const ViewAllCompanionsPage()),
             ),
           ),
           _buildOnlineList(st.online),
@@ -218,9 +287,9 @@ class _ExplorePageState extends State<ExplorePage> {
   Widget _buildRecommendedSection() {
     return Obx(() {
       final st = _logic.state;
-      final isLoading = st.recommendedStatus == HomeStatus.loading ||
+      final isLoading =
+          st.recommendedStatus == HomeStatus.loading ||
           st.recommendedStatus == HomeStatus.initial;
-
       if (isLoading) {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -236,7 +305,8 @@ class _ExplorePageState extends State<ExplorePage> {
       }
 
       if (st.recommended.isEmpty) {
-        final onlineIdle = st.onlineStatus != HomeStatus.loading &&
+        final onlineIdle =
+            st.onlineStatus != HomeStatus.loading &&
             st.onlineStatus != HomeStatus.initial;
         if (st.online.isEmpty && onlineIdle) return _buildEmpty();
         return const SizedBox.shrink();
@@ -251,9 +321,7 @@ class _ExplorePageState extends State<ExplorePage> {
             title: 'ແນະນຳ',
             onViewAll: () => Navigator.push(
               context,
-              MaterialPageRoute(
-                builder: (_) => const ViewAllCompanionsPage(title: 'ແນະນຳ'),
-              ),
+              MaterialPageRoute(builder: (_) => const ViewAllCompanionsPage()),
             ),
           ),
           Padding(
@@ -267,21 +335,26 @@ class _ExplorePageState extends State<ExplorePage> {
                 mainAxisSpacing: 12.h,
                 childAspectRatio: 0.78,
               ),
-              itemCount: st.recommended.length,
-              itemBuilder: (_, i) => CompanionCardSmall(
-                companion: _toCompanionModel(st.recommended[i]),
-                onTap: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) =>
-                        CompanionProfilePage(profile: mockKaiProfile),
+              itemCount:
+                  st.recommended.length +
+                  (st.recommendedStatus == HomeStatus.loadingMore ? 1 : 0),
+              itemBuilder: (_, i) {
+                if (i >= st.recommended.length) {
+                  return const _LoadMoreCell();
+                }
+                return CompanionCardSmall(
+                  companion: _toCompanionModel(st.recommended[i]),
+                  onTap: () => Navigator.pushNamed(
+                    context,
+                    AppRoutes.companionProfile,
+                    arguments: st.recommended[i],
                   ),
-                ),
-              ),
+                  onLikeTap: () =>
+                      _logic.toggleLike(st.recommended[i].id ?? ''),
+                );
+              },
             ),
           ),
-          if (st.recommendedStatus == HomeStatus.loadingMore)
-            const LoadMoreIndicator(),
         ],
       );
     });
@@ -304,13 +377,12 @@ class _ExplorePageState extends State<ExplorePage> {
             padding: EdgeInsets.only(right: 14.w),
             child: CompanionCardLarge(
               companion: _toCompanionModel(m),
-              onTap: () => Navigator.push(
+              onTap: () => Navigator.pushNamed(
                 context,
-                MaterialPageRoute(
-                  builder: (_) =>
-                      CompanionProfilePage(profile: mockKaiProfile),
-                ),
+                AppRoutes.companionProfile,
+                arguments: m,
               ),
+              onLikeTap: () => _logic.toggleLike(m.id ?? ''),
             ),
           );
         },
@@ -338,6 +410,7 @@ class _ExplorePageState extends State<ExplorePage> {
       gender: m.gender ?? 'male',
       gradientColors: const [Color(0xFF5C6BC0), Color(0xFF1A1A2E)],
       services: const [],
+      isLiked: m.isLiked,
     );
   }
 
@@ -387,8 +460,11 @@ class _ExplorePageState extends State<ExplorePage> {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(Icons.search_off_rounded,
-              size: 60.r, color: const Color(0xFFD1D1E0)),
+          Icon(
+            Icons.search_off_rounded,
+            size: 60.r,
+            color: const Color(0xFFD1D1E0),
+          ),
           SizedBox(height: 14.h),
           Text(
             'ບໍ່ພົບຜົນໄດ້ຮັບ',
@@ -407,7 +483,6 @@ class _ExplorePageState extends State<ExplorePage> {
       ),
     );
   }
-
 
   // ── Filter bottom sheet ────────────────────────────────────────────────────
   void _showFilterSheet() {
@@ -511,8 +586,7 @@ class _ExplorePageState extends State<ExplorePage> {
               color: selected
                   ? const Color(0xFFF06292)
                   : const Color(0xFF555570),
-              fontWeight:
-                  selected ? FontWeight.w700 : FontWeight.w400,
+              fontWeight: selected ? FontWeight.w700 : FontWeight.w400,
             ),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(20.r),
@@ -521,5 +595,33 @@ class _ExplorePageState extends State<ExplorePage> {
         }).toList(),
       );
     });
+  }
+}
+
+// ── In-grid load-more shimmer cell ────────────────────────────────────────────
+class _LoadMoreCell extends StatelessWidget {
+  const _LoadMoreCell();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16.r),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.04),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: const Center(
+        child: CircularProgressIndicator(
+          color: Color(0xFFF06292),
+          strokeWidth: 2,
+        ),
+      ),
+    );
   }
 }

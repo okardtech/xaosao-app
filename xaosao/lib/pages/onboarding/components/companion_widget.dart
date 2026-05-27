@@ -96,32 +96,32 @@ class _CompanionCardState extends State<CompanionCard>
                   ),
                 ),
                 // ── Like button top-right ────────────────
-                Positioned(
-                  top: 10.h,
-                  right: 10.w,
-                  child: GestureDetector(
-                    onTap: () => setState(() => _liked = !_liked),
-                    child: Container(
-                      width: 34.r,
-                      height: 34.r,
-                      decoration: BoxDecoration(
-                        color: Colors.black.withOpacity(0.30),
-                        shape: BoxShape.circle,
-                        border: Border.all(
-                          color: Colors.white.withOpacity(0.20),
-                          width: 1,
-                        ),
-                      ),
-                      child: Icon(
-                        _liked
-                            ? Icons.favorite_rounded
-                            : Icons.favorite_border_rounded,
-                        size: 16.r,
-                        color: _liked ? const Color(0xFFF06292) : Colors.white,
-                      ),
-                    ),
-                  ),
-                ),
+                // Positioned(
+                //   top: 10.h,
+                //   right: 10.w,
+                //   child: GestureDetector(
+                //     onTap: () => setState(() => _liked = !_liked),
+                //     child: Container(
+                //       width: 34.r,
+                //       height: 34.r,
+                //       decoration: BoxDecoration(
+                //         color: Colors.black.withOpacity(0.30),
+                //         shape: BoxShape.circle,
+                //         border: Border.all(
+                //           color: Colors.white.withOpacity(0.20),
+                //           width: 1,
+                //         ),
+                //       ),
+                //       child: Icon(
+                //         _liked
+                //             ? Icons.favorite_rounded
+                //             : Icons.favorite_border_rounded,
+                //         size: 16.r,
+                //         color: _liked ? const Color(0xFFF06292) : Colors.white,
+                //       ),
+                //     ),
+                //   ),
+                // ),
 
                 // ── Info overlay bottom ───────────────────
                 Positioned(

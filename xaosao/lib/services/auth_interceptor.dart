@@ -1,5 +1,11 @@
 import 'package:dio/dio.dart';
 import 'package:get/get.dart' hide Response;
+import 'package:xaosao/pages/feedback/getx/feedback_logic.dart';
+import 'package:xaosao/pages/home/getx/home_logic.dart';
+import 'package:xaosao/pages/model_discover/getx/model_discover_logic.dart';
+import 'package:xaosao/pages/notification/getx/notification_setting_logic.dart';
+import 'package:xaosao/pages/profile/getx/profile_logic.dart';
+import 'package:xaosao/pages/services_manage/getx/service_logic.dart';
 import 'package:xaosao/services/storage_service.dart';
 import '../constants/api_constants.dart';
 
@@ -64,7 +70,16 @@ class AuthInterceptor extends Interceptor {
   void _handleLogout() async {
     await _storageService.remove('token');
     await _storageService.remove('refresh_token');
-    // Navigate to login — use your route name
+    _deleteUserControllers();
     Get.offAllNamed('/login');
+  }
+
+  void _deleteUserControllers() {
+    Get.delete<HomeLogic>(force: true);
+    Get.delete<ProfileLogic>(force: true);
+    Get.delete<ServiceLogic>(force: true);
+    Get.delete<FeedbackLogic>(force: true);
+    Get.delete<NotifSettingLogic>(force: true);
+    Get.delete<ModelDiscoverLogic>(force: true);
   }
 }

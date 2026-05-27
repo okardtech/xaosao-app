@@ -3,7 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:xaosao/constants/app_color.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
-//  Gender Tab Bar
+//  Gender Tab Bar  — underline indicator style, no counts
 // ─────────────────────────────────────────────────────────────────────────────
 class GenderTabBar extends StatelessWidget {
   final String selected; // 'male' | 'female' | 'all'
@@ -16,59 +16,59 @@ class GenderTabBar extends StatelessWidget {
   });
 
   static const _tabs = [
-    {'value': 'male', 'label': 'ຜູ້ຊາຍ', 'icon': Icons.male_rounded},
-    {'value': 'female', 'label': 'ຜູ້ຍິງ', 'icon': Icons.female_rounded},
-    {'value': 'all', 'label': 'ທັງໝົດ', 'icon': Icons.people_alt_rounded},
+    {'value': 'male', 'label': 'ຜູ້ຊາຍ'},
+    {'value': 'female', 'label': 'ຜູ້ຍິງ'},
+    {'value': 'all', 'label': 'ທັງໝົດ'},
   ];
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: _tabs.map((t) {
-        final val = t['value'] as String;
-        final isSelected = selected == val;
-        return Expanded(
-          child: GestureDetector(
-            onTap: () => onChanged(val),
-            child: AnimatedContainer(
-              duration: const Duration(milliseconds: 220),
-              curve: Curves.easeInOut,
-              margin: EdgeInsets.symmetric(horizontal: 4.w),
-              padding: EdgeInsets.symmetric(vertical: 10.h),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(14.r),
-                border: isSelected
-                    ? Border.all(width: 1.w, color: AppColors.primary)
-                    : null,
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    t['icon'] as IconData,
-                    size: 16.r,
-                    color: isSelected
-                        ? AppColors.primary
-                        : const Color(0xFF9B9BAD),
-                  ),
-                  SizedBox(width: 5.w),
-                  Text(
-                    t['label'] as String,
-                    style: TextStyle(
-                      fontSize: 12.sp,
-                      fontWeight: FontWeight.w700,
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        border: Border(
+          bottom: BorderSide(
+            color: Colors.black.withValues(alpha: 0.07),
+            width: 1,
+          ),
+        ),
+      ),
+      child: Row(
+        children: _tabs.map((t) {
+          final val = t['value'] as String;
+          final isSelected = selected == val;
+          return Expanded(
+            child: GestureDetector(
+              onTap: () => onChanged(val),
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 220),
+                curve: Curves.easeInOut,
+                padding: EdgeInsets.symmetric(vertical: 13.h),
+                decoration: BoxDecoration(
+                  border: Border(
+                    bottom: BorderSide(
                       color: isSelected
                           ? AppColors.primary
-                          : const Color(0xFF9B9BAD),
+                          : Colors.transparent,
+                      width: 2.5,
                     ),
                   ),
-                ],
+                ),
+                child: Text(
+                  t['label'] as String,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 14.sp,
+                    fontWeight: isSelected ? FontWeight.w800 : FontWeight.w500,
+                    color: isSelected
+                        ? AppColors.primary
+                        : AppColors.textPrimary,
+                  ),
+                ),
               ),
             ),
-          ),
-        );
-      }).toList(),
+          );
+        }).toList(),
+      ),
     );
   }
 }
@@ -89,7 +89,7 @@ class CategoryPillRow extends StatelessWidget {
   static const _categories = [
     {'value': 'new', 'label': 'ໃໝ່', 'emoji': '✨'},
     {'value': 'nearby', 'label': 'ໃກ້ຄຽງ', 'emoji': '📍'},
-    {'value': 'vip', 'label': 'VIP Elite', 'emoji': '⭐'},
+    {'value': 'vip', 'label': 'VIP', 'emoji': '⭐'},
     {'value': 'popular', 'label': 'ນິຍົມ', 'emoji': '🔥'},
   ];
 
@@ -101,7 +101,6 @@ class CategoryPillRow extends StatelessWidget {
       child: Row(
         children: _categories.map((c) {
           final val = c['value'] as String;
-          final isVip = val == 'vip';
           final isSelected = selected == val;
 
           return GestureDetector(
@@ -113,26 +112,11 @@ class CategoryPillRow extends StatelessWidget {
               decoration: BoxDecoration(
                 gradient: isSelected
                     ? const LinearGradient(
-                        colors: [Color(0xFFF06292), Color(0xFFFF8A80)],
+                        colors: AppColors.pinkGradient,
                       )
-                    // : isVip
-                    //     ? const LinearGradient(
-                    //         colors: [Color(0xFFFFB800), Color(0xFFFF8F00)],
-                    //       )
                     : null,
                 color: (!isSelected) ? Colors.white : null,
                 borderRadius: BorderRadius.circular(20.r),
-                boxShadow: [
-                  BoxShadow(
-                    color: isSelected
-                        ? const Color(0xFFF06292).withOpacity(0.30)
-                        // : isVip
-                        //     ? const Color(0xFFFFB800).withOpacity(0.30)
-                        : Colors.black.withOpacity(0.05),
-                    blurRadius: 8,
-                    offset: const Offset(0, 3),
-                  ),
-                ],
               ),
               child: Row(
                 children: [

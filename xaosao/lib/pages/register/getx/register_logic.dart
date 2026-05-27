@@ -53,7 +53,7 @@ class RegisterLogic extends GetxController {
         );
       } else {
         _updateState(state.copyWith(servicesStatus: RegisterStatus.failure));
-        AppSnackbar.error(res.message ?? 'ໂຫຼດບໍລິການບໍ່ສຳເລັດ');
+        AppSnackbar.error(res.laMessage ?? 'ໂຫຼດບໍລິການບໍ່ສຳເລັດ');
       }
     } catch (e) {
       _updateState(state.copyWith(servicesStatus: RegisterStatus.failure));
@@ -107,7 +107,7 @@ class RegisterLogic extends GetxController {
         );
         hideLoadingDialog();
         if (!res.success) {
-          AppSnackbar.error(res.message ?? 'ລົງທະບຽນບໍ່ສຳເລັດ');
+          AppSnackbar.error(res.laMessage ?? 'ລົງທະບຽນບໍ່ສຳເລັດ');
           return;
         }
         Get.toNamed(
@@ -150,7 +150,7 @@ class RegisterLogic extends GetxController {
       );
       hideLoadingDialog();
       if (!res.success) {
-        AppSnackbar.error(res.message ?? 'ລົງທະບຽນບໍ່ສຳເລັດ');
+        AppSnackbar.error(res.laMessage ?? 'ລົງທະບຽນບໍ່ສຳເລັດ');
         return;
       }
       Get.toNamed(
@@ -185,7 +185,7 @@ class RegisterLogic extends GetxController {
       );
       hideLoadingDialog();
       if (!res.success || res.data == null) {
-        AppSnackbar.error(res.message ?? 'OTP ບໍ່ຖືກຕ້ອງ');
+        AppSnackbar.error(res.laMessage ?? 'OTP ບໍ່ຖືກຕ້ອງ');
         return false;
       }
       if (isCustomer) {
@@ -204,7 +204,7 @@ class RegisterLogic extends GetxController {
         await Get.find<LoginLogic>().fetchProfile(isCustomer: isCustomer);
         Get.offAllNamed(AppRoutes.dashboard);
       } else {
-        AppSnackbar.success(res.message ?? 'ການລົງທະບຽນສຳເລັດເເລ້ວ');
+        AppSnackbar.success(res.laMessage ?? 'ການລົງທະບຽນສຳເລັດເເລ້ວ');
         Get.offAllNamed(AppRoutes.login);
       }
       return true;
@@ -225,7 +225,7 @@ class RegisterLogic extends GetxController {
       final res = await _repo.resendOtp(phone: phone, isCustomer: isCustomer);
       hideLoadingDialog();
       if (!res.success) {
-        AppSnackbar.error(res.message ?? 'ສົ່ງ OTP ໃໝ່ບໍ່ສຳເລັດ');
+        AppSnackbar.error(res.laMessage ?? 'ສົ່ງ OTP ໃໝ່ບໍ່ສຳເລັດ');
         return false;
       }
       AppSnackbar.success('ສົ່ງລະຫັດ OTP ໃໝ່ແລ້ວ');

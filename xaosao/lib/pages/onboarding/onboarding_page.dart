@@ -38,39 +38,6 @@ class _XaosaoHomePageState extends State<XaosaoHomePage>
   late final List<Animation<double>> _secFade;
   late final List<Animation<Offset>> _secSlide;
 
-  // ── Static data ────────────────────────────────────────────────
-  // static const _companions = [
-  //   {
-  //     'name': 'Alexandra',
-  //     'imageUrl':
-  //         'https://thechicsavvy.com/wp-content/uploads/2025/04/Korean-Hairstyle7.webp',
-  //     'rating': 4.9,
-  //     'badge': 'TOP RATED',
-  //     'badgeColor': 0xFFF06292,
-  //     'specialty': 'Wellness · Events',
-  //     'reviews': 128,
-  //   },
-  //   {
-  //     'name': 'Elena',
-  //     'imageUrl':
-  //         'https://i.pinimg.com/originals/a0/3e/86/a03e869effc6cec27a1b00719593cd77.jpg',
-  //     'rating': 4.8,
-  //     'badge': 'NEW ARRIVAL',
-  //     'badgeColor': 0xFF42A5F5,
-  //     'specialty': 'Travel · Dining',
-  //     'reviews': 46,
-  //   },
-  //   {
-  //     'name': 'Sophie',
-  //     'imageUrl':
-  //         'https://upload.wikimedia.org/wikipedia/commons/8/80/Korean_girl_with_artificial_flower_headband.jpg',
-  //     'rating': 4.7,
-  //     'badge': 'POPULAR',
-  //     'badgeColor': 0xFFAB47BC,
-  //     'specialty': 'Social · Massage',
-  //     'reviews': 89,
-  //   },
-  // ];
 
   @override
   void initState() {

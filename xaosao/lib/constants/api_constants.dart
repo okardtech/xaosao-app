@@ -26,7 +26,7 @@ class ApiConstants {
   static const String clientPhoto = 'client/profile/me/gallery';
   static const String clientUpdateImage = 'client/profile/me/avatar';
   static const String clientDeleteAccount = 'client/profile/deletion';
-
+  static const String clientChangePass = 'client/profile/password';
 
   // model API
   static const String modelRegister = 'model/auth/register';
@@ -38,6 +38,7 @@ class ApiConstants {
   static const String modelVisibility = 'models/me/visibility';
   static const String modelUpdateImage = 'models/me/profile/avatar';
   static const String modelDeleteAccount = 'models/me/account';
+  static const String modelChangePass = 'models/me/password';
 
   // Forgot password customer
   static const String clientForgotPassPhone =
@@ -52,8 +53,52 @@ class ApiConstants {
   static const String modelNewPass = 'model/auth/reset-password-phone';
   /////////// service API
   static const String servicePublic = 'services';
+  static const String serviceAvailable = '/model/services/available';
+  static const String modelService = 'model/services';
+  static const String modeAvailable = 'discover';
 
-  //
+  // client to see model
   static const String recommended = '/discover/recommended';
   static const String online = 'discover/online';
+  static const String discover = 'discover/list';
+  // model to see customer
+  static const String modelDiscover = '/model/discover/customers';
+
+  // feedback
+  static const String feedback = 'feedback';
+  // notification
+  static const String notification = 'notifications/settings';
+  // reivew
+  static const String addReview = 'reviews';
+  static const String reviewList = 'reviews/model';
+
+  // like api
+  static const String modelLike = 'model/interactions/customers/';
+  static const String clientLike = 'customer/interactions/models/';
+  // package
+  static const String package = 'customer/subscriptions/packages';
+  static const String packageHistory = 'customer/subscriptions/history';
+  static const String packageActive = 'customer/subscriptions/check-active';
+  static const String packageHour = 'customer/subscriptions/trial';
+  static const String subcriptionPaid = 'customer/subscriptions/wallet';
+  static const String subcriptionNoBalance = 'customer/subscriptions';
+  // wallet
+  static const String clientWallet = 'wallet';
+  static const String clientTopup = 'topup';
+  static const String clientTransactions = 'transactions';
+  static const String modelTransactions = 'model/wallet/transactions';
+  static const String modelWallet = 'model/wallet';
+  static const String modelWithdraw = 'model/wallet/withdraw';
+  // bank account
+  static const String modelBankAccount = 'model-banks';
+  // system QR code
+  static const String systemQR = 'system/payment-qr-code';
+  // booking
+  static const String booking = 'bookings';
+  // model booking
+  static const String modelBooking = 'model/bookings';
+  // my post
+  static const String myPost = '/posts';
+  // my gift
+  static const String gift = 'gifts';
 }

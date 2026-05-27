@@ -1,69 +1,52 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:shimmer/shimmer.dart';
+import 'package:xaosao/models/gift_model.dart';
+import 'package:xaosao/repository/gift_repo.dart';
+import 'package:xaosao/utils/app_snackbar.dart';
+import 'package:xaosao/widgets/app_network_image.dart';
 
 // ═══════════════════════════════════════════════════════════════
 //  gift_sheet.dart
-//  Modal bottom sheet ສ່ງຂອງຂວັນ — ເລືອກ 1 ອັນ, ສ່ງທັນທີ
+//  Modal bottom sheet ສ່ງຂອງຂວັນ — ໂຫຼດລາຍການຈາກ API,
+//  ເລືອກ 1 ອັນ, ສ່ງຜ່ານ giveGift endpoint
 //
 //  ໃຊ້ງານ:
 //    GiftSheet.show(
 //      context,
+//      postId: post.id!,
 //      companionName: 'ນາລີ',
-//      balanceKip: 125000,
-//      onSent: (gift) {
-//        // handle success
-//      },
+//      balanceKip: walletBalance,
+//      onSent: (gift) => GiftSentSnackbar.show(context, gift: gift),
 //    );
 // ═══════════════════════════════════════════════════════════════
 
-// ── Gift model ─────────────────────────────────────────────────
-class GiftItem {
-  final String id;
-  final String emoji;
-  final String name;
-  final int priceKip;
-
-  const GiftItem({
-    required this.id,
-    required this.emoji,
-    required this.name,
-    required this.priceKip,
-  });
-
-  String get formattedPrice {
-    final s = priceKip.toString();
-    final b = StringBuffer();
-    for (int i = 0; i < s.length; i++) {
-      if (i > 0 && (s.length - i) % 3 == 0) b.write(',');
-      b.write(s[i]);
-    }
-    return '${b.toString()} ກີບ';
+// ── Price formatter ────────────────────────────────────────────
+String _fmtKip(double? price) {
+  if (price == null) return '0 ກີບ';
+  final n = price.toInt();
+  final s = n.toString();
+  final b = StringBuffer();
+  for (int i = 0; i < s.length; i++) {
+    if (i > 0 && (s.length - i) % 3 == 0) b.write(',');
+    b.write(s[i]);
   }
+  return '${b.toString()} ກີບ';
 }
 
-// ── Default gift catalogue ─────────────────────────────────────
-const _defaultGifts = [
-  GiftItem(id: 'glasses', emoji: '🕶️', name: 'ແວ່ນຕາ', priceKip: 2000),
-  GiftItem(id: 'lipstick', emoji: '💄', name: 'ລິບສະຕິກ', priceKip: 5000),
-  GiftItem(id: 'flower', emoji: '🌸', name: 'ດອກໄມ້', priceKip: 15000),
-  GiftItem(id: 'mushroom', emoji: '🍄', name: 'ເຫັດ', priceKip: 20000),
-  GiftItem(id: 'outfit', emoji: '👙', name: 'ຊຸດ', priceKip: 25000),
-  GiftItem(id: 'diamond', emoji: '💎', name: 'ໄພລິນ', priceKip: 50000),
-];
-
 // ═══════════════════════════════════════════════════════════════
-//  GiftSheet — static helper to show the sheet
+//  GiftSheet — static entry point
 // ═══════════════════════════════════════════════════════════════
 class GiftSheet {
   GiftSheet._();
 
   static Future<void> show(
     BuildContext context, {
+    required String postId,
     required String companionName,
     required int balanceKip,
-    List<GiftItem>? gifts,
-    void Function(GiftItem)? onSent,
+    void Function(GiftModel)? onSent,
     VoidCallback? onTopUp,
   }) {
     HapticFeedback.mediumImpact();
@@ -71,11 +54,11 @@ class GiftSheet {
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      barrierColor: Colors.black.withOpacity(0.45),
+      barrierColor: Colors.black.withValues(alpha: 0.45),
       builder: (_) => _GiftSheetContent(
+        postId: postId,
         companionName: companionName,
         balanceKip: balanceKip,
-        gifts: gifts ?? _defaultGifts,
         onSent: onSent,
         onTopUp: onTopUp,
       ),
@@ -84,19 +67,19 @@ class GiftSheet {
 }
 
 // ═══════════════════════════════════════════════════════════════
-//  _GiftSheetContent — StatefulWidget (content of the sheet)
+//  _GiftSheetContent
 // ═══════════════════════════════════════════════════════════════
 class _GiftSheetContent extends StatefulWidget {
+  final String postId;
   final String companionName;
   final int balanceKip;
-  final List<GiftItem> gifts;
-  final void Function(GiftItem)? onSent;
+  final void Function(GiftModel)? onSent;
   final VoidCallback? onTopUp;
 
   const _GiftSheetContent({
+    required this.postId,
     required this.companionName,
     required this.balanceKip,
-    required this.gifts,
     this.onSent,
     this.onTopUp,
   });
@@ -106,11 +89,28 @@ class _GiftSheetContent extends StatefulWidget {
 }
 
 class _GiftSheetContentState extends State<_GiftSheetContent> {
-  GiftItem? _selected;
+  final _repo = GiftRepo();
+
+  List<GiftModel> _gifts = [];
+  bool _loadingGifts = true;
+  GiftModel? _selected;
   bool _sending = false;
 
-  bool get _canAfford =>
-      _selected != null && _selected!.priceKip <= widget.balanceKip;
+  @override
+  void initState() {
+    super.initState();
+    _loadGifts();
+  }
+
+  // ── Load gifts from API ───────────────────────────────────
+  Future<void> _loadGifts() async {
+    final res = await _repo.getGifts();
+    if (!mounted) return;
+    setState(() {
+      _gifts = (res.success ? res.data : null) ?? [];
+      _loadingGifts = false;
+    });
+  }
 
   String _fmt(int n) {
     final s = n.toString();
@@ -122,24 +122,38 @@ class _GiftSheetContentState extends State<_GiftSheetContent> {
     return '${b.toString()} ກີບ';
   }
 
+  // ── Send gift via API ─────────────────────────────────────
   Future<void> _send() async {
-    if (_selected == null || !_canAfford || _sending) return;
+    final gift = _selected;
+    if (gift == null || gift.id == null || _sending) return;
     HapticFeedback.heavyImpact();
+
     setState(() => _sending = true);
-    await Future.delayed(const Duration(milliseconds: 900));
-    if (!mounted) return;
-    setState(() => _sending = false);
-    Navigator.pop(context);
-    widget.onSent?.call(_selected!);
-    // TODO: call API to send gift
+    try {
+      final res = await _repo.giveGift(
+        postId: widget.postId,
+        giftId: gift.id!,
+      );
+      if (!mounted) return;
+      if (res.success) {
+        Navigator.pop(context);
+        widget.onSent?.call(gift);
+      } else {
+        AppSnackbar.error(res.laMessage ?? 'ສ່ງຂອງຂວັນບໍ່ສຳເລັດ');
+      }
+    } catch (_) {
+      if (mounted) AppSnackbar.error('ສ່ງຂອງຂວັນບໍ່ສຳເລັດ');
+    } finally {
+      if (mounted) setState(() => _sending = false);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(22)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(22.r)),
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -150,7 +164,7 @@ class _GiftSheetContentState extends State<_GiftSheetContent> {
             height: 4,
             margin: const EdgeInsets.only(top: 10),
             decoration: BoxDecoration(
-              color: Colors.black.withOpacity(0.12),
+              color: Colors.black.withValues(alpha: 0.12),
               borderRadius: BorderRadius.circular(2),
             ),
           ),
@@ -195,7 +209,7 @@ class _GiftSheetContentState extends State<_GiftSheetContent> {
                     ],
                   ),
                 ),
-                // Close button
+                // Close
                 GestureDetector(
                   onTap: () => Navigator.pop(context),
                   child: Container(
@@ -205,7 +219,7 @@ class _GiftSheetContentState extends State<_GiftSheetContent> {
                       color: const Color(0xFFF8F8FC),
                       borderRadius: BorderRadius.circular(9.r),
                       border: Border.all(
-                        color: Colors.black.withOpacity(0.08),
+                        color: Colors.black.withValues(alpha: 0.08),
                         width: 0.5,
                       ),
                     ),
@@ -229,12 +243,9 @@ class _GiftSheetContentState extends State<_GiftSheetContent> {
               decoration: BoxDecoration(
                 color: const Color(0xFFF8F8FC),
                 borderRadius: BorderRadius.circular(11.r),
-                // border: Border.all(
-                //     color: Colors.black.withOpacity(0.07), width: 0.5),
               ),
               child: Row(
                 children: [
-                  // Icon
                   Container(
                     width: 24.r,
                     height: 24.r,
@@ -288,7 +299,7 @@ class _GiftSheetContentState extends State<_GiftSheetContent> {
                         color: const Color(0xFFFFF0F6),
                         borderRadius: BorderRadius.circular(20.r),
                         border: Border.all(
-                          color: const Color(0xFFF06292).withOpacity(0.25),
+                          color: const Color(0xFFF06292).withValues(alpha: 0.25),
                           width: 0.5,
                         ),
                       ),
@@ -311,11 +322,26 @@ class _GiftSheetContentState extends State<_GiftSheetContent> {
           // ── Gift grid ────────────────────────────────────
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 16.w),
-            child: _GiftGrid(
-              gifts: widget.gifts,
-              selected: _selected,
-              onSelect: (g) => setState(() => _selected = g),
-            ),
+            child: _loadingGifts
+                ? _GiftGridShimmer()
+                : _gifts.isEmpty
+                    ? Padding(
+                        padding: EdgeInsets.symmetric(vertical: 20.h),
+                        child: Center(
+                          child: Text(
+                            'ບໍ່ມີຂອງຂວັນໃນຂະນະນີ້',
+                            style: TextStyle(
+                              fontSize: 13.sp,
+                              color: const Color(0xFF9B9BAD),
+                            ),
+                          ),
+                        ),
+                      )
+                    : _GiftGrid(
+                        gifts: _gifts,
+                        selected: _selected,
+                        onSelect: (g) => setState(() => _selected = g),
+                      ),
           ),
           SizedBox(height: 12.h),
 
@@ -328,7 +354,6 @@ class _GiftSheetContentState extends State<_GiftSheetContent> {
             ),
             child: _SendButton(
               selected: _selected,
-              canAfford: _canAfford,
               sending: _sending,
               onTap: _send,
             ),
@@ -340,12 +365,12 @@ class _GiftSheetContentState extends State<_GiftSheetContent> {
 }
 
 // ═══════════════════════════════════════════════════════════════
-//  _GiftGrid — 3-col grid of gift cells
+//  _GiftGrid — 3-col grid with network images
 // ═══════════════════════════════════════════════════════════════
 class _GiftGrid extends StatelessWidget {
-  final List<GiftItem> gifts;
-  final GiftItem? selected;
-  final void Function(GiftItem) onSelect;
+  final List<GiftModel> gifts;
+  final GiftModel? selected;
+  final void Function(GiftModel) onSelect;
 
   const _GiftGrid({
     required this.gifts,
@@ -359,7 +384,7 @@ class _GiftGrid extends StatelessWidget {
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
       itemCount: gifts.length,
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 3,
         childAspectRatio: 1.0,
         mainAxisSpacing: 0,
@@ -368,7 +393,6 @@ class _GiftGrid extends StatelessWidget {
       itemBuilder: (_, i) {
         final gift = gifts[i];
         final isSelected = selected?.id == gift.id;
-        // border positions
         final isRight = i % 3 != 2;
         final isBottom = i < gifts.length - 3;
 
@@ -384,13 +408,13 @@ class _GiftGrid extends StatelessWidget {
               border: Border(
                 right: isRight
                     ? BorderSide(
-                        color: Colors.black.withOpacity(0.06),
+                        color: Colors.black.withValues(alpha: 0.06),
                         width: 0.5,
                       )
                     : BorderSide.none,
                 bottom: isBottom
                     ? BorderSide(
-                        color: Colors.black.withOpacity(0.06),
+                        color: Colors.black.withValues(alpha: 0.06),
                         width: 0.5,
                       )
                     : BorderSide.none,
@@ -403,26 +427,35 @@ class _GiftGrid extends StatelessWidget {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
+                      // Gift image from API
                       AnimatedScale(
-                        scale: isSelected ? 1.15 : 1.0,
+                        scale: isSelected ? 1.12 : 1.0,
                         duration: const Duration(milliseconds: 200),
-                        child: Text(
-                          gift.emoji,
-                          style: TextStyle(fontSize: 28.sp),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(10.r),
+                          child: AppNetworkImage(
+                            imageUrl: gift.image ?? '',
+                            width: 40.r,
+                            height: 40.r,
+                            fit: BoxFit.cover,
+                            accentColor: const Color(0xFFF06292),
+                          ),
                         ),
                       ),
                       SizedBox(height: 5.h),
                       Text(
-                        gift.name,
+                        gift.name ?? '',
                         style: TextStyle(
                           fontSize: 10.sp,
                           fontWeight: FontWeight.w700,
                           color: const Color(0xFF1A1A2E),
                         ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                       ),
                       SizedBox(height: 2.h),
                       Text(
-                        gift.formattedPrice,
+                        _fmtKip(gift.price),
                         style: TextStyle(
                           fontSize: 10.sp,
                           fontWeight: isSelected
@@ -436,7 +469,7 @@ class _GiftGrid extends StatelessWidget {
                     ],
                   ),
                 ),
-                // Checkmark
+                // Selection checkmark
                 if (isSelected)
                   Positioned(
                     top: 7,
@@ -465,22 +498,49 @@ class _GiftGrid extends StatelessWidget {
 }
 
 // ═══════════════════════════════════════════════════════════════
+//  _GiftGridShimmer — loading skeleton for the gift grid
+// ═══════════════════════════════════════════════════════════════
+class _GiftGridShimmer extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Shimmer.fromColors(
+      baseColor: const Color(0xFFEEEEEE),
+      highlightColor: const Color(0xFFF8F8FC),
+      child: GridView.builder(
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
+        itemCount: 6,
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 3,
+          childAspectRatio: 1.0,
+        ),
+        itemBuilder: (_, i) => Container(
+          margin: EdgeInsets.all(8.r),
+          decoration: BoxDecoration(
+            color: const Color(0xFFEEEEEE),
+            borderRadius: BorderRadius.circular(10.r),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════
 //  _SendButton
 // ═══════════════════════════════════════════════════════════════
 class _SendButton extends StatelessWidget {
-  final GiftItem? selected;
-  final bool canAfford;
+  final GiftModel? selected;
   final bool sending;
   final VoidCallback onTap;
 
   const _SendButton({
     required this.selected,
-    required this.canAfford,
     required this.sending,
     required this.onTap,
   });
 
-  bool get _active => selected != null && canAfford && !sending;
+  bool get _active => selected != null && !sending;
 
   @override
   Widget build(BuildContext context) {
@@ -503,7 +563,7 @@ class _SendButton extends StatelessWidget {
           boxShadow: _active
               ? [
                   BoxShadow(
-                    color: const Color(0xFFF06292).withOpacity(0.30),
+                    color: const Color(0xFFF06292).withValues(alpha: 0.30),
                     blurRadius: 14,
                     offset: const Offset(0, 5),
                   ),
@@ -521,60 +581,41 @@ class _SendButton extends StatelessWidget {
                   ),
                 )
               : selected == null
-              ? Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      Icons.card_giftcard_rounded,
-                      size: 16.r,
-                      color: const Color(0xFFB0B0C0),
+                  ? Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.card_giftcard_rounded,
+                          size: 16.r,
+                          color: const Color(0xFFB0B0C0),
+                        ),
+                        SizedBox(width: 6.w),
+                        Text(
+                          'ເລືອກຂອງຂວັນກ່ອນ',
+                          style: TextStyle(
+                            fontSize: 13.sp,
+                            fontWeight: FontWeight.w700,
+                            color: const Color(0xFFB0B0C0),
+                          ),
+                        ),
+                      ],
+                    )
+                  : Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.send_rounded,
+                            size: 15.r, color: Colors.white),
+                        SizedBox(width: 7.w),
+                        Text(
+                          'ສົ່ງ ${selected!.name ?? ''} · ${_fmtKip(selected!.price)}',
+                          style: TextStyle(
+                            fontSize: 13.sp,
+                            fontWeight: FontWeight.w800,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ],
                     ),
-                    SizedBox(width: 6.w),
-                    Text(
-                      'ເລືອກຂອງຂວັນກ່ອນ',
-                      style: TextStyle(
-                        fontSize: 13.sp,
-                        fontWeight: FontWeight.w700,
-                        color: const Color(0xFFB0B0C0),
-                      ),
-                    ),
-                  ],
-                )
-              : !canAfford
-              ? Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      Icons.warning_amber_rounded,
-                      size: 15.r,
-                      color: const Color(0xFFB0B0C0),
-                    ),
-                    SizedBox(width: 6.w),
-                    Text(
-                      'ຍອດບໍ່ພໍ — ເຕີມເງິນ',
-                      style: TextStyle(
-                        fontSize: 13.sp,
-                        fontWeight: FontWeight.w700,
-                        color: const Color(0xFFB0B0C0),
-                      ),
-                    ),
-                  ],
-                )
-              : Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(Icons.send_rounded, size: 15.r, color: Colors.white),
-                    SizedBox(width: 7.w),
-                    Text(
-                      'ສົ່ງ ${selected!.name} ${selected!.emoji}',
-                      style: TextStyle(
-                        fontSize: 13.sp,
-                        fontWeight: FontWeight.w800,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ],
-                ),
         ),
       ),
     );
@@ -583,22 +624,33 @@ class _SendButton extends StatelessWidget {
 
 // ═══════════════════════════════════════════════════════════════
 //  GiftSentSnackbar — ສະແດງຫຼັງສ່ງສຳເລັດ
-//  ໃຊ້: GiftSentSnackbar.show(context, gift: gift)
 // ═══════════════════════════════════════════════════════════════
 class GiftSentSnackbar {
   GiftSentSnackbar._();
 
-  static void show(BuildContext context, {required GiftItem gift}) {
+  static void show(BuildContext context, {required GiftModel gift}) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         behavior: SnackBarBehavior.floating,
         backgroundColor: const Color(0xFF1A1A2E),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
         margin: EdgeInsets.fromLTRB(16.w, 0, 16.w, 16.h),
         duration: const Duration(seconds: 3),
         content: Row(
           children: [
-            Text(gift.emoji, style: TextStyle(fontSize: 20.sp)),
+            // Gift image thumbnail
+            ClipRRect(
+              borderRadius: BorderRadius.circular(8.r),
+              child: AppNetworkImage(
+                imageUrl: gift.image ?? '',
+                width: 36.r,
+                height: 36.r,
+                fit: BoxFit.cover,
+                accentColor: const Color(0xFFF06292),
+              ),
+            ),
             SizedBox(width: 10.w),
             Expanded(
               child: Column(
@@ -614,10 +666,10 @@ class GiftSentSnackbar {
                     ),
                   ),
                   Text(
-                    '${gift.name} · ${gift.formattedPrice}',
+                    '${gift.name ?? ''} · ${_fmtKip(gift.price)}',
                     style: TextStyle(
                       fontSize: 10.sp,
-                      color: Colors.white.withOpacity(0.60),
+                      color: Colors.white.withValues(alpha: 0.60),
                     ),
                   ),
                 ],
@@ -630,7 +682,11 @@ class GiftSentSnackbar {
                 color: Color(0xFF22C55E),
                 shape: BoxShape.circle,
               ),
-              child: Icon(Icons.check_rounded, size: 12.r, color: Colors.white),
+              child: Icon(
+                Icons.check_rounded,
+                size: 12.r,
+                color: Colors.white,
+              ),
             ),
           ],
         ),

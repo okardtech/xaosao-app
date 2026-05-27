@@ -1,26 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:xaosao/constants/app_routes.dart';
 import 'package:xaosao/pages/login/getx/login_logic.dart';
-import 'package:xaosao/pages/login/login_page.dart';
 import 'package:xaosao/pages/profile/components/amberwarning.dart';
+import 'package:xaosao/widgets/confirm_sheet.dart';
 import 'package:xaosao/pages/profile/components/photo_grid.dart';
 import 'package:xaosao/pages/profile/components/profile_constant.dart';
+import 'package:xaosao/pages/feedback/getx/feedback_logic.dart';
+import 'package:xaosao/pages/home/getx/home_logic.dart';
+import 'package:xaosao/pages/notification/getx/notification_setting_logic.dart';
 import 'package:xaosao/pages/profile/getx/profile_logic.dart';
+import 'package:xaosao/pages/services_manage/getx/service_logic.dart';
 import 'package:xaosao/services/storage_service.dart';
+import 'package:intl/intl.dart';
+import '../../../constants/app_color.dart';
+import '../../../widgets/gradient_app_bar.dart';
+import '../../package/getx/package_logic.dart';
+import '../../wallet/getx/wallet_logic.dart';
 
-// ═══════════════════════════════════════════════════════════════
-//  CustomerProfilePage
-//  Layout:
-//    · Hero (white): avatar, name, verified badge, WalletCard
-//    · Body (CustomScrollView):
-//      - ຮູບພາບ header + PhotoGrid
-//      - ຂໍ້ມູນ group (ຂໍ້ມູນສ່ວນຕົວ, ແພັກ, ປະຫວັດ)
-//      - ຄວາມປອດໄພ group
-//      - ຕັ້ງຄ່າ group
-//      - ລຶບບັນຊີ
-//      - LogoutButton + version
-// ═══════════════════════════════════════════════════════════════
 class CustomerProfilePage extends StatefulWidget {
   const CustomerProfilePage({super.key});
   @override
@@ -41,7 +39,13 @@ class _CustomerProfilePageState extends State<CustomerProfilePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: PColor.bg,
+      backgroundColor: AppColors.bg,
+      appBar: GradientAppBar(
+        title: 'ໂປຣໄຟລ໌',
+        subtitle: 'ຈັດການໂປຣໄຟລ໌',
+        showBack: false,
+        centerTitle: false,
+      ),
       body: CustomScrollView(
         physics: const BouncingScrollPhysics(),
         slivers: [
@@ -67,7 +71,7 @@ class _CustomerProfilePageState extends State<CustomerProfilePage> {
                             style: TextStyle(
                               fontSize: 14.sp,
                               fontWeight: FontWeight.w700,
-                              color: PColor.hint,
+                              color: AppColors.textPrimary,
                               letterSpacing: 0.8,
                             ),
                           ),
@@ -98,32 +102,28 @@ class _CustomerProfilePageState extends State<CustomerProfilePage> {
                 ProfileGroup(
                   children: [
                     ProfileMenuRow(
-                      iconBg: PColor.bg,
-                      iconColor: PColor.navy,
+                      iconBg: AppColors.bg,
+                      iconColor: AppColors.primaryVariant,
                       icon: Icons.person_outline_rounded,
                       label: 'ຂໍ້ມູນສ່ວນຕົວ',
                       sub: 'ຊື່, ນາມສະກຸນ, ວັນເດືອນປີ',
-                      onTap: () {},
+                      onTap: () =>
+                          Get.toNamed(AppRoutes.profileDetail, arguments: true),
                     ),
                     ProfileMenuRow(
                       iconBg: const Color(0xFFFFF0F6),
-                      iconColor: PColor.pink,
+                      iconColor: AppColors.primary,
                       icon: Icons.monitor_outlined,
                       label: 'ການຊື້ແພັກເກດ',
-                      sub: 'VIP Elite · ໝົດ 30 ມ.ນ.',
-                      trailing: const PBadge(
-                        'VIP',
-                        fg: Color(0xFF92400E),
-                        bg: Color(0xFFFFFBEB),
-                      ),
-                      onTap: () {},
+                      sub: 'ຊ່ວງໂມງ, ຊ່ວງວັນ ແລະ ຊ່ວງເດືອນ',
+                      onTap: () => Get.toNamed(AppRoutes.package),
                     ),
                     ProfileMenuRow(
-                      iconBg: PColor.bg,
-                      iconColor: PColor.navy,
+                      iconBg: AppColors.bg,
+                      iconColor: AppColors.primaryVariant,
                       icon: Icons.credit_card_outlined,
                       label: 'ປະຫວັດເຕີມເງິນ',
-                      onTap: () {},
+                      onTap: () => Get.toNamed(AppRoutes.wallet),
                     ),
                   ],
                 ),
@@ -132,16 +132,15 @@ class _CustomerProfilePageState extends State<CustomerProfilePage> {
                 // ──────────────────────────────────────────
                 const ProfileSectionLabel('ຄວາມປອດໄພ'),
                 Obx(() {
-                  final customer =
-                      Get.find<LoginLogic>().state.customerProfile;
+                  final customer = Get.find<LoginLogic>().state.customerProfile;
                   return ProfileGroup(
                     children: [
                       ProfileMenuRow(
                         iconBg: const Color(0xFFEDFAF3),
-                        iconColor: PColor.green,
+                        iconColor: AppColors.online,
                         icon: Icons.lock_outline_rounded,
                         label: 'ປ່ຽນລະຫັດຜ່ານ',
-                        onTap: () {},
+                        onTap: () => Get.toNamed(AppRoutes.changePassword),
                       ),
                       ProfileMenuRow(
                         iconBg: const Color(0xFFEFF6FF),
@@ -170,11 +169,43 @@ class _CustomerProfilePageState extends State<CustomerProfilePage> {
                 ProfileGroup(
                   children: [
                     ProfileMenuRow(
-                      iconBg: PColor.bg,
-                      iconColor: PColor.navy,
+                      iconBg: AppColors.bg,
+                      iconColor: AppColors.primaryVariant,
                       icon: Icons.notifications_none_rounded,
                       label: 'ການແຈ້ງເຕືອນ',
+                      sub: 'Push, ອີເມລ, SMS, WhatsApp',
+                      onTap: () => Get.toNamed(AppRoutes.notificationSettings),
+                    ),
+                    ProfileMenuRow(
+                      iconBg: AppColors.bg,
+                      iconColor: AppColors.primary,
+                      icon: Icons.language_rounded,
+                      label: 'ພາສາ',
+                      sub: 'ລາວ (ພາສາຫຼັກ)',
                       onTap: () {},
+                    ),
+                  ],
+                ),
+                SizedBox(height: 12.h),
+
+                // ──────────────────────────────────────────
+                const ProfileSectionLabel('ຊ່ວຍເຫຼືອ'),
+                ProfileGroup(
+                  children: [
+                    ProfileMenuRow(
+                      iconBg: AppColors.bg,
+                      iconColor: AppColors.primaryVariant,
+                      icon: Icons.help_outline_rounded,
+                      label: 'ຊ່ວຍເຫຼືອ / FAQ',
+                      onTap: () {},
+                    ),
+                    ProfileMenuRow(
+                      iconBg: const Color(0xFFFFF0F6),
+                      iconColor: AppColors.primary,
+                      icon: Icons.forum_outlined,
+                      label: 'ຄຳຕິຊົມ',
+                      sub: 'ລາຍງານບັນຫາ ຫຼື ສົ່ງຄຳຄິດເຫັນ',
+                      onTap: () => Get.toNamed(AppRoutes.feedback),
                     ),
                   ],
                 ),
@@ -185,7 +216,7 @@ class _CustomerProfilePageState extends State<CustomerProfilePage> {
                   children: [
                     ProfileMenuRow(
                       iconBg: const Color(0xFFFEF2F2),
-                      iconColor: PColor.red,
+                      iconColor: AppColors.primary,
                       icon: Icons.delete_outline_rounded,
                       label: 'ລຶບບັນຊີ',
                       sub: 'ບໍ່ສາມາດຍ້ອນໄດ້',
@@ -223,146 +254,155 @@ class _CustomerProfilePageState extends State<CustomerProfilePage> {
       final customer = Get.find<LoginLogic>().state.customerProfile;
       final uploading = _profileLogic.state.profileImageUploading;
       return Container(
-        color: Colors.white,
+        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+        margin: EdgeInsets.only(right: 16.w, left: 16.w, top: 16.h),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(20.r),
+          color: Colors.white,
+        ),
         child: SafeArea(
           bottom: false,
           child: Column(
             children: [
-              SizedBox(height: 24.h),
-              // Avatar
-              Stack(
-                clipBehavior: Clip.none,
+              Row(
                 children: [
-                  Container(
-                    width: 76.r,
-                    height: 76.r,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      image: customer?.profile != null &&
-                              customer!.profile!.isNotEmpty
-                          ? DecorationImage(
-                              image: NetworkImage(customer.profile!),
-                              fit: BoxFit.cover,
-                            )
-                          : null,
-                      gradient: customer?.profile == null ||
-                              customer!.profile!.isEmpty
-                          ? const LinearGradient(
-                              begin: Alignment.topLeft,
-                              end: Alignment.bottomRight,
-                              colors: [Color(0xFF5C6BC0), Color(0xFF1A1A2E)],
-                            )
-                          : null,
-                      border: Border.all(color: PColor.bg, width: 2.5),
-                    ),
-                    child: uploading
-                        ? Container(
-                            decoration: const BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: Colors.black26,
-                            ),
-                            child: const Center(
-                              child: CircularProgressIndicator(
-                                strokeWidth: 2,
+                  Stack(
+                    clipBehavior: Clip.none,
+                    children: [
+                      Container(
+                        width: 76.r,
+                        height: 76.r,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          image:
+                              customer?.profile != null &&
+                                  customer!.profile!.isNotEmpty
+                              ? DecorationImage(
+                                  image: NetworkImage(customer.profile!),
+                                  fit: BoxFit.cover,
+                                )
+                              : null,
+                          gradient:
+                              customer?.profile == null ||
+                                  customer!.profile!.isEmpty
+                              ? const LinearGradient(
+                                  begin: Alignment.topLeft,
+                                  end: Alignment.bottomRight,
+                                  colors: [
+                                    Color(0xFF5C6BC0),
+                                    Color(0xFF1A1A2E),
+                                  ],
+                                )
+                              : null,
+                          border: Border.all(color: AppColors.bg, width: 2.5),
+                        ),
+                        child: uploading
+                            ? Container(
+                                decoration: const BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: Colors.black26,
+                                ),
+                                child: const Center(
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              )
+                            : null,
+                      ),
+                      if (!uploading)
+                        Positioned(
+                          bottom: 1,
+                          right: 1,
+                          child: GestureDetector(
+                            onTap: _profileLogic.updateProfileImage,
+                            child: Container(
+                              width: 22.r,
+                              height: 22.r,
+                              decoration: BoxDecoration(
+                                color: AppColors.primary,
+                                shape: BoxShape.circle,
+                                border: Border.all(
+                                  color: Colors.white,
+                                  width: 2,
+                                ),
+                              ),
+                              child: const Icon(
+                                Icons.edit_rounded,
+                                size: 10,
                                 color: Colors.white,
                               ),
                             ),
-                          )
-                        : null,
-                  ),
-                  if (!uploading)
-                    Positioned(
-                      bottom: 1,
-                      right: 1,
-                      child: GestureDetector(
-                        onTap: _profileLogic.updateProfileImage,
-                        child: Container(
-                          width: 22.r,
-                          height: 22.r,
-                          decoration: BoxDecoration(
-                            color: PColor.pink,
-                            shape: BoxShape.circle,
-                            border: Border.all(color: Colors.white, width: 2),
-                          ),
-                          child: const Icon(
-                            Icons.edit_rounded,
-                            size: 10,
-                            color: Colors.white,
                           ),
                         ),
-                      ),
-                    ),
-                ],
-              ),
-              SizedBox(height: 10.h),
-              Text(
-                customer?.fullName.isNotEmpty == true
-                    ? customer!.fullName
-                    : '—',
-                style: TextStyle(
-                  fontSize: 18.sp,
-                  fontWeight: FontWeight.w900,
-                  color: PColor.navy,
-                  letterSpacing: -0.3,
-                ),
-              ),
-              SizedBox(height: 3.h),
-              Text(
-                customer?.whatsapp != null
-                    ? '+856 ${customer!.whatsapp}'
-                    : '—',
-                style: TextStyle(fontSize: 12.sp, color: PColor.hint),
-              ),
-              SizedBox(height: 9.h),
-              // Verified badge
-              if (customer?.isPhoneVerified == true)
-                Container(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: 11.w,
-                    vertical: 5.h,
-                  ),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFEFF6FF),
-                    borderRadius: BorderRadius.circular(20.r),
-                    border: Border.all(
-                      color: const Color(0xFF42A5F5).withValues(alpha: 0.22),
-                      width: 0.5,
-                    ),
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const Icon(
-                        Icons.verified_rounded,
-                        size: 11,
-                        color: Color(0xFF42A5F5),
-                      ),
-                      SizedBox(width: 4.w),
-                      Text(
-                        'ຢືນຢັນຕົວຕົນແລ້ວ',
-                        style: TextStyle(
-                          fontSize: 10.sp,
-                          fontWeight: FontWeight.w700,
-                          color: const Color(0xFF42A5F5),
-                        ),
-                      ),
                     ],
                   ),
-                ),
-              SizedBox(height: 16.h),
-
-              // Wallet card
-              Padding(
-                padding: EdgeInsets.only(left: 16.w, right: 16.w, bottom: 8.h),
-                child: _WalletCard(
-                  showAmounts: _showAmt,
-                  onToggle: () => setState(() => _showAmt = !_showAmt),
-                  onTopUp: () {},
-                ),
+                  SizedBox(width: 12.w),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          customer?.fullName.isNotEmpty == true
+                              ? customer!.fullName
+                              : '—',
+                          style: TextStyle(
+                            fontSize: 18.sp,
+                            fontWeight: FontWeight.w900,
+                            color: AppColors.primaryVariant,
+                            letterSpacing: -0.3,
+                          ),
+                        ),
+                        Text(
+                          customer?.whatsapp != null
+                              ? '+856 ${customer!.whatsapp}'
+                              : '—',
+                          style: TextStyle(
+                            fontSize: 12.sp,
+                            color: AppColors.textHint,
+                          ),
+                        ),
+                        // Verified badge
+                        if (customer?.isPhoneVerified == true)
+                          Container(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 10.w,
+                              vertical: 5.h,
+                            ),
+                            decoration: BoxDecoration(
+                              color: AppColors.safetyFg.withOpacity(0.05),
+                              borderRadius: BorderRadius.circular(20.r),
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(
+                                  Icons.verified_rounded,
+                                  size: 12.r,
+                                  color: AppColors.online,
+                                ),
+                                SizedBox(width: 4.w),
+                                Text(
+                                  'ຢືນຢັນຕົວຕົນແລ້ວ',
+                                  style: TextStyle(
+                                    fontSize: 10.sp,
+                                    fontWeight: FontWeight.w700,
+                                    color: AppColors.online,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
-              Container(
-                height: 0.5,
-                color: Colors.black.withValues(alpha: 0.06),
+              _WalletCard(
+                showAmounts: _showAmt,
+                onToggle: () => setState(() => _showAmt = !_showAmt),
+                onTopUp: () => Get.toNamed(AppRoutes.wallet),
               ),
             ],
           ),
@@ -372,33 +412,47 @@ class _CustomerProfilePageState extends State<CustomerProfilePage> {
   }
 
   // ── Delete account confirmation ──────────────────────────────
-  void _confirmDelete(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (_) => _ConfirmDialog(
-        title: 'ລຶບບັນຊີ',
-        content:
-            'ທ່ານແນ່ໃຈບໍ່ທີ່ຕ້ອງການລຶບບັນຊີ?\n'
-            'ຂໍ້ມູນທັງໝົດຈະຖືກລຶບຖາວອນ ແລະ ບໍ່ສາມາດຍ້ອນໄດ້.',
-        confirmLabel: 'ລຶບ',
-        isDanger: true,
-        onConfirm: () {
-          Navigator.pop(context);
-          _profileLogic.deleteAccount();
-        },
-      ),
+  Future<void> _confirmDelete(BuildContext context) async {
+    final confirmed = await ConfirmSheet.show(
+      context,
+      title: 'ລຶບບັນຊີ',
+      message:
+          'ທ່ານແນ່ໃຈບໍ່ທີ່ຕ້ອງການລຶບບັນຊີ?\n'
+          'ຂໍ້ມູນທັງໝົດຈະຖືກລຶບຖາວອນ ແລະ ບໍ່ສາມາດຍ້ອນໄດ້.',
+      confirmLabel: 'ລຶບ',
+      icon: Icons.delete_outline_rounded,
+      isDanger: true,
     );
+    if (confirmed != true) return;
+    _profileLogic.deleteAccount();
   }
 
   // ── Logout ───────────────────────────────────────────────────
   Future<void> _logout(BuildContext context) async {
+    final confirmed = await ConfirmSheet.show(
+      context,
+      title: 'ອອກຈາກລະບົບ',
+      message: 'ທ່ານຕ້ອງການອອກຈາກລະບົບແທ້ບໍ່?',
+      confirmLabel: 'ອອກ',
+      icon: Icons.logout_rounded,
+      isDanger: true,
+    );
+    if (confirmed != true || !mounted) return;
+    Get.find<LoginLogic>().clearState();
+    _deleteUserControllers();
     await Get.find<StorageService>().clear();
     if (!mounted) return;
-    Navigator.pushAndRemoveUntil(
-      context,
-      MaterialPageRoute(builder: (_) => const LoginPage()),
-      (route) => false,
-    );
+    Navigator.pushNamedAndRemoveUntil(context, AppRoutes.login, (_) => false);
+  }
+
+  void _deleteUserControllers() {
+    Get.delete<HomeLogic>(force: true);
+    Get.delete<ProfileLogic>(force: true);
+    Get.delete<ServiceLogic>(force: true);
+    Get.delete<FeedbackLogic>(force: true);
+    Get.delete<NotifSettingLogic>(force: true);
+    Get.delete<WalletLogic>(force: true);
+    Get.delete<PackageLogic>(force: true);
   }
 }
 
@@ -418,25 +472,22 @@ class _WalletCard extends StatelessWidget {
 
   String _mask(String v) => '••••••';
 
+  String _fmt(int? n) => '${NumberFormat.decimalPattern().format(n ?? 0)} ກີບ';
+
   @override
   Widget build(BuildContext context) {
-    const bal = '125,000 ກີບ';
+    return Obx(() {
+      final wallet = Get.find<WalletLogic>().state.wallet;
+      final bal = _fmt(wallet?.availableBalance);
+      return _buildCard(bal);
+    });
+  }
 
+  Widget _buildCard(String bal) {
     return Container(
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(18.r),
-        gradient: const LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [PColor.pink, PColor.pinkL],
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: PColor.pink.withValues(alpha: 0.30),
-            blurRadius: 14,
-            offset: const Offset(0, 5),
-          ),
-        ],
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20.r),
       ),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(18.r),
@@ -450,7 +501,7 @@ class _WalletCard extends StatelessWidget {
                 height: 80,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: Colors.white.withValues(alpha: 0.10),
+                  color: AppColors.bg.withAlpha(100),
                 ),
               ),
             ),
@@ -462,12 +513,12 @@ class _WalletCard extends StatelessWidget {
                 height: 90,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: Colors.white.withValues(alpha: 0.07),
+                  color: AppColors.bg.withAlpha(100),
                 ),
               ),
             ),
             Padding(
-              padding: EdgeInsets.all(15.r),
+              padding: EdgeInsets.only(left: 14.w, right: 14.w, top: 6.h),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -476,8 +527,8 @@ class _WalletCard extends StatelessWidget {
                       Text(
                         'ກະເປົ໋າເງິນ ຍອດຄົງເຫຼືອ',
                         style: TextStyle(
-                          fontSize: 10.sp,
-                          color: Colors.white.withValues(alpha: 0.55),
+                          fontSize: 12.sp,
+                          color: AppColors.textHint,
                           fontWeight: FontWeight.w600,
                         ),
                       ),
@@ -488,19 +539,15 @@ class _WalletCard extends StatelessWidget {
                           width: 26.r,
                           height: 26.r,
                           decoration: BoxDecoration(
-                            color: Colors.white.withValues(alpha: 0.18),
+                            color: AppColors.border,
                             borderRadius: BorderRadius.circular(7.r),
-                            border: Border.all(
-                              color: Colors.white.withValues(alpha: 0.20),
-                              width: 0.5,
-                            ),
                           ),
                           child: Icon(
                             showAmounts
                                 ? Icons.visibility_outlined
                                 : Icons.visibility_off_outlined,
-                            size: 12.r,
-                            color: Colors.white.withValues(alpha: 0.9),
+                            size: 16.r,
+                            color: AppColors.textSecondary,
                           ),
                         ),
                       ),
@@ -515,40 +562,55 @@ class _WalletCard extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 24.sp,
                         fontWeight: FontWeight.w900,
-                        color: Colors.white,
+                        color: AppColors.primary,
                         letterSpacing: -0.6,
                       ),
                     ),
                   ),
-                  SizedBox(height: 11.h),
-                  GestureDetector(
-                    onTap: onTopUp,
-                    child: Container(
-                      width: double.infinity,
-                      height: 36.h,
-                      decoration: BoxDecoration(
-                        color: Colors.white.withValues(alpha: 0.22),
-                        borderRadius: BorderRadius.circular(10.r),
-                        border: Border.all(
-                          color: Colors.white.withValues(alpha: 0.18),
-                          width: 0.5,
-                        ),
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(Icons.add_rounded, size: 14.r, color: Colors.white),
-                          SizedBox(width: 5.w),
-                          Text(
-                            'ເຕີມເງິນ',
-                            style: TextStyle(
-                              fontSize: 12.sp,
-                              fontWeight: FontWeight.w700,
-                              color: Colors.white,
+                  SizedBox(height: 6.h),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 16.w),
+                    child: Row(
+                      spacing: 12.w,
+                      children: List.generate(2, (index) {
+                        return Expanded(
+                          child: GestureDetector(
+                            onTap: onTopUp,
+                            child: Container(
+                              padding: EdgeInsets.symmetric(vertical: 12.h),
+                              decoration: BoxDecoration(
+                                color: AppColors.bg,
+                                borderRadius: BorderRadius.circular(10.r),
+                                border: Border.all(
+                                  color: Colors.white.withValues(alpha: 0.18),
+                                  width: 0.5,
+                                ),
+                              ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(
+                                    index == 0
+                                        ? Icons.arrow_outward_rounded
+                                        : Icons.trending_up_rounded,
+                                    size: 14.r,
+                                    color: AppColors.primary,
+                                  ),
+                                  SizedBox(width: 5.w),
+                                  Text(
+                                    index == 0 ? 'ເຕີມເງິນ' : 'ປະຫວັດ',
+                                    style: TextStyle(
+                                      fontSize: 12.sp,
+                                      fontWeight: FontWeight.w400,
+                                      color: AppColors.textPrimary,
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
-                        ],
-                      ),
+                        );
+                      }),
                     ),
                   ),
                 ],
@@ -557,65 +619,6 @@ class _WalletCard extends StatelessWidget {
           ],
         ),
       ),
-    );
-  }
-}
-
-
-// ═══════════════════════════════════════════════════════════════
-//  _ConfirmDialog
-// ═══════════════════════════════════════════════════════════════
-class _ConfirmDialog extends StatelessWidget {
-  final String title;
-  final String content;
-  final String confirmLabel;
-  final bool isDanger;
-  final VoidCallback onConfirm;
-
-  const _ConfirmDialog({
-    required this.title,
-    required this.content,
-    required this.confirmLabel,
-    this.isDanger = false,
-    required this.onConfirm,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return AlertDialog(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.r)),
-      title: Text(
-        title,
-        style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w800),
-      ),
-      content: Text(
-        content,
-        style: TextStyle(
-          fontSize: 13.sp,
-          color: PColor.hint,
-          height: 1.5,
-        ),
-      ),
-      actions: [
-        TextButton(
-          onPressed: () => Navigator.pop(context),
-          child: Text(
-            'ຍົກເລີກ',
-            style: TextStyle(fontSize: 13.sp, color: PColor.hint),
-          ),
-        ),
-        TextButton(
-          onPressed: onConfirm,
-          child: Text(
-            confirmLabel,
-            style: TextStyle(
-              fontSize: 13.sp,
-              fontWeight: FontWeight.w800,
-              color: isDanger ? PColor.red : PColor.pink,
-            ),
-          ),
-        ),
-      ],
     );
   }
 }

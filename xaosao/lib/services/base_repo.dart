@@ -26,6 +26,7 @@ abstract class BaseRepository {
             body['success'] ??
             (response.statusCode != null && response.statusCode! < 300),
         message: body['message']?.toString(),
+        laMessage: body['la_message']?.toString(),
         data: body['data'] != null && fromJson != null
             ? fromJson(body['data'])
             : null,

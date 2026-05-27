@@ -109,6 +109,8 @@ class LoginLogic extends GetxController {
     }
   }
 
+  void clearState() => _updateState(LoginState());
+
   @override
   void onInit() {
     super.onInit();

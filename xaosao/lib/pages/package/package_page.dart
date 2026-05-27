@@ -1,19 +1,48 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:xaosao/pages/package/components/package_history.dart';
-import 'package_model.dart';
 
-// ═══════════════════════════════════════════════════════════════
-//  PackagePage — ໜ້າເລືອກແຜນ package
-//
-//  Layout:
-//    Header (back + history)
-//    Hero text
-//    PageView (horizontal snap, card ກ້ວາງເຕັມ padding)
-//    Dots indicator
-//    Bottom note
-// ═══════════════════════════════════════════════════════════════
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
+import 'package:intl/intl.dart';
+import 'package:shimmer/shimmer.dart';
+import 'package:xaosao/constants/app_color.dart';
+import 'package:xaosao/constants/app_routes.dart';
+import 'package:xaosao/models/package_model.dart';
+import 'package:xaosao/pages/package/getx/package_logic.dart';
+import 'package:xaosao/pages/package/getx/package_state.dart';
+import 'package:xaosao/pages/package/subscription_checkout_page.dart';
+import 'package:xaosao/pages/wallet/getx/wallet_logic.dart';
+import 'package:xaosao/widgets/gradient_app_bar.dart';
+
+// Gradient palette assigned by card index (cycles if more packages)
+const _kGradients = <List<Color>>[
+  [AppColors.secondary, AppColors.primary],
+  [Color(0xFF1A1A2E), Color(0xFF3C3C6E)],
+  [Color(0xFF667eea), Color(0xFF764ba2)],
+  [Color(0xFF11998e), Color(0xFF38ef7d)],
+];
+const _kAccents = <Color>[
+  AppColors.primary,
+  Color(0xFF22C55E),
+  Color(0xFF7C3AED),
+  Color(0xFF11998e),
+];
+
+String _fmtKip(int? n) => '${NumberFormat.decimalPattern().format(n ?? 0)} ກີບ';
+
+List<String> _features(Features? f) {
+  if (f == null) return [];
+  return [
+    f.feature1,
+    f.feature2,
+    f.feature3,
+    f.feature4,
+    f.feature5,
+    f.feature6,
+    f.feature7,
+    f.feature8,
+  ].whereType<String>().where((s) => s.isNotEmpty).toList();
+}
+
 class PackagePage extends StatefulWidget {
   const PackagePage({super.key});
 
@@ -22,20 +51,15 @@ class PackagePage extends StatefulWidget {
 }
 
 class _PackagePageState extends State<PackagePage> {
+  late final PackageLogic _logic;
   late final PageController _pageCtrl;
   int _current = 0;
 
   @override
   void initState() {
     super.initState();
-    // Start at popular card (index 0)
+    _logic = Get.find<PackageLogic>();
     _pageCtrl = PageController(viewportFraction: 0.88);
-    SystemChrome.setSystemUIOverlayStyle(
-      const SystemUiOverlayStyle(
-        statusBarColor: Colors.transparent,
-        statusBarIconBrightness: Brightness.dark,
-      ),
-    );
   }
 
   @override
@@ -44,101 +68,24 @@ class _PackagePageState extends State<PackagePage> {
     super.dispose();
   }
 
-  // ══════════════════════════════════════════════════════════════
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF8F8FC),
-      body: SafeArea(
-        child: Column(
-          children: [
-            _buildHeader(),
-            _buildHero(),
-            SizedBox(height: 20.h),
-
-            // PageView — horizontal snap scroll
-            Expanded(
-              child: PageView.builder(
-                controller: _pageCtrl,
-                physics: const BouncingScrollPhysics(),
-                itemCount: allPackages.length,
-                onPageChanged: (i) => setState(() => _current = i),
-                itemBuilder: (_, i) => _PackageCard(
-                  package: allPackages[i],
-                  isActive: i == _current,
-                  onSelect: () => _onSelect(allPackages[i]),
-                ),
-              ),
-            ),
-
-            SizedBox(height: 14.h),
-
-            // Dots
-            _buildDots(),
-
-            SizedBox(height: 12.h),
-
-            // Bottom note
-            Padding(
-              padding: EdgeInsets.only(bottom: 16.h),
-              child: Text(
-                'ຍົກເລີກໄດ້ທຸກເວລາ · ໂອນຄືນຕາມນະໂຍບາຍ',
-                style: TextStyle(
-                  fontSize: 11.sp,
-                  color: const Color(0xFFC4C4D0),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  // ── Header ─────────────────────────────────────────────────
-  Widget _buildHeader() {
-    return Padding(
-      padding: EdgeInsets.fromLTRB(16.w, 16.h, 16.w, 0),
-      child: Row(
-        children: [
-          // Back button
+      backgroundColor: AppColors.bg,
+      appBar: GradientAppBar(
+        title: 'ເລືອກແຜນ',
+        subtitle: 'ຍົກລະດັບປະສົບການຂອງທ່ານ',
+        actions: [
           GestureDetector(
-            onTap: () => Navigator.pop(context),
+            onTap: () => Get.toNamed(AppRoutes.packageHistory),
             child: Container(
-              width: 36.r,
-              height: 36.r,
+              margin: EdgeInsets.only(right: 16.w),
+              padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
               decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(11.r),
-                border: Border.all(
-                  color: Colors.black.withOpacity(0.08),
-                  width: 0.5,
-                ),
-              ),
-              child: Icon(
-                Icons.arrow_back_ios_new_rounded,
-                size: 14.r,
-                color: const Color(0xFF1A1A2E),
-              ),
-            ),
-          ),
-          const Spacer(),
-
-          // History button
-          GestureDetector(
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (_) => const PackageHistoryPage()),
-              );
-            },
-            child: Container(
-              padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
-              decoration: BoxDecoration(
-                color: Colors.white,
+                color: Colors.white.withValues(alpha: 0.18),
                 borderRadius: BorderRadius.circular(20.r),
                 border: Border.all(
-                  color: Colors.black.withOpacity(0.08),
+                  color: Colors.white.withValues(alpha: 0.22),
                   width: 0.5,
                 ),
               ),
@@ -148,7 +95,7 @@ class _PackagePageState extends State<PackagePage> {
                   Icon(
                     Icons.access_time_rounded,
                     size: 13.r,
-                    color: const Color(0xFF9B9BAD),
+                    color: Colors.white,
                   ),
                   SizedBox(width: 5.w),
                   Text(
@@ -156,11 +103,28 @@ class _PackagePageState extends State<PackagePage> {
                     style: TextStyle(
                       fontSize: 12.sp,
                       fontWeight: FontWeight.w700,
-                      color: const Color(0xFF9B9BAD),
+                      color: Colors.white,
                     ),
                   ),
                 ],
               ),
+            ),
+          ),
+        ],
+      ),
+      body: Column(
+        children: [
+          _buildHero(),
+          SizedBox(height: 20.h),
+          Expanded(child: Obx(() => _buildBody())),
+          SizedBox(height: 14.h),
+          Obx(() => _buildDots()),
+          SizedBox(height: 12.h),
+          Padding(
+            padding: EdgeInsets.only(bottom: 16.h),
+            child: Text(
+              'ຍົກເລີກໄດ້ທຸກເວລາ · ໂອນຄືນຕາມນະໂຍບາຍ',
+              style: TextStyle(fontSize: 11.sp, color: AppColors.textDisabled),
             ),
           ),
         ],
@@ -174,16 +138,12 @@ class _PackagePageState extends State<PackagePage> {
       padding: EdgeInsets.fromLTRB(16.w, 20.h, 16.w, 0),
       child: Column(
         children: [
-          // Badge
           Container(
             padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 5.h),
             decoration: BoxDecoration(
-              color: const Color(0xFFFFF0F6),
+              color: AppColors.socialBg,
               borderRadius: BorderRadius.circular(20.r),
-              border: Border.all(
-                color: const Color(0xFFF06292).withOpacity(0.22),
-                width: 0.5,
-              ),
+              border: Border.all(color: AppColors.socialBd, width: 0.5),
             ),
             child: Row(
               mainAxisSize: MainAxisSize.min,
@@ -191,7 +151,7 @@ class _PackagePageState extends State<PackagePage> {
                 Icon(
                   Icons.favorite_rounded,
                   size: 12.r,
-                  color: const Color(0xFFF06292),
+                  color: AppColors.primary,
                 ),
                 SizedBox(width: 5.w),
                 Text(
@@ -199,31 +159,29 @@ class _PackagePageState extends State<PackagePage> {
                   style: TextStyle(
                     fontSize: 11.sp,
                     fontWeight: FontWeight.w700,
-                    color: const Color(0xFFF06292),
+                    color: AppColors.primary,
                   ),
                 ),
               ],
             ),
           ),
           SizedBox(height: 10.h),
-
           Text(
             'ຍົກລະດັບປະສົບການ',
             style: TextStyle(
               fontSize: 20.sp,
               fontWeight: FontWeight.w900,
-              color: const Color(0xFF1A1A2E),
+              color: AppColors.textPrimary,
               letterSpacing: -0.4,
             ),
           ),
           SizedBox(height: 5.h),
-
           Text(
             'ເລືອກແຜນທີ່ເໝາະສົມ ແລ້ວຊອກຫາຄູ່ໄດ້ທຸກເວລາ',
             textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: 12.sp,
-              color: const Color(0xFF9B9BAD),
+              color: AppColors.textHint,
               height: 1.5,
             ),
           ),
@@ -232,15 +190,88 @@ class _PackagePageState extends State<PackagePage> {
     );
   }
 
+  // ── Body (shimmer / error / cards) ──────────────────────────
+  Widget _buildBody() {
+    final st = _logic.state;
+    if (st.status == PackageStatus.loading) return _PackageListShimmer();
+    if (st.status == PackageStatus.failure) {
+      return Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              Icons.wifi_off_rounded,
+              size: 40.r,
+              color: AppColors.textDisabled,
+            ),
+            SizedBox(height: 12.h),
+            Text(
+              st.error ?? 'ໂຫຼດບໍ່ສຳເລັດ',
+              style: TextStyle(fontSize: 13.sp, color: AppColors.textHint),
+            ),
+            SizedBox(height: 12.h),
+            GestureDetector(
+              onTap: _logic.fetchPackages,
+              child: Container(
+                padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
+                decoration: BoxDecoration(
+                  color: AppColors.primary,
+                  borderRadius: BorderRadius.circular(20.r),
+                ),
+                child: Text(
+                  'ລອງໃໝ່',
+                  style: TextStyle(
+                    fontSize: 13.sp,
+                    fontWeight: FontWeight.w700,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+    if (st.packages.isEmpty) {
+      return Center(
+        child: Text(
+          'ບໍ່ມີ Package',
+          style: TextStyle(fontSize: 13.sp, color: AppColors.textHint),
+        ),
+      );
+    }
+    return PageView.builder(
+      controller: _pageCtrl,
+      physics: const BouncingScrollPhysics(),
+      itemCount: st.packages.length,
+      onPageChanged: (i) => setState(() => _current = i),
+      itemBuilder: (_, i) {
+        final pkg = st.packages[i];
+        final gradIdx = i % _kGradients.length;
+        final isCurrent = st.currentPlan?.id == pkg.id;
+        return _PackageCard(
+          pkg: pkg,
+          gradient: _kGradients[gradIdx],
+          accent: _kAccents[gradIdx],
+          isActive: i == _current,
+          isCurrentPlan: isCurrent,
+          onSelect: isCurrent ? null : () => _onSelect(pkg, _kAccents[gradIdx]),
+        );
+      },
+    );
+  }
+
   // ── Dots indicator ──────────────────────────────────────────
   Widget _buildDots() {
+    final st = _logic.state;
+    final count = st.packages.isEmpty ? 3 : st.packages.length;
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
-      children: List.generate(allPackages.length, (i) {
+      children: List.generate(count, (i) {
         final isOn = i == _current;
         final color = isOn
-            ? allPackages[i].accentColor
-            : const Color(0xFFD1D1E0);
+            ? _kAccents[i % _kAccents.length]
+            : AppColors.textDisabled;
         return AnimatedContainer(
           duration: const Duration(milliseconds: 250),
           margin: EdgeInsets.symmetric(horizontal: 3.w),
@@ -255,99 +286,49 @@ class _PackagePageState extends State<PackagePage> {
     );
   }
 
-  // ── Select action ───────────────────────────────────────────
-  void _onSelect(PackageModel pkg) {
-    showModalBottomSheet(
-      context: context,
-      backgroundColor: Colors.white,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24.r)),
-      ),
-      builder: (_) => SafeArea(
-        child: Padding(
-          padding: EdgeInsets.all(20.r),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Container(
-                width: 36.w,
-                height: 4.h,
-                decoration: BoxDecoration(
-                  color: const Color(0xFFE0E0E0),
-                  borderRadius: BorderRadius.circular(2.r),
-                ),
-              ),
-              SizedBox(height: 20.h),
-              Text(
-                'ຢືນຢັນການຊື້ ${pkg.duration}',
-                style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w800),
-              ),
-              SizedBox(height: 8.h),
-              Text(
-                pkg.formattedPrice,
-                style: TextStyle(
-                  fontSize: 24.sp,
-                  fontWeight: FontWeight.w900,
-                  color: pkg.accentColor,
-                  letterSpacing: -0.5,
-                ),
-              ),
-              SizedBox(height: 20.h),
-              GestureDetector(
-                onTap: () {
-                  Navigator.pop(context);
-                  // TODO: handle purchase
-                },
-                child: Container(
-                  width: double.infinity,
-                  height: 48.h,
-                  decoration: BoxDecoration(
-                    color: pkg.accentColor,
-                    borderRadius: BorderRadius.circular(14.r),
-                  ),
-                  child: Center(
-                    child: Text(
-                      'ດຳເນີນການຊຳລະ',
-                      style: TextStyle(
-                        fontSize: 14.sp,
-                        fontWeight: FontWeight.w800,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              SizedBox(height: 10.h),
-              GestureDetector(
-                onTap: () => Navigator.pop(context),
-                child: Text(
-                  'ຍົກເລີກ',
-                  style: TextStyle(
-                    fontSize: 13.sp,
-                    color: const Color(0xFF9B9BAD),
-                  ),
-                ),
-              ),
-            ],
-          ),
+  // ── Select handler ──────────────────────────────────────────
+  void _onSelect(PackageData pkg, Color accent) {
+    final balance = Get.find<WalletLogic>().state.wallet?.availableBalance ?? 0;
+    final price = pkg.price ?? 0;
+    if (balance >= price) {
+      Get.toNamed(
+        AppRoutes.subscriptionCheckout,
+        arguments: SubscriptionCheckoutArgs(
+          planId: pkg.id ?? '',
+          planName: pkg.name ?? '',
+          description: pkg.description,
+          price: price,
+          durationDays: pkg.durationDays,
+          currentPlan: _logic.state.currentPlan,
         ),
-      ),
-    );
+      );
+    } else {
+      Get.toNamed(
+        AppRoutes.topupAmount,
+        arguments: {'initialAmount': price, 'subscriptionPlanId': pkg.id ?? ''},
+      );
+    }
   }
 }
 
 // ═══════════════════════════════════════════════════════════════
-//  _PackageCard — single package card in PageView
+//  _PackageCard
 // ═══════════════════════════════════════════════════════════════
 class _PackageCard extends StatelessWidget {
-  final PackageModel package;
+  final PackageData pkg;
+  final List<Color> gradient;
+  final Color accent;
   final bool isActive;
-  final VoidCallback onSelect;
+  final bool isCurrentPlan;
+  final VoidCallback? onSelect;
 
   const _PackageCard({
-    required this.package,
+    required this.pkg,
+    required this.gradient,
+    required this.accent,
     required this.isActive,
-    required this.onSelect,
+    required this.isCurrentPlan,
+    this.onSelect,
   });
 
   @override
@@ -362,16 +343,18 @@ class _PackageCard extends StatelessWidget {
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(24.r),
-            border: Border.all(
-              color: package.isPopular && isActive
-                  ? package.accentColor
-                  : Colors.black.withOpacity(0.08),
-              width: package.isPopular && isActive ? 1.5 : 0.5,
-            ),
+            // border: Border.all(
+            //   color: isCurrentPlan
+            //       ? AppColors.primary
+            //       : pkg.isPopular == true && isActive
+            //       ? accent
+            //       : AppColors.borderMedium,
+            //   width: isCurrentPlan ? 2 : pkg.isPopular == true && isActive ? 1.5 : 0.5,
+            // ),
             boxShadow: isActive
                 ? [
                     BoxShadow(
-                      color: package.accentColor.withOpacity(0.12),
+                      color: accent.withValues(alpha: 0.12),
                       blurRadius: 20,
                       offset: const Offset(0, 8),
                     ),
@@ -383,13 +366,13 @@ class _PackageCard extends StatelessWidget {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                _buildCardTop(),
+                _buildTop(),
                 Divider(
                   height: 0,
                   thickness: 0.5,
-                  color: Colors.black.withOpacity(0.06),
+                  color: AppColors.borderMedium,
                 ),
-                Expanded(child: _buildCardBody()),
+                Expanded(child: _buildBody()),
               ],
             ),
           ),
@@ -398,21 +381,18 @@ class _PackageCard extends StatelessWidget {
     );
   }
 
-  // ── Gradient top section ─────────────────────────────────────
-  Widget _buildCardTop() {
+  Widget _buildTop() {
     return Container(
       width: double.infinity,
-
       decoration: BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: package.gradientColors,
+          colors: gradient,
         ),
       ),
       child: Stack(
         children: [
-          // Decorative circles
           Positioned(
             top: -24,
             right: -10,
@@ -420,7 +400,7 @@ class _PackageCard extends StatelessWidget {
               width: 90,
               height: 90,
               decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.10),
+                color: Colors.white.withValues(alpha: 0.10),
                 shape: BoxShape.circle,
               ),
             ),
@@ -432,54 +412,18 @@ class _PackageCard extends StatelessWidget {
               width: 110,
               height: 110,
               decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.07),
+                color: Colors.white.withValues(alpha: 0.07),
                 shape: BoxShape.circle,
               ),
             ),
           ),
-
-          // Content
           Padding(
             padding: EdgeInsets.fromLTRB(18.w, 20.h, 18.w, 18.h),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Popular badge
-                if (package.isPopular)
-                  Container(
-                    margin: EdgeInsets.only(bottom: 10.h),
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 10.w,
-                      vertical: 4.h,
-                    ),
-                    decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.20),
-                      borderRadius: BorderRadius.circular(20.r),
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(
-                          Icons.star_rounded,
-                          size: 11.r,
-                          color: const Color(0xFFFFD700),
-                        ),
-                        SizedBox(width: 4.w),
-                        Text(
-                          'ນິຍົມທີ່ສຸດ',
-                          style: TextStyle(
-                            fontSize: 10.sp,
-                            fontWeight: FontWeight.w800,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-
-                // Duration
                 Text(
-                  package.duration,
+                  pkg.name ?? '',
                   style: TextStyle(
                     fontSize: 28.sp,
                     fontWeight: FontWeight.w900,
@@ -488,54 +432,25 @@ class _PackageCard extends StatelessWidget {
                     height: 1,
                   ),
                 ),
-
                 SizedBox(height: 8.h),
-
-                // Description
-                Text(
-                  package.description,
-                  style: TextStyle(
-                    fontSize: 11.sp,
-                    color: Colors.white.withOpacity(0.70),
-                    height: 1.55,
-                  ),
-                ),
-
-                SizedBox(height: 14.h),
-
-                // Price row
-                Row(
-                  children: [
-                    Text(
-                      package.formattedPrice,
-                      style: TextStyle(
-                        fontSize: 22.sp,
-                        fontWeight: FontWeight.w900,
-                        color: Colors.white,
-                        letterSpacing: -0.5,
-                      ),
+                if (pkg.description != null && pkg.description!.isNotEmpty)
+                  Text(
+                    pkg.description!,
+                    style: TextStyle(
+                      fontSize: 14.sp,
+                      color: Colors.white.withValues(alpha: 0.70),
+                      height: 1.55,
                     ),
-                    SizedBox(width: 8.w),
-                    if (package.discountPercent > 0)
-                      Container(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: 8.w,
-                          vertical: 3.h,
-                        ),
-                        decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.22),
-                          borderRadius: BorderRadius.circular(20.r),
-                        ),
-                        child: Text(
-                          'ປະຢັດ ${package.discountPercent}%',
-                          style: TextStyle(
-                            fontSize: 10.sp,
-                            fontWeight: FontWeight.w800,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ),
-                  ],
+                  ),
+                SizedBox(height: 14.h),
+                Text(
+                  _fmtKip(pkg.price),
+                  style: TextStyle(
+                    fontSize: 22.sp,
+                    fontWeight: FontWeight.w900,
+                    color: Colors.white,
+                    letterSpacing: -0.5,
+                  ),
                 ),
               ],
             ),
@@ -545,17 +460,16 @@ class _PackageCard extends StatelessWidget {
     );
   }
 
-  // ── Feature list + CTA ───────────────────────────────────────
-  Widget _buildCardBody() {
+  Widget _buildBody() {
+    final feats = _features(pkg.features);
     return Padding(
       padding: EdgeInsets.fromLTRB(18.w, 14.h, 18.w, 16.h),
       child: Column(
         children: [
-          // Feature list
           Expanded(
             child: ListView.separated(
               physics: const NeverScrollableScrollPhysics(),
-              itemCount: package.features.length,
+              itemCount: feats.length,
               separatorBuilder: (_, __) => SizedBox(height: 8.h),
               itemBuilder: (_, i) => Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -564,22 +478,18 @@ class _PackageCard extends StatelessWidget {
                     width: 18.r,
                     height: 18.r,
                     decoration: BoxDecoration(
-                      color: package.featureCheckBg,
+                      color: accent.withValues(alpha: 0.10),
                       shape: BoxShape.circle,
                     ),
-                    child: Icon(
-                      Icons.check_rounded,
-                      size: 10.r,
-                      color: package.featureCheckColor,
-                    ),
+                    child: Icon(Icons.check_rounded, size: 10.r, color: accent),
                   ),
                   SizedBox(width: 8.w),
                   Expanded(
                     child: Text(
-                      package.features[i],
+                      feats[i],
                       style: TextStyle(
-                        fontSize: 11.5.sp,
-                        color: const Color(0xFF555570),
+                        fontSize: 12.sp,
+                        color: AppColors.textSecondary,
                         height: 1.35,
                       ),
                     ),
@@ -588,42 +498,121 @@ class _PackageCard extends StatelessWidget {
               ),
             ),
           ),
-
           SizedBox(height: 14.h),
-
           // CTA button
           GestureDetector(
             onTap: onSelect,
-            child: Container(
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 200),
               width: double.infinity,
               height: 46.h,
               decoration: BoxDecoration(
-                color: package.isPopular
-                    ? package.accentColor
-                    : Colors.transparent,
+                color: isCurrentPlan ? AppColors.primary : Colors.transparent,
                 borderRadius: BorderRadius.circular(14.r),
-                border: package.isPopular
-                    ? null
-                    : Border.all(
-                        color: Colors.black.withOpacity(0.10),
-                        width: 0.5,
-                      ),
+                border: isCurrentPlan
+                    ? Border.all(color: AppColors.primary, width: 1)
+                    : Border.all(color: AppColors.borderMedium, width: 0.5),
               ),
-              child: Center(
-                child: Text(
-                  'ເລືອກແຜນນີ້',
-                  style: TextStyle(
-                    fontSize: 13.sp,
-                    fontWeight: FontWeight.w800,
-                    color: package.isPopular
-                        ? Colors.white
-                        : const Color(0xFF1A1A2E),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  if (isCurrentPlan) ...[
+                    Icon(
+                      Icons.check_rounded,
+                      size: 14.r,
+                      color: AppColors.primary,
+                    ),
+                    SizedBox(width: 5.w),
+                  ],
+                  Text(
+                    isCurrentPlan ? 'ແພັກເກດປັດຈຸບັນ' : 'ເລືອກແຜນນີ້',
+                    style: TextStyle(
+                      fontSize: 13.sp,
+                      fontWeight: FontWeight.w800,
+                      color: isCurrentPlan
+                          ? Colors.white
+                          : pkg.isPopular == true
+                          ? Colors.white
+                          : AppColors.textPrimary,
+                    ),
                   ),
-                ),
+                ],
               ),
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  Shimmer
+// ═══════════════════════════════════════════════════════════════
+class _PackageListShimmer extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return PageView.builder(
+      controller: PageController(viewportFraction: 0.88),
+      physics: const NeverScrollableScrollPhysics(),
+      itemCount: 3,
+      itemBuilder: (_, __) => Padding(
+        padding: EdgeInsets.symmetric(horizontal: 6.w),
+        child: Shimmer.fromColors(
+          baseColor: const Color(0xFFE8E8F0),
+          highlightColor: const Color(0xFFF5F5FA),
+          child: Container(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(24.r),
+            ),
+            child: Column(
+              children: [
+                Container(
+                  height: 200.h,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.vertical(
+                      top: Radius.circular(24.r),
+                    ),
+                  ),
+                ),
+                Expanded(
+                  child: Padding(
+                    padding: EdgeInsets.all(18.r),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        ...List.generate(
+                          5,
+                          (i) => Padding(
+                            padding: EdgeInsets.only(bottom: 10.h),
+                            child: Container(
+                              height: 12.h,
+                              width: i % 2 == 0 ? double.infinity : 180.w,
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(6.r),
+                              ),
+                            ),
+                          ),
+                        ),
+                        const Spacer(),
+                        Container(
+                          height: 46.h,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(14.r),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }

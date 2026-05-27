@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 import 'package:xaosao/constants/app_image.dart';
 import 'package:xaosao/constants/app_routes.dart';
+import 'package:xaosao/pages/login/getx/login_logic.dart';
+import 'package:xaosao/services/storage_service.dart';
 
 // ═══════════════════════════════════════════════════════════════
 //  SplashPage — Variant C · Full Gradient
@@ -38,15 +41,43 @@ class _SplashPageState extends State<SplashPage> {
         statusBarBrightness: Brightness.dark,
       ),
     );
-    Future.delayed(const Duration(seconds: 2), () {
-      if (mounted) {
-        Navigator.pushNamedAndRemoveUntil(
-          context,
-          AppRoutes.xaosaoHome,
-          (route) => false,
-        );
-      }
-    });
+    Future.delayed(const Duration(seconds: 2), _checkAuthAndNavigate);
+  }
+
+  // ── Auth check: token → dashboard | no token → onboarding ────
+  Future<void> _checkAuthAndNavigate() async {
+    if (!mounted) return;
+
+    final storage = Get.find<StorageService>();
+    final token = storage.read<String>('token');
+
+    // No token → show onboarding
+    if (token == null || token.isEmpty) {
+      _goTo(AppRoutes.xaosaoHome);
+      return;
+    }
+
+    // Token found → verify it by fetching profile
+    final isClient = (storage.read<String>('role') ?? 'customer') != 'model';
+    await Get.find<LoginLogic>().fetchProfile(isCustomer: isClient);
+
+    // If 401 occurred: AuthInterceptor already cleared the token
+    // and called Get.offAllNamed('/login'), so this widget is likely
+    // unmounted. The mounted check below handles that safely.
+    if (!mounted) return;
+
+    final state = Get.find<LoginLogic>().state;
+    final profileLoaded = isClient
+        ? state.customerProfile != null
+        : state.modelProfile != null;
+
+    // Profile loaded → go to dashboard; otherwise → login
+    _goTo(profileLoaded ? AppRoutes.dashboard : AppRoutes.login);
+  }
+
+  void _goTo(String route) {
+    if (!mounted) return;
+    Navigator.pushNamedAndRemoveUntil(context, route, (_) => false);
   }
 
   @override

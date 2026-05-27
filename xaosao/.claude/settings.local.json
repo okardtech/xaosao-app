@@ -8,7 +8,16 @@
       "Bash(xargs grep -l \"pickAvatar\")",
       "Bash(Get-ChildItem -Path \"d:\\\\okardteeh\\\\xaosao\\\\lib\" -Recurse -Directory)",
       "Bash(Select-Object -ExpandProperty FullName)",
-      "Bash(dart analyze *)"
+      "Bash(dart analyze *)",
+      "Bash(Get-ChildItem -Recurse -Directory)",
+      "Bash(flutter analyze *)",
+      "Bash(Get-Content \"d:\\\\okardteeh\\\\xaosao-app\\\\xaosao\\\\lib\\\\pages\\\\model_discover\\\\getx\\\\model_discover_state.dart\")",
+      "Bash(Get-Content \"d:\\\\okardteeh\\\\xaosao-app\\\\xaosao\\\\lib\\\\pages\\\\model_discover\\\\getx\\\\model_discover_logic.dart\")",
+      "Bash(Get-Item \"d:\\\\okardteeh\\\\xaosao-app\\\\xaosao\\\\lib\\\\pages\\\\wallet\\\\getx\\\\*\")",
+      "Bash(Select-Object FullName, Length)",
+      "Bash(Get-ChildItem -Path \"d:\\\\okardteeh\\\\xaosao-app\\\\xaosao\\\\lib\\\\pages\\\\wallet\" -Recurse -Name)",
+      "Bash(New-Item -ItemType Directory -Force \"d:\\\\okardteeh\\\\xaosao-app\\\\xaosao\\\\lib\\\\pages\\\\wallet\\\\components\")",
+      "Bash(Out-Null)"
     ]
   }
 }

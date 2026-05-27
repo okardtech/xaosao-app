@@ -1,6 +1,7 @@
 class ApiResponse<T> {
   final bool success;
   final String? message;
+  final String? laMessage;
   final T? data;
   final int? statusCode;
   final Map<String, dynamic>? errors;
@@ -8,6 +9,7 @@ class ApiResponse<T> {
   const ApiResponse({
     required this.success,
     this.message,
+    this.laMessage,
     this.data,
     this.statusCode,
     this.errors,
@@ -20,6 +22,7 @@ class ApiResponse<T> {
     return ApiResponse<T>(
       success: json['success'] ?? false,
       message: json['message'],
+      laMessage: json['la_message'],
       data: json['data'] != null && fromJsonT != null
           ? fromJsonT(json['data'])
           : null,

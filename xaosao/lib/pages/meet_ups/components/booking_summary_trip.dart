@@ -1,16 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'booking_model.dart';
+import 'package:xaosao/models/my_booking_model.dart';
 
 // ═══════════════════════════════════════════════════════════════
-//  BookingSummaryStrip — V1 compact
-//  Layout: horizontal row, icon left + num + label right
-//  Top accent line 3px (ClipRRect ຮັກສາ borderRadius)
-//  ສູງກວ່າ design ເກົ່ານ້ອຍ — compact padding
+//  BookingSummaryStrip — compact stat cards
+//  Filter string values: null=all, 'active', 'completed', 'cancelled'
 // ═══════════════════════════════════════════════════════════════
 class BookingSummaryStrip extends StatelessWidget {
-  final List<BookingModel> bookings;
-  final ValueChanged<BookingStatus?>? onFilterTap;
+  final List<MyBookingModel> bookings;
+  final ValueChanged<String?>? onFilterTap;
 
   const BookingSummaryStrip({
     super.key,
@@ -18,18 +16,23 @@ class BookingSummaryStrip extends StatelessWidget {
     this.onFilterTap,
   });
 
+  static bool _isActive(String? s) => const {
+        'pending', 'confirmed', 'in_progress', 'awaiting_confirmation'
+      }.contains(s);
+  static bool _isCompleted(String? s) => s == 'completed';
+  static bool _isCancelledGroup(String? s) =>
+      s == 'cancelled' || s == 'rejected' || s == 'disputed';
+
   @override
   Widget build(BuildContext context) {
     final total     = bookings.length;
-    final upcoming  = bookings.where((b) => b.status == BookingStatus.upcoming).length;
-    final completed = bookings.where((b) => b.status == BookingStatus.completed).length;
-    final cancelled = bookings.where((b) =>
-        b.status == BookingStatus.cancelled ||
-        b.status == BookingStatus.rejected).length;
+    final active    = bookings.where((b) => _isActive(b.status)).length;
+    final completed = bookings.where((b) => _isCompleted(b.status)).length;
+    final cancelled = bookings.where((b) => _isCancelledGroup(b.status)).length;
 
     return Row(children: [
       _SCard(
-        count: total,     label: 'ທັງໝົດ',
+        count: total, label: 'ທັງໝົດ',
         icon: Icons.calendar_month_outlined,
         accent: const Color(0xFF1A1A2E),
         iconBg: const Color(0xFFF0F0F5),
@@ -39,13 +42,13 @@ class BookingSummaryStrip extends StatelessWidget {
       ),
       SizedBox(width: 7.w),
       _SCard(
-        count: upcoming,  label: 'ກຳລັງມາ',
+        count: active, label: 'ກຳລັງມາ',
         icon: Icons.access_time_rounded,
         accent: const Color(0xFF3B82F6),
         iconBg: const Color(0xFFEFF6FF),
         iconColor: const Color(0xFF3B82F6),
         numColor: const Color(0xFF3B82F6),
-        onTap: () => onFilterTap?.call(BookingStatus.upcoming),
+        onTap: () => onFilterTap?.call('active'),
       ),
       SizedBox(width: 7.w),
       _SCard(
@@ -55,7 +58,7 @@ class BookingSummaryStrip extends StatelessWidget {
         iconBg: const Color(0xFFEDFAF3),
         iconColor: const Color(0xFF22C55E),
         numColor: const Color(0xFF22C55E),
-        onTap: () => onFilterTap?.call(BookingStatus.completed),
+        onTap: () => onFilterTap?.call('completed'),
       ),
       SizedBox(width: 7.w),
       _SCard(
@@ -65,13 +68,12 @@ class BookingSummaryStrip extends StatelessWidget {
         iconBg: const Color(0xFFF0F0F5),
         iconColor: const Color(0xFF9B9BAD),
         numColor: const Color(0xFF9B9BAD),
-        onTap: () => onFilterTap?.call(BookingStatus.cancelled),
+        onTap: () => onFilterTap?.call('cancelled'),
       ),
     ]);
   }
 }
 
-// ── Single stat card ───────────────────────────────────────────
 class _SCard extends StatelessWidget {
   final int count;
   final String label;
@@ -107,27 +109,18 @@ class _SCard extends StatelessWidget {
               width: 0.5,
             ),
           ),
-          // ClipRRect ຮັກສາ borderRadius ໃຫ້ accent bar ດ້ານເທິງ
           child: ClipRRect(
             borderRadius: BorderRadius.circular(14.r),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                // ── Top accent bar (3px, ມີ radius ຂ້າງເທິງ) ──
                 Container(height: 3.h, color: accent),
-
-                // ── Content: icon left + texts right ──
                 Padding(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: 10.w,
-                    vertical: 8.h,
-                  ),
+                  padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 8.h),
                   child: Row(
                     children: [
-                      // Icon box
                       Container(
-                        width: 26.r,
-                        height: 26.r,
+                        width: 26.r, height: 26.r,
                         decoration: BoxDecoration(
                           color: iconBg,
                           borderRadius: BorderRadius.circular(8.r),
@@ -135,7 +128,6 @@ class _SCard extends StatelessWidget {
                         child: Icon(icon, size: 13.r, color: iconColor),
                       ),
                       SizedBox(width: 8.w),
-                      // Count + label
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,

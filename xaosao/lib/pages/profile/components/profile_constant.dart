@@ -1,23 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../../constants/app_color.dart';
+
 // ═══════════════════════════════════════════════════════════════
 //  profile_constants.dart
 //  Shared colors, enums, and small tokens for Profile pages.
 // ═══════════════════════════════════════════════════════════════
 
-// ── Colors (aligned with AppColors) ───────────────────────────
-abstract class PColor {
-  static const navy = Color(0xFF1A1A2E);
-  static const pink = Color(0xFFF06292);
-  static const pinkL = Color(0xFFFF8A80);
-  static const bg = Color(0xFFF8F8FC);
-  static const hint = Color(0xFF9B9BAD);
-  static const border = Color(0x12000000);
-  static const surface = Colors.white;
-  static const green = Color(0xFF22C55E);
-  static const red = Color(0xFFDC2626);
-}
+// ── Colors (aligned with ApAppColorss) ───────────────────────────
+// abstract class AppColors {
+//   static const navy = Color(0xFF1A1A2E);
+//   static const pink = Color(0xFFF06292);
+//   static const pinkL = Color(0xFFFF8A80);
+//   static const bg = Color(0xFFF8F8FC);
+//   static const hint = Color(0xFF9B9BAD);
+//   static const border = Color(0x12000000);
+//   static const surface = Colors.white;
+//   static const green = Color(0xFF22C55E);
+//   static const red = Color(0xFFDC2626);
+// }
 
 // ── Shared menu row ────────────────────────────────────────────
 class ProfileMenuRow extends StatelessWidget {
@@ -60,7 +62,7 @@ class ProfileMenuRow extends StatelessWidget {
               child: Icon(
                 icon,
                 size: 14,
-                color: isDanger ? PColor.red : iconColor,
+                color: isDanger ? AppColors.primary : iconColor,
               ),
             ),
             const SizedBox(width: 10),
@@ -71,16 +73,21 @@ class ProfileMenuRow extends StatelessWidget {
                   Text(
                     label,
                     style: TextStyle(
-                      fontSize: 13.sp,
+                      fontSize: 14.sp,
                       fontWeight: FontWeight.w700,
-                      color: isDanger ? PColor.red : PColor.navy,
+                      color: isDanger
+                          ? AppColors.primary
+                          : AppColors.primaryVariant,
                     ),
                   ),
                   if (sub != null) ...[
                     const SizedBox(height: 1),
                     Text(
                       sub!,
-                      style: const TextStyle(fontSize: 10, color: PColor.hint),
+                      style: TextStyle(
+                        fontSize: 12.sp,
+                        color: AppColors.textHint,
+                      ),
                     ),
                   ],
                 ],
@@ -111,9 +118,9 @@ class ProfileGroup extends StatelessWidget {
     return Container(
       margin: margin,
       decoration: BoxDecoration(
-        color: PColor.surface,
+        color: AppColors.surface,
         borderRadius: BorderRadius.circular(15),
-        border: Border.all(color: PColor.border, width: 0.5),
+        border: Border.all(color: AppColors.border, width: 0.5),
       ),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(15),
@@ -145,7 +152,7 @@ class ProfileSectionLabel extends StatelessWidget {
         style: TextStyle(
           fontSize: 14.sp,
           fontWeight: FontWeight.w400,
-          color: PColor.hint,
+          color: AppColors.textPrimary,
           letterSpacing: 0.8,
         ),
       ),
@@ -196,9 +203,9 @@ class ShareEnableCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: PColor.surface,
+        color: AppColors.surface,
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: PColor.border, width: 0.5),
+        border: Border.all(color: AppColors.border, width: 0.5),
       ),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(14),
@@ -224,7 +231,7 @@ class ShareEnableCard extends StatelessWidget {
                       child: const Icon(
                         Icons.share_outlined,
                         size: 13,
-                        color: PColor.pink,
+                        color: AppColors.primary,
                       ),
                     ),
                     const SizedBox(width: 9),
@@ -234,7 +241,7 @@ class ShareEnableCard extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 13,
                           fontWeight: FontWeight.w700,
-                          color: PColor.navy,
+                          color: AppColors.primaryVariant,
                         ),
                       ),
                     ),
@@ -264,7 +271,7 @@ class ShareEnableCard extends StatelessWidget {
                           style: TextStyle(
                             fontSize: 12,
                             fontWeight: FontWeight.w700,
-                            color: PColor.navy,
+                            color: AppColors.primaryVariant,
                           ),
                         ),
                         const SizedBox(height: 3),
@@ -272,7 +279,7 @@ class ShareEnableCard extends StatelessWidget {
                           enableDesc,
                           style: const TextStyle(
                             fontSize: 10,
-                            color: PColor.hint,
+                            color: AppColors.textHint,
                             height: 1.55,
                           ),
                         ),
@@ -287,7 +294,9 @@ class ShareEnableCard extends StatelessWidget {
                       width: 38,
                       height: 22,
                       decoration: BoxDecoration(
-                        color: enabled ? PColor.green : const Color(0xFFE0E0E0),
+                        color: enabled
+                            ? AppColors.online
+                            : const Color(0xFFE0E0E0),
                         borderRadius: BorderRadius.circular(20),
                       ),
                       child: AnimatedAlign(
@@ -336,21 +345,21 @@ class LogoutButton extends StatelessWidget {
       child: Container(
         height: 48,
         decoration: BoxDecoration(
-          color: PColor.surface,
+          color: AppColors.surface,
           borderRadius: BorderRadius.circular(15),
-          border: Border.all(color: PColor.border, width: 0.5),
+          border: Border.all(color: AppColors.border, width: 0.5),
         ),
         child: const Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.logout_rounded, size: 14, color: PColor.red),
+            Icon(Icons.logout_rounded, size: 14, color: AppColors.primary),
             SizedBox(width: 7),
             Text(
               'ອອກຈາກລະບົບ',
               style: TextStyle(
                 fontSize: 13,
                 fontWeight: FontWeight.w700,
-                color: PColor.red,
+                color: AppColors.primary,
               ),
             ),
           ],

@@ -1,18 +1,19 @@
-import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
+import 'package:xaosao/constants/app_color.dart';
+import 'package:xaosao/constants/app_routes.dart';
 import 'package:xaosao/pages/topup/components/topup_constant.dart';
-import 'package:xaosao/pages/topup/components/topup_qr.dart';
+import 'package:xaosao/pages/topup/getx/topup_logic.dart';
+import 'package:xaosao/widgets/app_button.dart';
+import 'package:xaosao/widgets/app_text_field.dart';
+import 'package:xaosao/widgets/gradient_app_bar.dart';
 
-// ═══════════════════════════════════════════════════════════════
-//  topup_amount_page.dart — Page 1: ປ້ອນຈຳນວນເງິນ
-//  Entry point for the top-up flow.
-//  Navigate in: Navigator.push(context,
-//    MaterialPageRoute(builder: (_) => const TopUpAmountPage()))
-// ═══════════════════════════════════════════════════════════════
 class TopUpAmountPage extends StatefulWidget {
-  const TopUpAmountPage({super.key});
+  final int? initialAmount;
+  final String? subscriptionPlanId;
+  const TopUpAmountPage({super.key, this.initialAmount, this.subscriptionPlanId});
 
   @override
   State<TopUpAmountPage> createState() => _TopUpAmountPageState();
@@ -25,16 +26,13 @@ class _TopUpAmountPageState extends State<TopUpAmountPage> {
   bool _custom = false;
   final _ctrl = TextEditingController();
   final _focus = FocusNode();
+  late final TopupLogic _logic;
 
-  // ── derived ────────────────────────────────────────────────
   int get _amount {
-    if (_custom) {
-      return int.tryParse(_ctrl.text.replaceAll(',', '')) ?? 0;
-    }
+    if (_custom) return int.tryParse(_ctrl.text.replaceAll(',', '')) ?? 0;
     return _selected ?? 0;
   }
 
-  // ── handlers ───────────────────────────────────────────────
   void _pick(int v) {
     setState(() {
       _selected = v;
@@ -44,31 +42,34 @@ class _TopUpAmountPageState extends State<TopUpAmountPage> {
     _focus.unfocus();
   }
 
-  void _toCustom() {
-    setState(() {
-      _custom = true;
-      _selected = null;
-    });
-    _focus.requestFocus();
-  }
-
   void _next() {
     if (_amount < 10000) return;
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (_) => TopUpQRPage(amountKip: _amount)),
-    );
+    _logic.setAmount(_amount);
+    Get.toNamed(AppRoutes.topupQr);
   }
 
   @override
   void initState() {
     super.initState();
-    SystemChrome.setSystemUIOverlayStyle(
-      const SystemUiOverlayStyle(
-        statusBarColor: Colors.transparent,
-        statusBarIconBrightness: Brightness.dark,
-      ),
-    );
+    _logic = Get.find<TopupLogic>();
+    _logic.resetFlow();
+    final amt = widget.initialAmount;
+    final planId = widget.subscriptionPlanId;
+    if (amt != null && amt > 0) {
+      _selected = amt;
+      _ctrl.text = fmtNum(amt);
+    }
+    if (planId != null && planId.isNotEmpty) {
+      _logic.setSubscriptionContext(planId: planId, amount: amt ?? 0);
+    }
+    _focus.addListener(() {
+      if (_focus.hasFocus && mounted) {
+        setState(() {
+          _custom = true;
+          _selected = null;
+        });
+      }
+    });
   }
 
   @override
@@ -78,16 +79,14 @@ class _TopUpAmountPageState extends State<TopUpAmountPage> {
     super.dispose();
   }
 
-  // ══════════════════════════════════════════════════════════
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: kBg,
-      appBar: TopUpGradientAppBar(
+      backgroundColor: AppColors.bg,
+      appBar: GradientAppBar(
         title: 'ເຕີມເງິນ',
-        sub: 'ເລືອກ ຫຼື ປ້ອນຈຳນວນ',
-        step: '1',
-        onBack: () => Navigator.pop(context),
+        subtitle: 'ເລືອກ ຫຼື ປ້ອນຈຳນວນ',
+        actions: [const TopUpStepBadge('1')],
       ),
       body: SafeArea(
         child: Column(
@@ -100,49 +99,60 @@ class _TopUpAmountPageState extends State<TopUpAmountPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     SizedBox(height: 10.h),
-                    // ── Preset chips ────────────────────────
+                    // ── Preset chips ────────────────────────────
                     Wrap(
                       spacing: 8.w,
                       runSpacing: 8.h,
                       children: [
                         ..._presets.map(
-                          (v) => PresetChip(
+                          (v) => _PresetChip(
                             label: fmtNum(v),
                             sub: 'ກີບ',
                             selected: !_custom && _selected == v,
                             onTap: () => _pick(v),
                           ),
                         ),
-                        PresetChip(
+                        _PresetChip(
                           label: 'ອື່ນໆ',
                           sub: 'ກຳນົດເອງ',
                           selected: _custom,
-                          onTap: _toCustom,
+                          onTap: () {
+                            setState(() {
+                              _custom = true;
+                              _selected = null;
+                            });
+                            _focus.requestFocus();
+                          },
                         ),
                       ],
                     ),
                     SizedBox(height: 14.h),
 
-                    TopUpDivider(label: 'ຫຼື ປ້ອນເອງ'),
+                    _TopUpDivider(label: 'ຫຼື ປ້ອນເອງ'),
                     SizedBox(height: 10.h),
 
-                    // ── Manual input ────────────────────────
-                    AmountTextInput(
-                      ctrl: _ctrl,
-                      focus: _focus,
-                      isFocused: _custom,
+                    // ── Amount input ─────────────────────────────
+                    AppTextField(
+                      controller: _ctrl,
+                      focusNode: _focus,
+                      hint: 'ປ້ອນຈຳນວນ',
+                      accent: AppColors.primary,
+                      prefixIcon: Icons.attach_money_rounded,
+                      suffixLabel: 'ກີບ',
+                      keyboardType: TextInputType.number,
+                      formatters: [FilteringTextInputFormatter.digitsOnly],
+                      action: TextInputAction.done,
                       onChanged: (_) => setState(() {
                         _custom = true;
                         _selected = null;
                       }),
-                      onTap: _toCustom,
                     ),
                     SizedBox(height: 20.h),
 
-                    // ── CTA ─────────────────────────────────
-                    TopUpPinkBtn(
+                    // ── CTA ──────────────────────────────────────
+                    AppPrimaryButton(
                       label: 'ຕໍ່ໄປ',
-                      icon: Icons.arrow_forward_ios_rounded,
+                      trailingIcon: Icons.arrow_forward_ios_rounded,
                       enabled: _amount >= 10000,
                       onTap: _next,
                     ),
@@ -157,75 +167,14 @@ class _TopUpAmountPageState extends State<TopUpAmountPage> {
   }
 }
 
-// ═══════════════════════════════════════════════════════════════
-//  AmountDisplayCard — large number display at top
-// ═══════════════════════════════════════════════════════════════
-class AmountDisplayCard extends StatelessWidget {
-  final int amount;
-  final bool isCustom;
-
-  const AmountDisplayCard({
-    super.key,
-    required this.amount,
-    required this.isCustom,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      padding: EdgeInsets.fromLTRB(14.w, 12.h, 14.w, 12.h),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(14.r),
-        border: Border.all(color: kBorder, width: 0.5),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'ຈຳນວນເງິນ',
-            style: TextStyle(fontSize: 10.sp, color: kHint),
-          ),
-          SizedBox(height: 5.h),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.baseline,
-            textBaseline: TextBaseline.alphabetic,
-            children: [
-              Text(
-                amount > 0 ? fmtNum(amount) : '0',
-                style: TextStyle(
-                  fontSize: 28.sp,
-                  fontWeight: FontWeight.w700,
-                  color: kNavy,
-                  letterSpacing: -0.8,
-                ),
-              ),
-              SizedBox(width: 6.w),
-              Text(
-                'ກີບ',
-                style: TextStyle(fontSize: 13.sp, color: kHint),
-              ),
-              if (isCustom) ...[SizedBox(width: 3.w), const _BlinkingCursor()],
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-// ═══════════════════════════════════════════════════════════════
-//  PresetChip — quick amount selector chip
-// ═══════════════════════════════════════════════════════════════
-class PresetChip extends StatelessWidget {
+// ── Preset chip ────────────────────────────────────────────────
+class _PresetChip extends StatelessWidget {
   final String label;
   final String sub;
   final bool selected;
   final VoidCallback onTap;
 
-  const PresetChip({
-    super.key,
+  const _PresetChip({
     required this.label,
     required this.sub,
     required this.selected,
@@ -240,10 +189,12 @@ class PresetChip extends StatelessWidget {
         padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
         duration: const Duration(milliseconds: 150),
         decoration: BoxDecoration(
-          color: selected ? const Color(0xFFFFF0F6) : Colors.white,
+          color: selected ? AppColors.socialBg : Colors.white,
           borderRadius: BorderRadius.circular(14.r),
           border: Border.all(
-            color: selected ? kPink : Colors.black.withOpacity(0.08),
+            color: selected
+                ? AppColors.primary
+                : Colors.black.withValues(alpha: 0.08),
             width: selected ? 1 : 0.5,
           ),
         ),
@@ -252,7 +203,7 @@ class PresetChip extends StatelessWidget {
           style: TextStyle(
             fontSize: 14.sp,
             fontWeight: FontWeight.w700,
-            color: selected ? kPink : kNavy,
+            color: selected ? AppColors.primary : AppColors.textPrimary,
           ),
         ),
       ),
@@ -260,147 +211,35 @@ class PresetChip extends StatelessWidget {
   }
 }
 
-// ═══════════════════════════════════════════════════════════════
-//  AmountTextInput — manual number input field
-// ═══════════════════════════════════════════════════════════════
-class AmountTextInput extends StatelessWidget {
-  final TextEditingController ctrl;
-  final FocusNode focus;
-  final bool isFocused;
-  final ValueChanged<String> onChanged;
-  final VoidCallback onTap;
-
-  const AmountTextInput({
-    super.key,
-    required this.ctrl,
-    required this.focus,
-    required this.isFocused,
-    required this.onChanged,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return AnimatedContainer(
-      duration: const Duration(milliseconds: 200),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12.r),
-        border: Border.all(
-          color: isFocused ? kPink : Colors.black.withOpacity(0.08),
-          width: isFocused ? 1 : 0.5,
-        ),
-      ),
-      child: Row(
-        children: [
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 12.w),
-            child: Icon(
-              Icons.attach_money_rounded,
-              size: 16.r,
-              color: const Color(0xFFC4C4D0),
-            ),
-          ),
-          Expanded(
-            child: TextField(
-              controller: ctrl,
-              focusNode: focus,
-              keyboardType: TextInputType.number,
-              inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-              onTap: onTap,
-              onChanged: onChanged,
-              decoration: InputDecoration(
-                hintText: 'ປ້ອນຈຳນວນ',
-                hintStyle: TextStyle(
-                  fontSize: 14.sp,
-                  color: const Color(0xFFC4C4D0),
-                ),
-                border: InputBorder.none,
-                contentPadding: EdgeInsets.symmetric(vertical: 12.h),
-              ),
-              style: TextStyle(fontSize: 14.sp, color: kNavy),
-            ),
-          ),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 12.w),
-            child: Text(
-              'ກີບ',
-              style: TextStyle(fontSize: 14.sp, color: const Color(0xFFC4C4D0)),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-// ═══════════════════════════════════════════════════════════════
-//  TopUpDivider — labelled horizontal divider
-// ═══════════════════════════════════════════════════════════════
-class TopUpDivider extends StatelessWidget {
+// ── Labelled divider ───────────────────────────────────────────
+class _TopUpDivider extends StatelessWidget {
   final String label;
-  const TopUpDivider({super.key, required this.label});
+  const _TopUpDivider({required this.label});
 
   @override
   Widget build(BuildContext context) {
     return Row(
       children: [
         Expanded(
-          child: Container(height: 0.5, color: Colors.black.withOpacity(0.08)),
+          child: Container(
+            height: 0.5,
+            color: Colors.black.withValues(alpha: 0.08),
+          ),
         ),
         Padding(
           padding: EdgeInsets.symmetric(horizontal: 8.w),
           child: Text(
             label,
-            style: TextStyle(fontSize: 10.sp, color: const Color(0xFFC4C4D0)),
+            style: TextStyle(fontSize: 10.sp, color: AppColors.textHint),
           ),
         ),
         Expanded(
-          child: Container(height: 0.5, color: Colors.black.withOpacity(0.08)),
+          child: Container(
+            height: 0.5,
+            color: Colors.black.withValues(alpha: 0.08),
+          ),
         ),
       ],
-    );
-  }
-}
-
-// ── Blinking cursor (private) ──────────────────────────────────
-class _BlinkingCursor extends StatefulWidget {
-  const _BlinkingCursor();
-  @override
-  State<_BlinkingCursor> createState() => _BlinkingCursorState();
-}
-
-class _BlinkingCursorState extends State<_BlinkingCursor> {
-  bool _visible = true;
-  Timer? _timer;
-
-  @override
-  void initState() {
-    super.initState();
-    _timer = Timer.periodic(const Duration(milliseconds: 500), (_) {
-      if (mounted) setState(() => _visible = !_visible);
-    });
-  }
-
-  @override
-  void dispose() {
-    _timer?.cancel();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return AnimatedOpacity(
-      opacity: _visible ? 1.0 : 0.0,
-      duration: const Duration(milliseconds: 80),
-      child: Container(
-        width: 2.w,
-        height: 24.h,
-        decoration: BoxDecoration(
-          color: kPink,
-          borderRadius: BorderRadius.circular(1.r),
-        ),
-      ),
     );
   }
 }

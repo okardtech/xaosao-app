@@ -39,7 +39,7 @@ class AppColors {
   static const Color textSecondary = Color(0xFF555570);
 
   /// Hint / disabled text
-  static const Color textHint = Color(0xFF9B9BAD);
+  static const Color textHint = Color(0xFF757575);
 
   /// Inactive nav / placeholder
   static const Color textDisabled = Color(0xFFBBBBCC);
