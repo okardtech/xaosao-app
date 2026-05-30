@@ -3,7 +3,9 @@ import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:xaosao/constants/app_color.dart';
+import 'package:xaosao/models/conversation_model.dart';
 import 'package:xaosao/models/my_booking_model.dart';
+import 'package:xaosao/pages/chat/getx/chat_logic.dart';
 import 'package:xaosao/pages/meet_ups/getx/meet_ups_logic.dart';
 import 'package:xaosao/utils/app_snackbar.dart';
 import 'package:xaosao/utils/currency_formatter.dart';
@@ -16,13 +18,11 @@ import 'package:xaosao/widgets/confirm_sheet.dart';
 class BookingDetailPage extends StatelessWidget {
   final MyBookingModel booking;
   final bool isCustomer;
-  final VoidCallback? onMessage;
 
   const BookingDetailPage({
     super.key,
     required this.booking,
     required this.isCustomer,
-    this.onMessage,
   });
 
   MeetUpLogic get _logic => Get.find<MeetUpLogic>();
@@ -223,7 +223,6 @@ class BookingDetailPage extends StatelessWidget {
       bottomNavigationBar: _BottomBar(
         booking: b,
         isCustomer: isCustomer,
-        onMessage: onMessage,
         logic: _logic,
       ),
     );
@@ -831,15 +830,44 @@ class _BookingIdRow extends StatelessWidget {
 class _BottomBar extends StatelessWidget {
   final MyBookingModel booking;
   final bool isCustomer;
-  final VoidCallback? onMessage;
   final MeetUpLogic logic;
 
   const _BottomBar({
     required this.booking,
     required this.isCustomer,
-    required this.onMessage,
     required this.logic,
   });
+
+  void _openChat() {
+    final chatLogic = Get.find<ChatLogic>();
+    if (isCustomer) {
+      final model = booking.model;
+      final id = model?.id;
+      if (id == null || id.isEmpty) return;
+      chatLogic.startConversation(
+        id,
+        partnerHint: ConversationParticipant(
+          id: id,
+          firstName: model?.firstName,
+          lastName: model?.lastName,
+          profileImage: model?.profile,
+        ),
+      );
+    } else {
+      final customer = booking.customer;
+      final id = customer?.id;
+      if (id == null || id.isEmpty) return;
+      chatLogic.startConversation(
+        id,
+        partnerHint: ConversationParticipant(
+          id: id,
+          firstName: customer?.firstName,
+          lastName: customer?.lastName,
+          profileImage: customer?.profile,
+        ),
+      );
+    }
+  }
 
   static bool _isCancelled(String? s) => s == 'cancelled';
   static bool _isCompleted(String? s) => s == 'completed';
@@ -891,14 +919,14 @@ class _BottomBar extends StatelessWidget {
       label: 'ຂໍ້ຄວາມ',
       icon: Icons.chat_bubble_outline_rounded,
       style: _BtnStyle.outline,
-      onTap: onMessage,
+      onTap: _openChat,
     );
 
     final callBtn = _Btn(
       label: 'ໂທ',
       icon: Icons.phone_outlined,
       style: _BtnStyle.dark,
-      onTap: onMessage,
+      onTap: _openChat,
     );
 
     if (status == 'confirmed') {

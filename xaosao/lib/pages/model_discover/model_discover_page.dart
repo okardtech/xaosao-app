@@ -5,8 +5,10 @@ import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:xaosao/constants/app_color.dart';
+import 'package:xaosao/constants/app_routes.dart';
 import 'package:xaosao/widgets/app_search_field.dart';
 import 'package:xaosao/widgets/empty_state.dart';
+import 'package:xaosao/widgets/notif_badge.dart';
 import 'components/discover_card.dart';
 import 'components/discover_shimmer_card.dart';
 import 'getx/model_discover_logic.dart';
@@ -155,6 +157,13 @@ class _ModelDiscoverPageState extends State<ModelDiscoverPage> {
               ],
             ),
           ),
+          NotifBadge(
+            child: _HeaderBtn(
+              icon: Icons.notifications_outlined,
+              onTap: () => Get.toNamed(AppRoutes.notifications),
+            ),
+          ),
+          SizedBox(width: 6.w),
           Obx(
             () => _HeaderBtn(
               icon: _logic.searchOpen.value

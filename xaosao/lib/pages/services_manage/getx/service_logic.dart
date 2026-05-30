@@ -45,7 +45,7 @@ class ServiceLogic extends GetxController {
         ));
       } else {
         _updateState(state.copyWith(status: ServiceStatus.failure));
-        AppSnackbar.error(res.message ?? 'ໂຫຼດຂໍ້ມູນບໍ່ສຳເລັດ');
+        AppSnackbar.error(res.laMessage ?? 'ໂຫຼດຂໍ້ມູນບໍ່ສຳເລັດ');
       }
     } catch (_) {
       _updateState(state.copyWith(status: ServiceStatus.failure));
@@ -70,7 +70,7 @@ class ServiceLogic extends GetxController {
         await _refreshProfile();
         return true;
       }
-      AppSnackbar.error(res.message ?? 'ເພີ່ມບໍ່ສຳເລັດ');
+      AppSnackbar.error(res.laMessage ?? 'ເພີ່ມບໍ່ສຳເລັດ');
       return false;
     } catch (_) {
       hideLoadingDialog();
@@ -98,7 +98,7 @@ class ServiceLogic extends GetxController {
         await _refreshProfile();
         return true;
       }
-      AppSnackbar.error(res.message ?? 'ອັບເດດບໍ່ສຳເລັດ');
+      AppSnackbar.error(res.laMessage ?? 'ອັບເດດບໍ່ສຳເລັດ');
       return false;
     } catch (_) {
       hideLoadingDialog();
@@ -120,7 +120,7 @@ class ServiceLogic extends GetxController {
         await _refreshProfile();
         return true;
       }
-      AppSnackbar.error(res.message ?? 'ລຶບບໍ່ສຳເລັດ');
+      AppSnackbar.error(res.laMessage ?? 'ລຶບບໍ່ສຳເລັດ');
       return false;
     } catch (_) {
       hideLoadingDialog();

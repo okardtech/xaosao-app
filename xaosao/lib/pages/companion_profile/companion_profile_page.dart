@@ -7,7 +7,6 @@ import 'package:xaosao/constants/app_color.dart';
 import 'package:xaosao/constants/app_routes.dart';
 import 'package:xaosao/models/Recommended_model.dart';
 import 'package:xaosao/models/review_model.dart';
-import 'package:xaosao/models/service_model.dart';
 import 'package:xaosao/pages/package/components/subscription_banner.dart';
 import 'package:xaosao/pages/package/getx/package_logic.dart';
 import 'package:xaosao/pages/wallet/getx/wallet_logic.dart';
@@ -15,19 +14,20 @@ import 'package:xaosao/repository/package_repo.dart';
 import 'package:xaosao/repository/review_repo.dart';
 import 'package:xaosao/services/storage_service.dart';
 import 'package:xaosao/utils/currency_formatter.dart';
+import 'package:shimmer/shimmer.dart';
+import 'package:xaosao/models/conversation_model.dart';
+import 'package:xaosao/pages/chat/getx/chat_logic.dart';
 import 'package:xaosao/widgets/app_like_button.dart';
 import 'package:xaosao/widgets/app_network_image.dart';
-import 'package:xaosao/widgets/gift_sheet.dart';
 import '../../models/model_available.dart';
 import '../../utils/service_helper.dart';
-import '../topup/topup_amount.dart';
 import '../booking/booking_args.dart';
 import 'getx/companion_logic.dart';
 import 'getx/companion_state.dart';
 
 class CompanionProfilePage extends StatefulWidget {
-  final RecommendedModel model;
-  const CompanionProfilePage({super.key, required this.model});
+  final String modelId;
+  const CompanionProfilePage({super.key, required this.modelId});
 
   @override
   State<CompanionProfilePage> createState() => _CompanionProfilePageState();
@@ -41,12 +41,12 @@ class _CompanionProfilePageState extends State<CompanionProfilePage> {
   static const double _photoHeight = 340;
   static const double _titleThreshold = 200;
 
-  String get _tag => widget.model.id ?? 'companion';
+  String get _tag => widget.modelId;
 
   @override
   void initState() {
     super.initState();
-    _logic = Get.put(CompanionLogic(modelId: widget.model.id ?? ''), tag: _tag);
+    _logic = Get.put(CompanionLogic(modelId: widget.modelId), tag: _tag);
     _scrollCtrl = ScrollController()..addListener(_onScroll);
     SystemChrome.setSystemUIOverlayStyle(
       const SystemUiOverlayStyle(
@@ -75,15 +75,15 @@ class _CompanionProfilePageState extends State<CompanionProfilePage> {
     if (remaining < 300) _logic.loadReviews();
   }
 
-  List<String> get _photos {
-    final imgs = widget.model.images ?? [];
+  List<String> _photos(RecommendedModel model) {
+    final imgs = model.images ?? [];
     if (imgs.isNotEmpty) return imgs;
-    if (widget.model.profile != null) return [widget.model.profile!];
+    if (model.profile != null) return [model.profile!];
     return [];
   }
 
-  int get _age {
-    final dob = widget.model.dob;
+  int _age(RecommendedModel model) {
+    final dob = model.dob;
     if (dob == null) return 0;
     final now = DateTime.now();
     int age = now.year - dob.year;
@@ -129,12 +129,21 @@ class _CompanionProfilePageState extends State<CompanionProfilePage> {
           automaticallyImplyLeading: false,
           flexibleSpace: FlexibleSpaceBar(
             collapseMode: CollapseMode.pin,
-            background: _PhotoSlider(
-              photos: _photos,
-              height: _photoHeight,
-              model: widget.model,
-              age: _age,
-            ),
+            background: Obx(() {
+              final status = _logic.state.profileStatus;
+              final profile = _logic.state.profile;
+              if (status == CompanionLoadStatus.initial ||
+                  status == CompanionLoadStatus.loading ||
+                  profile == null) {
+                return _PhotoShimmer(height: _photoHeight);
+              }
+              return _PhotoSlider(
+                photos: _photos(profile),
+                height: _photoHeight,
+                model: profile,
+                age: _age(profile),
+              );
+            }),
           ),
           leading: _AppBarIcon(
             icon: Icons.arrow_back_ios_new_rounded,
@@ -143,34 +152,43 @@ class _CompanionProfilePageState extends State<CompanionProfilePage> {
           title: AnimatedOpacity(
             opacity: _showTitle ? 1.0 : 0.0,
             duration: const Duration(milliseconds: 200),
-            child: Text(
-              '${widget.model.firstName ?? ''}, $_age',
-              style: TextStyle(
-                fontSize: 15.sp,
-                fontWeight: FontWeight.w800,
-                color: Colors.white,
-              ),
-            ),
+            child: Obx(() {
+              final profile = _logic.state.profile;
+              if (profile == null) return const SizedBox.shrink();
+              final age = _age(profile);
+              return Text(
+                '${profile.firstName ?? ''}, $age',
+                style: TextStyle(
+                  fontSize: 15.sp,
+                  fontWeight: FontWeight.w800,
+                  color: Colors.white,
+                ),
+              );
+            }),
           ),
           actions: [
-            AppLikeButton(
-              initialLiked: widget.model.isLiked,
-              size: 34,
-              iconSize: 16,
-              unlikedBg: Colors.black.withValues(alpha: 0.25),
-              border: Border.all(color: Colors.white.withValues(alpha: 0.15)),
-              margin: EdgeInsets.symmetric(vertical: 8.h),
-              onToggle: () async {
-                final isClient =
-                    Get.find<StorageService>().read<String>('role') ==
-                    'customer';
-                final res = await ReviewRepo().addLike(
-                  isClient: isClient,
-                  id: widget.model.id ?? '',
-                );
-                return res.success;
-              },
-            ),
+            Obx(() {
+              final profile = _logic.state.profile;
+              if (profile == null) return const SizedBox.shrink();
+              return AppLikeButton(
+                initialLiked: profile.isLiked,
+                size: 34,
+                iconSize: 16,
+                unlikedBg: Colors.black.withValues(alpha: 0.25),
+                border: Border.all(color: Colors.white.withValues(alpha: 0.15)),
+                margin: EdgeInsets.symmetric(vertical: 8.h),
+                onToggle: () async {
+                  final isClient =
+                      Get.find<StorageService>().read<String>('role') ==
+                      'customer';
+                  final res = await ReviewRepo().addLike(
+                    isClient: isClient,
+                    id: profile.id ?? '',
+                  );
+                  return res.success;
+                },
+              );
+            }),
             SizedBox(width: 6.w),
             _AppBarIcon(icon: Icons.share_outlined, onTap: () {}),
             SizedBox(width: 12.w),
@@ -179,39 +197,53 @@ class _CompanionProfilePageState extends State<CompanionProfilePage> {
 
         // ── Body sections ────────────────────────────────────────
         SliverToBoxAdapter(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _buildActionRow(),
-              _Section(title: 'ຂໍ້ມູນສ່ວນຕົວ', child: _buildInfoGrid()),
-              _Section(
-                title: 'ເລືອກບໍລິການ',
-                child: Obx(() => _buildServicesSection()),
-              ),
-              _Section(
-                title: 'ຄະແນນ ແລະ ລີວິວ',
-                child: Obx(() => _buildReviewSection()),
-              ),
-              SizedBox(height: 24.h),
-            ],
-          ),
+          child: Obx(() {
+            final status = _logic.state.profileStatus;
+            final profile = _logic.state.profile;
+
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _buildActionRow(),
+                if (status == CompanionLoadStatus.initial ||
+                    status == CompanionLoadStatus.loading ||
+                    profile == null)
+                  _Section(
+                    title: 'ຂໍ້ມູນສ່ວນຕົວ',
+                    child: _ProfileInfoShimmer(),
+                  )
+                else
+                  _Section(
+                    title: 'ຂໍ້ມູນສ່ວນຕົວ',
+                    child: _buildInfoGrid(profile),
+                  ),
+                _Section(
+                  title: 'ເລືອກບໍລິການ',
+                  child: Obx(() => _buildServicesSection()),
+                ),
+                _Section(
+                  title: 'ຄະແນນ ແລະ ລີວິວ',
+                  child: Obx(() => _buildReviewSection()),
+                ),
+                SizedBox(height: 24.h),
+              ],
+            );
+          }),
         ),
       ],
     );
   }
 
   // ── Info grid ─────────────────────────────────────────────────
-  Widget _buildInfoGrid() {
-    final age = _age;
-    final memberSince = widget.model.createdAt != null
-        ? DateFormat('MMM yyyy').format(widget.model.createdAt!)
+  Widget _buildInfoGrid(RecommendedModel profile) {
+    final age = _age(profile);
+    final memberSince = profile.createdAt != null
+        ? DateFormat('MMM yyyy').format(profile.createdAt!)
         : '—';
-    final isAvailable = widget.model.status == 'active';
+    final isAvailable = profile.status == 'active';
     final statusLabel = isAvailable ? 'ໃຊ້ງານຢູ່' : 'ບໍ່ໄດ້ໃຊ້ງານ';
     final statusColor = isAvailable ? AppColors.online : AppColors.primary;
-    final address = widget.model.address != null
-        ? '${widget.model.address}'
-        : '—';
+    final address = profile.address != null ? '${profile.address}' : '—';
 
     return Container(
       decoration: BoxDecoration(
@@ -337,7 +369,7 @@ class _CompanionProfilePageState extends State<CompanionProfilePage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _buildRatingHeader(),
+        _buildRatingHeader(st.profile),
         SizedBox(height: 10.h),
         if (isLoading) ...[
           _ReviewShimmer(),
@@ -403,9 +435,9 @@ class _CompanionProfilePageState extends State<CompanionProfilePage> {
   }
 
   // ── Rating header card ────────────────────────────────────────
-  Widget _buildRatingHeader() {
-    final rating = widget.model.rating ?? 0.0;
-    final totalReviews = widget.model.totalReview ?? 0;
+  Widget _buildRatingHeader(RecommendedModel? profile) {
+    final rating = profile?.rating ?? 0.0;
+    final totalReviews = profile?.totalReview ?? 0;
 
     return Container(
       padding: EdgeInsets.all(16.r),
@@ -444,8 +476,8 @@ class _CompanionProfilePageState extends State<CompanionProfilePage> {
               context,
               AppRoutes.addReview,
               arguments: {
-                'modelId': widget.model.id ?? '',
-                'companionName': widget.model.firstName ?? '',
+                'modelId': profile?.id ?? '',
+                'companionName': profile?.firstName ?? '',
                 'tag': _tag,
               },
             ),
@@ -495,69 +527,134 @@ class _CompanionProfilePageState extends State<CompanionProfilePage> {
       child: Row(
         children: [
           Expanded(
-            child: GestureDetector(
-              onTap: () {},
-              child: Container(
-                height: 44.h,
+            child: Obx(() {
+              final loading = _logic.chatLoading.value;
+              return GestureDetector(
+                onTap: loading ? null : _startChat,
+                child: Container(
+                  height: 44.h,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(13.r),
+                    border: Border.all(
+                      color: Colors.black.withValues(alpha: 0.08),
+                      width: 0.5,
+                    ),
+                  ),
+                  child: loading
+                      ? Center(
+                          child: SizedBox(
+                            width: 16.r,
+                            height: 16.r,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              color: AppColors.textPrimary,
+                            ),
+                          ),
+                        )
+                      : Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.chat_bubble_outline_rounded,
+                              size: 15.r,
+                              color: AppColors.textPrimary,
+                            ),
+                            SizedBox(width: 6.w),
+                            Text(
+                              'ສົ່ງຂໍ້ຄວາມ',
+                              style: TextStyle(
+                                fontSize: 12.sp,
+                                fontWeight: FontWeight.w700,
+                                color: AppColors.textPrimary,
+                              ),
+                            ),
+                          ],
+                        ),
+                ),
+              );
+            }),
+          ),
+          SizedBox(width: 8.w),
+          Obx(() {
+            final profile = _logic.state.profile;
+            final loading = _logic.friendLoading.value;
+            final isFriend = profile?.isFriend ?? false;
+            return GestureDetector(
+              onTap: (loading || profile == null) ? null : _logic.toggleFriend,
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 200),
+                width: 44.r,
+                height: 44.r,
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: isFriend
+                      ? AppColors.primary.withValues(alpha: 0.08)
+                      : Colors.white,
                   borderRadius: BorderRadius.circular(13.r),
                   border: Border.all(
-                    color: Colors.black.withValues(alpha: 0.08),
-                    width: 0.5,
+                    color: isFriend
+                        ? AppColors.primary.withValues(alpha: 0.30)
+                        : Colors.black.withValues(alpha: 0.08),
+                    width: isFriend ? 1.0 : 0.5,
                   ),
                 ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      Icons.chat_bubble_outline_rounded,
-                      size: 15.r,
-                      color: AppColors.textPrimary,
-                    ),
-                    SizedBox(width: 6.w),
-                    Text(
-                      'ສົ່ງຂໍ້ຄວາມ',
-                      style: TextStyle(
-                        fontSize: 12.sp,
-                        fontWeight: FontWeight.w700,
-                        color: AppColors.textPrimary,
+                child: loading
+                    ? Center(
+                        child: SizedBox(
+                          width: 16.r,
+                          height: 16.r,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            color: AppColors.primary,
+                          ),
+                        ),
+                      )
+                    : Icon(
+                        isFriend
+                            ? Icons.person_rounded
+                            : Icons.person_add_alt_1_rounded,
+                        size: 18.r,
+                        color: isFriend
+                            ? AppColors.primary
+                            : AppColors.textPrimary,
                       ),
-                    ),
-                  ],
-                ),
               ),
-            ),
-          ),
-          SizedBox(width: 8.w),
-          // _ActionBtn(
-          //   icon: Icons.card_giftcard_rounded,
-          //   color: const Color(0xFFD97706),
-          //   onTap: () => GiftSheet.show(
-          //     context,
-          //     companionName: widget.model.firstName ?? 'ຄູ່ຮ່ວມທາງ',
-          //     balanceKip: 125000,
-          //     onSent: (gift) => GiftSentSnackbar.show(context, gift: gift),
-          //     onTopUp: () => Navigator.push(
-          //       context,
-          //       MaterialPageRoute(builder: (_) => const TopUpAmountPage()),
-          //     ),
-          //   ),
-          // ),
-          SizedBox(width: 8.w),
-          _ActionBtn(
-            icon: Icons.person_add_alt_1_rounded,
-            color: AppColors.textPrimary,
-            onTap: () {},
-          ),
+            );
+          }),
         ],
       ),
     );
   }
 
+  Future<void> _startChat() async {
+    if (_logic.chatLoading.value) return;
+    _logic.chatLoading.value = true;
+    try {
+      final profile = _logic.state.profile;
+      final hint = profile == null
+          ? null
+          : ConversationParticipant(
+              id: profile.id ?? '',
+              firstName: profile.firstName,
+              lastName: profile.lastName,
+              profileImage: profile.profile,
+              isOnline: profile.online,
+            );
+      await Get.find<ChatLogic>().startConversation(
+        profile?.id ?? '',
+        partnerHint: hint,
+      );
+    } finally {
+      _logic.chatLoading.value = false;
+    }
+  }
+
   Future<void> _onBook() async {
     final svc = _logic.selectedService;
     if (svc == null) return;
+
+    final profile = _logic.state.profile;
+    if (profile == null) return;
 
     final wallet = Get.find<WalletLogic>().state.wallet?.availableBalance ?? 0;
     final serviceRate = svc.effectiveRate ?? 0.0;
@@ -586,16 +683,16 @@ class _CompanionProfilePageState extends State<CompanionProfilePage> {
     }
 
     final name = [
-      widget.model.firstName,
-      widget.model.lastName,
+      profile.firstName,
+      profile.lastName,
     ].where((s) => s != null && s.isNotEmpty).join(' ');
     Get.toNamed(
       AppRoutes.booking,
       arguments: BookingArgs(
         service: svc,
-        companionId: widget.model.id ?? '',
+        companionId: profile.id ?? '',
         companionName: name.isEmpty ? 'Unknown' : name,
-        companionPhoto: widget.model.profile,
+        companionPhoto: profile.profile,
       ),
     );
   }
@@ -1482,40 +1579,6 @@ class _AppBarIcon extends StatelessWidget {
   }
 }
 
-// ═══════════════════════════════════════════════════════════════
-//  _ActionBtn — small square action button
-// ═══════════════════════════════════════════════════════════════
-class _ActionBtn extends StatelessWidget {
-  final IconData icon;
-  final Color color;
-  final VoidCallback onTap;
-
-  const _ActionBtn({
-    required this.icon,
-    required this.color,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        width: 44.r,
-        height: 44.r,
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(13.r),
-          border: Border.all(
-            color: Colors.black.withValues(alpha: 0.08),
-            width: 0.5,
-          ),
-        ),
-        child: Icon(icon, size: 18.r, color: color),
-      ),
-    );
-  }
-}
 
 // ═══════════════════════════════════════════════════════════════
 //  _Stars — read-only star row
@@ -1546,6 +1609,23 @@ class _Stars extends StatelessWidget {
 // ═══════════════════════════════════════════════════════════════
 //  Skeleton / placeholder widgets
 // ═══════════════════════════════════════════════════════════════
+class _PhotoShimmer extends StatelessWidget {
+  final double height;
+  const _PhotoShimmer({required this.height});
+
+  @override
+  Widget build(BuildContext context) {
+    return Shimmer.fromColors(
+      baseColor: const Color(0xFFD0D0DC),
+      highlightColor: const Color(0xFFE8E8F4),
+      child: Container(
+        height: height,
+        color: Colors.white,
+      ),
+    );
+  }
+}
+
 class _ServicesShimmer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -1656,6 +1736,120 @@ class _EmptyCard extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  _ProfileInfoShimmer — shown while profile loads
+// ═══════════════════════════════════════════════════════════════
+class _ProfileInfoShimmer extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Shimmer.fromColors(
+      baseColor: const Color(0xFFEEEEF4),
+      highlightColor: const Color(0xFFF8F8FC),
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(16.r),
+        ),
+        child: Column(
+          children: [
+            // 3-stat strip skeleton
+            IntrinsicHeight(
+              child: Row(
+                children: [
+                  _ShimmerStat(),
+                  Container(width: 0.5, color: Colors.black12),
+                  _ShimmerStat(),
+                  Container(width: 0.5, color: Colors.black12),
+                  _ShimmerStat(),
+                ],
+              ),
+            ),
+            Divider(
+              height: 1,
+              thickness: 0.5,
+              indent: 10.w,
+              endIndent: 10.w,
+              color: Colors.black.withValues(alpha: 0.06),
+            ),
+            // Address row skeleton
+            Padding(
+              padding: EdgeInsets.fromLTRB(16.w, 14.h, 16.w, 14.h),
+              child: Row(
+                children: [
+                  Container(
+                    width: 13.r,
+                    height: 13.r,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(4.r),
+                    ),
+                  ),
+                  SizedBox(width: 8.w),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        width: 40.w,
+                        height: 10.h,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(6.r),
+                        ),
+                      ),
+                      SizedBox(height: 6.h),
+                      Container(
+                        width: 160.w,
+                        height: 13.h,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(6.r),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _ShimmerStat extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      child: Padding(
+        padding: EdgeInsets.symmetric(vertical: 14.h),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              width: 48.w,
+              height: 14.h,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(6.r),
+              ),
+            ),
+            SizedBox(height: 6.h),
+            Container(
+              width: 36.w,
+              height: 10.h,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(6.r),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

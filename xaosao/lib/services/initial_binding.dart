@@ -1,5 +1,7 @@
 import 'package:get/get.dart';
+import 'package:xaosao/pages/chat/getx/chat_logic.dart';
 import 'package:xaosao/pages/forgot_password/getx/forgot_logic.dart';
+import 'package:xaosao/services/chat_socket_service.dart';
 import 'package:xaosao/pages/home/getx/home_logic.dart';
 import 'package:xaosao/pages/login/getx/login_logic.dart';
 import 'package:xaosao/pages/meet_ups/getx/meet_ups_logic.dart';
@@ -25,6 +27,7 @@ class InitialBinding extends Bindings {
   @override
   void dependencies() {
     Get.putAsync<ApiService>(() => ApiService().init(), permanent: true);
+    Get.putAsync<ChatSocketService>(() => ChatSocketService().init(), permanent: true);
     Get.lazyPut<AuthService>(() => AuthService(), fenix: true);
 
     Get.lazyPut<LoginLogic>(() => LoginLogic(), fenix: true);
@@ -45,5 +48,6 @@ class InitialBinding extends Bindings {
     Get.lazyPut<MeetUpLogic>(() => MeetUpLogic(), fenix: true);
     Get.lazyPut<ViewCompanionLogic>(() => ViewCompanionLogic(), fenix: true);
      Get.lazyPut<PostLogic>(() => PostLogic(), fenix: true);
+    Get.lazyPut<ChatLogic>(() => ChatLogic(), fenix: true);
   }
 }

@@ -40,210 +40,213 @@ class _CustomerProfilePageState extends State<CustomerProfilePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.bg,
-      appBar: GradientAppBar(
-        title: 'ໂປຣໄຟລ໌',
-        subtitle: 'ຈັດການໂປຣໄຟລ໌',
-        showBack: false,
-        centerTitle: false,
-      ),
-      body: CustomScrollView(
-        physics: const BouncingScrollPhysics(),
-        slivers: [
-          // ── Hero ─────────────────────────────────────────
-          SliverToBoxAdapter(child: _buildHero()),
-
-          // ── Body ─────────────────────────────────────────
-          SliverPadding(
-            padding: EdgeInsets.fromLTRB(16.w, 14.h, 16.w, 40.h),
-            sliver: SliverList(
-              delegate: SliverChildListDelegate([
-                // ── ຮູບພາບ section ──────────────────────────
-                Obx(() {
-                  final st = _profileLogic.state;
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+      // appBar: GradientAppBar(
+      //   title: 'ໂປຣໄຟລ໌',
+      //   subtitle: 'ຈັດການໂປຣໄຟລ໌',
+      //   showBack: false,
+      //   centerTitle: false,
+      // ),
+      body: SafeArea(
+        child: CustomScrollView(
+          
+          physics: const BouncingScrollPhysics(),
+          slivers: [
+            // ── Hero ─────────────────────────────────────────
+            SliverToBoxAdapter(child: _buildHero()),
+        
+            // ── Body ─────────────────────────────────────────
+            SliverPadding(
+              padding: EdgeInsets.fromLTRB(16.w, 14.h, 16.w, 40.h),
+              sliver: SliverList(
+                delegate: SliverChildListDelegate([
+                  // ── ຮູບພາບ section ──────────────────────────
+                  Obx(() {
+                    final st = _profileLogic.state;
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Text(
+                              'ຮູບພາບ (${st.photos.length}/$_maxPhotos)',
+                              style: TextStyle(
+                                fontSize: 14.sp,
+                                fontWeight: FontWeight.w700,
+                                color: AppColors.textPrimary,
+                                letterSpacing: 0.8,
+                              ),
+                            ),
+                            if (st.photos.length < _maxPhotos)
+                              AmberWarning(
+                                text:
+                                    'ຕ້ອງເພີ່ມຄົບ $_maxPhotos ຮູບ '
+                                    '— ຍັງຂາດ ${_maxPhotos - st.photos.length} ຮູບ',
+                              ),
+                          ],
+                        ),
+                        SizedBox(height: 8.h),
+                        PhotoGrid(
+                          photos: st.photos,
+                          maxPhotos: _maxPhotos,
+                          onAdd: _profileLogic.pickAndUpload,
+                          onRemove: _profileLogic.removePhoto,
+                          uploadingIndex: st.uploadingIndex,
+                          deletingIndex: st.deletingIndex,
+                        ),
+                        SizedBox(height: 14.h),
+                      ],
+                    );
+                  }),
+        
+                  // ──────────────────────────────────────────
+                  const ProfileSectionLabel('ຂໍ້ມູນ'),
+                  ProfileGroup(
                     children: [
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Text(
-                            'ຮູບພາບ (${st.photos.length}/$_maxPhotos)',
-                            style: TextStyle(
-                              fontSize: 14.sp,
-                              fontWeight: FontWeight.w700,
-                              color: AppColors.textPrimary,
-                              letterSpacing: 0.8,
-                            ),
-                          ),
-                          if (st.photos.length < _maxPhotos)
-                            AmberWarning(
-                              text:
-                                  'ຕ້ອງເພີ່ມຄົບ $_maxPhotos ຮູບ '
-                                  '— ຍັງຂາດ ${_maxPhotos - st.photos.length} ຮູບ',
-                            ),
-                        ],
+                      ProfileMenuRow(
+                        iconBg: AppColors.bg,
+                        iconColor: AppColors.primaryVariant,
+                        icon: Icons.person_outline_rounded,
+                        label: 'ຂໍ້ມູນສ່ວນຕົວ',
+                        sub: 'ຊື່, ນາມສະກຸນ, ວັນເດືອນປີ',
+                        onTap: () =>
+                            Get.toNamed(AppRoutes.profileDetail, arguments: true),
                       ),
-                      SizedBox(height: 8.h),
-                      PhotoGrid(
-                        photos: st.photos,
-                        maxPhotos: _maxPhotos,
-                        onAdd: _profileLogic.pickAndUpload,
-                        onRemove: _profileLogic.removePhoto,
-                        uploadingIndex: st.uploadingIndex,
-                        deletingIndex: st.deletingIndex,
+                      ProfileMenuRow(
+                        iconBg: const Color(0xFFFFF0F6),
+                        iconColor: AppColors.primary,
+                        icon: Icons.monitor_outlined,
+                        label: 'ການຊື້ແພັກເກດ',
+                        sub: 'ຊ່ວງໂມງ, ຊ່ວງວັນ ແລະ ຊ່ວງເດືອນ',
+                        onTap: () => Get.toNamed(AppRoutes.package),
                       ),
-                      SizedBox(height: 14.h),
+                      ProfileMenuRow(
+                        iconBg: AppColors.bg,
+                        iconColor: AppColors.primaryVariant,
+                        icon: Icons.credit_card_outlined,
+                        label: 'ປະຫວັດເຕີມເງິນ',
+                        onTap: () => Get.toNamed(AppRoutes.wallet),
+                      ),
                     ],
-                  );
-                }),
-
-                // ──────────────────────────────────────────
-                const ProfileSectionLabel('ຂໍ້ມູນ'),
-                ProfileGroup(
-                  children: [
-                    ProfileMenuRow(
-                      iconBg: AppColors.bg,
-                      iconColor: AppColors.primaryVariant,
-                      icon: Icons.person_outline_rounded,
-                      label: 'ຂໍ້ມູນສ່ວນຕົວ',
-                      sub: 'ຊື່, ນາມສະກຸນ, ວັນເດືອນປີ',
-                      onTap: () =>
-                          Get.toNamed(AppRoutes.profileDetail, arguments: true),
-                    ),
-                    ProfileMenuRow(
-                      iconBg: const Color(0xFFFFF0F6),
-                      iconColor: AppColors.primary,
-                      icon: Icons.monitor_outlined,
-                      label: 'ການຊື້ແພັກເກດ',
-                      sub: 'ຊ່ວງໂມງ, ຊ່ວງວັນ ແລະ ຊ່ວງເດືອນ',
-                      onTap: () => Get.toNamed(AppRoutes.package),
-                    ),
-                    ProfileMenuRow(
-                      iconBg: AppColors.bg,
-                      iconColor: AppColors.primaryVariant,
-                      icon: Icons.credit_card_outlined,
-                      label: 'ປະຫວັດເຕີມເງິນ',
-                      onTap: () => Get.toNamed(AppRoutes.wallet),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 12.h),
-
-                // ──────────────────────────────────────────
-                const ProfileSectionLabel('ຄວາມປອດໄພ'),
-                Obx(() {
-                  final customer = Get.find<LoginLogic>().state.customerProfile;
-                  return ProfileGroup(
+                  ),
+                  SizedBox(height: 12.h),
+        
+                  // ──────────────────────────────────────────
+                  const ProfileSectionLabel('ຄວາມປອດໄພ'),
+                  Obx(() {
+                    final customer = Get.find<LoginLogic>().state.customerProfile;
+                    return ProfileGroup(
+                      children: [
+                        ProfileMenuRow(
+                          iconBg: const Color(0xFFEDFAF3),
+                          iconColor: AppColors.online,
+                          icon: Icons.lock_outline_rounded,
+                          label: 'ປ່ຽນລະຫັດຜ່ານ',
+                          onTap: () => Get.toNamed(AppRoutes.changePassword),
+                        ),
+                        ProfileMenuRow(
+                          iconBg: const Color(0xFFEFF6FF),
+                          iconColor: const Color(0xFF3B82F6),
+                          icon: Icons.phone_outlined,
+                          label: 'ຢືນຢັນເບີໂທ',
+                          sub: customer?.whatsapp != null
+                              ? '+856 ${customer!.whatsapp}'
+                              : null,
+                          trailing: customer?.isPhoneVerified == true
+                              ? const PBadge(
+                                  '✓',
+                                  fg: Color(0xFF15803D),
+                                  bg: Color(0xFFEDFAF3),
+                                )
+                              : null,
+                          onTap: () {},
+                        ),
+                      ],
+                    );
+                  }),
+                  SizedBox(height: 12.h),
+        
+                  // ──────────────────────────────────────────
+                  const ProfileSectionLabel('ຕັ້ງຄ່າ'),
+                  ProfileGroup(
                     children: [
                       ProfileMenuRow(
-                        iconBg: const Color(0xFFEDFAF3),
-                        iconColor: AppColors.online,
-                        icon: Icons.lock_outline_rounded,
-                        label: 'ປ່ຽນລະຫັດຜ່ານ',
-                        onTap: () => Get.toNamed(AppRoutes.changePassword),
+                        iconBg: AppColors.bg,
+                        iconColor: AppColors.primaryVariant,
+                        icon: Icons.notifications_none_rounded,
+                        label: 'ການແຈ້ງເຕືອນ',
+                        sub: 'Push, ອີເມລ, SMS, WhatsApp',
+                        onTap: () => Get.toNamed(AppRoutes.notificationSettings),
                       ),
                       ProfileMenuRow(
-                        iconBg: const Color(0xFFEFF6FF),
-                        iconColor: const Color(0xFF3B82F6),
-                        icon: Icons.phone_outlined,
-                        label: 'ຢືນຢັນເບີໂທ',
-                        sub: customer?.whatsapp != null
-                            ? '+856 ${customer!.whatsapp}'
-                            : null,
-                        trailing: customer?.isPhoneVerified == true
-                            ? const PBadge(
-                                '✓',
-                                fg: Color(0xFF15803D),
-                                bg: Color(0xFFEDFAF3),
-                              )
-                            : null,
+                        iconBg: AppColors.bg,
+                        iconColor: AppColors.primary,
+                        icon: Icons.language_rounded,
+                        label: 'ພາສາ',
+                        sub: 'ລາວ (ພາສາຫຼັກ)',
                         onTap: () {},
                       ),
                     ],
-                  );
-                }),
-                SizedBox(height: 12.h),
-
-                // ──────────────────────────────────────────
-                const ProfileSectionLabel('ຕັ້ງຄ່າ'),
-                ProfileGroup(
-                  children: [
-                    ProfileMenuRow(
-                      iconBg: AppColors.bg,
-                      iconColor: AppColors.primaryVariant,
-                      icon: Icons.notifications_none_rounded,
-                      label: 'ການແຈ້ງເຕືອນ',
-                      sub: 'Push, ອີເມລ, SMS, WhatsApp',
-                      onTap: () => Get.toNamed(AppRoutes.notificationSettings),
-                    ),
-                    ProfileMenuRow(
-                      iconBg: AppColors.bg,
-                      iconColor: AppColors.primary,
-                      icon: Icons.language_rounded,
-                      label: 'ພາສາ',
-                      sub: 'ລາວ (ພາສາຫຼັກ)',
-                      onTap: () {},
-                    ),
-                  ],
-                ),
-                SizedBox(height: 12.h),
-
-                // ──────────────────────────────────────────
-                const ProfileSectionLabel('ຊ່ວຍເຫຼືອ'),
-                ProfileGroup(
-                  children: [
-                    ProfileMenuRow(
-                      iconBg: AppColors.bg,
-                      iconColor: AppColors.primaryVariant,
-                      icon: Icons.help_outline_rounded,
-                      label: 'ຊ່ວຍເຫຼືອ / FAQ',
-                      onTap: () {},
-                    ),
-                    ProfileMenuRow(
-                      iconBg: const Color(0xFFFFF0F6),
-                      iconColor: AppColors.primary,
-                      icon: Icons.forum_outlined,
-                      label: 'ຄຳຕິຊົມ',
-                      sub: 'ລາຍງານບັນຫາ ຫຼື ສົ່ງຄຳຄິດເຫັນ',
-                      onTap: () => Get.toNamed(AppRoutes.feedback),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 12.h),
-
-                // ──────────────────────────────────────────
-                ProfileGroup(
-                  children: [
-                    ProfileMenuRow(
-                      iconBg: const Color(0xFFFEF2F2),
-                      iconColor: AppColors.primary,
-                      icon: Icons.delete_outline_rounded,
-                      label: 'ລຶບບັນຊີ',
-                      sub: 'ບໍ່ສາມາດຍ້ອນໄດ້',
-                      isDanger: true,
-                      onTap: () => _confirmDelete(context),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 20.h),
-
-                LogoutButton(onTap: () => _logout(context)),
-                SizedBox(height: 12.h),
-
-                const Center(
-                  child: Text(
-                    'XAOSAO v1.0.0',
-                    style: TextStyle(
-                      fontSize: 10,
-                      color: Color(0xFFC4C4D0),
-                      fontWeight: FontWeight.w600,
+                  ),
+                  SizedBox(height: 12.h),
+        
+                  // ──────────────────────────────────────────
+                  const ProfileSectionLabel('ຊ່ວຍເຫຼືອ'),
+                  ProfileGroup(
+                    children: [
+                      ProfileMenuRow(
+                        iconBg: AppColors.bg,
+                        iconColor: AppColors.primaryVariant,
+                        icon: Icons.help_outline_rounded,
+                        label: 'ຊ່ວຍເຫຼືອ / FAQ',
+                        onTap: () {},
+                      ),
+                      ProfileMenuRow(
+                        iconBg: const Color(0xFFFFF0F6),
+                        iconColor: AppColors.primary,
+                        icon: Icons.forum_outlined,
+                        label: 'ຄຳຕິຊົມ',
+                        sub: 'ລາຍງານບັນຫາ ຫຼື ສົ່ງຄຳຄິດເຫັນ',
+                        onTap: () => Get.toNamed(AppRoutes.feedback),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 12.h),
+        
+                  // ──────────────────────────────────────────
+                  ProfileGroup(
+                    children: [
+                      ProfileMenuRow(
+                        iconBg: const Color(0xFFFEF2F2),
+                        iconColor: AppColors.primary,
+                        icon: Icons.delete_outline_rounded,
+                        label: 'ລຶບບັນຊີ',
+                        sub: 'ບໍ່ສາມາດຍ້ອນໄດ້',
+                        isDanger: true,
+                        onTap: () => _confirmDelete(context),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 20.h),
+        
+                  LogoutButton(onTap: () => _logout(context)),
+                  SizedBox(height: 12.h),
+        
+                  const Center(
+                    child: Text(
+                      'XAOSAO v1.0.0',
+                      style: TextStyle(
+                        fontSize: 10,
+                        color: Color(0xFFC4C4D0),
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                   ),
-                ),
-              ]),
+                ]),
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -255,7 +258,7 @@ class _CustomerProfilePageState extends State<CustomerProfilePage> {
       final uploading = _profileLogic.state.profileImageUploading;
       return Container(
         padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
-        margin: EdgeInsets.only(right: 16.w, left: 16.w, top: 16.h),
+        margin: EdgeInsets.only(right: 16.w, left: 16.w, top: 40.h),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(20.r),
           color: Colors.white,

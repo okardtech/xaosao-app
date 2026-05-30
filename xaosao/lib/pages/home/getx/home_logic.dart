@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:get/get.dart';
+import 'package:xaosao/constants/app_routes.dart';
 import 'package:xaosao/models/Recommended_model.dart';
 import 'package:xaosao/pages/home/getx/home_state.dart';
 import 'package:xaosao/repository/discover_repo.dart';
@@ -119,7 +120,7 @@ class HomeLogic extends GetxController {
               isFirstPage ? HomeStatus.failure : HomeStatus.success,
         ));
         if (isFirstPage) {
-          AppSnackbar.error(res.message ?? 'ໂຫຼດຂໍ້ມູນແນະນຳບໍ່ສຳເລັດ');
+          AppSnackbar.error(res.laMessage ?? 'ໂຫຼດຂໍ້ມູນແນະນຳບໍ່ສຳເລັດ');
         }
       }
     } catch (_) {
@@ -181,7 +182,7 @@ class HomeLogic extends GetxController {
           onlineStatus: isFirstPage ? HomeStatus.failure : HomeStatus.success,
         ));
         if (isFirstPage) {
-          AppSnackbar.error(res.message ?? 'ໂຫຼດຂໍ້ມູນອອນລາຍບໍ່ສຳເລັດ');
+          AppSnackbar.error(res.laMessage ?? 'ໂຫຼດຂໍ້ມູນອອນລາຍບໍ່ສຳເລັດ');
         }
       }
     } catch (_) {
@@ -217,6 +218,10 @@ class HomeLogic extends GetxController {
     _updateState(state.copyWith(maxDistanceKm: km));
     fetchRecommended(refresh: true);
     fetchOnline(refresh: true);
+  }
+
+  void openProfile(RecommendedModel preview) {
+    Get.toNamed(AppRoutes.companionProfile, arguments: preview.id ?? '');
   }
 
   Future<void> toggleLike(String modelId) async {

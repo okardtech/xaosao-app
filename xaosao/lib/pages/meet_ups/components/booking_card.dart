@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:xaosao/constants/app_color.dart';
+import 'package:xaosao/models/conversation_model.dart';
 import 'package:xaosao/models/my_booking_model.dart';
+import 'package:xaosao/pages/chat/getx/chat_logic.dart';
 import 'package:xaosao/pages/meet_ups/getx/meet_ups_logic.dart';
 import 'package:xaosao/utils/app_snackbar.dart';
 import 'package:xaosao/widgets/confirm_sheet.dart';
@@ -15,18 +17,47 @@ import 'package:xaosao/widgets/app_text_field.dart';
 class BookingCard extends StatelessWidget {
   final MyBookingModel booking;
   final bool isCustomer;
-  final VoidCallback? onMessage;
   final VoidCallback? onTap;
 
   const BookingCard({
     super.key,
     required this.booking,
     required this.isCustomer,
-    this.onMessage,
     this.onTap,
   });
 
   MeetUpLogic get _logic => Get.find<MeetUpLogic>();
+
+  void _openChat(MyBookingModel b) {
+    final chatLogic = Get.find<ChatLogic>();
+    if (isCustomer) {
+      final model = b.model;
+      final id = model?.id;
+      if (id == null || id.isEmpty) return;
+      chatLogic.startConversation(
+        id,
+        partnerHint: ConversationParticipant(
+          id: id,
+          firstName: model?.firstName,
+          lastName: model?.lastName,
+          profileImage: model?.profile,
+        ),
+      );
+    } else {
+      final customer = b.customer;
+      final id = customer?.id;
+      if (id == null || id.isEmpty) return;
+      chatLogic.startConversation(
+        id,
+        partnerHint: ConversationParticipant(
+          id: id,
+          firstName: customer?.firstName,
+          lastName: customer?.lastName,
+          profileImage: customer?.profile,
+        ),
+      );
+    }
+  }
 
   // ── Status helpers ─────────────────────────────────────────────
   static bool _isCancelled(String? s) => s == 'cancelled';
@@ -146,13 +177,28 @@ class BookingCard extends StatelessWidget {
 
   // ── Top ────────────────────────────────────────────────────────
   Widget _buildTop(MyBookingModel b, Color accent) {
-    final model = b.model;
-    final name = [
-      model?.firstName,
-      model?.lastName,
-    ].where((s) => s != null && s.isNotEmpty).join(' ');
-    final displayName = name.isEmpty ? 'ບໍ່ມີຊື່' : name;
-    final age = model?.age;
+    final String profileUrl;
+    final String displayName;
+    final int? age;
+
+    if (isCustomer) {
+      final model = b.model;
+      final name = [model?.firstName, model?.lastName]
+          .where((s) => s != null && s.isNotEmpty)
+          .join(' ');
+      profileUrl = model?.profile ?? '';
+      displayName = name.isEmpty ? 'ບໍ່ມີຊື່' : name;
+      age = model?.age;
+    } else {
+      final customer = b.customer;
+      final name = [customer?.firstName, customer?.lastName]
+          .where((s) => s != null && s.isNotEmpty)
+          .join(' ');
+      final fallback = customer?.name ?? '';
+      profileUrl = customer?.profile ?? '';
+      displayName = name.isNotEmpty ? name : (fallback.isNotEmpty ? fallback : 'ບໍ່ມີຊື່');
+      age = customer?.age;
+    }
 
     return Container(
       padding: EdgeInsets.fromLTRB(16.w, 14.h, 14.w, 4.h),
@@ -197,7 +243,7 @@ class BookingCard extends StatelessWidget {
             children: [
               ClipOval(
                 child: AppNetworkImage(
-                  imageUrl: model?.profile ?? '',
+                  imageUrl: profileUrl,
                   width: 32.r,
                   height: 32.r,
                   accentColor: accent == const Color(0xFFE0E0E0)
@@ -375,7 +421,7 @@ class BookingCard extends StatelessWidget {
       label: 'ຂໍ້ຄວາມ',
       icon: Icons.chat_bubble_outline_rounded,
       style: _BtnStyle.outline,
-      onTap: onMessage,
+      onTap: () => _openChat(b),
     );
 
     void showReason(String title, Future<bool> Function(String) onSubmit) {
@@ -391,7 +437,7 @@ class BookingCard extends StatelessWidget {
       label: 'ໂທ',
       icon: Icons.phone_outlined,
       style: _BtnStyle.dark,
-      onTap: onMessage,
+      onTap: () => _openChat(b),
     );
 
     // ── Confirmed + booking not yet ended — both roles ────────────

@@ -37,7 +37,7 @@ class ProfileDetailLogic extends GetxController {
         AppSnackbar.success('ອັບເດດຂໍ້ມູນສຳເລັດ');
       } else {
         status.value = ProfileUpdateStatus.failure;
-        AppSnackbar.error(res.message ?? 'ອັບເດດຂໍ້ມູນບໍ່ສຳເລັດ');
+        AppSnackbar.error(res.laMessage ?? 'ອັບເດດຂໍ້ມູນບໍ່ສຳເລັດ');
       }
     } catch (e) {
       hideLoadingDialog();

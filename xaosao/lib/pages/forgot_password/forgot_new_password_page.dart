@@ -65,7 +65,7 @@ class _ForgotNewPasswordPageState extends State<ForgotNewPasswordPage> {
       onTap: () => FocusScope.of(context).unfocus(),
       behavior: HitTestBehavior.opaque,
       child: Scaffold(
-        backgroundColor: AppColors.primary,
+        backgroundColor: const Color(0xFFF8F8FC),
         body: Column(
           children: [
             const _ForgotNewPasswordHero(),

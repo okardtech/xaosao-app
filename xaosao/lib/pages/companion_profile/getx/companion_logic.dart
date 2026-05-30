@@ -1,6 +1,9 @@
 import 'package:get/get.dart';
+import 'package:xaosao/models/Recommended_model.dart';
 import 'package:xaosao/models/service_model.dart';
+import 'package:xaosao/repository/discover_repo.dart';
 import 'package:xaosao/repository/review_repo.dart';
+import 'package:xaosao/services/storage_service.dart';
 import '../../../models/model_available.dart';
 import 'companion_state.dart';
 
@@ -9,10 +12,14 @@ class CompanionLogic extends GetxController {
   CompanionLogic({required this.modelId});
 
   final _repo = ReviewRepo();
+  final _discoverRepo = DiscoverRepo();
   final Rx<CompanionState> _state = const CompanionState().obs;
 
   CompanionState get state => _state.value;
   Rx<CompanionState> get rxState => _state;
+
+  final RxBool chatLoading = false.obs;
+  final RxBool friendLoading = false.obs;
 
   static const _limit = 10;
   bool _loadingReviews = false;
@@ -20,10 +27,30 @@ class CompanionLogic extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    loadProfile();
     loadServices();
     loadReviews(refresh: true);
   }
 
+  // ── Profile ────────────────────────────────────────────────────
+  Future<void> loadProfile() async {
+    _update(state.copyWith(profileStatus: CompanionLoadStatus.loading));
+    try {
+      final res = await _discoverRepo.getRecommendedById(modelId: modelId);
+      if (res.success && res.data != null) {
+        _update(state.copyWith(
+          profile: res.data,
+          profileStatus: CompanionLoadStatus.success,
+        ));
+      } else {
+        _update(state.copyWith(profileStatus: CompanionLoadStatus.failure));
+      }
+    } catch (_) {
+      _update(state.copyWith(profileStatus: CompanionLoadStatus.failure));
+    }
+  }
+
+  // ── Services ───────────────────────────────────────────────────
   Future<void> loadServices() async {
     _update(state.copyWith(servicesStatus: CompanionLoadStatus.loading));
     try {
@@ -41,6 +68,7 @@ class CompanionLogic extends GetxController {
     }
   }
 
+  // ── Reviews ────────────────────────────────────────────────────
   Future<void> loadReviews({bool refresh = false}) async {
     if (_loadingReviews) return;
     if (!refresh && !state.reviewHasMore) return;
@@ -78,6 +106,7 @@ class CompanionLogic extends GetxController {
     }
   }
 
+  // ── Service selection ──────────────────────────────────────────
   void selectService(String serviceId) {
     if (state.selectedServiceId == serviceId) {
       _update(state.copyWith(clearSelectedService: true));
@@ -89,6 +118,7 @@ class CompanionLogic extends GetxController {
   ModelAvailable? get selectedService =>
       state.services.firstWhereOrNull((s) => s.id == state.selectedServiceId);
 
+  // ── Review submit ──────────────────────────────────────────────
   Future<bool> submitReview({
     required double rating,
     required String title,
@@ -108,6 +138,41 @@ class CompanionLogic extends GetxController {
       return false;
     } catch (_) {
       return false;
+    }
+  }
+
+  // ── Friend toggle ──────────────────────────────────────────────
+  Future<void> toggleFriend() async {
+    if (friendLoading.value) return;
+    final profile = state.profile;
+    if (profile == null) return;
+
+    final wasFriend = profile.isFriend ?? false;
+    final count = profile.friendsCount ?? 0;
+    _update(state.copyWith(
+      profile: profile.copyWith(
+        isFriend: !wasFriend,
+        friendsCount: wasFriend ? (count - 1).clamp(0, 999999) : count + 1,
+      ),
+    ));
+    friendLoading.value = true;
+    try {
+      final isClient =
+          Get.find<StorageService>().read<String>('role') == 'customer';
+      final res = wasFriend
+          ? await _repo.unFriend(isClient: isClient, id: profile.id ?? '')
+          : await _repo.addFriend(isClient: isClient, id: profile.id ?? '');
+      if (!res.success) {
+        _update(state.copyWith(
+          profile: profile.copyWith(isFriend: wasFriend, friendsCount: count),
+        ));
+      }
+    } catch (_) {
+      _update(state.copyWith(
+        profile: profile.copyWith(isFriend: wasFriend, friendsCount: count),
+      ));
+    } finally {
+      friendLoading.value = false;
     }
   }
 

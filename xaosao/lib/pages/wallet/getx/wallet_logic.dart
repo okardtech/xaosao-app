@@ -21,10 +21,10 @@ class WalletLogic extends GetxController {
 
   Future<void> refresh() async {
     if (!isCustomer) return;
-    await Future.wait([_fetchWallet(), _fetchTransactions(reset: true)]);
+    await Future.wait([fetchWallet(), _fetchTransactions(reset: true)]);
   }
 
-  Future<void> _fetchWallet() async {
+  Future<void> fetchWallet() async {
     _state.value = state.copyWith(loadingWallet: true);
     final res = await _repo.customerWallet();
     _state.value = state.copyWith(

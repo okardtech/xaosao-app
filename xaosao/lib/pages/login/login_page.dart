@@ -44,9 +44,14 @@ class _LoginPageState extends State<LoginPage> {
     }
     FocusScope.of(context).unfocus();
     await Get.find<LoginLogic>().login(
-      phone: '${_phoneCtrl.text.trim()}',
+      phone: _phoneCtrl.text.trim(),
       password: _passCtrl.text,
     );
+    // On failure, restore focus to password so text stays visible and active
+    if (mounted &&
+        Get.find<LoginLogic>().state.status == LoginStatus.failure) {
+      _passFocus.requestFocus();
+    }
   }
 
   @override

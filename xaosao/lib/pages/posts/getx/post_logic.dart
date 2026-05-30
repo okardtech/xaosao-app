@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import 'package:xaosao/models/fee_model.dart';
+import 'package:xaosao/models/my_post_model.dart';
 import 'package:xaosao/pages/posts/getx/post_state.dart';
 import 'package:xaosao/repository/post_repo.dart';
 import 'package:xaosao/services/storage_service.dart';
@@ -39,12 +40,14 @@ class PostLogic extends GetxController {
     final page = refresh ? 1 : state.feedPage;
     final isFirst = refresh || page == 1;
 
-    _update(state.copyWith(
-      feedStatus: isFirst ? PostStatus.loading : PostStatus.loadingMore,
-      feed: refresh ? [] : null,
-      feedHasMore: refresh ? true : null,
-      feedPage: refresh ? 1 : null,
-    ));
+    _update(
+      state.copyWith(
+        feedStatus: isFirst ? PostStatus.loading : PostStatus.loadingMore,
+        feed: refresh ? [] : null,
+        feedHasMore: refresh ? true : null,
+        feedPage: refresh ? 1 : null,
+      ),
+    );
 
     try {
       final res = await _repo.getFee(
@@ -54,22 +57,28 @@ class PostLogic extends GetxController {
       );
       if (res.success && res.data != null) {
         final items = res.data!;
-        _update(state.copyWith(
-          feedStatus: PostStatus.success,
-          feed: [...(refresh ? <FeeModel>[] : state.feed), ...items],
-          feedHasMore: items.length >= _limit,
-          feedPage: page + 1,
-        ));
+        _update(
+          state.copyWith(
+            feedStatus: PostStatus.success,
+            feed: [...(refresh ? <FeeModel>[] : state.feed), ...items],
+            feedHasMore: items.length >= _limit,
+            feedPage: page + 1,
+          ),
+        );
       } else {
-        _update(state.copyWith(
-          feedStatus: isFirst ? PostStatus.failure : PostStatus.success,
-        ));
+        _update(
+          state.copyWith(
+            feedStatus: isFirst ? PostStatus.failure : PostStatus.success,
+          ),
+        );
         if (isFirst) AppSnackbar.error(res.laMessage ?? 'ໂຫຼດຟີດບໍ່ສຳເລັດ');
       }
     } catch (_) {
-      _update(state.copyWith(
-        feedStatus: isFirst ? PostStatus.failure : PostStatus.success,
-      ));
+      _update(
+        state.copyWith(
+          feedStatus: isFirst ? PostStatus.failure : PostStatus.success,
+        ),
+      );
       if (isFirst) AppSnackbar.error('ໂຫຼດຟີດບໍ່ສຳເລັດ');
     } finally {
       _loadingFeed = false;
@@ -88,33 +97,41 @@ class PostLogic extends GetxController {
     final page = refresh ? 1 : state.myPage;
     final isFirst = refresh || page == 1;
 
-    _update(state.copyWith(
-      myStatus: isFirst ? PostStatus.loading : PostStatus.loadingMore,
-      myPosts: refresh ? [] : null,
-      myHasMore: refresh ? true : null,
-      myPage: refresh ? 1 : null,
-    ));
+    _update(
+      state.copyWith(
+        myStatus: isFirst ? PostStatus.loading : PostStatus.loadingMore,
+        myPosts: refresh ? [] : null,
+        myHasMore: refresh ? true : null,
+        myPage: refresh ? 1 : null,
+      ),
+    );
 
     try {
       final res = await _repo.getMyPost(page: page, limit: _limit);
       if (res.success && res.data != null) {
         final items = res.data!;
-        _update(state.copyWith(
-          myStatus: PostStatus.success,
-          myPosts: [...(refresh ? [] : state.myPosts), ...items],
-          myHasMore: items.length >= _limit,
-          myPage: page + 1,
-        ));
+        _update(
+          state.copyWith(
+            myStatus: PostStatus.success,
+            myPosts: [...(refresh ? [] : state.myPosts), ...items],
+            myHasMore: items.length >= _limit,
+            myPage: page + 1,
+          ),
+        );
       } else {
-        _update(state.copyWith(
-          myStatus: isFirst ? PostStatus.failure : PostStatus.success,
-        ));
+        _update(
+          state.copyWith(
+            myStatus: isFirst ? PostStatus.failure : PostStatus.success,
+          ),
+        );
         if (isFirst) AppSnackbar.error(res.laMessage ?? 'ໂຫຼດໂພສຂ້ອຍບໍ່ສຳເລັດ');
       }
     } catch (_) {
-      _update(state.copyWith(
-        myStatus: isFirst ? PostStatus.failure : PostStatus.success,
-      ));
+      _update(
+        state.copyWith(
+          myStatus: isFirst ? PostStatus.failure : PostStatus.success,
+        ),
+      );
       if (isFirst) AppSnackbar.error('ໂຫຼດໂພສຂ້ອຍບໍ່ສຳເລັດ');
     } finally {
       _loadingMy = false;
@@ -132,8 +149,10 @@ class PostLogic extends GetxController {
 
   void setTab(int index) {
     _update(state.copyWith(tabIndex: index));
-    if (index == 0) fetchFeed(refresh: true);
-    else fetchMyPosts(refresh: true);
+    if (index == 0)
+      fetchFeed(refresh: true);
+    else
+      fetchMyPosts(refresh: true);
   }
 
   // ── Toggle Interest (optimistic) ─────────────────────────
@@ -152,10 +171,12 @@ class PostLogic extends GetxController {
       hasTip: o.hasTip,
       status: o.status,
       expiresAt: o.expiresAt,
-      interestedCount:
-          ((o.interestedCount ?? 0) + (nowOn ? 1 : -1)).clamp(0, 999999),
-      commentCount: o.commentCount,
-      giftCount: o.giftCount,
+      interestedCount: ((o.interestedCount ?? 0) + (nowOn ? 1 : -1)).clamp(
+        0,
+        999999,
+      ),
+      totalCommentCount: o.totalCommentCount,
+      totalGiftCount: o.totalGiftCount,
       isInterested: nowOn,
       createdAt: o.createdAt,
       updatedAt: o.updatedAt,
@@ -163,6 +184,63 @@ class PostLogic extends GetxController {
       service: o.service,
       location: o.location,
       targetGender: o.targetGender,
+    );
+    _update(state.copyWith(feed: patched));
+  }
+
+  // ── Optimistic count bumps (comment / gift) ──────────────────
+
+  void bumpCommentCount(String postId) {
+    final fi = state.feed.indexWhere((p) => p.id == postId);
+    if (fi != -1) {
+      final o = state.feed[fi];
+      final patched = List<FeeModel>.of(state.feed);
+      patched[fi] = FeeModel(
+        id: o.id, authorType: o.authorType, content: o.content,
+        images: o.images, hasTip: o.hasTip, status: o.status,
+        expiresAt: o.expiresAt, interestedCount: o.interestedCount,
+        totalCommentCount: (o.totalCommentCount ?? 0) + 1,
+        totalGiftCount: o.totalGiftCount, isInterested: o.isInterested,
+        createdAt: o.createdAt, updatedAt: o.updatedAt,
+        author: o.author, service: o.service,
+        location: o.location, targetGender: o.targetGender,
+      );
+      _update(state.copyWith(feed: patched));
+    }
+    final mi = state.myPosts.indexWhere((p) => p.id == postId);
+    if (mi != -1) {
+      final o = state.myPosts[mi];
+      final c = o.counts;
+      final patched = List<MyPostModel>.of(state.myPosts);
+      patched[mi] = MyPostModel(
+        id: o.id, authorType: o.authorType, content: o.content,
+        images: o.images, hasTip: o.hasTip, status: o.status,
+        expiresAt: o.expiresAt, interestedCount: o.interestedCount,
+        createdAt: o.createdAt, updatedAt: o.updatedAt, location: o.location,
+        counts: Counts(
+          interests: c?.interests,
+          comments: (c?.comments ?? 0) + 1,
+          gifts: c?.gifts,
+        ),
+      );
+      _update(state.copyWith(myPosts: patched));
+    }
+  }
+
+  void bumpGiftCount(String postId) {
+    final fi = state.feed.indexWhere((p) => p.id == postId);
+    if (fi == -1) return;
+    final o = state.feed[fi];
+    final patched = List<FeeModel>.of(state.feed);
+    patched[fi] = FeeModel(
+      id: o.id, authorType: o.authorType, content: o.content,
+      images: o.images, hasTip: o.hasTip, status: o.status,
+      expiresAt: o.expiresAt, interestedCount: o.interestedCount,
+      totalCommentCount: o.totalCommentCount,
+      totalGiftCount: (o.totalGiftCount ?? 0) + 1, isInterested: o.isInterested,
+      createdAt: o.createdAt, updatedAt: o.updatedAt,
+      author: o.author, service: o.service,
+      location: o.location, targetGender: o.targetGender,
     );
     _update(state.copyWith(feed: patched));
   }
@@ -190,10 +268,7 @@ class PostLogic extends GetxController {
               location: loc,
               hasTip: hasTip,
             )
-          : await _repo.createModelPost(
-              content: content,
-              filePath: filePath,
-            );
+          : await _repo.createModelPost(content: content, filePath: filePath);
       if (res.success) {
         AppSnackbar.info(res.laMessage ?? 'ສ້າງໂພສສຳເລັດ');
         fetchMyPosts(refresh: true);
@@ -212,6 +287,37 @@ class PostLogic extends GetxController {
     }
   }
 
+  // ── Hide my post ─────────────────────────────────────────
+
+  Future<void> hideMyPost(String postId) async {
+    showLoadingDialog();
+    try {
+      final res = await _repo.hidePost(postId: postId);
+      if (res.success) {
+        final mi = state.myPosts.indexWhere((p) => p.id == postId);
+        if (mi != -1) {
+          final o = state.myPosts[mi];
+          final patched = List<MyPostModel>.of(state.myPosts);
+          patched[mi] = MyPostModel(
+            id: o.id, authorType: o.authorType, content: o.content,
+            images: o.images, hasTip: o.hasTip, status: 'fulfilled',
+            expiresAt: o.expiresAt, interestedCount: o.interestedCount,
+            createdAt: o.createdAt, updatedAt: o.updatedAt,
+            counts: o.counts, location: o.location,
+          );
+          _update(state.copyWith(myPosts: patched));
+        }
+        AppSnackbar.info(res.laMessage ?? 'ປິດໃຊ້ງານໂພສສຳເລັດ');
+      } else {
+        AppSnackbar.error(res.laMessage ?? 'ປິດໃຊ້ງານໂພສບໍ່ສຳເລັດ');
+      }
+    } catch (_) {
+      AppSnackbar.error('ປິດໃຊ້ງານໂພສບໍ່ສຳເລັດ');
+    } finally {
+      hideLoadingDialog();
+    }
+  }
+
   // ── Delete my post ───────────────────────────────────────
 
   Future<void> deleteMyPost(String postId) async {
@@ -220,10 +326,12 @@ class PostLogic extends GetxController {
       final res = await _repo.deletePost(postId: postId);
       if (res.success) {
         // Remove from both lists so feed stays in sync
-        _update(state.copyWith(
-          myPosts: state.myPosts.where((p) => p.id != postId).toList(),
-          feed: state.feed.where((p) => p.id != postId).toList(),
-        ));
+        _update(
+          state.copyWith(
+            myPosts: state.myPosts.where((p) => p.id != postId).toList(),
+            feed: state.feed.where((p) => p.id != postId).toList(),
+          ),
+        );
         AppSnackbar.info(res.laMessage ?? "ລຶບໂພສສຳເລັດ");
       } else {
         AppSnackbar.error(res.laMessage ?? 'ລຶບໂພສບໍ່ສຳເລັດ');

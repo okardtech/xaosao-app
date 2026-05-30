@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:xaosao/constants/app_color.dart';
+import 'package:xaosao/constants/app_routes.dart';
 import 'package:xaosao/pages/posts/components/comment_sheet.dart';
 import 'package:xaosao/pages/posts/components/post_card.dart';
 import 'package:xaosao/models/service_model.dart';
@@ -18,6 +19,7 @@ import 'package:xaosao/widgets/app_button.dart';
 import 'package:xaosao/widgets/app_text_field.dart';
 import 'package:xaosao/widgets/confirm_sheet.dart';
 import 'package:xaosao/widgets/empty_state.dart';
+import 'package:xaosao/widgets/notif_badge.dart';
 
 import '../topup/topup_amount.dart';
 import '../../widgets/gift_sheet.dart';
@@ -65,10 +67,12 @@ class _PostsPageState extends State<PostsPage> {
             _buildHeader(),
             _buildSegment(),
             Expanded(
-              child: Obx(() => IndexedStack(
-                index: _logic.state.tabIndex,
-                children: [_buildFeedTab(), _buildMyPostsTab()],
-              )),
+              child: Obx(
+                () => IndexedStack(
+                  index: _logic.state.tabIndex,
+                  children: [_buildFeedTab(), _buildMyPostsTab()],
+                ),
+              ),
             ),
           ],
         ),
@@ -109,6 +113,29 @@ class _PostsPageState extends State<PostsPage> {
               ],
             ),
           ),
+          NotifBadge(
+            child: GestureDetector(
+              onTap: () => Get.toNamed(AppRoutes.notifications),
+              child: Container(
+                width: 40.r,
+                height: 40.r,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(12.r),
+                  border: Border.all(
+                    color: Colors.black.withValues(alpha: 0.07),
+                    width: 0.5,
+                  ),
+                ),
+                child: Icon(
+                  Icons.notifications_outlined,
+                  size: 18.r,
+                  color: AppColors.textPrimary,
+                ),
+              ),
+            ),
+          ),
+          SizedBox(width: 8.w),
           _WriteBtn(onTap: _showCreatePostSheet),
         ],
       ),
@@ -117,13 +144,15 @@ class _PostsPageState extends State<PostsPage> {
 
   // ── Segment control ────────────────────────────────────────
   Widget _buildSegment() {
-    return Obx(() => Padding(
-      padding: EdgeInsets.fromLTRB(20.w, 14.h, 20.w, 10.h),
-      child: _PillSwitcher(
-        index: _logic.state.tabIndex,
-        onChanged: _logic.setTab,
+    return Obx(
+      () => Padding(
+        padding: EdgeInsets.fromLTRB(20.w, 14.h, 20.w, 10.h),
+        child: _PillSwitcher(
+          index: _logic.state.tabIndex,
+          onChanged: _logic.setTab,
+        ),
       ),
-    ));
+    );
   }
 
   // ── Tab 0: ທັງໝົດ (feed) ───────────────────────────────────
@@ -131,8 +160,7 @@ class _PostsPageState extends State<PostsPage> {
     return Obx(() {
       final state = _logic.state;
       final feed = state.feed;
-      final isLoading =
-          state.feedStatus == PostStatus.loading && feed.isEmpty;
+      final isLoading = state.feedStatus == PostStatus.loading && feed.isEmpty;
 
       if (isLoading) {
         return ListView.builder(
@@ -195,22 +223,28 @@ class _PostsPageState extends State<PostsPage> {
                       postId: post.id ?? '',
                       companionName: name.isEmpty ? 'Companion' : name,
                       balanceKip: 0,
-                      onSent: (gift) => GiftSentSnackbar.show(context, gift: gift),
+                      onSent: (gift) {
+                        GiftSentSnackbar.show(gift: gift);
+                        _logic.bumpGiftCount(post.id ?? '');
+                      },
                       onTopUp: () => Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (_) => const TopUpAmountPage()),
+                        MaterialPageRoute(
+                          builder: (_) => const TopUpAmountPage(),
+                        ),
                       ),
                     );
                   },
                   onMessage: () => CommentSheet.show(
                     context,
                     postId: post.id ?? '',
-                    commentCount: post.commentCount ?? 0,
-                    onCommentAdded: () {
-                      // optimistic count bump handled inside sheet
-                    },
+                    commentCount: post.totalCommentCount ?? 0,
+                    onCommentAdded: () => _logic.bumpCommentCount(post.id ?? ''),
                   ),
-                  onBook: () {},
+                  onBook: () => Get.toNamed(
+                    AppRoutes.companionProfile,
+                    arguments: post.author?.id ?? '',
+                  ),
                   onMore: () => _showMoreSheet(isMyPost: false),
                   onTap: () {},
                 ),
@@ -233,8 +267,7 @@ class _PostsPageState extends State<PostsPage> {
     return Obx(() {
       final state = _logic.state;
       final posts = state.myPosts;
-      final isLoading =
-          state.myStatus == PostStatus.loading && posts.isEmpty;
+      final isLoading = state.myStatus == PostStatus.loading && posts.isEmpty;
 
       if (isLoading) {
         return ListView.builder(
@@ -287,8 +320,14 @@ class _PostsPageState extends State<PostsPage> {
                 child: MyPostCard(
                   post: post,
                   onDelete: () => _confirmDelete(post.id ?? ''),
-                  onHide: () {},
+                  onHide: () => _logic.hideMyPost(post.id ?? ''),
                   onTap: () {},
+                  onComment: () => CommentSheet.show(
+                    context,
+                    postId: post.id ?? '',
+                    commentCount: post.counts?.comments ?? 0,
+                    onCommentAdded: () => _logic.bumpCommentCount(post.id ?? ''),
+                  ),
                 ),
               );
             }
@@ -403,34 +442,7 @@ class _LoadMoreRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (!hasMore && !isLoadingMore) {
-      return Padding(
-        padding: EdgeInsets.symmetric(vertical: 22.h),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-              width: 22.w,
-              height: 1,
-              color: Colors.black.withValues(alpha: 0.1),
-            ),
-            SizedBox(width: 8.w),
-            Text(
-              'ສິ້ນສຸດ',
-              style: TextStyle(
-                fontSize: 11.sp,
-                color: AppColors.textHint,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-            SizedBox(width: 8.w),
-            Container(
-              width: 22.w,
-              height: 1,
-              color: Colors.black.withValues(alpha: 0.1),
-            ),
-          ],
-        ),
-      );
+      return SizedBox();
     }
 
     if (isLoadingMore) {
@@ -463,8 +475,11 @@ class _LoadMoreRow extends StatelessWidget {
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(Icons.expand_more_rounded,
-                    size: 15.r, color: AppColors.primary),
+                Icon(
+                  Icons.expand_more_rounded,
+                  size: 15.r,
+                  color: AppColors.primary,
+                ),
                 SizedBox(width: 4.w),
                 Text(
                   'ໂຫຼດເພີ່ມ',
@@ -608,8 +623,9 @@ class _PillSwitcher extends StatelessWidget {
                           duration: _dur,
                           style: TextStyle(
                             fontSize: 13.sp,
-                            fontWeight:
-                                active ? FontWeight.w800 : FontWeight.w600,
+                            fontWeight: active
+                                ? FontWeight.w800
+                                : FontWeight.w600,
                             color: active
                                 ? Colors.white
                                 : AppColors.textSecondary,
@@ -706,7 +722,9 @@ class _CreatePostSheetState extends State<_CreatePostSheet> {
   @override
   Widget build(BuildContext context) {
     final loginState = Get.find<LoginLogic>().state;
-    final displayName = loginState.displayName.isEmpty ? 'ທ່ານ' : loginState.displayName;
+    final displayName = loginState.displayName.isEmpty
+        ? 'ທ່ານ'
+        : loginState.displayName;
     final profileUrl = loginState.profileImageUrl ?? '';
     final keyboardH = MediaQuery.of(context).viewInsets.bottom;
 
@@ -759,8 +777,11 @@ class _CreatePostSheetState extends State<_CreatePostSheet> {
             ),
           ),
 
-          Divider(height: 1, thickness: 1,
-              color: Colors.black.withValues(alpha: 0.06)),
+          Divider(
+            height: 1,
+            thickness: 1,
+            color: Colors.black.withValues(alpha: 0.06),
+          ),
 
           // ── scrollable body ──────────────────────────────────
           Flexible(
@@ -800,16 +821,23 @@ class _CreatePostSheetState extends State<_CreatePostSheet> {
                             SizedBox(height: 3.h),
                             Container(
                               padding: EdgeInsets.symmetric(
-                                  horizontal: 8.w, vertical: 3.h),
+                                horizontal: 8.w,
+                                vertical: 3.h,
+                              ),
                               decoration: BoxDecoration(
-                                color: AppColors.primary.withValues(alpha: 0.07),
+                                color: AppColors.primary.withValues(
+                                  alpha: 0.07,
+                                ),
                                 borderRadius: BorderRadius.circular(20.r),
                               ),
                               child: Row(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
-                                  Icon(Icons.public_rounded,
-                                      size: 9.r, color: AppColors.primary),
+                                  Icon(
+                                    Icons.public_rounded,
+                                    size: 9.r,
+                                    color: AppColors.primary,
+                                  ),
                                   SizedBox(width: 3.w),
                                   Text(
                                     'ໂພສສາທາລະນະ',
@@ -893,10 +921,14 @@ class _CreatePostSheetState extends State<_CreatePostSheet> {
                               width: double.infinity,
                               height: 155.h,
                               decoration: BoxDecoration(
-                                color: AppColors.primary.withValues(alpha: 0.04),
+                                color: AppColors.primary.withValues(
+                                  alpha: 0.04,
+                                ),
                                 borderRadius: BorderRadius.circular(16.r),
                                 border: Border.all(
-                                  color: AppColors.primary.withValues(alpha: 0.22),
+                                  color: AppColors.primary.withValues(
+                                    alpha: 0.22,
+                                  ),
                                   width: 1.5,
                                 ),
                               ),
@@ -907,8 +939,9 @@ class _CreatePostSheetState extends State<_CreatePostSheet> {
                                     width: 50.r,
                                     height: 50.r,
                                     decoration: BoxDecoration(
-                                      color: AppColors.primary
-                                          .withValues(alpha: 0.1),
+                                      color: AppColors.primary.withValues(
+                                        alpha: 0.1,
+                                      ),
                                       shape: BoxShape.circle,
                                     ),
                                     child: Icon(
@@ -983,11 +1016,16 @@ class _CreatePostSheetState extends State<_CreatePostSheet> {
                                     width: 28.r,
                                     height: 28.r,
                                     decoration: BoxDecoration(
-                                      color: Colors.black.withValues(alpha: 0.55),
+                                      color: Colors.black.withValues(
+                                        alpha: 0.55,
+                                      ),
                                       shape: BoxShape.circle,
                                     ),
-                                    child: Icon(Icons.close_rounded,
-                                        size: 14.r, color: Colors.white),
+                                    child: Icon(
+                                      Icons.close_rounded,
+                                      size: 14.r,
+                                      color: Colors.white,
+                                    ),
                                   ),
                                 ),
                               ),
@@ -999,23 +1037,29 @@ class _CreatePostSheetState extends State<_CreatePostSheet> {
                                   onTap: _pickImage,
                                   child: Container(
                                     padding: EdgeInsets.symmetric(
-                                        horizontal: 10.w, vertical: 5.h),
+                                      horizontal: 10.w,
+                                      vertical: 5.h,
+                                    ),
                                     decoration: BoxDecoration(
-                                      color:
-                                          Colors.white.withValues(alpha: 0.15),
-                                      borderRadius:
-                                          BorderRadius.circular(20.r),
+                                      color: Colors.white.withValues(
+                                        alpha: 0.15,
+                                      ),
+                                      borderRadius: BorderRadius.circular(20.r),
                                       border: Border.all(
-                                        color: Colors.white
-                                            .withValues(alpha: 0.4),
+                                        color: Colors.white.withValues(
+                                          alpha: 0.4,
+                                        ),
                                         width: 0.8,
                                       ),
                                     ),
                                     child: Row(
                                       mainAxisSize: MainAxisSize.min,
                                       children: [
-                                        Icon(Icons.refresh_rounded,
-                                            size: 11.r, color: Colors.white),
+                                        Icon(
+                                          Icons.refresh_rounded,
+                                          size: 11.r,
+                                          color: Colors.white,
+                                        ),
                                         SizedBox(width: 4.w),
                                         Text(
                                           'ປ່ຽນຮູບ',
@@ -1074,7 +1118,9 @@ class _CreatePostSheetState extends State<_CreatePostSheet> {
                       child: AnimatedContainer(
                         duration: const Duration(milliseconds: 200),
                         padding: EdgeInsets.symmetric(
-                            horizontal: 14.w, vertical: 12.h),
+                          horizontal: 14.w,
+                          vertical: 12.h,
+                        ),
                         decoration: BoxDecoration(
                           color: _hasTip
                               ? const Color(0xFFFFF7ED)
@@ -1082,7 +1128,9 @@ class _CreatePostSheetState extends State<_CreatePostSheet> {
                           borderRadius: BorderRadius.circular(14.r),
                           border: Border.all(
                             color: _hasTip
-                                ? const Color(0xFFF59E0B).withValues(alpha: 0.35)
+                                ? const Color(
+                                    0xFFF59E0B,
+                                  ).withValues(alpha: 0.35)
                                 : Colors.black.withValues(alpha: 0.07),
                             width: 0.8,
                           ),
@@ -1157,9 +1205,7 @@ class _CreatePostSheetState extends State<_CreatePostSheet> {
             decoration: BoxDecoration(
               color: Colors.white,
               border: Border(
-                top: BorderSide(
-                  color: Colors.black.withValues(alpha: 0.06),
-                ),
+                top: BorderSide(color: Colors.black.withValues(alpha: 0.06)),
               ),
             ),
             child: Row(
@@ -1207,7 +1253,11 @@ class _AvatarPlaceholder extends StatelessWidget {
         color: AppColors.surfaceSecondary,
         shape: BoxShape.circle,
       ),
-      child: Icon(Icons.person_rounded, size: size * 0.55, color: AppColors.textHint),
+      child: Icon(
+        Icons.person_rounded,
+        size: size * 0.55,
+        color: AppColors.textHint,
+      ),
     );
   }
 }
@@ -1271,9 +1321,7 @@ class _ServicePicker extends StatelessWidget {
                           end: Alignment.bottomRight,
                         )
                       : null,
-                  color: isActive
-                      ? null
-                      : Colors.black.withValues(alpha: 0.04),
+                  color: isActive ? null : Colors.black.withValues(alpha: 0.04),
                   borderRadius: BorderRadius.circular(20.r),
                   boxShadow: isActive
                       ? [
@@ -1286,13 +1334,11 @@ class _ServicePicker extends StatelessWidget {
                       : null,
                 ),
                 child: Text(
-                  svc.name,
+                  svc.name ?? "",
                   style: TextStyle(
                     fontSize: 13.sp,
-                    fontWeight:
-                        isActive ? FontWeight.w700 : FontWeight.w500,
-                    color:
-                        isActive ? Colors.white : AppColors.textSecondary,
+                    fontWeight: isActive ? FontWeight.w700 : FontWeight.w500,
+                    color: isActive ? Colors.white : AppColors.textSecondary,
                   ),
                 ),
               ),

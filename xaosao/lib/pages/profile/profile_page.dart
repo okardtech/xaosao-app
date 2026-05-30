@@ -278,6 +278,7 @@ class _ProfilePageState extends State<ProfilePage> {
           Obx(() {
             final uploading = _profileLogic.state.profileImageUploading;
             return Container(
+              margin: EdgeInsets.only(top: 40.h),
               padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
               decoration: BoxDecoration(
                 color: Colors.white,

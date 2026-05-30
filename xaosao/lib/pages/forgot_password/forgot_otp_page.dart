@@ -104,7 +104,7 @@ class _ForgotOtpPageState extends State<ForgotOtpPage> {
       onTap: () => FocusScope.of(context).unfocus(),
       behavior: HitTestBehavior.opaque,
       child: Scaffold(
-        backgroundColor: AppColors.primary,
+        backgroundColor: const Color(0xFFF8F8FC),
         body: Column(
           children: [
             _ForgotOtpHero(phone: widget.phone),

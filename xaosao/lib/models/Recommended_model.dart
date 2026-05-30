@@ -29,6 +29,7 @@ class RecommendedModel {
   int? friendsCount;
   int? likeCount;
   bool? isLikedByMe;
+  bool? isFriend;
   bool? isOnline;
   DateTime? lastOnlineAt;
   double? distanceKm;
@@ -54,6 +55,7 @@ class RecommendedModel {
     this.friendsCount,
     this.likeCount,
     this.isLikedByMe,
+    this.isFriend,
     this.isOnline,
     this.lastOnlineAt,
     this.distanceKm,
@@ -80,6 +82,7 @@ class RecommendedModel {
     int? friendsCount,
     int? likeCount,
     bool? isLikedByMe,
+    bool? isFriend,
     bool? isOnline,
     DateTime? lastOnlineAt,
     double? distanceKm,
@@ -104,6 +107,7 @@ class RecommendedModel {
     friendsCount: friendsCount ?? this.friendsCount,
     likeCount: likeCount ?? this.likeCount,
     isLikedByMe: isLikedByMe ?? this.isLikedByMe,
+    isFriend: isFriend ?? this.isFriend,
     isOnline: isOnline ?? this.isOnline,
     lastOnlineAt: lastOnlineAt ?? this.lastOnlineAt,
     distanceKm: distanceKm ?? this.distanceKm,
@@ -141,6 +145,7 @@ class RecommendedModel {
         friendsCount: json["friendsCount"],
         likeCount: json["likeCount"],
         isLikedByMe: json["isLikedByMe"],
+        isFriend: json["isFriend"],
         isOnline: json["isOnline"],
         lastOnlineAt: json["lastOnlineAt"] == null
             ? null
@@ -170,6 +175,7 @@ class RecommendedModel {
     "friendsCount": friendsCount,
     "likeCount": likeCount,
     "isLikedByMe": isLikedByMe,
+    "isFriend": isFriend,
     "isOnline": isOnline,
     "lastOnlineAt": lastOnlineAt?.toIso8601String(),
     "distanceKm": distanceKm,

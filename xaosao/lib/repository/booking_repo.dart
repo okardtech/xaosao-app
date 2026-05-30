@@ -75,6 +75,18 @@ class BookingRepo extends BaseRepository {
     );
   }
 
+  Future<ApiResponse<MyBookingModel>> myBookingById({
+    required bool isClient,
+    required String bookingId,
+  }) {
+    String url =
+        '${isClient ? ApiConstants.booking : ApiConstants.modelBooking}/$bookingId';
+    return safeCall(
+      () => api.get(url),
+      fromJson: (json) => MyBookingModel.fromJson(json as Map<String, dynamic>),
+    );
+  }
+
   Future<ApiResponse<MyBookingActionModel>> bookingConfirmCancel({
     required bool isClient,
     required String bookingId,

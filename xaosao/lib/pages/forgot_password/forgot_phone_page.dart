@@ -55,7 +55,7 @@ class _ForgotPhonePageState extends State<ForgotPhonePage> {
       onTap: () => FocusScope.of(context).unfocus(),
       behavior: HitTestBehavior.opaque,
       child: Scaffold(
-        backgroundColor: AppColors.primary,
+        backgroundColor: const Color(0xFFF8F8FC),
         body: Column(
           children: [
             const _ForgotPhoneHero(),

@@ -137,4 +137,10 @@ class MyPost extends BaseRepository {
       fromJson: (json) => true,
     );
   }
+  Future<ApiResponse<bool>> hidePost({required String postId}) {
+    return safeCall(
+      () => api.post('${ApiConstants.myPost}/$postId/fulfill'),
+      fromJson: (json) => true,
+    );
+  }
 }

@@ -189,6 +189,7 @@ class CommentLogic extends GetxController {
       }
 
       clearReplyTo();
+      onCommentAdded?.call();
 
       try {
         final res = await _repo.createComment(

@@ -1,6 +1,8 @@
 import 'dart:async';
 
 import 'package:get/get.dart';
+import 'package:xaosao/constants/app_routes.dart';
+import 'package:xaosao/models/Recommended_model.dart';
 import 'package:xaosao/pages/view_companion/getx/view_companion_state.dart';
 import 'package:xaosao/repository/discover_repo.dart';
 import 'package:xaosao/repository/review_repo.dart';
@@ -11,7 +13,6 @@ class ViewCompanionLogic extends GetxController {
   final Rx<ViewCompanionState> _state = const ViewCompanionState().obs;
 
   ViewCompanionState get state => _state.value;
-
   Timer? _debounce;
   static const _limit = 20;
 
@@ -64,6 +65,10 @@ class ViewCompanionLogic extends GetxController {
   }
 
   void retry() => _fetchFirst();
+
+  void openProfile(RecommendedModel preview) {
+    Get.toNamed(AppRoutes.companionProfile, arguments: preview.id ?? '');
+  }
 
   Future<bool> toggleLike(String modelId) async {
     final idx = state.companions.indexWhere((m) => m.id == modelId);

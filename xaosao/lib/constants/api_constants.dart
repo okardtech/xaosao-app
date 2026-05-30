@@ -68,6 +68,10 @@ class ApiConstants {
   static const String feedback = 'feedback';
   // notification
   static const String notification = 'notifications/settings';
+  static const String myNotificaiton = 'notifications';
+  static const String notificationRead = 'notifications/read';
+  static const String notificationReadAll = 'notifications/read-all';
+  static const String notificationUnreadCount = 'notifications/unread-count';
   // reivew
   static const String addReview = 'reviews';
   static const String reviewList = 'reviews/model';
@@ -75,6 +79,8 @@ class ApiConstants {
   // like api
   static const String modelLike = 'model/interactions/customers/';
   static const String clientLike = 'customer/interactions/models/';
+  static const String modelAddFriend = 'model/interactions/friends/';
+  static const String clientAddFriend = 'customer/interactions/friends/';
   // package
   static const String package = 'customer/subscriptions/packages';
   static const String packageHistory = 'customer/subscriptions/history';
@@ -101,4 +107,8 @@ class ApiConstants {
   static const String myPost = '/posts';
   // my gift
   static const String gift = 'gifts';
+  // chat
+  static const String chatSocketUrl = 'https://api.xaosao.com/chat';
+  static const String chatConversations = 'chat/conversations';
+  static const String chatMessages = 'chat/messages';
 }

@@ -4,12 +4,13 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:xaosao/constants/app_color.dart';
 import 'package:xaosao/models/my_booking_model.dart';
-import 'package:xaosao/pages/meet_ups/booking_detail_page.dart';
+import 'package:xaosao/constants/app_routes.dart';
 import 'package:xaosao/pages/meet_ups/components/booking_card.dart';
 import 'package:xaosao/pages/meet_ups/components/cancellation_policy.dart';
 import 'package:xaosao/pages/meet_ups/getx/meet_ups_logic.dart';
 import 'package:xaosao/pages/meet_ups/getx/meet_ups_state.dart';
 import 'package:xaosao/widgets/empty_state.dart';
+import 'package:xaosao/widgets/notif_badge.dart';
 
 class MeetUpsPage extends StatefulWidget {
   const MeetUpsPage({super.key});
@@ -143,14 +144,12 @@ class _MeetUpsPageState extends State<MeetUpsPage> {
                     itemBuilder: (_, i) => BookingCard(
                       booking: all[i],
                       isCustomer: _logic.isClient,
-                      onTap: () => Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => BookingDetailPage(
-                            booking: all[i],
-                            isCustomer: _logic.isClient,
-                          ),
-                        ),
+                      onTap: () => Get.toNamed(
+                        AppRoutes.bookingDetail,
+                        arguments: {
+                          'bookingId': all[i].id ?? '',
+                          'isCustomer': _logic.isClient,
+                        },
                       ),
                     ),
                   ),
@@ -188,22 +187,50 @@ class _MeetUpsPageState extends State<MeetUpsPage> {
         ? 'ປະຫວັດການຈອງທັງໝົດ'
         : '$count ລາຍການ · ${_statusLabel(selectedStatus)}';
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+    return Row(
       children: [
-        Text(
-          'ນັດພົບ',
-          style: TextStyle(
-            fontSize: 24.sp,
-            fontWeight: FontWeight.w900,
-            color: const Color(0xFF1A1A2E),
-            letterSpacing: -0.5,
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'ນັດພົບ',
+                style: TextStyle(
+                  fontSize: 24.sp,
+                  fontWeight: FontWeight.w900,
+                  color: const Color(0xFF1A1A2E),
+                  letterSpacing: -0.5,
+                ),
+              ),
+              SizedBox(height: 2.h),
+              Text(
+                sub,
+                style: TextStyle(fontSize: 14.sp, color: const Color(0xFF9B9BAD)),
+              ),
+            ],
           ),
         ),
-        SizedBox(height: 2.h),
-        Text(
-          sub,
-          style: TextStyle(fontSize: 14.sp, color: const Color(0xFF9B9BAD)),
+        NotifBadge(
+          child: GestureDetector(
+            onTap: () => Get.toNamed(AppRoutes.notifications),
+            child: Container(
+              width: 40.r,
+              height: 40.r,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(12.r),
+                border: Border.all(
+                  color: Colors.black.withValues(alpha: 0.07),
+                  width: 0.5,
+                ),
+              ),
+              child: Icon(
+                Icons.notifications_outlined,
+                size: 18.r,
+                color: const Color(0xFF1A1A2E),
+              ),
+            ),
+          ),
         ),
       ],
     );

@@ -45,7 +45,7 @@ String _ago(DateTime? dt) {
   if (d.inMinutes < 60) return '${d.inMinutes} ນາທີກ່ອນ';
   if (d.inHours < 24) return '${d.inHours} ຊົ່ວໂມງກ່ອນ';
   if (d.inDays < 7) return '${d.inDays} ວັນ';
-  return '${(d.inDays / 7).floor()} ອທ.';
+  return '${(d.inDays / 7).floor()} ອາທິດ';
 }
 
 (Color fg, Color bg) _serviceChip(String? name) {
@@ -326,7 +326,7 @@ class PostCard extends StatelessWidget {
           // 💬 comment count
           _ActionBtn(
             icon: Icons.chat_bubble_outline_rounded,
-            count: _fmtCount(post.commentCount ?? 0),
+            count: _fmtCount(post.totalCommentCount ?? 0),
             color: AppColors.textHint,
             onTap: onMessage,
           ),
@@ -335,7 +335,7 @@ class PostCard extends StatelessWidget {
             // 🎁 gift count (model posts only — customers can tip models)
             _ActionBtn(
               icon: Icons.card_giftcard_rounded,
-              count: _fmtCount(post.giftCount ?? 0),
+              count: _fmtCount(post.totalGiftCount ?? 0),
               color: _amber,
               onTap: onGift,
             ),
@@ -364,6 +364,7 @@ class MyPostCard extends StatelessWidget {
   final VoidCallback? onDelete;
   final VoidCallback? onHide;
   final VoidCallback? onTap;
+  final VoidCallback? onComment;
 
   const MyPostCard({
     super.key,
@@ -371,6 +372,7 @@ class MyPostCard extends StatelessWidget {
     this.onDelete,
     this.onHide,
     this.onTap,
+    this.onComment,
   });
 
   String? get _firstImage {
@@ -517,10 +519,14 @@ class MyPostCard extends StatelessWidget {
                       color: AppColors.primary,
                     ),
                     SizedBox(width: 16.w),
-                    _QuickStat(
-                      icon: Icons.chat_bubble_outline_rounded,
-                      count: comments,
-                      color: AppColors.textHint,
+                    GestureDetector(
+                      onTap: onComment,
+                      behavior: HitTestBehavior.opaque,
+                      child: _QuickStat(
+                        icon: Icons.chat_bubble_outline_rounded,
+                        count: comments,
+                        color: AppColors.textHint,
+                      ),
                     ),
                     SizedBox(width: 16.w),
                     _QuickStat(

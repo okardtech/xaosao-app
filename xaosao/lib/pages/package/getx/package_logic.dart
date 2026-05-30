@@ -32,7 +32,7 @@ class PackageLogic extends GetxController {
         status: PackageStatus.failure,
         error: res.message ?? 'ໂຫຼດຂໍ້ມູນບໍ່ສຳເລັດ',
       );
-      AppSnackbar.error(res.message ?? 'ໂຫຼດຂໍ້ມູນບໍ່ສຳເລັດ');
+      AppSnackbar.error(res.laMessage ?? 'ໂຫຼດຂໍ້ມູນບໍ່ສຳເລັດ');
     }
   }
 
@@ -76,7 +76,7 @@ class PackageLogic extends GetxController {
       fetchPackages();
       return true;
     }
-    AppSnackbar.error(res.message ?? 'ການຊື້ບໍ່ສຳເລັດ');
+    AppSnackbar.error(res.laMessage ?? 'ການຊື້ບໍ່ສຳເລັດ');
     return false;
   }
 
@@ -96,7 +96,7 @@ class PackageLogic extends GetxController {
       fetchPackages();
       return true;
     }
-    AppSnackbar.error(res.message ?? 'ການຊື້ບໍ່ສຳເລັດ');
+    AppSnackbar.error(res.laMessage ?? 'ການຊື້ບໍ່ສຳເລັດ');
     return false;
   }
 }

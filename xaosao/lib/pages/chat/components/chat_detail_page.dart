@@ -1,330 +1,549 @@
+import 'dart:io';
+import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'chat_model.dart';
+import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:xaosao/constants/app_color.dart';
+import 'package:xaosao/models/chat_message_model.dart';
+import 'package:xaosao/models/conversation_model.dart';
+import 'package:xaosao/pages/chat/getx/chat_logic.dart';
+import 'package:xaosao/pages/chat/getx/chat_state.dart';
+import 'package:xaosao/widgets/confirm_sheet.dart';
+import 'package:xaosao/widgets/gradient_app_bar.dart';
 
 // ═══════════════════════════════════════════════════════════════
-//  ChatDetailPage — ໜ້າ chat ລາຍລະອຽດ
+//  ChatDetailPage — real-time conversation
 // ═══════════════════════════════════════════════════════════════
 class ChatDetailPage extends StatefulWidget {
-  final ChatPreview chat;
-  const ChatDetailPage({super.key, required this.chat});
+  final String conversationId;
+  final ConversationModel conv;
+
+  const ChatDetailPage({
+    super.key,
+    required this.conversationId,
+    required this.conv,
+  });
 
   @override
   State<ChatDetailPage> createState() => _ChatDetailPageState();
 }
 
 class _ChatDetailPageState extends State<ChatDetailPage> {
-  final _inputCtrl   = TextEditingController();
-  final _scrollCtrl  = ScrollController();
-  late final List<ChatMessage> _messages;
-  bool _canSend      = false;
-  bool _isTyping     = false; // simulate other side typing
+  final _inputCtrl = TextEditingController();
+  final _scrollCtrl = ScrollController();
+  final _focusNode = FocusNode();
+  final _logic = Get.find<ChatLogic>();
+
+  bool _canSend = false;
+  bool _showEmoji = false;
+  bool _isSending = false;
+  File? _pendingImage;
+
+  static const _gradients = [
+    [Color(0xFF5C6BC0), Color(0xFF1A1A2E)],
+    [Color(0xFFf093fb), Color(0xFFc2185b)],
+    [Color(0xFF43e97b), Color(0xFF1A5276)],
+    [Color(0xFFfa709a), Color(0xFF7B1FA2)],
+    [Color(0xFF4facfe), Color(0xFF1A237E)],
+  ];
+
+  List<Color> get _gradient {
+    final idx = widget.conversationId.codeUnits
+            .fold(0, (a, b) => a + b) %
+        _gradients.length;
+    return _gradients[idx].cast<Color>();
+  }
+
+  ConversationParticipant? get _other =>
+      widget.conv.otherParticipant(_logic.myRole);
+
+  String get _partnerName => _other?.displayName ?? 'Unknown';
+  String? get _partnerImage => _other?.profileImage;
+  bool get _isOnline => _other?.isOnline ?? false;
 
   @override
   void initState() {
     super.initState();
-    _messages = List.of(mockMessages);
-    _inputCtrl.addListener(() {
-      setState(() => _canSend = _inputCtrl.text.trim().isNotEmpty);
+    _inputCtrl.addListener(() => setState(
+        () => _canSend = _inputCtrl.text.trim().isNotEmpty || _pendingImage != null));
+
+    // When keyboard appears, close emoji picker
+    _focusNode.addListener(() {
+      if (_focusNode.hasFocus && _showEmoji) {
+        setState(() => _showEmoji = false);
+      }
     });
+
     SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
       statusBarColor: Colors.transparent,
-      statusBarIconBrightness: Brightness.dark,
+      statusBarIconBrightness: Brightness.light,
     ));
-    // Scroll to bottom after first frame
-    WidgetsBinding.instance.addPostFrameCallback((_) => _scrollToBottom());
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _logic.enterConversation(widget.conversationId);
+      _scrollToBottom(animate: false);
+    });
   }
 
   @override
   void dispose() {
+    _logic.leaveConversation(widget.conversationId);
     _inputCtrl.dispose();
     _scrollCtrl.dispose();
+    _focusNode.dispose();
     super.dispose();
   }
 
-  void _scrollToBottom() {
-    if (_scrollCtrl.hasClients) {
+  // ── Emoji toggle ────────────────────────────────────────────
+  void _toggleEmoji() {
+    if (_showEmoji) {
+      setState(() => _showEmoji = false);
+      _focusNode.requestFocus();
+    } else {
+      FocusScope.of(context).unfocus();
+      Future.delayed(const Duration(milliseconds: 80), () {
+        if (mounted) setState(() => _showEmoji = true);
+      });
+    }
+  }
+
+  void _scrollToBottom({bool animate = true}) {
+    if (!_scrollCtrl.hasClients) return;
+    if (animate) {
       _scrollCtrl.animateTo(
         _scrollCtrl.position.maxScrollExtent,
         duration: const Duration(milliseconds: 300),
         curve: Curves.easeOut,
       );
+    } else {
+      _scrollCtrl.jumpTo(_scrollCtrl.position.maxScrollExtent);
     }
   }
 
-  void _sendMessage() {
-    final text = _inputCtrl.text.trim();
-    if (text.isEmpty) return;
-
+  Future<void> _pickImage() async {
+    final xFile = await ImagePicker().pickImage(
+      source: ImageSource.gallery,
+      imageQuality: 85,
+      maxWidth: 1920,
+    );
+    if (xFile == null || !mounted) return;
     setState(() {
-      _messages.add(ChatMessage(
-        id:        DateTime.now().millisecondsSinceEpoch.toString(),
-        isMe:      true,
-        type:      MessageType.text,
-        text:      text,
-        timestamp: DateTime.now(),
-        status:    MessageStatus.sent,
-      ));
+      _pendingImage = File(xFile.path);
+      _canSend = true;
     });
-    _inputCtrl.clear();
-    WidgetsBinding.instance.addPostFrameCallback((_) => _scrollToBottom());
   }
 
-  void _handleBooking(int msgIndex, bool accept) {
+  Future<void> _sendMessage() async {
+    if (_isSending) return;
+    final text = _inputCtrl.text.trim();
+    if (text.isEmpty && _pendingImage == null) return;
+
+    final imageToSend = _pendingImage;
     setState(() {
-      final msg = _messages[msgIndex];
-      _messages[msgIndex] = msg.copyWith(
-        booking: msg.booking!.copyWith(accepted: accept),
-      );
+      _isSending = true;
+      _pendingImage = null;
+      _canSend = false;
     });
+    _inputCtrl.clear();
+
+    final ok = await _logic.sendMessage(
+      widget.conversationId,
+      text,
+      imageFile: imageToSend,
+    );
+
+    if (!mounted) return;
+    setState(() => _isSending = false);
+    if (ok) {
+      WidgetsBinding.instance.addPostFrameCallback((_) => _scrollToBottom());
+    } else {
+      Get.snackbar(
+        'ສົ່ງບໍ່ສຳເລັດ', 'ກະລຸນາລອງໃໝ່',
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red.shade50,
+        colorText: Colors.red.shade700,
+        margin: EdgeInsets.all(12.r),
+        borderRadius: 12.r,
+        duration: const Duration(seconds: 2),
+      );
+    }
   }
 
   // ══════════════════════════════════════════════════════════════
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xFFF8F8FC),
-      body: SafeArea(
-        child: Column(children: [
-          _buildHeader(),
+    
+    return PopScope(
+      canPop: !_showEmoji,
+      onPopInvokedWithResult: (didPop, _) {
+        if (!didPop && _showEmoji) setState(() => _showEmoji = false);
+      },
+      child: Scaffold(
+        backgroundColor: AppColors.bg,
+        appBar: GradientAppBar(
+          title: _partnerName,
+          titleWidget: _buildAppBarTitle(),
+          expandedHeight: 62,
+        ),
+        body: Column(children: [
           Expanded(child: _buildMessageList()),
-          _buildInput(),
+          SafeArea(top: false, child: _buildInput()),
+          // Emoji picker panel — shown/hidden without remounting
+          Offstage(
+            offstage: !_showEmoji,
+            child: _buildEmojiPicker(),
+          ),
         ]),
       ),
     );
   }
 
-  // ── Header ─────────────────────────────────────────────────
-  Widget _buildHeader() {
-    final c = widget.chat;
-    return Container(
-      padding: EdgeInsets.fromLTRB(14.w, 12.h, 14.w, 12.h),
-      color: Colors.white,
-      child: Row(children: [
-        // Back
-        GestureDetector(
-          onTap: () => Navigator.pop(context),
-          child: Padding(
-            padding: EdgeInsets.only(right: 10.w),
-            child: Icon(Icons.arrow_back_ios_new_rounded,
-                size: 16.r, color: const Color(0xFF1A1A2E)),
+  // ── AppBar title widget (avatar + name + typing) ────────────
+  Widget _buildAppBarTitle() {
+    return Row(children: [
+      Stack(children: [
+        Container(
+          width: 36.r,
+          height: 36.r,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: _gradient,
+            ),
           ),
+          child: _partnerImage != null && _partnerImage!.isNotEmpty
+              ? ClipOval(
+                  child: Image.network(
+                    _partnerImage!,
+                    fit: BoxFit.cover,
+                    errorBuilder: (_, __, ___) =>
+                        _Initials(name: _partnerName, size: 13.sp),
+                  ),
+                )
+              : _Initials(name: _partnerName, size: 13.sp),
         ),
-
-        // Avatar
-        Stack(children: [
-          Container(
-            width: 38.r, height: 38.r,
+        Positioned(
+          bottom: 1,
+          right: 1,
+          child: Container(
+            width: 10.r,
+            height: 10.r,
             decoration: BoxDecoration(
+              color: _isOnline ? AppColors.online : Colors.white38,
               shape: BoxShape.circle,
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: c.gradient,
-              ),
+              border: Border.all(color: Colors.white, width: 1.5),
             ),
           ),
-          Positioned(
-            bottom: 1, right: 1,
-            child: Container(
-              width: 11.r, height: 11.r,
-              decoration: BoxDecoration(
-                color: c.isOnline
-                    ? const Color(0xFF22C55E)
-                    : const Color(0xFFD1D1E0),
-                shape: BoxShape.circle,
-                border: Border.all(color: Colors.white, width: 2),
-              ),
-            ),
-          ),
-        ]),
-        SizedBox(width: 10.w),
-
-        // Name + status
-        Expanded(
-          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Text('${c.name}, ${c.age}', style: TextStyle(
-              fontSize: 14.sp, fontWeight: FontWeight.w800,
-              color: const Color(0xFF1A1A2E), letterSpacing: -0.2,
-            )),
-            SizedBox(height: 1.h),
-            Row(children: [
-              Container(
-                width: 5.r, height: 5.r,
-                decoration: BoxDecoration(
-                  color: c.isOnline
-                      ? const Color(0xFF22C55E)
-                      : const Color(0xFFC4C4D0),
-                  shape: BoxShape.circle,
-                ),
-              ),
-              SizedBox(width: 4.w),
-              Text(c.isOnline ? 'ອອນລາຍ' : 'ອອຟລາຍ', style: TextStyle(
-                fontSize: 10.sp, fontWeight: FontWeight.w600,
-                color: c.isOnline
-                    ? const Color(0xFF22C55E)
-                    : const Color(0xFFC4C4D0),
-              )),
-            ]),
-          ]),
-        ),
-
-        // Action buttons
-        _HeaderIconBtn(
-          icon: Icons.phone_outlined,
-          onTap: () {},
-        ),
-        SizedBox(width: 6.w),
-        _HeaderIconBtn(
-          icon: Icons.more_vert_rounded,
-          onTap: () => _showMoreSheet(),
         ),
       ]),
-    );
+      SizedBox(width: 10.w),
+      Expanded(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              _partnerName,
+              style: TextStyle(
+                fontSize: 14.sp,
+                fontWeight: FontWeight.w800,
+                color: Colors.white,
+                height: 1.2,
+              ),
+            ),
+            Obx(() {
+              final ms = _logic.msgStateOf(widget.conversationId);
+              final label = ms.isPartnerTyping
+                  ? 'ກຳລັງພິມ...'
+                  : (_isOnline ? 'ອອນລາຍ' : 'ອອຟລາຍ');
+              return Text(
+                label,
+                style: TextStyle(
+                  fontSize: 10.sp,
+                  color: Colors.white.withValues(alpha: 0.85),
+                ),
+              );
+            }),
+          ],
+        ),
+      ),
+    ]);
   }
 
   // ── Message list ────────────────────────────────────────────
   Widget _buildMessageList() {
-    return ListView.builder(
-      controller: _scrollCtrl,
-      physics: const BouncingScrollPhysics(),
-      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
-      itemCount: _messages.length + (_isTyping ? 1 : 0) + 1, // +1 date divider
-      itemBuilder: (_, i) {
-        if (i == 0) return _DateDivider(label: 'ມື້ນີ້');
+    return Obx(() {
+      final ms = _logic.msgStateOf(widget.conversationId);
 
-        final msgIndex = i - 1;
-        if (_isTyping && msgIndex == _messages.length) {
-          return _TypingBubble(gradient: widget.chat.gradient);
-        }
+      if (ms.status == MsgLoadStatus.loading && ms.messages.isEmpty) {
+        return const Center(child: CircularProgressIndicator(strokeWidth: 2));
+      }
 
-        final msg = _messages[msgIndex];
-        return Padding(
-          padding: EdgeInsets.only(bottom: 4.h),
-          child: msg.type == MessageType.booking
-              ? _BookingBubble(
-                  msg: msg,
-                  onAccept: () => _handleBooking(msgIndex, true),
-                  onDecline: () => _handleBooking(msgIndex, false),
-                )
-              : _TextBubble(
-                  msg: msg,
-                  gradient: widget.chat.gradient,
-                ),
-        );
-      },
-    );
+      WidgetsBinding.instance.addPostFrameCallback((_) => _scrollToBottom());
+
+      return ListView.builder(
+        controller: _scrollCtrl,
+        physics: const BouncingScrollPhysics(),
+        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
+        itemCount: ms.messages.length + (ms.isPartnerTyping ? 1 : 0) + 1,
+        itemBuilder: (_, i) {
+          if (i == 0) return _DateDivider(label: 'ມື້ນີ້');
+
+          final msgIndex = i - 1;
+          if (ms.isPartnerTyping && msgIndex == ms.messages.length) {
+            return _TypingBubble(gradient: _gradient);
+          }
+
+          final msg = ms.messages[msgIndex];
+          final isMe = _logic.isMe(msg.senderType);
+
+          return Padding(
+            padding: EdgeInsets.only(bottom: 4.h),
+            child: _TextBubble(
+              msg: msg,
+              isMe: isMe,
+              gradient: _gradient,
+              partnerImage: _partnerImage,
+              onLongPress: () => _showMessageOptionsSheet(msg),
+            ),
+          );
+        },
+      );
+    });
   }
 
   // ── Input bar ───────────────────────────────────────────────
   Widget _buildInput() {
+    final canAct = _canSend && !_isSending;
     return Container(
       padding: EdgeInsets.fromLTRB(14.w, 10.h, 14.w, 14.h),
-      color: Colors.white,
-      child: Row(crossAxisAlignment: CrossAxisAlignment.end, children: [
-        // Attach
-        GestureDetector(
-          onTap: () {},
-          child: Container(
-            width: 34.r, height: 34.r,
-            decoration: BoxDecoration(
-              color: const Color(0xFFF8F8FC),
-              borderRadius: BorderRadius.circular(11.r),
-              border: Border.all(
-                  color: Colors.black.withOpacity(0.07), width: 0.5),
+      color: AppColors.surface,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          // ── Pending image preview ──────────────────────────
+          if (_pendingImage != null)
+            Padding(
+              padding: EdgeInsets.only(bottom: 8.h),
+              child: Row(children: [
+                Stack(children: [
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(10.r),
+                    child: Image.file(
+                      _pendingImage!,
+                      width: 64.r,
+                      height: 64.r,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                  Positioned(
+                    top: 2,
+                    right: 2,
+                    child: GestureDetector(
+                      onTap: () => setState(() {
+                        _pendingImage = null;
+                        _canSend = _inputCtrl.text.trim().isNotEmpty;
+                      }),
+                      child: Container(
+                        width: 18.r,
+                        height: 18.r,
+                        decoration: BoxDecoration(
+                          color: Colors.black.withValues(alpha: 0.6),
+                          shape: BoxShape.circle,
+                        ),
+                        child: Icon(Icons.close_rounded,
+                            size: 11.r, color: Colors.white),
+                      ),
+                    ),
+                  ),
+                ]),
+                SizedBox(width: 8.w),
+                Text('ຮູບພາບທີ່ເລືອກ',
+                    style: TextStyle(
+                        fontSize: 11.sp, color: AppColors.textHint)),
+              ]),
             ),
-            child: Icon(Icons.attach_file_rounded,
-                size: 16.r, color: const Color(0xFF9B9BAD)),
-          ),
-        ),
-        SizedBox(width: 8.w),
 
-        // Text field
-        Expanded(
-          child: Container(
-            constraints: BoxConstraints(minHeight: 36.h),
-            decoration: BoxDecoration(
-              color: const Color(0xFFF8F8FC),
-              borderRadius: BorderRadius.circular(14.r),
-              border: Border.all(
-                  color: Colors.black.withOpacity(0.08), width: 0.5),
-            ),
-            child: TextField(
-              controller: _inputCtrl,
-              maxLines: 4,
-              minLines: 1,
-              style: TextStyle(
-                  fontSize: 12.5.sp, color: const Color(0xFF1A1A2E)),
-              decoration: InputDecoration(
-                isDense: true,
-                border: InputBorder.none,
-                hintText: 'ພິມຂໍ້ຄວາມ...',
-                hintStyle: TextStyle(
-                    fontSize: 12.5.sp, color: const Color(0xFFC4C4D0)),
-                contentPadding: EdgeInsets.symmetric(
-                    horizontal: 13.w, vertical: 9.h),
+          // ── Input row ──────────────────────────────────────
+          Row(crossAxisAlignment: CrossAxisAlignment.end, children: [
+            // Emoji toggle
+            GestureDetector(
+              onTap: _toggleEmoji,
+              child: Padding(
+                padding: EdgeInsets.only(bottom: 8.h, right: 4.w),
+                child: Icon(
+                  _showEmoji
+                      ? Icons.keyboard_rounded
+                      : Icons.emoji_emotions_outlined,
+                  size: 24.r,
+                  color:
+                      _showEmoji ? AppColors.primary : AppColors.textDisabled,
+                ),
               ),
             ),
-          ),
-        ),
-        SizedBox(width: 8.w),
 
-        // Send button
-        GestureDetector(
-          onTap: _canSend ? _sendMessage : null,
-          child: AnimatedContainer(
-            duration: const Duration(milliseconds: 180),
-            width: 36.r, height: 36.r,
-            decoration: BoxDecoration(
-              color: _canSend
-                  ? const Color(0xFF1A1A2E)
-                  : const Color(0xFFE0E0E0),
-              shape: BoxShape.circle,
+            // Image picker button
+            GestureDetector(
+              onTap: _isSending ? null : _pickImage,
+              child: Padding(
+                padding: EdgeInsets.only(bottom: 8.h, right: 6.w),
+                child: Icon(
+                  Icons.image_outlined,
+                  size: 24.r,
+                  color: _pendingImage != null
+                      ? AppColors.primary
+                      : AppColors.textDisabled,
+                ),
+              ),
             ),
-            child: Icon(Icons.send_rounded,
-                size: 16.r,
-                color: _canSend
-                    ? Colors.white
-                    : const Color(0xFFC4C4D0)),
-          ),
-        ),
-      ]),
+
+            // Text field
+            Expanded(
+              child: Container(
+                constraints: BoxConstraints(minHeight: 36.h),
+                decoration: BoxDecoration(
+                  color: AppColors.bg,
+                  borderRadius: BorderRadius.circular(14.r),
+                  border: Border.all(
+                      color: Colors.black.withValues(alpha: 0.08),
+                      width: 0.5),
+                ),
+                child: TextField(
+                  controller: _inputCtrl,
+                  focusNode: _focusNode,
+                  maxLines: 4,
+                  minLines: 1,
+                  style: TextStyle(
+                      fontSize: 12.5.sp, color: AppColors.textPrimary),
+                  onChanged: (_) => _logic.onTyping(widget.conversationId),
+                  decoration: InputDecoration(
+                    isDense: true,
+                    border: InputBorder.none,
+                    hintText: 'ພິມຂໍ້ຄວາມ...',
+                    hintStyle: TextStyle(
+                        fontSize: 12.5.sp, color: AppColors.textDisabled),
+                    contentPadding: EdgeInsets.symmetric(
+                        horizontal: 13.w, vertical: 9.h),
+                  ),
+                ),
+              ),
+            ),
+            SizedBox(width: 8.w),
+
+            // Send button
+            GestureDetector(
+              onTap: canAct ? _sendMessage : null,
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 180),
+                width: 36.r,
+                height: 36.r,
+                decoration: BoxDecoration(
+                  gradient: canAct
+                      ? const LinearGradient(
+                          colors: AppColors.pinkGradient,
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        )
+                      : null,
+                  color: canAct
+                      ? null
+                      : AppColors.textDisabled.withValues(alpha: 0.3),
+                  shape: BoxShape.circle,
+                ),
+                child: _isSending
+                    ? Padding(
+                        padding: EdgeInsets.all(9.r),
+                        child: const CircularProgressIndicator(
+                            strokeWidth: 2, color: Colors.white),
+                      )
+                    : Icon(Icons.send_rounded,
+                        size: 16.r,
+                        color:
+                            canAct ? Colors.white : AppColors.textDisabled),
+              ),
+            ),
+          ]),
+        ],
+      ),
     );
   }
 
-  // ── More bottom sheet ───────────────────────────────────────
-  void _showMoreSheet() {
-    showModalBottomSheet(
-      context: context,
-      backgroundColor: Colors.white,
-      shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(top: Radius.circular(24.r))),
-      builder: (_) => SafeArea(
-        child: Padding(
-          padding: EdgeInsets.all(20.r),
-          child: Column(mainAxisSize: MainAxisSize.min, children: [
-            Container(
-              width: 36.w, height: 4.h,
-              decoration: BoxDecoration(
-                  color: const Color(0xFFE0E0E0),
-                  borderRadius: BorderRadius.circular(2.r)),
-            ),
-            SizedBox(height: 20.h),
-            _SheetRow(icon: Icons.block_outlined, label: 'ແບ໋ນຜູ້ໃຊ້',
-                onTap: () => Navigator.pop(context)),
-            _SheetRow(icon: Icons.delete_outline_rounded, label: 'ລຶບການສົນທະນາ',
-                isRed: true, onTap: () => Navigator.pop(context)),
-          ]),
+  // ── Emoji picker panel ──────────────────────────────────────
+  Widget _buildEmojiPicker() {
+    return SizedBox(
+      height: 256.h,
+      child: EmojiPicker(
+        textEditingController: _inputCtrl,
+        onEmojiSelected: (_, __) {
+          setState(() => _canSend = _inputCtrl.text.trim().isNotEmpty);
+          WidgetsBinding.instance.addPostFrameCallback((_) => _scrollToBottom());
+        },
+        config: Config(
+          height: 256.h,
+          checkPlatformCompatibility: true,
+          emojiViewConfig: EmojiViewConfig(
+            emojiSizeMax: 28 * (Platform.isIOS ? 1.2 : 1.0),
+            backgroundColor: AppColors.surface,
+          ),
+          categoryViewConfig: CategoryViewConfig(
+            backgroundColor: AppColors.surface,
+            indicatorColor: AppColors.primary,
+            iconColorSelected: AppColors.primary,
+            iconColor: AppColors.textDisabled,
+          ),
+          bottomActionBarConfig: BottomActionBarConfig(
+            backgroundColor: AppColors.surface,
+            buttonColor: AppColors.primary,
+          ),
+          searchViewConfig: SearchViewConfig(
+            backgroundColor: AppColors.surface,
+          ),
         ),
       ),
     );
+  }
+
+  // ── Message delete (long-press) ────────────────────────────
+  Future<void> _showMessageOptionsSheet(ChatMessageModel msg) async {
+    final confirmed = await ConfirmSheet.show(
+      context,
+      title: 'ລຶບຂໍ້ຄວາມ',
+      message: 'ຂໍ້ຄວາມຈະຖືກລຶບອອກຈາກຝ່າຍຂອງທ່ານເທົ່ານັ້ນ\nອີກຝ່າຍຍັງສາມາດເຫັນຂໍ້ຄວາມໄດ້',
+      confirmLabel: 'ລຶບ',
+      icon: Icons.delete_outline_rounded,
+      isDanger: true,
+    );
+    if (confirmed == true && mounted) {
+      _logic.deleteMessage(widget.conversationId, msg.id);
+    }
   }
 }
 
 // ═══════════════════════════════════════════════════════════════
 //  Sub-widgets
 // ═══════════════════════════════════════════════════════════════
+
+class _Initials extends StatelessWidget {
+  final String name;
+  final double size;
+  const _Initials({required this.name, this.size = 16});
+
+  @override
+  Widget build(BuildContext context) {
+    final initial = name.isNotEmpty ? name[0].toUpperCase() : '?';
+    return Center(
+      child: Text(initial,
+          style: TextStyle(
+              fontSize: size,
+              fontWeight: FontWeight.w800,
+              color: Colors.white)),
+    );
+  }
+}
 
 class _DateDivider extends StatelessWidget {
   final String label;
@@ -335,29 +554,44 @@ class _DateDivider extends StatelessWidget {
     return Padding(
       padding: EdgeInsets.symmetric(vertical: 10.h),
       child: Center(
-        child: Text(label, style: TextStyle(
-            fontSize: 10.sp, color: const Color(0xFFC4C4D0),
-            fontWeight: FontWeight.w600)),
+        child: Text(label,
+            style: TextStyle(
+                fontSize: 10.sp,
+                color: AppColors.textDisabled,
+                fontWeight: FontWeight.w600)),
       ),
     );
   }
 }
 
 class _TextBubble extends StatelessWidget {
-  final ChatMessage msg;
+  final ChatMessageModel msg;
+  final bool isMe;
   final List<Color> gradient;
-  const _TextBubble({required this.msg, required this.gradient});
+  final String? partnerImage;
+  final VoidCallback? onLongPress;
+
+  const _TextBubble({
+    required this.msg,
+    required this.isMe,
+    required this.gradient,
+    this.partnerImage,
+    this.onLongPress,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Row(
+    return GestureDetector(
+      onLongPress: onLongPress,
+      child: Row(
       mainAxisAlignment:
-          msg.isMe ? MainAxisAlignment.end : MainAxisAlignment.start,
+          isMe ? MainAxisAlignment.end : MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
-        if (!msg.isMe)
+        if (!isMe)
           Container(
-            width: 26.r, height: 26.r,
+            width: 26.r,
+            height: 26.r,
             margin: EdgeInsets.only(right: 6.w),
             decoration: BoxDecoration(
               shape: BoxShape.circle,
@@ -366,64 +600,74 @@ class _TextBubble extends StatelessWidget {
                   end: Alignment.bottomRight,
                   colors: gradient),
             ),
+            child: partnerImage != null && partnerImage!.isNotEmpty
+                ? ClipOval(
+                    child: Image.network(partnerImage!, fit: BoxFit.cover,
+                        errorBuilder: (_, __, ___) => const SizedBox()))
+                : null,
           ),
         Column(
-          crossAxisAlignment: msg.isMe
-              ? CrossAxisAlignment.end
-              : CrossAxisAlignment.start,
+          crossAxisAlignment:
+              isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
           children: [
             Container(
               constraints: BoxConstraints(maxWidth: 220.w),
-              padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 9.h),
+              padding:
+                  EdgeInsets.symmetric(horizontal: 12.w, vertical: 9.h),
               decoration: BoxDecoration(
-                color: msg.isMe ? const Color(0xFF1A1A2E) : Colors.white,
+                color: isMe ? AppColors.textPrimary : AppColors.surface,
                 borderRadius: BorderRadius.only(
-                  topLeft:     Radius.circular(18.r),
-                  topRight:    Radius.circular(18.r),
-                  bottomLeft:  Radius.circular(msg.isMe ? 18.r : 5.r),
-                  bottomRight: Radius.circular(msg.isMe ? 5.r : 18.r),
+                  topLeft: Radius.circular(18.r),
+                  topRight: Radius.circular(18.r),
+                  bottomLeft: Radius.circular(isMe ? 18.r : 5.r),
+                  bottomRight: Radius.circular(isMe ? 5.r : 18.r),
                 ),
-                border: msg.isMe ? null : Border.all(
-                    color: Colors.black.withOpacity(0.08), width: 0.5),
+                border: isMe
+                    ? null
+                    : Border.all(
+                        color: Colors.black.withValues(alpha: 0.08),
+                        width: 0.5),
               ),
-              child: Text(
-                msg.text ?? '',
-                style: TextStyle(
-                  fontSize: 12.5.sp, height: 1.55,
-                  color: msg.isMe
-                      ? Colors.white
-                      : const Color(0xFF1A1A2E),
-                ),
-              ),
+              child: msg.messageType == 'image' && msg.fileUrl != null
+                  ? ClipRRect(
+                      borderRadius: BorderRadius.circular(10.r),
+                      child: Image.network(msg.fileUrl!,
+                          width: 180.w, fit: BoxFit.cover))
+                  : Text(
+                      msg.messageText ?? '',
+                      style: TextStyle(
+                        fontSize: 12.5.sp,
+                        height: 1.55,
+                        color:
+                            isMe ? Colors.white : AppColors.textPrimary,
+                      ),
+                    ),
             ),
             SizedBox(height: 3.h),
             Row(children: [
-              Text(msg.timeString, style: TextStyle(
-                  fontSize: 9.sp, color: const Color(0xFF9B9BAD))),
-              if (msg.isMe) ...[
+              Text(msg.timeString,
+                  style: TextStyle(
+                      fontSize: 9.sp, color: AppColors.textHint)),
+              if (isMe) ...[
                 SizedBox(width: 3.w),
-                _TickWidget(status: msg.status),
+                _TickWidget(isRead: msg.isRead),
               ],
             ]),
           ],
         ),
       ],
+    ),
     );
   }
 }
 
 class _TickWidget extends StatelessWidget {
-  final MessageStatus status;
-  const _TickWidget({required this.status});
+  final bool isRead;
+  const _TickWidget({required this.isRead});
 
   @override
   Widget build(BuildContext context) {
-    if (status == MessageStatus.sending) {
-      return Icon(Icons.access_time_rounded,
-          size: 11.r, color: const Color(0xFFC4C4D0));
-    }
-    final isRead = status == MessageStatus.read;
-    final color  = isRead ? const Color(0xFF42A5F5) : const Color(0xFFC4C4D0);
+    final color = isRead ? const Color(0xFF42A5F5) : AppColors.textDisabled;
     return Row(mainAxisSize: MainAxisSize.min, children: [
       Icon(Icons.done_rounded, size: 12.r, color: color),
       if (isRead)
@@ -432,157 +676,6 @@ class _TickWidget extends StatelessWidget {
           child: Icon(Icons.done_rounded, size: 12.r, color: color),
         ),
     ]);
-  }
-}
-
-class _BookingBubble extends StatelessWidget {
-  final ChatMessage msg;
-  final VoidCallback onAccept;
-  final VoidCallback onDecline;
-  const _BookingBubble({
-    required this.msg,
-    required this.onAccept,
-    required this.onDecline,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final b = msg.booking!;
-    final isPending  = b.accepted == null;
-    final isAccepted = b.accepted == true;
-
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.end,
-      children: [
-        SizedBox(width: 32.r),
-        Container(
-          constraints: BoxConstraints(maxWidth: 240.w),
-          padding: EdgeInsets.all(13.r),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(16.r),
-            border: Border.all(
-                color: Colors.black.withOpacity(0.08), width: 0.5),
-          ),
-          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Text('📅 ຄຳຂໍຈອງ', style: TextStyle(
-                fontSize: 9.sp, fontWeight: FontWeight.w700,
-                color: const Color(0xFF9B9BAD), letterSpacing: 0.5)),
-            SizedBox(height: 8.h),
-
-            // Card
-            Container(
-              padding: EdgeInsets.all(10.r),
-              decoration: BoxDecoration(
-                color: const Color(0xFFF8F8FC),
-                borderRadius: BorderRadius.circular(10.r),
-                border: Border.all(
-                    color: Colors.black.withOpacity(0.07), width: 0.5),
-              ),
-              child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                Text(b.serviceName, style: TextStyle(
-                    fontSize: 12.sp, fontWeight: FontWeight.w800,
-                    color: const Color(0xFF1A1A2E))),
-                SizedBox(height: 6.h),
-                Row(children: [
-                  _BookMeta(icon: Icons.calendar_month_outlined, text: b.formattedDate),
-                  SizedBox(width: 10.w),
-                  _BookMeta(icon: Icons.access_time_rounded,
-                      text: '${b.durationHours} ຊ.ມ.'),
-                ]),
-                SizedBox(height: 6.h),
-                Text(b.formattedPrice, style: TextStyle(
-                    fontSize: 13.sp, fontWeight: FontWeight.w900,
-                    color: const Color(0xFFF06292), letterSpacing: -0.3)),
-              ]),
-            ),
-
-            SizedBox(height: 10.h),
-
-            // Buttons
-            if (isPending)
-              Row(children: [
-                Expanded(
-                  child: _BookBtn(
-                    label: 'ຍອມຮັບ', isDark: true, onTap: onAccept),
-                ),
-                SizedBox(width: 6.w),
-                Expanded(
-                  child: _BookBtn(
-                    label: 'ປະຕິເສດ', isDark: false, onTap: onDecline),
-                ),
-              ])
-            else
-              Container(
-                padding: EdgeInsets.symmetric(vertical: 8.h),
-                decoration: BoxDecoration(
-                  color: isAccepted
-                      ? const Color(0xFFEDFAF3)
-                      : const Color(0xFFF8F8FC),
-                  borderRadius: BorderRadius.circular(9.r),
-                ),
-                child: Center(
-                  child: Text(
-                    isAccepted ? '✓ ຍອມຮັບແລ້ວ' : '✕ ປະຕິເສດແລ້ວ',
-                    style: TextStyle(
-                      fontSize: 11.sp, fontWeight: FontWeight.w700,
-                      color: isAccepted
-                          ? const Color(0xFF15803D)
-                          : const Color(0xFF9B9BAD),
-                    ),
-                  ),
-                ),
-              ),
-          ]),
-        ),
-      ],
-    );
-  }
-}
-
-class _BookMeta extends StatelessWidget {
-  final IconData icon;
-  final String text;
-  const _BookMeta({required this.icon, required this.text});
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(mainAxisSize: MainAxisSize.min, children: [
-      Icon(icon, size: 11.r, color: const Color(0xFF9B9BAD)),
-      SizedBox(width: 4.w),
-      Text(text, style: TextStyle(
-          fontSize: 10.sp, color: const Color(0xFF9B9BAD))),
-    ]);
-  }
-}
-
-class _BookBtn extends StatelessWidget {
-  final String label;
-  final bool isDark;
-  final VoidCallback onTap;
-  const _BookBtn({required this.label, required this.isDark, required this.onTap});
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        height: 32.h,
-        decoration: BoxDecoration(
-          color: isDark ? const Color(0xFF1A1A2E) : const Color(0xFFF8F8FC),
-          borderRadius: BorderRadius.circular(9.r),
-          border: isDark ? null : Border.all(
-              color: Colors.black.withOpacity(0.08), width: 0.5),
-        ),
-        child: Center(
-          child: Text(label, style: TextStyle(
-            fontSize: 11.sp, fontWeight: FontWeight.w800,
-            color: isDark ? Colors.white : const Color(0xFF9B9BAD),
-          )),
-        ),
-      ),
-    );
   }
 }
 
@@ -597,7 +690,8 @@ class _TypingBubble extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
         Container(
-          width: 26.r, height: 26.r,
+          width: 26.r,
+          height: 26.r,
           margin: EdgeInsets.only(right: 6.w),
           decoration: BoxDecoration(
             shape: BoxShape.circle,
@@ -608,9 +702,10 @@ class _TypingBubble extends StatelessWidget {
           ),
         ),
         Container(
-          padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 11.h),
+          padding:
+              EdgeInsets.symmetric(horizontal: 14.w, vertical: 11.h),
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: AppColors.surface,
             borderRadius: BorderRadius.only(
               topLeft: Radius.circular(18.r),
               topRight: Radius.circular(18.r),
@@ -618,72 +713,25 @@ class _TypingBubble extends StatelessWidget {
               bottomLeft: Radius.circular(5.r),
             ),
             border: Border.all(
-                color: Colors.black.withOpacity(0.08), width: 0.5),
+                color: Colors.black.withValues(alpha: 0.08), width: 0.5),
           ),
-          child: Row(mainAxisSize: MainAxisSize.min, children: List.generate(3, (i) =>
-            Container(
-              width: 6.r, height: 6.r,
-              margin: EdgeInsets.only(right: i < 2 ? 4.w : 0),
-              decoration: const BoxDecoration(
-                  color: Color(0xFFC4C4D0), shape: BoxShape.circle),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: List.generate(
+              3,
+              (i) => Container(
+                width: 6.r,
+                height: 6.r,
+                margin: EdgeInsets.only(right: i < 2 ? 4.w : 0),
+                decoration: BoxDecoration(
+                    color: AppColors.textDisabled,
+                    shape: BoxShape.circle),
+              ),
             ),
-          )),
+          ),
         ),
       ],
     );
   }
 }
 
-class _HeaderIconBtn extends StatelessWidget {
-  final IconData icon;
-  final VoidCallback onTap;
-  const _HeaderIconBtn({required this.icon, required this.onTap});
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        width: 34.r, height: 34.r,
-        decoration: BoxDecoration(
-          color: const Color(0xFFF8F8FC),
-          borderRadius: BorderRadius.circular(11.r),
-          border: Border.all(
-              color: Colors.black.withOpacity(0.07), width: 0.5),
-        ),
-        child: Icon(icon, size: 16.r, color: const Color(0xFF1A1A2E)),
-      ),
-    );
-  }
-}
-
-class _SheetRow extends StatelessWidget {
-  final IconData icon;
-  final String label;
-  final bool isRed;
-  final VoidCallback onTap;
-
-  const _SheetRow({
-    required this.icon,
-    required this.label,
-    required this.onTap,
-    this.isRed = false,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final color = isRed ? const Color(0xFFDC2626) : const Color(0xFF1A1A2E);
-    return GestureDetector(
-      onTap: onTap,
-      child: Padding(
-        padding: EdgeInsets.symmetric(vertical: 13.h),
-        child: Row(children: [
-          Icon(icon, size: 18.r, color: color),
-          SizedBox(width: 14.w),
-          Text(label, style: TextStyle(
-              fontSize: 14.sp, fontWeight: FontWeight.w600, color: color)),
-        ]),
-      ),
-    );
-  }
-}

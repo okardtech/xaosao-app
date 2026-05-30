@@ -1,6 +1,7 @@
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:xaosao/repository/bank_repo.dart';
+import 'package:xaosao/utils/app_snackbar.dart';
 import 'package:xaosao/widgets/show_loading_alert.dart';
 import 'qr_state.dart';
 
@@ -36,11 +37,7 @@ class QrLogic extends GetxController {
     if (res.success) {
       await loadAccounts();
     } else {
-      Get.snackbar(
-        'ຜິດພາດ',
-        res.message ?? 'ເພີ່ມ QR ບໍ່ສຳເລັດ',
-        snackPosition: SnackPosition.BOTTOM,
-      );
+      AppSnackbar.error(res.laMessage ?? 'ເພີ່ມ QR ບໍ່ສຳເລັດ');
     }
   }
 
@@ -51,11 +48,7 @@ class QrLogic extends GetxController {
     if (res.success) {
       await loadAccounts();
     } else {
-      Get.snackbar(
-        'ຜິດພາດ',
-        res.message ?? 'ອັບເດດ QR ບໍ່ສຳເລັດ',
-        snackPosition: SnackPosition.BOTTOM,
-      );
+      AppSnackbar.error(res.laMessage ?? 'ອັບເດດ QR ບໍ່ສຳເລັດ');
     }
   }
 
@@ -66,11 +59,7 @@ class QrLogic extends GetxController {
     if (res.success) {
       await loadAccounts();
     } else {
-      Get.snackbar(
-        'ຜິດພາດ',
-        res.message ?? 'ລຶບ QR ບໍ່ສຳເລັດ',
-        snackPosition: SnackPosition.BOTTOM,
-      );
+      AppSnackbar.error(res.laMessage ?? 'ລຶບ QR ບໍ່ສຳເລັດ');
     }
   }
 
@@ -85,11 +74,7 @@ class QrLogic extends GetxController {
     final res = await _repo.defaultBankAccount(id);
     if (!res.success) {
       await loadAccounts();
-      Get.snackbar(
-        'ຜິດພາດ',
-        res.message ?? 'ຕັ້ງ QR ຫຼັກບໍ່ສຳເລັດ',
-        snackPosition: SnackPosition.BOTTOM,
-      );
+      AppSnackbar.error(res.laMessage ?? 'ຕັ້ງ QR ຫຼັກບໍ່ສຳເລັດ');
     }
   }
 

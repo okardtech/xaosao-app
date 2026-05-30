@@ -97,4 +97,15 @@ class DiscoverRepo extends BaseRepository {
           .toList(),
     );
   }
+
+  Future<ApiResponse<RecommendedModel>> getRecommendedById({
+    required String modelId,
+  }) async {
+    String url = '${ApiConstants.modeAvailable}/$modelId/profile';
+    return safeCall(
+      () => api.get(url),
+      authRequired: true,
+      fromJson: (json) => RecommendedModel.fromJson(json),
+    );
+  }
 }

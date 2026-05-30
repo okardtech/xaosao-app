@@ -201,7 +201,12 @@ class RegisterLogic extends GetxController {
           'role',
           isCustomer ? 'customer' : 'model',
         );
-        await Get.find<LoginLogic>().fetchProfile(isCustomer: isCustomer);
+        final loginLogic = Get.find<LoginLogic>();
+        await loginLogic.fetchProfile(isCustomer: isCustomer);
+
+        // Register FCM device token — fire-and-forget, non-critical
+        loginLogic.saveFcmToken();
+
         Get.offAllNamed(AppRoutes.dashboard);
       } else {
         AppSnackbar.success(res.laMessage ?? 'ການລົງທະບຽນສຳເລັດເເລ້ວ');

@@ -44,7 +44,7 @@ class FeedbackLogic extends GetxController {
         await loadFeedbacks();
         return true;
       }
-      AppSnackbar.error(res.message ?? 'ສົ່ງຄຳຕິຊົມບໍ່ສຳເລັດ');
+      AppSnackbar.error(res.laMessage ?? 'ສົ່ງຄຳຕິຊົມບໍ່ສຳເລັດ');
       return false;
     } catch (_) {
       hideLoadingDialog();

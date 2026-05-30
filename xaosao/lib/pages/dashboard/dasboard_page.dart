@@ -71,6 +71,7 @@ class _DashboardPageState extends State<DashboardPage> {
     return Obx(() {
       final index = _logic.state.currentIndex;
       return Scaffold(
+        backgroundColor: const Color(0xFFF8F8FC),
         body: IndexedStack(index: index, children: _pages),
         bottomNavigationBar: BottomNavigationBar(
           backgroundColor: Colors.white,

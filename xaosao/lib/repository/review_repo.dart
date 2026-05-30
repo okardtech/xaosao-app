@@ -65,4 +65,28 @@ class ReviewRepo extends BaseRepository {
       fromJson: (json) => true,
     );
   }
+
+  Future<ApiResponse<bool>> addFriend({
+    required bool isClient,
+    required String id, // customerId when !isClient, modelId when isClient
+  }) {
+    return safeCall(
+      () => api.post(
+        '${isClient ? ApiConstants.clientAddFriend : ApiConstants.modelAddFriend}$id',
+      ),
+      fromJson: (json) => true,
+    );
+  }
+
+  Future<ApiResponse<bool>> unFriend({
+    required bool isClient,
+    required String id, // customerId when !isClient, modelId when isClient
+  }) {
+    return safeCall(
+      () => api.delete(
+        '${isClient ? ApiConstants.clientAddFriend : ApiConstants.modelAddFriend}$id',
+      ),
+      fromJson: (json) => true,
+    );
+  }
 }

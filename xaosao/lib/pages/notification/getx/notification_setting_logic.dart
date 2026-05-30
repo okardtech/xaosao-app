@@ -56,7 +56,7 @@ class NotifSettingLogic extends GetxController {
 
     if (!res.success) {
       _state.value = prev;
-      AppSnackbar.error(res.message ?? 'ອັບເດດບໍ່ສຳເລັດ');
+      AppSnackbar.error(res.laMessage ?? 'ອັບເດດບໍ່ສຳເລັດ');
     }
   }
 }

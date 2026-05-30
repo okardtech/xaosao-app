@@ -225,7 +225,7 @@ class _ServicesSelectState extends State<ServicesSelect> {
                                 }
                                 _entries.refresh();
                               },
-                              label: entry.service.name,
+                              label: entry.service.name ?? "",
                               description: entry.service.description,
                               priceCtrl: entry.priceCtrl,
                               baseRate: entry.service.baseRate,

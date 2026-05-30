@@ -106,7 +106,7 @@ class _OtpPageState extends State<OtpPage> {
       onTap: () => FocusScope.of(context).unfocus(),
       behavior: HitTestBehavior.opaque,
       child: Scaffold(
-        backgroundColor: AppColors.primary,
+        backgroundColor: const Color(0xFFF8F8FC),
         body: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [

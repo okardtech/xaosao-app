@@ -31,7 +31,7 @@ class ChangePasswordLogic extends GetxController {
         Get.back();
       } else {
         status.value = ChangePasswordStatus.failure;
-        AppSnackbar.error(res.message ?? 'ປ່ຽນລະຫັດຜ່ານບໍ່ສຳເລັດ');
+        AppSnackbar.error(res.laMessage ?? 'ປ່ຽນລະຫັດຜ່ານບໍ່ສຳເລັດ');
       }
     } catch (e) {
       hideLoadingDialog();

@@ -8,7 +8,6 @@ import 'package:xaosao/pages/view_companion/components/companion_discover_card.d
 import 'package:xaosao/pages/view_companion/components/companion_discover_shimmer.dart';
 import 'package:xaosao/pages/view_companion/getx/view_companion_logic.dart';
 import 'package:xaosao/pages/view_companion/getx/view_companion_state.dart';
-import 'package:xaosao/constants/app_routes.dart';
 import 'package:xaosao/widgets/empty_state.dart';
 
 class ViewAllCompanionsPage extends StatefulWidget {
@@ -262,14 +261,11 @@ class _ViewAllCompanionsPageState extends State<ViewAllCompanionsPage> {
           (state.status == ViewCompanionStatus.loading ? 2 : 0),
       itemBuilder: (_, i) {
         if (i >= list.length) return const CompanionDiscoverShimmer();
+        final m = list[i];
         return CompanionDiscoverCard(
-          companion: list[i],
-          onTap: () => Navigator.pushNamed(
-            context,
-            AppRoutes.companionProfile,
-            arguments: list[i],
-          ),
-          onLikeTap: () => _logic.toggleLike(list[i].id ?? ''),
+          companion: m,
+          onTap: () => _logic.openProfile(m),
+          onLikeTap: () => _logic.toggleLike(m.id ?? ''),
         );
       },
     );

@@ -60,7 +60,7 @@ class ServiceManagementPage extends StatelessWidget {
               for (final svc in st.available) ...[
                 _ServiceCard(
                   service: svc,
-                  profileService: logic.getProfileService(svc.id),
+                  profileService: logic.getProfileService(svc.id ?? ""),
                   onAdd: () => _handleAdd(context, logic, svc),
                   onUpdate: (profileSvc) =>
                       _handleUpdate(context, logic, svc, profileSvc),
@@ -86,12 +86,12 @@ class ServiceManagementPage extends StatelessWidget {
   ) async {
     final rate = await _showRateSheet(
       context,
-      serviceName: svc.name,
+      serviceName: svc.name ?? "",
       billingLabel: _billingLabel(svc.billingType),
       baseRate: svc.baseRate,
     );
     if (rate == null) return;
-    await logic.addService(serviceId: svc.id, customHourlyRate: rate);
+    await logic.addService(serviceId: svc.id ?? "", customHourlyRate: rate);
   }
 
   Future<void> _handleUpdate(
@@ -102,7 +102,7 @@ class ServiceManagementPage extends StatelessWidget {
   ) async {
     final rate = await _showRateSheet(
       context,
-      serviceName: svc.name,
+      serviceName: svc.name ?? "",
       billingLabel: _billingLabel(svc.billingType),
       initialRate: profileSvc.customHourlyRate,
       baseRate: svc.baseRate,
@@ -225,7 +225,7 @@ class _CardHeader extends StatelessWidget {
               borderRadius: BorderRadius.circular(13.r),
             ),
             child: Icon(
-              _iconFor(service.name),
+              _iconFor(service.name ?? ""),
               size: 22.r,
               color: owned ? AppColors.primary : AppColors.textHint,
             ),
@@ -238,7 +238,7 @@ class _CardHeader extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  service.name,
+                  service.name ?? "",
                   style: TextStyle(
                     fontSize: 14.sp,
                     fontWeight: FontWeight.w800,
@@ -396,7 +396,7 @@ class _UnownedBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final commission = service.commission;
-    final baseRate = service.displayPrice;
+    final baseRate = service.baseRate ?? 0.0;
     final suffix = _billingLabel(service.billingType);
 
     return Column(

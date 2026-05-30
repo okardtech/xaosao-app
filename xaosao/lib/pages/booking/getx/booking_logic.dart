@@ -5,6 +5,7 @@ import 'package:xaosao/pages/booking/booking_success_page.dart';
 import 'package:xaosao/pages/booking/getx/booking_state.dart';
 import 'package:xaosao/repository/booking_repo.dart';
 import 'package:xaosao/utils/picker_date.dart' as pickers;
+import 'package:xaosao/utils/app_snackbar.dart';
 import 'package:xaosao/widgets/show_loading_alert.dart';
 
 class BookingLogic extends GetxController {
@@ -129,15 +130,7 @@ class BookingLogic extends GetxController {
         duration: const Duration(milliseconds: 400),
       );
     } else {
-      Get.snackbar(
-        'ການຈອງລົ້ມເຫຼວ',
-        res.message ?? 'ກະລຸນາລອງໃໝ່ອີກຄັ້ງ',
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: const Color(0xFFFFF1F1),
-        colorText: const Color(0xFFB91C1C),
-        margin: const EdgeInsets.all(16),
-        borderRadius: 14,
-      );
+      AppSnackbar.error(res.laMessage ?? 'ກະລຸນາລອງໃໝ່ອີກຄັ້ງ', title: 'ການຈອງລົ້ມເຫຼວ');
     }
   }
 

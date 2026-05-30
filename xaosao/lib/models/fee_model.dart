@@ -17,8 +17,8 @@ class FeeModel {
     String? status;
     DateTime? expiresAt;
     int? interestedCount;
-    int? commentCount;
-    int? giftCount;
+    int? totalCommentCount;
+    int? totalGiftCount;
     bool? isInterested;
     DateTime? createdAt;
     DateTime? updatedAt;
@@ -36,8 +36,8 @@ class FeeModel {
         this.status,
         this.expiresAt,
         this.interestedCount,
-        this.commentCount,
-        this.giftCount,
+        this.totalCommentCount,
+        this.totalGiftCount,
         this.isInterested,
         this.createdAt,
         this.updatedAt,
@@ -56,8 +56,8 @@ class FeeModel {
         status: json["status"],
         expiresAt: json["expiresAt"] == null ? null : DateTime.parse(json["expiresAt"]),
         interestedCount: json["interestedCount"],
-        commentCount: json["commentCount"],
-        giftCount: json["giftCount"],
+        totalCommentCount: json["totalCommentCount"],
+        totalGiftCount: json["totalGiftCount"],
         isInterested: json["isInterested"],
         createdAt: json["createdAt"] == null ? null : DateTime.parse(json["createdAt"]),
         updatedAt: json["updatedAt"] == null ? null : DateTime.parse(json["updatedAt"]),
@@ -76,8 +76,8 @@ class FeeModel {
         "status": status,
         "expiresAt": expiresAt?.toIso8601String(),
         "interestedCount": interestedCount,
-        "commentCount": commentCount,
-        "giftCount": giftCount,
+        "totalCommentCount": totalCommentCount,
+        "totalGiftCount": totalGiftCount,
         "isInterested": isInterested,
         "createdAt": createdAt?.toIso8601String(),
         "updatedAt": updatedAt?.toIso8601String(),

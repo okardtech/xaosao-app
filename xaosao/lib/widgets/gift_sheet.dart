@@ -628,69 +628,11 @@ class _SendButton extends StatelessWidget {
 class GiftSentSnackbar {
   GiftSentSnackbar._();
 
-  static void show(BuildContext context, {required GiftModel gift}) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        behavior: SnackBarBehavior.floating,
-        backgroundColor: const Color(0xFF1A1A2E),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-        ),
-        margin: EdgeInsets.fromLTRB(16.w, 0, 16.w, 16.h),
-        duration: const Duration(seconds: 3),
-        content: Row(
-          children: [
-            // Gift image thumbnail
-            ClipRRect(
-              borderRadius: BorderRadius.circular(8.r),
-              child: AppNetworkImage(
-                imageUrl: gift.image ?? '',
-                width: 36.r,
-                height: 36.r,
-                fit: BoxFit.cover,
-                accentColor: const Color(0xFFF06292),
-              ),
-            ),
-            SizedBox(width: 10.w),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    'ສ່ງຂອງຂວັນສຳເລັດ!',
-                    style: TextStyle(
-                      fontSize: 12.sp,
-                      fontWeight: FontWeight.w700,
-                      color: Colors.white,
-                    ),
-                  ),
-                  Text(
-                    '${gift.name ?? ''} · ${_fmtKip(gift.price)}',
-                    style: TextStyle(
-                      fontSize: 10.sp,
-                      color: Colors.white.withValues(alpha: 0.60),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Container(
-              width: 20.r,
-              height: 20.r,
-              decoration: const BoxDecoration(
-                color: Color(0xFF22C55E),
-                shape: BoxShape.circle,
-              ),
-              child: Icon(
-                Icons.check_rounded,
-                size: 12.r,
-                color: Colors.white,
-              ),
-            ),
-          ],
-        ),
-      ),
+  static void show({required GiftModel gift}) {
+    AppSnackbar.success(
+      '${gift.name ?? ''} · ${_fmtKip(gift.price)}',
+      title: 'ສ່ງຂອງຂວັນສຳເລັດ!',
     );
   }
+
 }

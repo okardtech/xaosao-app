@@ -11,6 +11,7 @@ import 'package:xaosao/pages/home/components/home_shimmer.dart';
 import 'package:xaosao/pages/home/getx/home_logic.dart';
 import 'package:xaosao/pages/home/getx/home_state.dart';
 import 'package:xaosao/widgets/app_search_field.dart';
+import 'package:xaosao/widgets/notif_badge.dart';
 
 import 'package:xaosao/constants/app_routes.dart';
 import '../view_companion/view_companions_page.dart';
@@ -136,6 +137,8 @@ class _ExplorePageState extends State<ExplorePage> {
             ],
           ),
           const Spacer(),
+          NotifBadge(child: _iconBtn(Icons.notifications_outlined, () => Get.toNamed(AppRoutes.notifications))),
+          SizedBox(width: 8.w),
           Obx(
             () => _iconBtn(
               _logic.searchOpen.value
@@ -342,15 +345,11 @@ class _ExplorePageState extends State<ExplorePage> {
                 if (i >= st.recommended.length) {
                   return const _LoadMoreCell();
                 }
+                final m = st.recommended[i];
                 return CompanionCardSmall(
-                  companion: _toCompanionModel(st.recommended[i]),
-                  onTap: () => Navigator.pushNamed(
-                    context,
-                    AppRoutes.companionProfile,
-                    arguments: st.recommended[i],
-                  ),
-                  onLikeTap: () =>
-                      _logic.toggleLike(st.recommended[i].id ?? ''),
+                  companion: _toCompanionModel(m),
+                  onTap: () => _logic.openProfile(m),
+                  onLikeTap: () => _logic.toggleLike(m.id ?? ''),
                 );
               },
             ),
@@ -377,11 +376,7 @@ class _ExplorePageState extends State<ExplorePage> {
             padding: EdgeInsets.only(right: 14.w),
             child: CompanionCardLarge(
               companion: _toCompanionModel(m),
-              onTap: () => Navigator.pushNamed(
-                context,
-                AppRoutes.companionProfile,
-                arguments: m,
-              ),
+              onTap: () => _logic.openProfile(m),
               onLikeTap: () => _logic.toggleLike(m.id ?? ''),
             ),
           );
