@@ -45,10 +45,7 @@ class ChatRepo extends BaseRepository {
     return safeCall(
       () => api.post(
         ApiConstants.chatConversations,
-        data: {
-          'recipientId': participantId,
-          "initialMessage": "Hi!",
-        },
+        data: {'recipientId': participantId, "initialMessage": "Hi!"},
       ),
       fromJson: (data) => ConversationModel.fromJson(
         data is Map<String, dynamic> ? data : <String, dynamic>{},
@@ -61,36 +58,50 @@ class ChatRepo extends BaseRepository {
     String conversationId, {
     required String content,
     io.File? file,
-  }) =>
-      safeCall(
-        () async {
-          dio_lib.MultipartFile? multipart;
-          if (file != null) {
-            multipart = await dio_lib.MultipartFile.fromFile(
-              file.path,
-              filename: p.basename(file.path),
-            );
-          }
-          final formData = dio_lib.FormData.fromMap({
-            'content': content,
-            if (multipart != null) 'file': multipart,
-          });
-          return api.post(
-            '${ApiConstants.chatConversations}/$conversationId/messages',
-            data: formData,
-          );
-        },
-        fromJson: (data) => ChatMessageModel.fromJson(
-          data is Map<String, dynamic> ? data : <String, dynamic>{},
-        ),
-        authRequired: true,
+  }) => safeCall(
+    () async {
+      dio_lib.MultipartFile? multipart;
+      if (file != null) {
+        multipart = await dio_lib.MultipartFile.fromFile(
+          file.path,
+          filename: p.basename(file.path),
+        );
+      }
+      final formData = dio_lib.FormData.fromMap({
+        'content': content,
+        if (multipart != null) 'file': multipart,
+      });
+      return api.post(
+        '${ApiConstants.chatConversations}/$conversationId/messages',
+        data: formData,
       );
+    },
+    fromJson: (data) => ChatMessageModel.fromJson(
+      data is Map<String, dynamic> ? data : <String, dynamic>{},
+    ),
+    authRequired: true,
+  );
 
   Future<ApiResponse<bool>> markRead(String conversationId) => safeCall(
     () => api.post('${ApiConstants.chatConversations}/$conversationId/read'),
     fromJson: (_) => true,
     authRequired: true,
   );
+
+  Future<ApiResponse<bool>> blockConversation(String id) => safeCall(
+    () => api.post('${ApiConstants.chatConversations}/$id/block'),
+    fromJson: (_) => true,
+    authRequired: true,
+  );
+
+  Future<ApiResponse<ConversationModel>> unblockConversation(String id) =>
+      safeCall(
+        () => api.post('${ApiConstants.chatConversations}/$id/unblock'),
+        fromJson: (data) => ConversationModel.fromJson(
+          data is Map<String, dynamic> ? data : <String, dynamic>{},
+        ),
+        authRequired: true,
+      );
 
   Future<ApiResponse<bool>> deleteConversation(String id) => safeCall(
     () => api.delete('${ApiConstants.chatConversations}/$id'),
@@ -103,4 +114,13 @@ class ChatRepo extends BaseRepository {
     fromJson: (_) => true,
     authRequired: true,
   );
+
+  Future<ApiResponse<int>> chatUnreadCount() {
+    return safeCall(
+      () => api.get(ApiConstants.chatUnreadCount),
+      fromJson: (json) =>
+          (json as Map<String, dynamic>)['unread_count'] as int? ?? 0,
+      authRequired: true,
+    );
+  }
 }

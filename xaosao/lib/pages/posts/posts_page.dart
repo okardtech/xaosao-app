@@ -1,4 +1,4 @@
-import 'dart:io';
+﻿import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -15,6 +15,7 @@ import 'package:xaosao/pages/posts/getx/post_logic.dart';
 import 'package:xaosao/pages/posts/getx/post_state.dart';
 import 'package:xaosao/repository/register_repo.dart';
 import 'package:xaosao/utils/image_picker_util.dart';
+import 'package:xaosao/utils/service_helper.dart';
 import 'package:xaosao/widgets/app_button.dart';
 import 'package:xaosao/widgets/app_text_field.dart';
 import 'package:xaosao/widgets/confirm_sheet.dart';
@@ -126,6 +127,18 @@ class _PostsPageState extends State<PostsPage> {
                     color: Colors.black.withValues(alpha: 0.07),
                     width: 0.5,
                   ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: AppColors.primary.withValues(alpha: 0.10),
+                      blurRadius: 20,
+                      offset: const Offset(0, 6),
+                    ),
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.05),
+                      blurRadius: 10,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
                 ),
                 child: Icon(
                   Icons.notifications_outlined,
@@ -1051,6 +1064,18 @@ class _CreatePostSheetState extends State<_CreatePostSheet> {
                                         ),
                                         width: 0.8,
                                       ),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: AppColors.primary.withValues(alpha: 0.10),
+                                          blurRadius: 20,
+                                          offset: const Offset(0, 6),
+                                        ),
+                                        BoxShadow(
+                                          color: Colors.black.withValues(alpha: 0.05),
+                                          blurRadius: 10,
+                                          offset: const Offset(0, 2),
+                                        ),
+                                      ],
                                     ),
                                     child: Row(
                                       mainAxisSize: MainAxisSize.min,
@@ -1334,7 +1359,7 @@ class _ServicePicker extends StatelessWidget {
                       : null,
                 ),
                 child: Text(
-                  svc.name ?? "",
+                  ServiceHelper.serviceOriginalName(svc.name),
                   style: TextStyle(
                     fontSize: 13.sp,
                     fontWeight: isActive ? FontWeight.w700 : FontWeight.w500,

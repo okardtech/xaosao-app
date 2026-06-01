@@ -29,9 +29,11 @@ class NotificationService {
   static String? _fcmToken;
   static String? get fcmToken => _fcmToken;
 
-  /// Global reactive badge. Read anywhere with:
-  ///   Obx(() => NotificationService.unreadCount.value)
+  /// Global reactive notification badge.
   static final RxInt unreadCount = 0.obs;
+
+  /// Global reactive chat unread badge.
+  static final RxInt chatUnreadCount = 0.obs;
 
   /// Fires when a foreground push arrives so NotifListLogic can refresh.
   static Function()? onNewNotification;

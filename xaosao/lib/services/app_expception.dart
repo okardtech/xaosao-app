@@ -1,10 +1,12 @@
 abstract class AppException implements Exception {
   final String message;
+  final String? laMessage;
   final int? statusCode;
   final dynamic data;
 
   const AppException({
     required this.message,
+    this.laMessage,
     this.statusCode,
     this.data,
   });
@@ -22,19 +24,36 @@ class TimeoutException extends AppException {
 }
 
 class ServerException extends AppException {
-  const ServerException({super.message = 'Server error. Please try later.', super.statusCode, super.data});
+  const ServerException({
+    super.message = 'Server error. Please try later.',
+    super.laMessage,
+    super.statusCode,
+    super.data,
+  });
 }
 
 class UnauthorizedException extends AppException {
-  const UnauthorizedException({super.message = 'Unauthorized. Please login again.', super.statusCode = 401});
+  const UnauthorizedException({
+    super.message = 'Unauthorized. Please login again.',
+    super.laMessage,
+    super.statusCode = 401,
+  });
 }
 
 class ForbiddenException extends AppException {
-  const ForbiddenException({super.message = 'You do not have permission.', super.statusCode = 403});
+  const ForbiddenException({
+    super.message = 'You do not have permission.',
+    super.laMessage,
+    super.statusCode = 403,
+  });
 }
 
 class NotFoundException extends AppException {
-  const NotFoundException({super.message = 'Resource not found.', super.statusCode = 404});
+  const NotFoundException({
+    super.message = 'Resource not found.',
+    super.laMessage,
+    super.statusCode = 404,
+  });
 }
 
 class ValidationException extends AppException {
@@ -42,6 +61,7 @@ class ValidationException extends AppException {
 
   const ValidationException({
     super.message = 'Validation failed.',
+    super.laMessage,
     super.statusCode = 422,
     this.errors,
     super.data,
@@ -49,5 +69,9 @@ class ValidationException extends AppException {
 }
 
 class UnknownException extends AppException {
-  const UnknownException({super.message = 'An unexpected error occurred.', super.statusCode});
+  const UnknownException({
+    super.message = 'An unexpected error occurred.',
+    super.laMessage,
+    super.statusCode,
+  });
 }

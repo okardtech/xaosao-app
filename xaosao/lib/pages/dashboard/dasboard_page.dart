@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:xaosao/constants/app_color.dart';
+import 'package:xaosao/services/notification_service.dart';
 import 'package:xaosao/services/storage_service.dart';
-import '../../constants/app_color.dart';
 import '../chat/chat_page.dart';
 import '../home/home_page.dart';
 import '../meet_ups/meet_ups_page.dart';
@@ -12,6 +13,46 @@ import '../posts/posts_page.dart';
 import '../profile/components/customer_profile.dart';
 import '../profile/profile_page.dart';
 import 'getx/dashboard_logic.dart';
+
+class _ChatBadgeIcon extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Obx(() {
+      final count = NotificationService.chatUnreadCount.value;
+      if (count == 0) return const Icon(Icons.article_outlined);
+      return Stack(
+        clipBehavior: Clip.none,
+        children: [
+          const Icon(Icons.article_outlined),
+          Positioned(
+            top: -4,
+            right: -4,
+            child: Container(
+              constraints: BoxConstraints(minWidth: 14.r, minHeight: 14.r),
+              padding: EdgeInsets.symmetric(horizontal: 3.w),
+              decoration: BoxDecoration(
+                color: AppColors.primary,
+                borderRadius: BorderRadius.circular(7.r),
+                border: Border.all(color: Colors.white, width: 1.5),
+              ),
+              child: Center(
+                child: Text(
+                  count > 99 ? '99+' : '$count',
+                  style: TextStyle(
+                    fontSize: 7.sp,
+                    fontWeight: FontWeight.w800,
+                    color: Colors.white,
+                    height: 1,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      );
+    });
+  }
+}
 
 class DashboardPage extends StatefulWidget {
   final int initialIndex;
@@ -85,24 +126,24 @@ class _DashboardPageState extends State<DashboardPage> {
           selectedLabelStyle: const TextStyle(fontWeight: FontWeight.w700),
           unselectedLabelStyle: const TextStyle(fontWeight: FontWeight.w500),
           elevation: 12,
-          items: const [
-            BottomNavigationBarItem(
+          items: [
+            const BottomNavigationBarItem(
               icon: Icon(Icons.explore_rounded),
               label: 'ຄົ້ນຫາ',
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.article_outlined),
+              icon: _ChatBadgeIcon(),
               label: 'ຄູ່ເເຊັດ',
             ),
-            BottomNavigationBarItem(
+            const BottomNavigationBarItem(
               icon: Icon(Icons.chat_bubble_outline_rounded),
               label: 'ນັດພົບ',
             ),
-            BottomNavigationBarItem(
+            const BottomNavigationBarItem(
               icon: Icon(Icons.post_add_outlined),
               label: 'ໂພສຫາຄູ່',
             ),
-            BottomNavigationBarItem(
+            const BottomNavigationBarItem(
               icon: Icon(Icons.person_outline_rounded),
               label: 'ໂປຮໄຟລ໌',
             ),

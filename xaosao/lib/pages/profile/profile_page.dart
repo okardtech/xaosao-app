@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -284,6 +284,18 @@ class _ProfilePageState extends State<ProfilePage> {
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(20.r),
                 border: Border.all(color: AppColors.border, width: 0.5),
+                boxShadow: [
+                  BoxShadow(
+                    color: AppColors.primary.withOpacity(0.10),
+                    blurRadius: 20,
+                    offset: const Offset(0, 6),
+                  ),
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.05),
+                    blurRadius: 10,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
               ),
               child: Column(
                 children: [
@@ -605,6 +617,18 @@ class _MenuSection extends StatelessWidget {
             color: Colors.white,
             borderRadius: BorderRadius.circular(15.r),
             border: Border.all(color: AppColors.border, width: 0.5),
+            boxShadow: [
+              BoxShadow(
+                color: AppColors.primary.withValues(alpha: 0.10),
+                blurRadius: 20,
+                offset: const Offset(0, 6),
+              ),
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.05),
+                blurRadius: 10,
+                offset: const Offset(0, 2),
+              ),
+            ],
           ),
           child: ClipRRect(
             borderRadius: BorderRadius.circular(15.r),
@@ -758,6 +782,18 @@ class _LogoutButton extends StatelessWidget {
           color: Colors.white,
           borderRadius: BorderRadius.circular(15.r),
           border: Border.all(color: AppColors.border, width: 0.5),
+          boxShadow: [
+            BoxShadow(
+              color: AppColors.primary.withValues(alpha: 0.10),
+              blurRadius: 20,
+              offset: const Offset(0, 6),
+            ),
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.05),
+              blurRadius: 10,
+              offset: const Offset(0, 2),
+            ),
+          ],
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,

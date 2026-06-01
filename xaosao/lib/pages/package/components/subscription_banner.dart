@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -391,6 +391,18 @@ class _GradientHeader extends StatelessWidget {
                   decoration: BoxDecoration(
                     color: Colors.white.withValues(alpha: 0.20),
                     borderRadius: BorderRadius.circular(14.r),
+                    boxShadow: [
+                      BoxShadow(
+                        color: AppColors.primary.withValues(alpha: 0.10),
+                        blurRadius: 20,
+                        offset: const Offset(0, 6),
+                      ),
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: 0.05),
+                        blurRadius: 10,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
                   ),
                   child: Icon(
                     Icons.bolt_rounded,
@@ -933,6 +945,18 @@ class _PendingHeader extends StatelessWidget {
                   decoration: BoxDecoration(
                     color: Colors.white.withValues(alpha: 0.20),
                     borderRadius: BorderRadius.circular(14.r),
+                    boxShadow: [
+                      BoxShadow(
+                        color: AppColors.primary.withValues(alpha: 0.10),
+                        blurRadius: 20,
+                        offset: const Offset(0, 6),
+                      ),
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: 0.05),
+                        blurRadius: 10,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
                   ),
                   child: Icon(
                     Icons.hourglass_top_rounded,

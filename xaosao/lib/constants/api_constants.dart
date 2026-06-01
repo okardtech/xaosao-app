@@ -107,8 +107,11 @@ class ApiConstants {
   static const String myPost = '/posts';
   // my gift
   static const String gift = 'gifts';
+  // location
+  static const String meLocation = 'me/location';
   // chat
   static const String chatSocketUrl = 'https://api.xaosao.com/chat';
   static const String chatConversations = 'chat/conversations';
   static const String chatMessages = 'chat/messages';
+  static const String chatUnreadCount = 'chat/unread-count';
 }

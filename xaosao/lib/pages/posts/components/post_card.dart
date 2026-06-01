@@ -4,6 +4,7 @@ import 'package:shimmer/shimmer.dart';
 import 'package:xaosao/constants/app_color.dart';
 import 'package:xaosao/models/fee_model.dart';
 import 'package:xaosao/models/my_post_model.dart';
+import 'package:xaosao/utils/service_helper.dart';
 import 'package:xaosao/widgets/app_network_image.dart';
 
 // ─────────────────────────────────────────────────────────────
@@ -112,11 +113,20 @@ class PostCard extends StatelessWidget {
         decoration: BoxDecoration(
           color: AppColors.surface,
           borderRadius: BorderRadius.circular(22.r),
+          border: Border.all(
+            color: Colors.black.withValues(alpha: 0.07),
+            width: 0.5,
+          ),
           boxShadow: [
             BoxShadow(
+              color: AppColors.primary.withValues(alpha: 0.10),
+              blurRadius: 20,
+              offset: const Offset(0, 6),
+            ),
+            BoxShadow(
               color: Colors.black.withValues(alpha: 0.05),
-              blurRadius: 14,
-              offset: const Offset(0, 4),
+              blurRadius: 10,
+              offset: const Offset(0, 2),
             ),
           ],
         ),
@@ -231,7 +241,9 @@ class PostCard extends StatelessWidget {
     final content = post.content ?? '';
     final gender = post.targetGender;
     final location = post.location;
-    final serviceName = post.service?.name;
+    final serviceName = post.service?.name == null
+        ? null
+        : ServiceHelper.serviceOriginalName(post.service!.name);
 
     final hasContent = content.isNotEmpty;
     final hasChips =
@@ -405,14 +417,14 @@ class MyPostCard extends StatelessWidget {
           ),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withValues(alpha: 0.05),
-              blurRadius: 18,
+              color: AppColors.primary.withValues(alpha: 0.10),
+              blurRadius: 20,
               offset: const Offset(0, 6),
             ),
             BoxShadow(
-              color: Colors.black.withValues(alpha: 0.02),
-              blurRadius: 4,
-              offset: const Offset(0, 1),
+              color: Colors.black.withValues(alpha: 0.05),
+              blurRadius: 10,
+              offset: const Offset(0, 2),
             ),
           ],
         ),

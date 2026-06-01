@@ -615,7 +615,7 @@ class _TextBubble extends StatelessWidget {
               padding:
                   EdgeInsets.symmetric(horizontal: 12.w, vertical: 9.h),
               decoration: BoxDecoration(
-                color: isMe ? AppColors.textPrimary : AppColors.surface,
+                color: isMe ? AppColors.primary : AppColors.surface,
                 borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(18.r),
                   topRight: Radius.circular(18.r),
@@ -647,7 +647,7 @@ class _TextBubble extends StatelessWidget {
             Row(children: [
               Text(msg.timeString,
                   style: TextStyle(
-                      fontSize: 9.sp, color: AppColors.textHint)),
+                      fontSize: 12.sp, color: AppColors.textSecondary)),
               if (isMe) ...[
                 SizedBox(width: 3.w),
                 _TickWidget(isRead: msg.isRead),

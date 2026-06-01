@@ -69,6 +69,10 @@ class RegisterLogic extends GetxController {
     required String password,
     String? address,
   }) async {
+    if (state.avatarFile == null) {
+      AppSnackbar.error('ກະລຸນາເລືອກຮູບໂປຮໄຟລ໌');
+      return;
+    }
     _updateState(state.copyWith(status: RegisterStatus.loading));
     showLoadingDialog();
     try {

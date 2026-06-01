@@ -57,6 +57,7 @@ dependencies:
   flutter_chat_ui: ^2.11.1
   socket_io_client: ^3.1.4
   emoji_picker_flutter: ^4.4.0
+  geolocator: ^14.0.2
 
 dev_dependencies:
   flutter_test:

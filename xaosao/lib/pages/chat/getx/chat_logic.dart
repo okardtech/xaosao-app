@@ -8,6 +8,7 @@ import 'package:xaosao/pages/chat/getx/chat_state.dart';
 import 'package:xaosao/pages/login/getx/login_logic.dart';
 import 'package:xaosao/repository/chat_repo.dart';
 import 'package:xaosao/services/chat_socket_service.dart';
+import 'package:xaosao/services/notification_service.dart';
 import 'package:xaosao/services/storage_service.dart';
 
 class ChatLogic extends GetxController {
@@ -19,7 +20,10 @@ class ChatLogic extends GetxController {
   // ── Conversation list state ────────────────────────────────
   final Rx<ChatState> _state = const ChatState().obs;
   ChatState get state => _state.value;
-  void _updateState(ChatState s) => _state.value = s;
+  void _updateState(ChatState s) {
+    _state.value = s;
+    NotificationService.chatUnreadCount.value = totalUnread;
+  }
 
   // ── Per-conversation message state ─────────────────────────
   final RxMap<String, MsgState> _convStates = <String, MsgState>{}.obs;
@@ -322,18 +326,43 @@ class ChatLogic extends GetxController {
     });
   }
 
-  // ── Delete conversation ────────────────────────────────────
+  // ── Block / Unblock conversation ──────────────────────────────
 
-  Future<bool> deleteConversation(String conversationId) async {
-    final res = await _repo.deleteConversation(conversationId);
+  Future<bool> blockConversation(String conversationId) async {
+    final res = await _repo.blockConversation(conversationId);
     if (res.success) {
-      final updated = state.conversations
-          .where((c) => c.id != conversationId)
-          .toList();
-      _updateState(state.copyWith(conversations: updated));
+      await fetchConversations();
       return true;
     }
     return false;
+  }
+
+  Future<bool> unblockConversation(String conversationId) async {
+    final res = await _repo.unblockConversation(conversationId);
+    if (res.success) {
+      await fetchConversations();
+      return true;
+    }
+    return false;
+  }
+
+  // ── Delete conversation ────────────────────────────────────
+
+  Future<bool> deleteConversation(String conversationId) async {
+    // Optimistic remove — keep a backup in case the API fails
+    final backup = List<ConversationModel>.from(state.conversations);
+    _updateState(state.copyWith(
+      conversations: state.conversations
+          .where((c) => c.id != conversationId)
+          .toList(),
+    ));
+
+    final res = await _repo.deleteConversation(conversationId);
+    if (!res.success) {
+      _updateState(state.copyWith(conversations: backup));
+      return false;
+    }
+    return true;
   }
 
   // ── Delete message (per-side soft delete) ──────────────────

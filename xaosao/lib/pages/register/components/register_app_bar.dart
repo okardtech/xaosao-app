@@ -107,10 +107,10 @@ class RegisterAppBar extends StatelessWidget implements PreferredSizeWidget {
                 ],
               ),
 
-              const SizedBox(height: 14),
+              // const SizedBox(height: 14),
 
               // ── Row 2: step indicators ──────────────────────────────────────
-              StepIndicatorRow(steps: steps, currentStep: currentStep),
+              // StepIndicatorRow(steps: steps, currentStep: currentStep),
             ],
           ),
         ),

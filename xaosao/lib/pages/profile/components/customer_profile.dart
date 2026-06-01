@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:xaosao/constants/app_routes.dart';
@@ -16,6 +16,7 @@ import 'package:xaosao/services/storage_service.dart';
 import 'package:intl/intl.dart';
 import '../../../constants/app_color.dart';
 import '../../../widgets/gradient_app_bar.dart';
+import '../../chat/getx/chat_logic.dart';
 import '../../package/getx/package_logic.dart';
 import '../../wallet/getx/wallet_logic.dart';
 
@@ -48,12 +49,11 @@ class _CustomerProfilePageState extends State<CustomerProfilePage> {
       // ),
       body: SafeArea(
         child: CustomScrollView(
-          
           physics: const BouncingScrollPhysics(),
           slivers: [
             // ── Hero ─────────────────────────────────────────
             SliverToBoxAdapter(child: _buildHero()),
-        
+
             // ── Body ─────────────────────────────────────────
             SliverPadding(
               padding: EdgeInsets.fromLTRB(16.w, 14.h, 16.w, 40.h),
@@ -98,7 +98,7 @@ class _CustomerProfilePageState extends State<CustomerProfilePage> {
                       ],
                     );
                   }),
-        
+
                   // ──────────────────────────────────────────
                   const ProfileSectionLabel('ຂໍ້ມູນ'),
                   ProfileGroup(
@@ -109,8 +109,10 @@ class _CustomerProfilePageState extends State<CustomerProfilePage> {
                         icon: Icons.person_outline_rounded,
                         label: 'ຂໍ້ມູນສ່ວນຕົວ',
                         sub: 'ຊື່, ນາມສະກຸນ, ວັນເດືອນປີ',
-                        onTap: () =>
-                            Get.toNamed(AppRoutes.profileDetail, arguments: true),
+                        onTap: () => Get.toNamed(
+                          AppRoutes.profileDetail,
+                          arguments: true,
+                        ),
                       ),
                       ProfileMenuRow(
                         iconBg: const Color(0xFFFFF0F6),
@@ -130,11 +132,12 @@ class _CustomerProfilePageState extends State<CustomerProfilePage> {
                     ],
                   ),
                   SizedBox(height: 12.h),
-        
+
                   // ──────────────────────────────────────────
                   const ProfileSectionLabel('ຄວາມປອດໄພ'),
                   Obx(() {
-                    final customer = Get.find<LoginLogic>().state.customerProfile;
+                    final customer =
+                        Get.find<LoginLogic>().state.customerProfile;
                     return ProfileGroup(
                       children: [
                         ProfileMenuRow(
@@ -165,7 +168,7 @@ class _CustomerProfilePageState extends State<CustomerProfilePage> {
                     );
                   }),
                   SizedBox(height: 12.h),
-        
+
                   // ──────────────────────────────────────────
                   const ProfileSectionLabel('ຕັ້ງຄ່າ'),
                   ProfileGroup(
@@ -176,7 +179,8 @@ class _CustomerProfilePageState extends State<CustomerProfilePage> {
                         icon: Icons.notifications_none_rounded,
                         label: 'ການແຈ້ງເຕືອນ',
                         sub: 'Push, ອີເມລ, SMS, WhatsApp',
-                        onTap: () => Get.toNamed(AppRoutes.notificationSettings),
+                        onTap: () =>
+                            Get.toNamed(AppRoutes.notificationSettings),
                       ),
                       ProfileMenuRow(
                         iconBg: AppColors.bg,
@@ -189,7 +193,7 @@ class _CustomerProfilePageState extends State<CustomerProfilePage> {
                     ],
                   ),
                   SizedBox(height: 12.h),
-        
+
                   // ──────────────────────────────────────────
                   const ProfileSectionLabel('ຊ່ວຍເຫຼືອ'),
                   ProfileGroup(
@@ -212,7 +216,7 @@ class _CustomerProfilePageState extends State<CustomerProfilePage> {
                     ],
                   ),
                   SizedBox(height: 12.h),
-        
+
                   // ──────────────────────────────────────────
                   ProfileGroup(
                     children: [
@@ -228,10 +232,10 @@ class _CustomerProfilePageState extends State<CustomerProfilePage> {
                     ],
                   ),
                   SizedBox(height: 20.h),
-        
+
                   LogoutButton(onTap: () => _logout(context)),
                   SizedBox(height: 12.h),
-        
+
                   const Center(
                     child: Text(
                       'XAOSAO v1.0.0',
@@ -262,6 +266,18 @@ class _CustomerProfilePageState extends State<CustomerProfilePage> {
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(20.r),
           color: Colors.white,
+          boxShadow: [
+            BoxShadow(
+              color: AppColors.primary.withOpacity(0.10),
+              blurRadius: 20,
+              offset: const Offset(0, 6),
+            ),
+            BoxShadow(
+              color: Colors.black.withOpacity(0.05),
+              blurRadius: 10,
+              offset: const Offset(0, 2),
+            ),
+          ],
         ),
         child: SafeArea(
           bottom: false,
@@ -456,6 +472,7 @@ class _CustomerProfilePageState extends State<CustomerProfilePage> {
     Get.delete<NotifSettingLogic>(force: true);
     Get.delete<WalletLogic>(force: true);
     Get.delete<PackageLogic>(force: true);
+    Get.delete<ChatLogic>(force: true);
   }
 }
 
@@ -487,140 +504,134 @@ class _WalletCard extends StatelessWidget {
   }
 
   Widget _buildCard(String bal) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(20.r),
-      ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(18.r),
-        child: Stack(
-          children: [
-            Positioned(
-              top: -20,
-              right: -10,
-              child: Container(
-                width: 80,
-                height: 80,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: AppColors.bg.withAlpha(100),
-                ),
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(18.r),
+      child: Stack(
+        children: [
+          Positioned(
+            top: -20,
+            right: -10,
+            child: Container(
+              width: 80,
+              height: 80,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: AppColors.bg.withAlpha(100),
               ),
             ),
-            Positioned(
-              bottom: -28,
-              left: -10,
-              child: Container(
-                width: 90,
-                height: 90,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: AppColors.bg.withAlpha(100),
-                ),
+          ),
+          Positioned(
+            bottom: -28,
+            left: -10,
+            child: Container(
+              width: 90,
+              height: 90,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: AppColors.bg.withAlpha(100),
               ),
             ),
-            Padding(
-              padding: EdgeInsets.only(left: 14.w, right: 14.w, top: 6.h),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Text(
-                        'ກະເປົ໋າເງິນ ຍອດຄົງເຫຼືອ',
-                        style: TextStyle(
-                          fontSize: 12.sp,
-                          color: AppColors.textHint,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                      const Spacer(),
-                      GestureDetector(
-                        onTap: onToggle,
-                        child: Container(
-                          width: 26.r,
-                          height: 26.r,
-                          decoration: BoxDecoration(
-                            color: AppColors.border,
-                            borderRadius: BorderRadius.circular(7.r),
-                          ),
-                          child: Icon(
-                            showAmounts
-                                ? Icons.visibility_outlined
-                                : Icons.visibility_off_outlined,
-                            size: 16.r,
-                            color: AppColors.textSecondary,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 6.h),
-                  AnimatedSwitcher(
-                    duration: const Duration(milliseconds: 200),
-                    child: Text(
-                      showAmounts ? bal : _mask(bal),
-                      key: ValueKey(showAmounts),
+          ),
+          Padding(
+            padding: EdgeInsets.only(left: 14.w, right: 14.w, top: 6.h),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Text(
+                      'ກະເປົ໋າເງິນ ຍອດຄົງເຫຼືອ',
                       style: TextStyle(
-                        fontSize: 24.sp,
-                        fontWeight: FontWeight.w900,
-                        color: AppColors.primary,
-                        letterSpacing: -0.6,
+                        fontSize: 12.sp,
+                        color: AppColors.textSecondary,
+                        fontWeight: FontWeight.w600,
                       ),
                     ),
+                    const Spacer(),
+                    GestureDetector(
+                      onTap: onToggle,
+                      child: Container(
+                        width: 26.r,
+                        height: 26.r,
+                        decoration: BoxDecoration(
+                          color: AppColors.border,
+                          borderRadius: BorderRadius.circular(7.r),
+                        ),
+                        child: Icon(
+                          showAmounts
+                              ? Icons.visibility_outlined
+                              : Icons.visibility_off_outlined,
+                          size: 16.r,
+                          color: AppColors.textSecondary,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 6.h),
+                AnimatedSwitcher(
+                  duration: const Duration(milliseconds: 200),
+                  child: Text(
+                    showAmounts ? bal : _mask(bal),
+                    key: ValueKey(showAmounts),
+                    style: TextStyle(
+                      fontSize: 24.sp,
+                      fontWeight: FontWeight.w900,
+                      color: AppColors.primary,
+                      letterSpacing: -0.6,
+                    ),
                   ),
-                  SizedBox(height: 6.h),
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 16.w),
-                    child: Row(
-                      spacing: 12.w,
-                      children: List.generate(2, (index) {
-                        return Expanded(
-                          child: GestureDetector(
-                            onTap: onTopUp,
-                            child: Container(
-                              padding: EdgeInsets.symmetric(vertical: 12.h),
-                              decoration: BoxDecoration(
-                                color: AppColors.bg,
-                                borderRadius: BorderRadius.circular(10.r),
-                                border: Border.all(
-                                  color: Colors.white.withValues(alpha: 0.18),
-                                  width: 0.5,
-                                ),
-                              ),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Icon(
-                                    index == 0
-                                        ? Icons.arrow_outward_rounded
-                                        : Icons.trending_up_rounded,
-                                    size: 14.r,
-                                    color: AppColors.primary,
-                                  ),
-                                  SizedBox(width: 5.w),
-                                  Text(
-                                    index == 0 ? 'ເຕີມເງິນ' : 'ປະຫວັດ',
-                                    style: TextStyle(
-                                      fontSize: 12.sp,
-                                      fontWeight: FontWeight.w400,
-                                      color: AppColors.textPrimary,
-                                    ),
-                                  ),
-                                ],
+                ),
+                SizedBox(height: 6.h),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 16.w),
+                  child: Row(
+                    spacing: 12.w,
+                    children: List.generate(2, (index) {
+                      return Expanded(
+                        child: GestureDetector(
+                          onTap: onTopUp,
+                          child: Container(
+                            padding: EdgeInsets.symmetric(vertical: 12.h),
+                            decoration: BoxDecoration(
+                              color: AppColors.bg,
+                              borderRadius: BorderRadius.circular(10.r),
+                              border: Border.all(
+                                color: Colors.white.withValues(alpha: 0.18),
+                                width: 0.5,
                               ),
                             ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  index == 0
+                                      ? Icons.arrow_outward_rounded
+                                      : Icons.trending_up_rounded,
+                                  size: 14.r,
+                                  color: AppColors.primary,
+                                ),
+                                SizedBox(width: 5.w),
+                                Text(
+                                  index == 0 ? 'ເຕີມເງິນ' : 'ປະຫວັດ',
+                                  style: TextStyle(
+                                    fontSize: 12.sp,
+                                    fontWeight: FontWeight.w400,
+                                    color: AppColors.textPrimary,
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
-                        );
-                      }),
-                    ),
+                        ),
+                      );
+                    }),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

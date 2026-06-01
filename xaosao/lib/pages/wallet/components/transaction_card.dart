@@ -40,6 +40,18 @@ class TransactionCard extends StatelessWidget {
             color: Colors.black.withValues(alpha: 0.07),
             width: 0.5,
           ),
+          boxShadow: [
+            BoxShadow(
+              color: AppColors.primary.withValues(alpha: 0.10),
+              blurRadius: 20,
+              offset: const Offset(0, 6),
+            ),
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.05),
+              blurRadius: 10,
+              offset: const Offset(0, 2),
+            ),
+          ],
         ),
         padding: EdgeInsets.symmetric(horizontal: 13.w, vertical: 12.h),
         child: Row(

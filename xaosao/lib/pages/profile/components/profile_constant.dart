@@ -121,6 +121,18 @@ class ProfileGroup extends StatelessWidget {
         color: AppColors.surface,
         borderRadius: BorderRadius.circular(15),
         border: Border.all(color: AppColors.border, width: 0.5),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.primary.withOpacity(0.10),
+            blurRadius: 20,
+            offset: const Offset(0, 6),
+          ),
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 10,
+            offset: const Offset(0, 2),
+          ),
+        ],
       ),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(15),

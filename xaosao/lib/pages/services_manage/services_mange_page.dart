@@ -13,6 +13,7 @@ import 'package:xaosao/utils/currency_formatter.dart';
 import 'package:xaosao/widgets/app_button.dart';
 import 'package:xaosao/widgets/confirm_sheet.dart';
 
+import '../../utils/service_helper.dart';
 import '../../widgets/gradient_app_bar.dart';
 
 // ═══════════════════════════════════════════════════════════════
@@ -86,7 +87,7 @@ class ServiceManagementPage extends StatelessWidget {
   ) async {
     final rate = await _showRateSheet(
       context,
-      serviceName: svc.name ?? "",
+      serviceName: ServiceHelper.serviceOriginalName(svc.name),
       billingLabel: _billingLabel(svc.billingType),
       baseRate: svc.baseRate,
     );
@@ -102,7 +103,7 @@ class ServiceManagementPage extends StatelessWidget {
   ) async {
     final rate = await _showRateSheet(
       context,
-      serviceName: svc.name ?? "",
+      serviceName: ServiceHelper.serviceOriginalName(svc.name),
       billingLabel: _billingLabel(svc.billingType),
       initialRate: profileSvc.customHourlyRate,
       baseRate: svc.baseRate,
@@ -122,7 +123,7 @@ class ServiceManagementPage extends StatelessWidget {
   ) async {
     final confirmed = await ConfirmSheet.show(
       context,
-      title: 'ລຶບ ${svc.name}',
+      title: 'ລຶບ ${ServiceHelper.serviceOriginalName(svc.name)}',
       message: 'ທ່ານຕ້ອງການລຶບບໍລິການນີ້ອອກຈາກໂປຣໄຟຂອງທ່ານແທ້ບໍ່?',
       confirmLabel: 'ລຶບ',
       icon: Icons.delete_outline_rounded,
@@ -238,7 +239,7 @@ class _CardHeader extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  service.name ?? "",
+                  ServiceHelper.serviceOriginalName(service.name),
                   style: TextStyle(
                     fontSize: 14.sp,
                     fontWeight: FontWeight.w800,

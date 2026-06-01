@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:xaosao/constants/app_color.dart';
 import 'package:xaosao/pages/register/components/register_app_bar.dart';
 import 'package:xaosao/pages/register/components/register_widget.dart';
+import 'package:xaosao/widgets/gradient_app_bar.dart';
 import '../login/getx/login_state.dart';
 import 'components/avatar_picker.dart';
 import 'getx/register_logic.dart';
@@ -100,9 +101,7 @@ class _RegisterPageState extends State<RegisterPage> {
       behavior: HitTestBehavior.opaque,
       child: Scaffold(
         backgroundColor: AppColors.bg,
-        appBar: RegisterAppBar(
-          role: widget.role,
-          currentStep: 1,
+        appBar: GradientAppBar(
           title: "ສ້າງບັນຊີ ສຳລັບລູກຄ້າ",
           subtitle: 'ກະລຸນາຕື່ມຂໍ້ມູນໃຫ້ຄົບ',
         ),

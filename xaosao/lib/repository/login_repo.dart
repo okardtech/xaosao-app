@@ -67,6 +67,22 @@ class LoginRepo extends BaseRepository {
     );
   }
 
+  Future<ApiResponse<bool>> updateLocation({
+    required double latitude,
+    required double longitude,
+  }) {
+    return safeCall(
+      () => api.patch(
+        ApiConstants.meLocation,
+        data: {'latitude': latitude, 'longitude': longitude},
+      ),
+      fromJson: (json){
+        print('Location update response: $json'); // Debug log
+        return true;
+      },
+    );
+  }
+
   Future<ApiResponse<bool>> fcmTokenSave({required String fcmToken}) async {
     String platform = Platform.isAndroid ? "android" : "ios";
     return safeCall(

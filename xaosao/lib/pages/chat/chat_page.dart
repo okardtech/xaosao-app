@@ -189,79 +189,92 @@ class _ChatListPageState extends State<ChatListPage> {
           ),
           itemBuilder: (_, i) {
             final conv = list[i];
-            return _ChatRow(
-              conv: conv,
-              myRole: _logic.myRole,
-              onTap: () => Get.toNamed(
-                AppRoutes.chatDetail,
-                arguments: {'conversationId': conv.id, 'conv': conv},
+            final other = conv.otherParticipant(_logic.myRole);
+            final name = other?.displayName ?? 'ການສົນທະນານີ້';
+            return Dismissible(
+              key: ValueKey(conv.id),
+              direction: DismissDirection.endToStart,
+              background: Container(
+                alignment: Alignment.centerRight,
+                padding: EdgeInsets.only(right: 20.w),
+                color: const Color(0xFFDC2626),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(Icons.delete_outline_rounded,
+                        color: Colors.white, size: 22.r),
+                    SizedBox(height: 4.h),
+                    Text('ລຶບ',
+                        style: TextStyle(
+                          fontSize: 10.sp,
+                          color: Colors.white,
+                          fontWeight: FontWeight.w700,
+                        )),
+                  ],
+                ),
               ),
-              onLongPress: () => _showDeleteSheet(context, conv),
+              confirmDismiss: (_) => ConfirmSheet.show(
+                context,
+                title: 'ລຶບການສົນທະນາ',
+                message:
+                    'ລຶບການສົນທະນາກັບ $name?\nຂໍ້ຄວາມຍັງສາມາດເຫັນໄດ້ຈາກອີກຝ່າຍ',
+                confirmLabel: 'ລຶບ',
+                icon: Icons.delete_outline_rounded,
+                isDanger: true,
+              ),
+              onDismissed: (_) => _logic.deleteConversation(conv.id),
+              child: _ChatRow(
+                conv: conv,
+                myRole: _logic.myRole,
+                onTap: () {
+                  if (conv.isBlocked) {
+                    Get.snackbar(
+                      'ບໍ່ສາມາດເຂົ້າໄດ້',
+                      conv.iBlockedThis(_logic.myRole)
+                          ? 'ທ່ານໄດ້ບລັອກການສົນທະນານີ້'
+                          : 'ການສົນທະນານີ້ຖືກບລັອກ',
+                      snackPosition: SnackPosition.TOP,
+                      duration: const Duration(seconds: 2),
+                      backgroundColor: const Color(0xFF1A1A2E),
+                      colorText: Colors.white,
+                      margin: EdgeInsets.all(14.r),
+                      borderRadius: 12.r,
+                    );
+                    return;
+                  }
+                  Get.toNamed(
+                    AppRoutes.chatDetail,
+                    arguments: {'conversationId': conv.id, 'conv': conv},
+                  );
+                },
+                onLongPress: () async {
+                  final iBlocked = conv.iBlockedThis(_logic.myRole);
+                  final confirmed = await ConfirmSheet.show(
+                    context,
+                    title: iBlocked ? 'ຍົກເລີກການບລັອກ $name' : 'ບລັອກ $name',
+                    message: iBlocked
+                        ? 'ຍົກເລີກການບລັອກ ແລະ ສືບຕໍ່ສົນທະນາ?'
+                        : 'ທ່ານ ແລະ $name ຈະບໍ່ສາມາດສົ່ງຂໍ້ຄວາມຫາກັນໄດ້',
+                    confirmLabel: iBlocked ? 'ຍົກເລີກການບລັອກ' : 'ບລັອກ',
+                    icon: iBlocked
+                        ? Icons.lock_open_rounded
+                        : Icons.block_rounded,
+                    iconColor: const Color(0xFFF59E0B),
+                    isDanger: !iBlocked,
+                  );
+                  if (confirmed != true) return;
+                  if (iBlocked) {
+                    await _logic.unblockConversation(conv.id);
+                  } else {
+                    await _logic.blockConversation(conv.id);
+                  }
+                },
+              ),
             );
           },
         ),
       );
     });
-  }
-
-  void _showDeleteSheet(BuildContext context, ConversationModel conv) {
-    final other = conv.otherParticipant(_logic.myRole);
-    final name = other?.displayName ?? 'ການສົນທະນານີ້';
-    showModalBottomSheet(
-      context: context,
-      backgroundColor: AppColors.surface,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24.r)),
-      ),
-      builder: (_) => SafeArea(
-        child: Padding(
-          padding: EdgeInsets.all(20.r),
-          child: Column(mainAxisSize: MainAxisSize.min, children: [
-            Container(
-              width: 36.w,
-              height: 4.h,
-              decoration: BoxDecoration(
-                color: AppColors.textDisabled,
-                borderRadius: BorderRadius.circular(2.r),
-              ),
-            ),
-            SizedBox(height: 20.h),
-            GestureDetector(
-              onTap: () async {
-                Get.back();
-                final confirmed = await ConfirmSheet.show(
-                  context,
-                  title: 'ລຶບການສົນທະນາ',
-                  message: 'ລຶບການສົນທະນາກັບ $name?\nຂໍ້ຄວາມຍັງສາມາດເຫັນໄດ້ຈາກອີກຝ່າຍ',
-                  confirmLabel: 'ລຶບ',
-                  icon: Icons.delete_outline_rounded,
-                  isDanger: true,
-                );
-                if (confirmed == true) {
-                  _logic.deleteConversation(conv.id);
-                }
-              },
-              child: Padding(
-                padding: EdgeInsets.symmetric(vertical: 13.h),
-                child: Row(children: [
-                  Icon(Icons.delete_outline_rounded,
-                      size: 18.r, color: const Color(0xFFDC2626)),
-                  SizedBox(width: 14.w),
-                  Text(
-                    'ລຶບການສົນທະນາ',
-                    style: TextStyle(
-                      fontSize: 14.sp,
-                      fontWeight: FontWeight.w600,
-                      color: const Color(0xFFDC2626),
-                    ),
-                  ),
-                ]),
-              ),
-            ),
-          ]),
-        ),
-      ),
-    );
   }
 
   Widget _buildEmpty() {
@@ -349,20 +362,23 @@ class _ChatRow extends StatelessWidget {
     final name = other?.displayName ?? 'Unknown';
     final imageUrl = other?.profileImage;
     final isOnline = other?.isOnline ?? false;
-    final hasUnread = conv.unreadCountFor(myRole) > 0;
+    final isBlocked = conv.isBlocked;
+    final hasUnread = !isBlocked && conv.unreadCountFor(myRole) > 0;
     final lastMsg = conv.lastMessageText ?? '';
 
     return GestureDetector(
       onTap: onTap,
       onLongPress: onLongPress,
       behavior: HitTestBehavior.opaque,
-      child: Padding(
+      child: Opacity(
+        opacity: isBlocked ? 0.55 : 1.0,
+        child: Padding(
         padding: EdgeInsets.symmetric(horizontal: 18.w, vertical: 12.h),
         child: Row(children: [
           // Avatar + online dot
           _ConvAvatar(
               name: name, imageUrl: imageUrl,
-              gradient: _gradient, isOnline: isOnline),
+              gradient: _gradient, isOnline: isOnline && !isBlocked),
           SizedBox(width: 12.w),
 
           // Name + message
@@ -370,29 +386,41 @@ class _ChatRow extends StatelessWidget {
             child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               Row(children: [
                 Expanded(
-                  child: Text(
-                    name,
-                    style: TextStyle(
-                      fontSize: 13.sp, fontWeight: FontWeight.w800,
-                      color: AppColors.textPrimary,
+                  child: Row(children: [
+                    Flexible(
+                      child: Text(
+                        name,
+                        style: TextStyle(
+                          fontSize: 14.sp, fontWeight: FontWeight.w800,
+                          color: AppColors.textPrimary,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                      ),
                     ),
-                  ),
+                    if (isBlocked) ...[
+                      SizedBox(width: 6.w),
+                      Icon(Icons.block_rounded,
+                          size: 12.r, color: const Color(0xFFF59E0B)),
+                    ],
+                  ]),
                 ),
                 Text(_timeLabel, style: TextStyle(
-                    fontSize: 10.sp, color: AppColors.textDisabled)),
+                    fontSize: 10.sp, color: AppColors.textSecondary)),
               ]),
               SizedBox(height: 3.h),
               Row(children: [
                 Expanded(
                   child: Text(
-                    lastMsg,
+                    isBlocked ? 'ການສົນທະນາຖືກບລັອກ' : lastMsg,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
                       fontSize: 12.sp,
-                      color: hasUnread
-                          ? AppColors.textPrimary
-                          : AppColors.textHint,
+                      color: isBlocked
+                          ? const Color(0xFFF59E0B)
+                          : hasUnread
+                              ? AppColors.textPrimary
+                              : AppColors.textSecondary,
                       fontWeight: hasUnread
                           ? FontWeight.w600
                           : FontWeight.w400,
@@ -417,7 +445,8 @@ class _ChatRow extends StatelessWidget {
           ),
         ]),
       ),
-    );
+    ),
+  );
   }
 }
 

@@ -174,11 +174,20 @@ class _InputCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16.r),
+        border: Border.all(
+          color: AppColors.textDisabled.withAlpha(50),
+          width: 0.5,
+        ),
         boxShadow: [
           BoxShadow(
+            color: AppColors.primary.withValues(alpha: 0.10),
+            blurRadius: 20,
+            offset: const Offset(0, 6),
+          ),
+          BoxShadow(
             color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 12,
-            offset: const Offset(0, 4),
+            blurRadius: 10,
+            offset: const Offset(0, 2),
           ),
         ],
       ),
@@ -428,6 +437,18 @@ class _LoadingPlaceholder extends StatelessWidget {
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(16.r),
                 border: Border.all(color: AppColors.border, width: 0.5),
+                boxShadow: [
+                  BoxShadow(
+                    color: AppColors.primary.withValues(alpha: 0.10),
+                    blurRadius: 20,
+                    offset: const Offset(0, 6),
+                  ),
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.05),
+                    blurRadius: 10,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
               ),
             ),
           ),

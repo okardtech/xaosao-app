@@ -3,6 +3,7 @@ import 'package:xaosao/constants/app_routes.dart';
 import 'package:xaosao/pages/login/getx/login_state.dart';
 import 'package:xaosao/pages/wallet/getx/wallet_logic.dart';
 import 'package:xaosao/repository/login_repo.dart';
+import 'package:xaosao/services/location_service.dart';
 import 'package:xaosao/services/notification_service.dart';
 import 'package:xaosao/services/storage_service.dart';
 import 'package:xaosao/utils/app_snackbar.dart';
@@ -67,6 +68,8 @@ class LoginLogic extends GetxController {
 
       // Register FCM device token — fire-and-forget, non-critical
       saveFcmToken();
+      // Push GPS location — fire-and-forget, non-critical
+      LocationService.push();
 
       hideLoadingDialog();
       Get.offAllNamed(AppRoutes.dashboard);

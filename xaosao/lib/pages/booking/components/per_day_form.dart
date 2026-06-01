@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:xaosao/constants/app_color.dart';
 import 'package:xaosao/pages/booking/booking_page.dart';
+import 'package:xaosao/utils/service_helper.dart';
 import 'package:xaosao/pages/booking/getx/booking_logic.dart';
 import 'package:xaosao/utils/currency_formatter.dart';
 import 'package:xaosao/widgets/app_text_field.dart';
@@ -254,7 +255,7 @@ class _PerDayFormState extends State<PerDayForm> {
                               ),
                               child: BookingSummary(
                                 rateLabel:
-                                    _logic.args.service.name ?? "noservice",
+                                    ServiceHelper.serviceOriginalName(_logic.args.service.name),
                                 rateValue:
                                     '${CurrFormatter.format(_logic.rate)} ກີບ / $unit',
                                 countLabel: 'ຈຳນວນ$unit',

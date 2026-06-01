@@ -1,12 +1,14 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:xaosao/constants/app_color.dart';
 import 'package:xaosao/models/service_model.dart';
+import 'package:xaosao/utils/service_helper.dart';
 import 'package:xaosao/pages/register/components/register_app_bar.dart';
 import 'package:xaosao/pages/register/getx/register_logic.dart';
 import 'package:xaosao/pages/register/getx/register_state.dart';
+import '../../../widgets/gradient_app_bar.dart';
 import '../../login/getx/login_state.dart';
 
 // ── Thousands comma formatter ──────────────────────────────────────────────────
@@ -163,12 +165,16 @@ class _ServicesSelectState extends State<ServicesSelect> {
       behavior: HitTestBehavior.opaque,
       child: Scaffold(
         backgroundColor: AppColors.bg,
-        appBar: RegisterAppBar(
-          role: RegisterRole.companion,
-          currentStep: 2,
-          title: 'ເລືອກບໍລິການ',
+        appBar:  GradientAppBar(
+          title: "ເລືອກບໍລິການ",
           subtitle: 'ກຳນົດປະເພດ ແລະ ລາຄາບໍລິການຂອງທ່ານ',
         ),
+        // appBar: RegisterAppBar(
+        //   role: RegisterRole.companion,
+        //   currentStep: 2,
+        //   title: 'ເລືອກບໍລິການ',
+        //   subtitle: 'ກຳນົດປະເພດ ແລະ ລາຄາບໍລິການຂອງທ່ານ',
+        // ),
         body: SafeArea(
           child: Column(
             children: [
@@ -225,7 +231,7 @@ class _ServicesSelectState extends State<ServicesSelect> {
                                 }
                                 _entries.refresh();
                               },
-                              label: entry.service.name ?? "",
+                              label: ServiceHelper.serviceOriginalName(entry.service.name),
                               description: entry.service.description,
                               priceCtrl: entry.priceCtrl,
                               baseRate: entry.service.baseRate,
@@ -542,6 +548,18 @@ class _PriceSuffixField extends StatelessWidget {
               ? Colors.green.shade300
               : const Color(0x1A000000),
         ),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.primary.withValues(alpha: 0.10),
+            blurRadius: 20,
+            offset: const Offset(0, 6),
+          ),
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.05),
+            blurRadius: 10,
+            offset: const Offset(0, 2),
+          ),
+        ],
       ),
       child: Row(
         children: [

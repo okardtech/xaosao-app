@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 import 'package:xaosao/constants/app_color.dart';
@@ -104,6 +104,18 @@ class ModelWalletCard extends StatelessWidget {
                             color: Colors.white.withValues(alpha: 0.22),
                             width: 0.5,
                           ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: AppColors.primary.withValues(alpha: 0.10),
+                              blurRadius: 20,
+                              offset: const Offset(0, 6),
+                            ),
+                            BoxShadow(
+                              color: Colors.black.withValues(alpha: 0.05),
+                              blurRadius: 10,
+                              offset: const Offset(0, 2),
+                            ),
+                          ],
                         ),
                         child: Icon(
                           amountsVisible
@@ -172,6 +184,18 @@ class ModelWalletCard extends StatelessWidget {
                         color: Colors.white.withValues(alpha: 0.22),
                         width: 0.5,
                       ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: AppColors.primary.withValues(alpha: 0.10),
+                          blurRadius: 20,
+                          offset: const Offset(0, 6),
+                        ),
+                        BoxShadow(
+                          color: Colors.black.withValues(alpha: 0.05),
+                          blurRadius: 10,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
                     ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,

@@ -18,7 +18,7 @@ class ConversationParticipant {
       id: json['id']?.toString() ?? '',
       firstName: json['firstName']?.toString(),
       lastName: json['lastName']?.toString(),
-      profileImage: json['profile']?.toString(), // API field is 'profile'
+      profileImage: json['profile']?.toString(),
       isOnline: json['isOnline'] == true,
     );
   }
@@ -43,7 +43,9 @@ class ConversationModel {
   final DateTime? lastMessageAt;
   final int customerUnreadCount;
   final int modelUnreadCount;
-  final bool isActive;
+  final String? status;
+  final bool blockedByCustomer;
+  final bool blockedByModel;
 
   const ConversationModel({
     required this.id,
@@ -57,8 +59,13 @@ class ConversationModel {
     this.lastMessageAt,
     this.customerUnreadCount = 0,
     this.modelUnreadCount = 0,
-    this.isActive = true,
+    this.status,
+    this.blockedByCustomer = false,
+    this.blockedByModel = false,
   });
+
+  bool get isActive => status == 'active';
+  bool get isBlocked => status == 'blocked';
 
   factory ConversationModel.fromJson(Map<String, dynamic> json) {
     return ConversationModel(
@@ -76,28 +83,28 @@ class ConversationModel {
       lastMessageText: json['lastMessageText']?.toString(),
       lastMessageType: json['lastMessageType']?.toString(),
       lastMessageSenderId: json['lastMessageSenderId']?.toString(),
-      // 'lastMessage' in API is the ISO timestamp, 'lastMessageText' is the text
       lastMessageAt: _tryParse(json['lastMessage'] ?? json['updatedAt']),
       customerUnreadCount:
           (json['customerUnreadCount'] as num?)?.toInt() ?? 0,
       modelUnreadCount: (json['modelUnreadCount'] as num?)?.toInt() ?? 0,
-      isActive: json['status'] == 'active',
+      status: json['status']?.toString(),
+      blockedByCustomer: json['blockedByCustomer'] == true,
+      blockedByModel: json['blockedByModel'] == true,
     );
   }
 
   static DateTime? _tryParse(dynamic v) =>
       v != null ? DateTime.tryParse(v.toString()) : null;
 
-  /// Returns the participant that is NOT the logged-in user.
-  /// Pass myRole = 'customer' | 'model'
-  ConversationParticipant? otherParticipant(String myRole) {
-    return myRole == 'customer' ? model : customer;
-  }
+  ConversationParticipant? otherParticipant(String myRole) =>
+      myRole == 'customer' ? model : customer;
 
-  /// Returns unread count for the logged-in role.
-  int unreadCountFor(String role) {
-    return role == 'customer' ? customerUnreadCount : modelUnreadCount;
-  }
+  int unreadCountFor(String role) =>
+      role == 'customer' ? customerUnreadCount : modelUnreadCount;
+
+  /// Returns true when [myRole] is the one who placed the block.
+  bool iBlockedThis(String myRole) =>
+      myRole == 'customer' ? blockedByCustomer : blockedByModel;
 
   ConversationModel copyWith({
     ConversationParticipant? customer,
@@ -108,6 +115,9 @@ class ConversationModel {
     DateTime? lastMessageAt,
     int? customerUnreadCount,
     int? modelUnreadCount,
+    String? status,
+    bool? blockedByCustomer,
+    bool? blockedByModel,
   }) =>
       ConversationModel(
         id: id,
@@ -121,6 +131,8 @@ class ConversationModel {
         lastMessageAt: lastMessageAt ?? this.lastMessageAt,
         customerUnreadCount: customerUnreadCount ?? this.customerUnreadCount,
         modelUnreadCount: modelUnreadCount ?? this.modelUnreadCount,
-        isActive: isActive,
+        status: status ?? this.status,
+        blockedByCustomer: blockedByCustomer ?? this.blockedByCustomer,
+        blockedByModel: blockedByModel ?? this.blockedByModel,
       );
 }

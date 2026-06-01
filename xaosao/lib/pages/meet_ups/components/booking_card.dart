@@ -142,33 +142,51 @@ class BookingCard extends StatelessWidget {
       opacity: _isCancelled(b.status) ? 1.0 : 1.0,
       child: GestureDetector(
         onTap: onTap,
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(20.r),
-          child: Stack(
-            children: [
-              Container(
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(20.r),
-                  border: Border.all(color: _divider, width: 0.5),
-                ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    _buildTop(b, accent),
-                    _buildDateRow(b),
-                    _buildLocation(b),
-                    _buildBottom(context, b),
-                  ],
-                ),
+        child: Container(
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(20.r),
+            boxShadow: [
+              BoxShadow(
+                color: AppColors.primary.withValues(alpha: 0.10),
+                blurRadius: 20,
+                offset: const Offset(0, 6),
               ),
-              Positioned(
-                left: 0,
-                top: 0,
-                bottom: 0,
-                child: Container(width: 3.5.w, color: accent),
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.05),
+                blurRadius: 10,
+                offset: const Offset(0, 2),
               ),
             ],
+          ),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(20.r),
+            child: Stack(
+              children: [
+                Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(20.r),
+                    border: Border.all(color: _divider, width: 0.5),
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      _buildTop(b, accent),
+                      _buildDateRow(b),
+                      _buildLocation(b),
+                      _buildBottom(context, b),
+                    ],
+                  ),
+                ),
+                Positioned(
+                  left: 0,
+                  top: 0,
+                  bottom: 0,
+                  child: Container(width: 3.5.w, color: accent),
+                ),
+              ],
+            ),
           ),
         ),
       ),

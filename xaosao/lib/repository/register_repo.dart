@@ -35,7 +35,6 @@ class RegisterRepo extends BaseRepository {
         onSendProgress: onProgress,
       ),
       fromJson: (j) {
-        developer.log('$j', name: 'Register');
         return SignUpModel.fromJson(j);
       },
     );

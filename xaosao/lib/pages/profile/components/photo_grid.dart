@@ -57,53 +57,87 @@ class PhotoGrid extends StatelessWidget {
           color: AppColors.textDisabled.withAlpha(50),
           width: 0.5,
         ),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.primary.withOpacity(0.10),
+            blurRadius: 20,
+            offset: const Offset(0, 6),
+          ),
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 10,
+            offset: const Offset(0, 2),
+          ),
+        ],
       ),
       child: const Center(child: CircularProgressIndicator(strokeWidth: 2)),
     );
   }
 
   Widget _buildPhotoSlot(GallerysModel photo, int index) {
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(11.r),
-      child: Stack(
-        fit: StackFit.expand,
-        children: [
-          Image.network(
-            photo.url ?? '',
-            fit: BoxFit.cover,
-            errorBuilder: (_, __, ___) => Container(
-              color: AppColors.bg,
-              child: Icon(
-                Icons.broken_image_outlined,
-                color: AppColors.textHint,
-              ),
-            ),
-            loadingBuilder: (_, child, progress) {
-              if (progress == null) return child;
-              return Container(color: AppColors.bg);
-            },
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(11.r),
+        border: Border.all(
+          color: AppColors.textDisabled.withAlpha(50),
+          width: 0.5,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.primary.withOpacity(0.10),
+            blurRadius: 20,
+            offset: const Offset(0, 6),
           ),
-          Positioned(
-            top: 5,
-            right: 5,
-            child: GestureDetector(
-              onTap: () => onRemove(index),
-              child: Container(
-                width: 18.r,
-                height: 18.r,
-                decoration: const BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: Colors.black54,
-                ),
-                child: const Icon(
-                  Icons.close_rounded,
-                  size: 11,
-                  color: Colors.white,
-                ),
-              ),
-            ),
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 10,
+            offset: const Offset(0, 2),
           ),
         ],
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(11.r),
+        child: Stack(
+          fit: StackFit.expand,
+          children: [
+            Image.network(
+              photo.url ?? '',
+              fit: BoxFit.cover,
+              errorBuilder: (_, __, ___) => Container(
+                color: AppColors.bg,
+                child: Icon(
+                  Icons.broken_image_outlined,
+                  color: AppColors.textHint,
+                ),
+              ),
+              loadingBuilder: (_, child, progress) {
+                if (progress == null) return child;
+                return Container(color: AppColors.bg);
+              },
+            ),
+            Positioned(
+              top: 5,
+              right: 5,
+              child: GestureDetector(
+                onTap: () => onRemove(index),
+                child: Container(
+                  width: 18.r,
+                  height: 18.r,
+                  decoration: const BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Colors.black54,
+                  ),
+                  child: const Icon(
+                    Icons.close_rounded,
+                    size: 11,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -120,6 +154,18 @@ class PhotoGrid extends StatelessWidget {
             color: AppColors.textDisabled.withAlpha(50),
             width: 0.5,
           ),
+          boxShadow: [
+            BoxShadow(
+              color: AppColors.primary.withOpacity(0.10),
+              blurRadius: 20,
+              offset: const Offset(0, 6),
+            ),
+            BoxShadow(
+              color: Colors.black.withOpacity(0.05),
+              blurRadius: 10,
+              offset: const Offset(0, 2),
+            ),
+          ],
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
