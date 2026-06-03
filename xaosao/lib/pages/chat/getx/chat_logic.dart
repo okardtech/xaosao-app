@@ -107,9 +107,19 @@ class ChatLogic extends GetxController {
     fetchConversations();
   }
 
+  // ── Unwrap socket.io payload (some versions wrap in a List) ──
+  static Map<String, dynamic>? _unwrapSocketData(dynamic raw) {
+    dynamic d = raw;
+    if (d is List) d = d.isNotEmpty ? d[0] : null;
+    if (d is Map<String, dynamic>) return d;
+    if (d is Map) return Map<String, dynamic>.from(d);
+    return null;
+  }
+
   // ── new_message: { conversation_id, message } ─────────────
-  void _handleNewMessage(dynamic data) {
-    if (data is! Map) return;
+  void _handleNewMessage(dynamic raw) {
+    final data = _unwrapSocketData(raw);
+    if (data == null) return;
     final convId = data['conversation_id']?.toString();
     final rawMsg = data['message'];
     if (convId == null || rawMsg is! Map) return;
@@ -117,12 +127,17 @@ class ChatLogic extends GetxController {
     final msg = ChatMessageModel.fromJson(Map<String, dynamic>.from(rawMsg));
 
     final current = msgStateOf(convId);
-    // Skip if we already added this message from the API response
+    // Skip duplicate (e.g. echo of our own sent message)
     if (current.messages.any((m) => m.id == msg.id)) return;
     _updateMsgState(
       convId,
       current.copyWith(messages: [...current.messages, msg]),
     );
+
+    // Auto-read: if this chat is currently open and the message is from the partner
+    if (convId == activeConversationId.value && msg.senderType != myRole) {
+      _socket.markRead(convId);
+    }
 
     _patchConversationPreview(
       convId: convId,
@@ -136,8 +151,9 @@ class ChatLogic extends GetxController {
   }
 
   // ── messages_read: { conversation_id, reader_id, last_read_message_id? } ──
-  void _handleMessagesRead(dynamic data) {
-    if (data is! Map) return;
+  void _handleMessagesRead(dynamic raw) {
+    final data = _unwrapSocketData(raw);
+    if (data == null) return;
     final convId = data['conversation_id']?.toString();
     final readerId = data['reader_id']?.toString();
     if (convId == null || readerId == _myUserId) return;
@@ -153,8 +169,9 @@ class ChatLogic extends GetxController {
   }
 
   // ── user_typing: { conversation_id, user_id, is_typing } ──
-  void _handleUserTyping(dynamic data) {
-    if (data is! Map) return;
+  void _handleUserTyping(dynamic raw) {
+    final data = _unwrapSocketData(raw);
+    if (data == null) return;
     final convId = data['conversation_id']?.toString();
     final userId = data['user_id']?.toString();
     final isTyping = data['is_typing'] == true;
@@ -162,11 +179,18 @@ class ChatLogic extends GetxController {
 
     final current = msgStateOf(convId);
     _updateMsgState(convId, current.copyWith(isPartnerTyping: isTyping));
+
+    // Partner stopped typing → likely just sent a message.
+    // Fetch once as event-driven fallback for missed new_message events.
+    if (!isTyping && convId == activeConversationId.value) {
+      _silentRefresh(convId);
+    }
   }
 
   // ── message_notification: global badge / toast ────────────
-  void _handleMessageNotification(dynamic data) {
-    if (data is! Map) return;
+  void _handleMessageNotification(dynamic raw) {
+    final data = _unwrapSocketData(raw);
+    if (data == null) return;
     final convId = data['conversation_id']?.toString();
     if (convId == null) return;
     if (convId == activeConversationId.value) return;
@@ -242,11 +266,31 @@ class ChatLogic extends GetxController {
       if (res.success && res.data != null) {
         final incoming = res.data!;
         final prev = refresh ? <ChatMessageModel>[] : current.messages;
+        var messages = [...incoming.reversed.toList(), ...prev];
+
+        if (refresh) {
+          // Preserve any socket messages that arrived while the API call was
+          // in-flight — they wouldn't be in `incoming` yet.
+          final afterFetch = msgStateOf(convId);
+          for (final socketMsg in afterFetch.messages) {
+            if (!messages.any((m) => m.id == socketMsg.id)) {
+              messages = [...messages, socketMsg];
+            }
+          }
+        }
+
+        // Guarantee oldest-first order so reverse:true ListView shows newest at bottom
+        messages.sort((a, b) {
+          final ta = a.sendAt ?? a.createdAt ?? DateTime(0);
+          final tb = b.sendAt ?? b.createdAt ?? DateTime(0);
+          return ta.compareTo(tb);
+        });
+
         _updateMsgState(
           convId,
           MsgState(
             status: MsgLoadStatus.success,
-            messages: [...incoming.reversed.toList(), ...prev],
+            messages: messages,
             hasMore: incoming.length >= _msgLimit,
             page: page + 1,
           ),
@@ -270,6 +314,35 @@ class ChatLogic extends GetxController {
 
   Future<void> _backfillMessages(String convId) =>
       fetchMessages(convId, refresh: true);
+
+  // Fetch page 1 silently (no loading state/flicker) and merge any new messages.
+  Future<void> _silentRefresh(String convId) async {
+    try {
+      final res = await _repo.getMessages(convId, page: 1, limit: _msgLimit);
+      if (!res.success || res.data == null) return;
+      final current = msgStateOf(convId);
+      var updated = List<ChatMessageModel>.from(current.messages);
+      bool changed = false;
+      for (final msg in res.data!) {
+        if (!updated.any((m) => m.id == msg.id)) {
+          updated.add(msg);
+          changed = true;
+        }
+      }
+      if (changed) {
+        updated.sort((a, b) {
+          final ta = a.sendAt ?? a.createdAt ?? DateTime(0);
+          final tb = b.sendAt ?? b.createdAt ?? DateTime(0);
+          return ta.compareTo(tb);
+        });
+        _updateMsgState(convId, current.copyWith(messages: updated));
+        // Mark new partner messages as read if this chat is currently open
+        if (convId == activeConversationId.value) {
+          _socket.markRead(convId);
+        }
+      }
+    } catch (_) {}
+  }
 
   // ── Send message ───────────────────────────────────────────
 

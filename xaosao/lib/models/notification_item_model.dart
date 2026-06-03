@@ -51,36 +51,66 @@ class NotificationItemModel {
 class Data {
     String? screen;
     String? bookingId;
+    String? transactionId;
     String? modelId;
     String? modelDisplayName;
     dynamic profilePhoto;
     String? reason;
+    // post interactions
+    String? postId;
+    String? commentId;
+    // profile interactions
+    String? viewerId;
+    String? likerId;
+    String? friendId;
+    String? senderId;
 
     Data({
         this.screen,
         this.bookingId,
+        this.transactionId,
         this.modelId,
         this.modelDisplayName,
         this.profilePhoto,
         this.reason,
+        this.postId,
+        this.commentId,
+        this.viewerId,
+        this.likerId,
+        this.friendId,
+        this.senderId,
     });
 
     factory Data.fromJson(Map<String, dynamic> json) => Data(
         screen: json["screen"],
         bookingId: json["bookingId"],
+        transactionId: json["transactionId"],
         modelId: json["modelId"],
         modelDisplayName: json["modelDisplayName"],
         profilePhoto: json["profilePhoto"],
         reason: json["reason"],
+        postId: json["postId"],
+        commentId: json["commentId"],
+        viewerId: json["viewerId"],
+        likerId: json["likerId"],
+        friendId: json["friendId"],
+        senderId: json["senderId"],
     );
 
     Map<String, dynamic> toJson() => {
         "screen": screen,
         "bookingId": bookingId,
+        "transactionId": transactionId,
         "modelId": modelId,
         "modelDisplayName": modelDisplayName,
         "profilePhoto": profilePhoto,
         "reason": reason,
+        "postId": postId,
+        "commentId": commentId,
+        "viewerId": viewerId,
+        "likerId": likerId,
+        "friendId": friendId,
+        "senderId": senderId,
     };
 }
 

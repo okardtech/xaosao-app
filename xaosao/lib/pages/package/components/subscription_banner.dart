@@ -599,6 +599,588 @@ class _WalletTile extends StatelessWidget {
   }
 }
 
+// ── No subscription banner ────────────────────────────────────────
+Future<void> showNoSubscriptionBanner(BuildContext context) {
+  return showDialog(
+    context: context,
+    barrierDismissible: true,
+    barrierColor: Colors.black.withValues(alpha: 0.55),
+    builder: (_) => const _NoSubscriptionDialog(),
+  );
+}
+
+class _NoSubscriptionDialog extends StatelessWidget {
+  const _NoSubscriptionDialog();
+
+  @override
+  Widget build(BuildContext context) {
+    return Dialog(
+      backgroundColor: Colors.transparent,
+      insetPadding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 40.h),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(24.r),
+        child: Container(
+          color: Colors.white,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              _NoSubHeader(),
+              Padding(
+                padding: EdgeInsets.fromLTRB(20.w, 18.h, 20.w, 0),
+                child: Column(
+                  children: [
+                    Container(
+                      padding: EdgeInsets.all(14.r),
+                      decoration: BoxDecoration(
+                        color: AppColors.primary.withValues(alpha: 0.06),
+                        borderRadius: BorderRadius.circular(14.r),
+                        border: Border.all(
+                          color: AppColors.primary.withValues(alpha: 0.12),
+                          width: 0.5,
+                        ),
+                      ),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Icon(
+                            Icons.info_outline_rounded,
+                            size: 14.r,
+                            color: AppColors.primary,
+                          ),
+                          SizedBox(width: 8.w),
+                          Expanded(
+                            child: Text(
+                              'ກະລຸນາຊື້ Package ກ່ອນ ຈຶ່ງສາມາດຈອງບໍລິການໄດ້. Package ຈະໃຫ້ທ່ານສິດໃນການຈອງ ແລະ ໃຊ້ງານຕ່າງໆ.',
+                              style: TextStyle(
+                                fontSize: 14.sp,
+                                color: AppColors.textSecondary,
+                                height: 1.55,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: 16.h),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: GestureDetector(
+                            onTap: () => Navigator.of(context).pop(),
+                            child: Container(
+                              height: 46.h,
+                              decoration: BoxDecoration(
+                                color: AppColors.bg,
+                                borderRadius: BorderRadius.circular(14.r),
+                                border: Border.all(
+                                  color: AppColors.borderMedium,
+                                  width: 0.5,
+                                ),
+                              ),
+                              child: Center(
+                                child: Text(
+                                  'ປິດ',
+                                  style: TextStyle(
+                                    fontSize: 14.sp,
+                                    fontWeight: FontWeight.w700,
+                                    color: AppColors.textHint,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        SizedBox(width: 10.w),
+                        Expanded(
+                          flex: 2,
+                          child: GestureDetector(
+                            onTap: () {
+                              Navigator.of(context).pop();
+                              Get.toNamed(AppRoutes.package);
+                            },
+                            child: Container(
+                              height: 46.h,
+                              decoration: BoxDecoration(
+                                gradient: const LinearGradient(
+                                  colors: AppColors.pinkGradient,
+                                  begin: Alignment.topLeft,
+                                  end: Alignment.bottomRight,
+                                ),
+                                borderRadius: BorderRadius.circular(14.r),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: AppColors.primary.withValues(alpha: 0.30),
+                                    blurRadius: 10,
+                                    offset: const Offset(0, 4),
+                                  ),
+                                ],
+                              ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(
+                                    Icons.workspace_premium_rounded,
+                                    size: 16.r,
+                                    color: Colors.white,
+                                  ),
+                                  SizedBox(width: 6.w),
+                                  Text(
+                                    'ເບິ່ງ Package',
+                                    style: TextStyle(
+                                      fontSize: 14.sp,
+                                      fontWeight: FontWeight.w800,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 20.h),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _NoSubHeader extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          colors: AppColors.pinkGradient,
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+      ),
+      child: Stack(
+        children: [
+          Positioned(
+            top: -20,
+            right: -10,
+            child: Container(
+              width: 90,
+              height: 90,
+              decoration: BoxDecoration(
+                color: Colors.white.withValues(alpha: 0.10),
+                shape: BoxShape.circle,
+              ),
+            ),
+          ),
+          Positioned(
+            bottom: -30,
+            left: -14,
+            child: Container(
+              width: 100,
+              height: 100,
+              decoration: BoxDecoration(
+                color: Colors.white.withValues(alpha: 0.07),
+                shape: BoxShape.circle,
+              ),
+            ),
+          ),
+          Positioned(
+            top: 10,
+            right: 10,
+            child: GestureDetector(
+              onTap: () => Navigator.of(context).pop(),
+              child: Container(
+                width: 28.r,
+                height: 28.r,
+                decoration: BoxDecoration(
+                  color: Colors.white.withValues(alpha: 0.22),
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(Icons.close_rounded, size: 14.r, color: Colors.white),
+              ),
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.fromLTRB(20.w, 20.h, 44.w, 18.h),
+            child: Row(
+              children: [
+                Container(
+                  width: 44.r,
+                  height: 44.r,
+                  decoration: BoxDecoration(
+                    color: Colors.white.withValues(alpha: 0.20),
+                    borderRadius: BorderRadius.circular(14.r),
+                  ),
+                  child: Icon(Icons.workspace_premium_rounded, size: 24.r, color: Colors.white),
+                ),
+                SizedBox(width: 12.w),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'ຕ້ອງການ Package',
+                        style: TextStyle(
+                          fontSize: 16.sp,
+                          fontWeight: FontWeight.w900,
+                          color: Colors.white,
+                          letterSpacing: -0.3,
+                        ),
+                      ),
+                      SizedBox(height: 3.h),
+                      Text(
+                        'ທ່ານຍັງບໍ່ທັນສະໝັກ Package ໃດ',
+                        style: TextStyle(
+                          fontSize: 12.sp,
+                          color: Colors.white.withValues(alpha: 0.75),
+                          height: 1.4,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// ── Insufficient wallet banner ────────────────────────────────────
+Future<void> showInsufficientWalletBanner(
+  BuildContext context, {
+  required double walletBalance,
+  required double serviceRate,
+}) {
+  return showDialog(
+    context: context,
+    barrierDismissible: true,
+    barrierColor: Colors.black.withValues(alpha: 0.55),
+    builder: (_) => _InsufficientWalletDialog(
+      walletBalance: walletBalance,
+      serviceRate: serviceRate,
+    ),
+  );
+}
+
+class _InsufficientWalletDialog extends StatelessWidget {
+  final double walletBalance;
+  final double serviceRate;
+
+  const _InsufficientWalletDialog({
+    required this.walletBalance,
+    required this.serviceRate,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final shortage = serviceRate - walletBalance;
+    final topupAmount = shortage.ceil().toInt();
+
+    return Dialog(
+      backgroundColor: Colors.transparent,
+      insetPadding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 40.h),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(24.r),
+        child: Container(
+          color: Colors.white,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              _InsufficientHeader(),
+              Padding(
+                padding: EdgeInsets.fromLTRB(20.w, 18.h, 20.w, 0),
+                child: Column(
+                  children: [
+                    // Balance rows
+                    _BalanceRow(
+                      label: 'ຍອດເງິນຂອງທ່ານ',
+                      value: walletBalance.toInt(),
+                      icon: Icons.account_balance_wallet_outlined,
+                      iconColor: AppColors.textHint,
+                      bg: AppColors.bg,
+                    ),
+                    SizedBox(height: 8.h),
+                    _BalanceRow(
+                      label: 'ລາຄາບໍລິການ',
+                      value: serviceRate.toInt(),
+                      icon: Icons.sell_outlined,
+                      iconColor: AppColors.primary,
+                      bg: AppColors.primary.withValues(alpha: 0.06),
+                    ),
+                    SizedBox(height: 8.h),
+                    _BalanceRow(
+                      label: 'ຂາດຢູ່',
+                      value: topupAmount,
+                      icon: Icons.remove_circle_outline_rounded,
+                      iconColor: const Color(0xFFEF4444),
+                      bg: const Color(0xFFEF4444).withValues(alpha: 0.06),
+                      highlight: true,
+                    ),
+                    SizedBox(height: 16.h),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: GestureDetector(
+                            onTap: () => Navigator.of(context).pop(),
+                            child: Container(
+                              height: 46.h,
+                              decoration: BoxDecoration(
+                                color: AppColors.bg,
+                                borderRadius: BorderRadius.circular(14.r),
+                                border: Border.all(
+                                  color: AppColors.borderMedium,
+                                  width: 0.5,
+                                ),
+                              ),
+                              child: Center(
+                                child: Text(
+                                  'ປິດ',
+                                  style: TextStyle(
+                                    fontSize: 14.sp,
+                                    fontWeight: FontWeight.w700,
+                                    color: AppColors.textHint,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        SizedBox(width: 10.w),
+                        Expanded(
+                          flex: 2,
+                          child: GestureDetector(
+                            onTap: () {
+                              Navigator.of(context).pop();
+                              Get.toNamed(
+                                AppRoutes.topupAmount,
+                                arguments: {'initialAmount': topupAmount},
+                              );
+                            },
+                            child: Container(
+                              height: 46.h,
+                              decoration: BoxDecoration(
+                                gradient: const LinearGradient(
+                                  colors: [Color(0xFFEF4444), Color(0xFFDC2626)],
+                                  begin: Alignment.topLeft,
+                                  end: Alignment.bottomRight,
+                                ),
+                                borderRadius: BorderRadius.circular(14.r),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: const Color(0xFFEF4444).withValues(alpha: 0.30),
+                                    blurRadius: 10,
+                                    offset: const Offset(0, 4),
+                                  ),
+                                ],
+                              ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(
+                                    Icons.account_balance_wallet_outlined,
+                                    size: 15.r,
+                                    color: Colors.white,
+                                  ),
+                                  SizedBox(width: 6.w),
+                                  Text(
+                                    'ຕື່ມ ${_fmtKip(topupAmount)} KIP',
+                                    style: TextStyle(
+                                      fontSize: 13.sp,
+                                      fontWeight: FontWeight.w800,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 20.h),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _InsufficientHeader extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          colors: [Color(0xFFEF4444), Color(0xFFDC2626)],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+      ),
+      child: Stack(
+        children: [
+          Positioned(
+            top: -20,
+            right: -10,
+            child: Container(
+              width: 90,
+              height: 90,
+              decoration: BoxDecoration(
+                color: Colors.white.withValues(alpha: 0.10),
+                shape: BoxShape.circle,
+              ),
+            ),
+          ),
+          Positioned(
+            bottom: -30,
+            left: -14,
+            child: Container(
+              width: 100,
+              height: 100,
+              decoration: BoxDecoration(
+                color: Colors.white.withValues(alpha: 0.07),
+                shape: BoxShape.circle,
+              ),
+            ),
+          ),
+          Positioned(
+            top: 10,
+            right: 10,
+            child: GestureDetector(
+              onTap: () => Navigator.of(context).pop(),
+              child: Container(
+                width: 28.r,
+                height: 28.r,
+                decoration: BoxDecoration(
+                  color: Colors.white.withValues(alpha: 0.22),
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(Icons.close_rounded, size: 14.r, color: Colors.white),
+              ),
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.fromLTRB(20.w, 20.h, 44.w, 18.h),
+            child: Row(
+              children: [
+                Container(
+                  width: 44.r,
+                  height: 44.r,
+                  decoration: BoxDecoration(
+                    color: Colors.white.withValues(alpha: 0.20),
+                    borderRadius: BorderRadius.circular(14.r),
+                  ),
+                  child: Icon(Icons.account_balance_wallet_rounded, size: 24.r, color: Colors.white),
+                ),
+                SizedBox(width: 12.w),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'ຍອດເງິນບໍ່ພຽງພໍ',
+                        style: TextStyle(
+                          fontSize: 16.sp,
+                          fontWeight: FontWeight.w900,
+                          color: Colors.white,
+                          letterSpacing: -0.3,
+                        ),
+                      ),
+                      SizedBox(height: 3.h),
+                      Text(
+                        'ກະລຸນາຕື່ມເງິນກ່ອນຈອງ',
+                        style: TextStyle(
+                          fontSize: 12.sp,
+                          color: Colors.white.withValues(alpha: 0.75),
+                          height: 1.4,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _BalanceRow extends StatelessWidget {
+  final String label;
+  final int value;
+  final IconData icon;
+  final Color iconColor;
+  final Color bg;
+  final bool highlight;
+
+  const _BalanceRow({
+    required this.label,
+    required this.value,
+    required this.icon,
+    required this.iconColor,
+    required this.bg,
+    this.highlight = false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 11.h),
+      decoration: BoxDecoration(
+        color: bg,
+        borderRadius: BorderRadius.circular(13.r),
+      ),
+      child: Row(
+        children: [
+          Container(
+            width: 32.r,
+            height: 32.r,
+            decoration: BoxDecoration(
+              color: iconColor.withValues(alpha: 0.12),
+              borderRadius: BorderRadius.circular(9.r),
+            ),
+            child: Icon(icon, size: 15.r, color: iconColor),
+          ),
+          SizedBox(width: 10.w),
+          Expanded(
+            child: Text(
+              label,
+              style: TextStyle(
+                fontSize: 12.sp,
+                fontWeight: FontWeight.w500,
+                color: AppColors.textSecondary,
+              ),
+            ),
+          ),
+          Text(
+            '${_fmtKip(value)} KIP',
+            style: TextStyle(
+              fontSize: 14.sp,
+              fontWeight: FontWeight.w900,
+              color: highlight ? const Color(0xFFEF4444) : AppColors.textPrimary,
+              letterSpacing: -0.3,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 // ── Pending subscription banner ───────────────────────────────────
 Future<void> showPendingSubscriptionBanner(BuildContext context) {
   return showDialog(

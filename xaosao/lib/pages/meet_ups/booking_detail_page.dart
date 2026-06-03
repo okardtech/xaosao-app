@@ -15,6 +15,8 @@ import 'package:xaosao/widgets/app_network_image.dart';
 import 'package:xaosao/widgets/app_text_field.dart';
 import 'package:xaosao/widgets/confirm_sheet.dart';
 
+import '../../utils/service_helper.dart';
+
 class BookingDetailPage extends StatelessWidget {
   final MyBookingModel booking;
   final bool isCustomer;
@@ -32,7 +34,12 @@ class BookingDetailPage extends StatelessWidget {
   static bool _isRejected(String? s) => s == 'rejected' || s == 'disputed';
 
   static Color _accentColor(String? s) {
-    const active = {'pending', 'confirmed', 'in_progress', 'awaiting_confirmation'};
+    const active = {
+      'pending',
+      'confirmed',
+      'in_progress',
+      'awaiting_confirmation',
+    };
     if (active.contains(s)) return const Color(0xFF3B82F6);
     if (_isCompleted(s)) return const Color(0xFF22C55E);
     if (_isRejected(s)) return const Color(0xFFF59E0B);
@@ -40,7 +47,12 @@ class BookingDetailPage extends StatelessWidget {
   }
 
   static Color _badgeBg(String? s) {
-    const active = {'pending', 'confirmed', 'in_progress', 'awaiting_confirmation'};
+    const active = {
+      'pending',
+      'confirmed',
+      'in_progress',
+      'awaiting_confirmation',
+    };
     if (active.contains(s)) return const Color(0xFFEFF6FF);
     if (_isCompleted(s)) return const Color(0xFFEDFAF3);
     if (_isRejected(s)) return const Color(0xFFFFFBEB);
@@ -48,7 +60,12 @@ class BookingDetailPage extends StatelessWidget {
   }
 
   static Color _badgeFg(String? s) {
-    const active = {'pending', 'confirmed', 'in_progress', 'awaiting_confirmation'};
+    const active = {
+      'pending',
+      'confirmed',
+      'in_progress',
+      'awaiting_confirmation',
+    };
     if (active.contains(s)) return const Color(0xFF1D4ED8);
     if (_isCompleted(s)) return const Color(0xFF15803D);
     if (_isRejected(s)) return const Color(0xFF92400E);
@@ -77,16 +94,7 @@ class BookingDetailPage extends StatelessWidget {
 
   static String _serviceTypeName(MyBookingModel b) {
     final svc = b.modelService;
-    if (svc != null) {
-      if (svc.customRate != null) return 'ບໍລິການລາຍວັນ';
-      if (svc.customHourlyRate != null) return 'ບໍລິການລາຍຊົ່ວໂມງ';
-      if (svc.customOneTimePrice != null) return 'ບໍລິການຄັ້ງດຽວ';
-      if (svc.customOneNightPrice != null) return 'ບໍລິການຄືນດຽວ';
-      if (svc.customMinuteRate != null) return 'ບໍລິການລາຍນາທີ';
-    }
-    if (b.dayAmount != null) return 'ບໍລິການລາຍວັນ';
-    if (b.hours != null) return 'ບໍລິການລາຍຊົ່ວໂມງ';
-    return 'ບໍລິການ';
+    return ServiceHelper.serviceOriginalName(svc?.service?.name);
   }
 
   static const _dark = Color(0xFF1A1A2E);
@@ -95,8 +103,10 @@ class BookingDetailPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final b = booking;
     final model = b.model;
-    final nameParts = [model?.firstName, model?.lastName]
-        .where((s) => s != null && s.isNotEmpty);
+    final nameParts = [
+      model?.firstName,
+      model?.lastName,
+    ].where((s) => s != null && s.isNotEmpty);
     final displayName = nameParts.isEmpty ? 'ບໍ່ມີຊື່' : nameParts.join(' ');
     final accent = _accentColor(b.status);
 
@@ -119,7 +129,7 @@ class BookingDetailPage extends StatelessWidget {
               child: Container(
                 margin: EdgeInsets.all(8.r),
                 decoration: BoxDecoration(
-                  color: Colors.black.withValues(alpha:0.35),
+                  color: Colors.black.withValues(alpha: 0.35),
                   shape: BoxShape.circle,
                 ),
                 child: Icon(
@@ -273,8 +283,8 @@ class _HeroBackground extends StatelessWidget {
               end: Alignment.bottomCenter,
               colors: [
                 Colors.transparent,
-                Colors.black.withValues(alpha:0.25),
-                Colors.black.withValues(alpha:0.78),
+                Colors.black.withValues(alpha: 0.25),
+                Colors.black.withValues(alpha: 0.78),
               ],
               stops: const [0.35, 0.6, 1.0],
             ),
@@ -297,10 +307,10 @@ class _HeroBackground extends StatelessWidget {
                       vertical: 5.h,
                     ),
                     decoration: BoxDecoration(
-                      color: accent.withValues(alpha:0.22),
+                      color: accent.withValues(alpha: 0.22),
                       borderRadius: BorderRadius.circular(20.r),
                       border: Border.all(
-                        color: accent.withValues(alpha:0.55),
+                        color: accent.withValues(alpha: 0.55),
                         width: 1,
                       ),
                     ),
@@ -350,7 +360,7 @@ class _HeroBackground extends StatelessWidget {
                   '$age ປີ',
                   style: TextStyle(
                     fontSize: 14.sp,
-                    color: Colors.white.withValues(alpha:0.72),
+                    color: Colors.white.withValues(alpha: 0.72),
                     fontWeight: FontWeight.w500,
                   ),
                 ),
@@ -396,8 +406,7 @@ class _StatsRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final b = booking;
-    final priceStr =
-        b.price != null ? CurrFormatter.kip(b.price!) : '-';
+    final priceStr = b.price != null ? CurrFormatter.kip(b.price!) : '-';
 
     String durationStr = '-';
     if (b.dayAmount != null) {
@@ -463,7 +472,7 @@ class _StatCell extends StatelessWidget {
         borderRadius: BorderRadius.circular(16.r),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha:0.04),
+            color: Colors.black.withValues(alpha: 0.04),
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),
@@ -475,7 +484,7 @@ class _StatCell extends StatelessWidget {
           Container(
             padding: EdgeInsets.all(6.r),
             decoration: BoxDecoration(
-              color: iconColor.withValues(alpha:0.1),
+              color: iconColor.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(8.r),
             ),
             child: Icon(icon, size: 14.r, color: iconColor),
@@ -532,7 +541,7 @@ class _InfoCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(16.r),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha:0.04),
+            color: Colors.black.withValues(alpha: 0.04),
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),
@@ -546,7 +555,7 @@ class _InfoCard extends StatelessWidget {
               Container(
                 padding: EdgeInsets.all(6.r),
                 decoration: BoxDecoration(
-                  color: iconColor.withValues(alpha:0.1),
+                  color: iconColor.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(8.r),
                 ),
                 child: Icon(icon, size: 14.r, color: iconColor),
@@ -637,10 +646,7 @@ class _PaymentContent extends StatelessWidget {
   final MyBookingModel booking;
   final String paymentLabel;
 
-  const _PaymentContent({
-    required this.booking,
-    required this.paymentLabel,
-  });
+  const _PaymentContent({required this.booking, required this.paymentLabel});
 
   static const _dark = Color(0xFF1A1A2E);
   static const _grey = Color(0xFF9B9BAD);
@@ -649,14 +655,19 @@ class _PaymentContent extends StatelessWidget {
   Widget build(BuildContext context) {
     final b = booking;
     final isStrike =
-        b.status == 'cancelled' || b.status == 'rejected' || b.status == 'disputed';
+        b.status == 'cancelled' ||
+        b.status == 'rejected' ||
+        b.status == 'disputed';
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
           children: [
-            Text('ລາຄາທັງໝົດ', style: TextStyle(fontSize: 13.sp, color: _grey)),
+            Text(
+              'ລາຄາທັງໝົດ',
+              style: TextStyle(fontSize: 13.sp, color: _grey),
+            ),
             const Spacer(),
             Text(
               b.price != null ? CurrFormatter.kip(b.price!) : '-',
@@ -736,7 +747,9 @@ class _BookingIdRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final shortId = (id ?? '').length > 8 ? id!.substring(0, 8).toUpperCase() : (id ?? '-');
+    final shortId = (id ?? '').length > 8
+        ? id!.substring(0, 8).toUpperCase()
+        : (id ?? '-');
     final createdStr = DateTimeFormatter.dateFormatter(createdAt);
 
     return Container(
@@ -746,7 +759,7 @@ class _BookingIdRow extends StatelessWidget {
         borderRadius: BorderRadius.circular(16.r),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha:0.04),
+            color: Colors.black.withValues(alpha: 0.04),
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),
@@ -757,7 +770,7 @@ class _BookingIdRow extends StatelessWidget {
           Container(
             padding: EdgeInsets.all(6.r),
             decoration: BoxDecoration(
-              color: const Color(0xFF9B9BAD).withValues(alpha:0.1),
+              color: const Color(0xFF9B9BAD).withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(8.r),
             ),
             child: Icon(
@@ -884,7 +897,7 @@ class _BottomBar extends StatelessWidget {
         color: Colors.white,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha:0.06),
+            color: Colors.black.withValues(alpha: 0.06),
             blurRadius: 16,
             offset: const Offset(0, -4),
           ),
@@ -947,10 +960,12 @@ class _BottomBar extends StatelessWidget {
       }
 
       if (status == 'confirmed') {
-        final inDisputeWindow = start != null &&
+        final inDisputeWindow =
+            start != null &&
             now.isAfter(start) &&
             now.isBefore(start.add(const Duration(minutes: 30)));
-        final canCancel = start != null &&
+        final canCancel =
+            start != null &&
             now.isBefore(start.subtract(const Duration(minutes: 30)));
 
         if (inDisputeWindow) {
@@ -1166,22 +1181,25 @@ class _Btn extends StatelessWidget {
   final _BtnStyle style;
   final VoidCallback? onTap;
 
-  const _Btn({
-    required this.label,
-    this.icon,
-    required this.style,
-    this.onTap,
-  });
+  const _Btn({required this.label, this.icon, required this.style, this.onTap});
 
   @override
   Widget build(BuildContext context) {
     final (bg, fg, border) = switch (style) {
-      _BtnStyle.ghost => (const Color(0xFFF0F0F5), const Color(0xFF1A1A2E), null),
+      _BtnStyle.ghost => (
+        const Color(0xFFF0F0F5),
+        const Color(0xFF1A1A2E),
+        null,
+      ),
       _BtnStyle.dark => (const Color(0xFF1A1A2E), Colors.white, null),
       _BtnStyle.pink => (AppColors.primary, Colors.white, null),
       _BtnStyle.green => (const Color(0xFF22C55E), Colors.white, null),
       _BtnStyle.red => (const Color(0xFFFEF2F2), const Color(0xFFDC2626), null),
-      _BtnStyle.amber => (const Color(0xFFFFFBEB), const Color(0xFFD97706), null),
+      _BtnStyle.amber => (
+        const Color(0xFFFFFBEB),
+        const Color(0xFFD97706),
+        null,
+      ),
       _BtnStyle.outline => (
         Colors.transparent,
         const Color(0xFF1A1A2E),

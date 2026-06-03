@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 import 'package:xaosao/constants/app_color.dart';
 import 'package:xaosao/models/Recommended_model.dart';
+import 'package:xaosao/services/location_manager.dart';
 import 'package:xaosao/utils/age_formatter.dart';
+import 'package:xaosao/utils/location_utils.dart';
 import 'package:xaosao/widgets/app_like_button.dart';
 import 'package:xaosao/widgets/app_network_image.dart';
 
@@ -155,7 +158,7 @@ class _DiscoverCardState extends State<DiscoverCard>
                         ),
                         SizedBox(width: 2.w),
                         Text(
-                          'ໃກ້ທ່ານ',
+                          _distanceText(m),
                           style: TextStyle(
                             fontSize: 10.sp,
                             color: Colors.white60,
@@ -186,6 +189,19 @@ class _DiscoverCardState extends State<DiscoverCard>
         ),
       ),
     );
+  }
+
+  String _distanceText(RecommendedModel m) {
+    try {
+      final pos = Get.find<LocationManager>().position.value;
+      if (pos != null && m.latitude != null && m.longitude != null) {
+        return formatDistanceKm(
+          distanceKmBetween(pos.latitude, pos.longitude, m.latitude!, m.longitude!),
+        );
+      }
+    } catch (_) {}
+    if (m.distanceKm != null) return formatDistanceKm(m.distanceKm!);
+    return '—';
   }
 
   Widget _vipBadge() => Container(

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:xaosao/constants/app_color.dart';
@@ -109,7 +110,13 @@ class _DashboardPageState extends State<DashboardPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Obx(() {
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: const SystemUiOverlayStyle(
+        statusBarColor: Colors.transparent,
+        statusBarIconBrightness: Brightness.dark,
+        statusBarBrightness: Brightness.light,
+      ),
+      child: Obx(() {
       final index = _logic.state.currentIndex;
       return Scaffold(
         backgroundColor: const Color(0xFFF8F8FC),
@@ -150,6 +157,7 @@ class _DashboardPageState extends State<DashboardPage> {
           ],
         ),
       );
-    });
+    }),
+    );
   }
 }

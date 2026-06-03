@@ -1,3 +1,5 @@
+import 'package:xaosao/models/service_model.dart';
+
 // ─── Shared base fields ───────────────────────────────────────────────────────
 abstract class BaseProfileModel {
   String? id;
@@ -604,6 +606,7 @@ class ModelService {
   double? customMinuteRate;
   String? serviceLocation;
   bool? isAvailable;
+  List<MassageVariant>? variants;
 
   ModelService({
     this.modelServiceId,
@@ -617,6 +620,7 @@ class ModelService {
     this.customMinuteRate,
     this.serviceLocation,
     this.isAvailable,
+    this.variants,
   });
 
   ModelService copyWith({
@@ -631,6 +635,7 @@ class ModelService {
     double? customMinuteRate,
     String? serviceLocation,
     bool? isAvailable,
+    List<MassageVariant>? variants,
   }) => ModelService(
     modelServiceId: modelServiceId ?? this.modelServiceId,
     serviceId: serviceId ?? this.serviceId,
@@ -643,6 +648,7 @@ class ModelService {
     customMinuteRate: customMinuteRate ?? this.customMinuteRate,
     serviceLocation: serviceLocation ?? this.serviceLocation,
     isAvailable: isAvailable ?? this.isAvailable,
+    variants: variants ?? this.variants,
   );
 
   factory ModelService.fromJson(Map<String, dynamic> json) => ModelService(
@@ -667,6 +673,11 @@ class ModelService {
         : (json["customMinuteRate"] as num).toDouble(),
     serviceLocation: json["serviceLocation"],
     isAvailable: json["isAvailable"],
+    variants: json["variants"] == null
+        ? null
+        : List<MassageVariant>.from(
+            (json["variants"] as List).map((x) => MassageVariant.fromJson(x)),
+          ),
   );
 
   Map<String, dynamic> toJson() => {
@@ -681,6 +692,7 @@ class ModelService {
     "customMinuteRate": customMinuteRate,
     "serviceLocation": serviceLocation,
     "isAvailable": isAvailable,
+    "variants": variants?.map((v) => v.toJson()).toList(),
   };
 
   // ✅ effective display rate

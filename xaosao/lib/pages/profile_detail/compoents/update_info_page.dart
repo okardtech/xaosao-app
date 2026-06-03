@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:xaosao/constants/app_color.dart';
@@ -7,8 +7,6 @@ import 'package:xaosao/models/profile_model.dart';
 import 'package:xaosao/pages/login/getx/login_state.dart';
 import 'package:xaosao/pages/profile_detail/getx/profile_detail_logic.dart';
 import 'package:xaosao/pages/register/components/register_widget.dart';
-import 'package:xaosao/widgets/app_button.dart';
-import 'package:xaosao/widgets/app_text_field.dart';
 import 'package:xaosao/widgets/gradient_app_bar.dart';
 
 class UpdateInfoPage extends StatefulWidget {
@@ -26,21 +24,17 @@ class UpdateInfoPage extends StatefulWidget {
 }
 
 class _UpdateInfoPageState extends State<UpdateInfoPage> {
-  // unique tag so multiple instances never collide
   late final String _tag;
   late final ProfileDetailLogic _logic;
 
-  // controllers
   final _firstNameCtrl = TextEditingController();
   final _lastNameCtrl = TextEditingController();
   final _addressCtrl = TextEditingController();
 
-  // focus nodes
   final _fnFocus = FocusNode();
   final _lnFocus = FocusNode();
   final _adFocus = FocusNode();
 
-  // form state
   Map<String, dynamic> _selectedGender = AppDataConfig.genderList.first;
   DateTime? _selectedDob;
 
@@ -111,70 +105,71 @@ class _UpdateInfoPageState extends State<UpdateInfoPage> {
       behavior: HitTestBehavior.opaque,
       child: Scaffold(
         backgroundColor: AppColors.bg,
-        appBar: const GradientAppBar(title: 'ແກ້ໄຂຂໍ້ມູນ'),
-        bottomNavigationBar: _buildBottomBar(),
+        appBar: GradientAppBar(
+          title: 'ແກ້ໄຂຂໍ້ມູນ',
+          subtitle: 'ກະລຸນາຕື່ມຂໍ້ມູນໃຫ້ຄົບ',
+        ),
         body: SafeArea(
           child: SingleChildScrollView(
             physics: const BouncingScrollPhysics(),
-            padding: EdgeInsets.fromLTRB(16.w, 20.h, 16.w, 12.h),
+            padding: EdgeInsets.fromLTRB(16.w, 20.h, 16.w, 28.h),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // ── ຊື່ / ນາມສະກຸນ ───────────────────────────────
+                // ── ຊື່ / ນາມສະກຸນ ──────────────────────────────────
                 Row(
                   children: [
                     Expanded(
-                      child: _FieldGroup(
+                      child: _FieldCol(
                         label: 'ຊື່',
-                        child: AppTextField(
-                          controller: _firstNameCtrl,
-                          focusNode: _fnFocus,
-                          nextFocusNode: _lnFocus,
-                          hint: 'ຊື່',
-                          accent: AppColors.primary,
-                          prefixIcon: Icons.person_outline_rounded,
+                        child: RegField(
+                          ctrl: _firstNameCtrl,
+                          focus: _fnFocus,
+                          nextFocus: _lnFocus,
+                          hint: 'ປ້ອນຊື່',
+                          icon: Icons.person_outline_rounded,
+                          role: RegisterRole.customer,
                         ),
                       ),
                     ),
-                    SizedBox(width: 8.w),
+                    SizedBox(width: 6.w),
                     Expanded(
-                      child: _FieldGroup(
+                      child: _FieldCol(
                         label: 'ນາມສະກຸນ',
-                        child: AppTextField(
-                          controller: _lastNameCtrl,
-                          focusNode: _lnFocus,
-                          hint: 'ນາມສະກຸນ',
-                          accent: AppColors.primary,
-                          prefixIcon: Icons.person_outline_rounded,
+                        child: RegField(
+                          ctrl: _lastNameCtrl,
+                          focus: _lnFocus,
+                          hint: 'ປ້ອນນາມສະກຸນ',
+                          icon: Icons.person_outline_rounded,
+                          role: RegisterRole.customer,
                           action: TextInputAction.next,
                         ),
                       ),
                     ),
                   ],
                 ),
-                SizedBox(height: 14.h),
+                SizedBox(height: 12.h),
 
-                // ── ເບີໂທ (read-only) ─────────────────────────────
-                _FieldGroup(
+                // ── ເບີໂທ (read-only) ─────────────────────────────────
+                _FieldCol(
                   label: 'ເບີໂທ (ບໍ່ສາມາດປ່ຽນ)',
-                  child: _PhoneDisplayField(
+                  child: _PhoneReadOnly(
                     number: widget.profile.whatsapp?.toString() ?? '',
                   ),
                 ),
-                SizedBox(height: 14.h),
+                SizedBox(height: 12.h),
 
-                // ── ເພດ ────────────────────────────────────────────
-                _FieldGroup(
-                  label: 'ເພດ',
-                  child: GenderSelector(
-                    selected: _selectedGender,
-                    onSelect: (g) => setState(() => _selectedGender = g),
-                  ),
+                // ── ເພດ ───────────────────────────────────────────────
+                RegLabel('ເລືອກເພດ'),
+                SizedBox(height: 4.h),
+                GenderSelector(
+                  selected: _selectedGender,
+                  onSelect: (g) => setState(() => _selectedGender = g),
                 ),
-                SizedBox(height: 14.h),
+                SizedBox(height: 12.h),
 
-                // ── ວັນເດືອນປີເກີດ ────────────────────────────────
-                _FieldGroup(
+                // ── ວັນເດືອນປີເກີດ ────────────────────────────────────
+                _FieldCol(
                   label: 'ວັນເດືອນປີເກີດ',
                   child: DatePickerField(
                     value: _selectedDob,
@@ -182,28 +177,40 @@ class _UpdateInfoPageState extends State<UpdateInfoPage> {
                     onPick: (d) => setState(() => _selectedDob = d),
                   ),
                 ),
-                SizedBox(height: 14.h),
+                SizedBox(height: 12.h),
 
-                // ── ທີ່ຢູ່ (model only) ────────────────────────────
+                // ── ທີ່ຢູ່ (model only) ────────────────────────────────
                 if (_isModel) ...[
-                  _FieldGroup(
+                  _FieldCol(
                     label: 'ທີ່ຢູ່',
-                    child: AppTextField(
-                      controller: _addressCtrl,
-                      focusNode: _adFocus,
+                    child: RegField(
+                      ctrl: _addressCtrl,
+                      focus: _adFocus,
                       hint: 'ເຊັ່ນ: ໂຊນ 1, ວຽງຈັນ',
-                      accent: AppColors.primary,
-                      prefixIcon: Icons.location_on_outlined,
+                      icon: Icons.location_on_outlined,
+                      role: RegisterRole.customer,
                       action: TextInputAction.done,
                     ),
                   ),
-                  SizedBox(height: 14.h),
+                  SizedBox(height: 12.h),
                 ],
 
-                // ── ໝາຍເຫດ ────────────────────────────────────────
+                // ── ໝາຍເຫດ ───────────────────────────────────────────
                 _InfoNote(
                   'ການປ່ຽນລະຫັດຜ່ານ ແລະ ເລກໂທ, ຕ້ອງໄປທີ່ ໜ້າຕັ້ງຄ່າ',
                 ),
+                SizedBox(height: 24.h),
+
+                // ── ປຸ່ມບັນທຶກ ────────────────────────────────────────
+                Obx(() {
+                  final isLoading =
+                      _logic.status.value == ProfileUpdateStatus.loading;
+                  return _SaveButton(
+                    enabled: _canSubmit,
+                    loading: isLoading,
+                    onTap: _submit,
+                  );
+                }),
               ],
             ),
           ),
@@ -211,49 +218,21 @@ class _UpdateInfoPageState extends State<UpdateInfoPage> {
       ),
     );
   }
-
-  // ── Bottom save bar ────────────────────────────────────────────────
-
-  Widget _buildBottomBar() {
-    return Container(
-      padding: EdgeInsets.fromLTRB(16.w, 12.h, 16.w, 28.h),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.07),
-            blurRadius: 16,
-            offset: const Offset(0, -4),
-          ),
-        ],
-      ),
-      child: Obx(() {
-        final isLoading =
-            _logic.status.value == ProfileUpdateStatus.loading;
-        return AppPrimaryButton(
-          label: 'ບັນທຶກ',
-          enabled: _canSubmit,
-          loading: isLoading,
-          onTap: _submit,
-        );
-      }),
-    );
-  }
 }
 
-// ── Field group (label + input) ────────────────────────────────────────
+// ── Label + field column ───────────────────────────────────────────────
 
-class _FieldGroup extends StatelessWidget {
+class _FieldCol extends StatelessWidget {
   final String label;
   final Widget child;
-  const _FieldGroup({required this.label, required this.child});
+  const _FieldCol({required this.label, required this.child});
 
   @override
   Widget build(BuildContext context) => Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          AppFieldLabel(label),
-          SizedBox(height: 5.h),
+          RegLabel(label),
+          SizedBox(height: 4.h),
           child,
         ],
       );
@@ -261,67 +240,72 @@ class _FieldGroup extends StatelessWidget {
 
 // ── Read-only phone display ────────────────────────────────────────────
 
-class _PhoneDisplayField extends StatelessWidget {
+class _PhoneReadOnly extends StatelessWidget {
   final String number;
-  const _PhoneDisplayField({required this.number});
+  const _PhoneReadOnly({required this.number});
 
   @override
   Widget build(BuildContext context) => Container(
-        height: 50.h,
+        height: 48.h,
         decoration: BoxDecoration(
-          color: AppColors.surfaceSecondary,
+          color: Colors.white,
           borderRadius: BorderRadius.circular(14.r),
           border: Border.all(
-              color: Colors.black.withValues(alpha: 0.08), width: 0.8),
+            color: Colors.black.withValues(alpha: 0.12),
+            width: 0.8,
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: AppColors.primary.withValues(alpha: 0.10),
+              blurRadius: 20,
+              offset: const Offset(0, 6),
+            ),
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.05),
+              blurRadius: 10,
+              offset: const Offset(0, 2),
+            ),
+          ],
         ),
-        padding: EdgeInsets.symmetric(horizontal: 12.w),
+        padding: EdgeInsets.symmetric(horizontal: 10.w),
         child: Row(
           children: [
             Container(
-              padding:
-                  EdgeInsets.symmetric(horizontal: 7.w, vertical: 4.h),
+              padding: EdgeInsets.symmetric(horizontal: 7.w, vertical: 4.h),
               decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(7.r),
-                border: Border.all(
-                    color: Colors.black.withValues(alpha: 0.1), width: 0.5),
-                boxShadow: [
-                  BoxShadow(
-                    color: AppColors.primary.withValues(alpha: 0.10),
-                    blurRadius: 20,
-                    offset: const Offset(0, 6),
-                  ),
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.05),
-                    blurRadius: 10,
-                    offset: const Offset(0, 2),
+                color: AppColors.bg,
+                borderRadius: BorderRadius.circular(6.r),
+                border: Border.all(color: AppColors.border, width: 0.5),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text('🇱🇦', style: TextStyle(fontSize: 12.sp)),
+                  SizedBox(width: 4.w),
+                  Text(
+                    '+856',
+                    style: TextStyle(
+                      fontSize: 11.sp,
+                      fontWeight: FontWeight.w700,
+                      color: AppColors.primaryVariant,
+                    ),
                   ),
                 ],
               ),
-              child: Row(mainAxisSize: MainAxisSize.min, children: [
-                Text('🇱🇦', style: TextStyle(fontSize: 12.sp)),
-                SizedBox(width: 4.w),
-                Text(
-                  '+856',
-                  style: TextStyle(
-                    fontSize: 12.sp,
-                    fontWeight: FontWeight.w700,
-                    color: AppColors.textPrimary,
-                  ),
-                ),
-              ]),
             ),
             Container(
               width: 0.5,
               height: 20.h,
               margin: EdgeInsets.symmetric(horizontal: 8.w),
-              color: Colors.black.withValues(alpha: 0.09),
+              color: Colors.black.withValues(alpha: 0.10),
             ),
             Expanded(
               child: Text(
                 number,
                 style: TextStyle(
-                    fontSize: 14.sp, color: AppColors.textSecondary),
+                  fontSize: 14.sp,
+                  color: AppColors.textSecondary,
+                ),
               ),
             ),
             Icon(Icons.lock_outline_rounded,
@@ -329,6 +313,81 @@ class _PhoneDisplayField extends StatelessWidget {
           ],
         ),
       );
+}
+
+// ── Gradient save button ───────────────────────────────────────────────
+
+class _SaveButton extends StatelessWidget {
+  final bool enabled;
+  final bool loading;
+  final VoidCallback onTap;
+  const _SaveButton({
+    required this.enabled,
+    required this.loading,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: (enabled && !loading) ? onTap : null,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        width: double.infinity,
+        height: 46.h,
+        decoration: BoxDecoration(
+          color: enabled ? null : AppColors.textDisabled,
+          borderRadius: BorderRadius.circular(13.r),
+          gradient: enabled
+              ? LinearGradient(
+                  colors: AppColors.pinkGradient,
+                  begin: Alignment.centerLeft,
+                  end: Alignment.centerRight,
+                )
+              : null,
+          boxShadow: enabled
+              ? [
+                  BoxShadow(
+                    color: AppColors.primary.withValues(alpha: 0.28),
+                    blurRadius: 10,
+                    offset: const Offset(0, 4),
+                  ),
+                ]
+              : null,
+        ),
+        child: Center(
+          child: loading
+              ? SizedBox(
+                  width: 20.r,
+                  height: 20.r,
+                  child: const CircularProgressIndicator(
+                    color: Colors.white,
+                    strokeWidth: 2,
+                  ),
+                )
+              : Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      'ບັນທຶກ',
+                      style: TextStyle(
+                        fontSize: 14.sp,
+                        fontWeight: FontWeight.w700,
+                        color: enabled ? Colors.white : AppColors.textHint,
+                      ),
+                    ),
+                    SizedBox(width: 12.w),
+                    Icon(
+                      Icons.check_rounded,
+                      size: 14.r,
+                      color: enabled ? Colors.white : AppColors.textHint,
+                    ),
+                  ],
+                ),
+        ),
+      ),
+    );
+  }
 }
 
 // ── Info note ──────────────────────────────────────────────────────────
@@ -343,8 +402,7 @@ class _InfoNote extends StatelessWidget {
         decoration: BoxDecoration(
           color: const Color(0xFFFFF7ED),
           borderRadius: BorderRadius.circular(12.r),
-          border: Border.all(
-              color: const Color(0xFFFED7AA), width: 0.8),
+          border: Border.all(color: const Color(0xFFFED7AA), width: 0.8),
         ),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,

@@ -80,19 +80,41 @@ class ServiceManagementPage extends StatelessWidget {
   // ── AppBar ─────────────────────────────────────────────────
 
   // ── Actions ────────────────────────────────────────────────
+  static bool _isMassage(ServiceModel svc, [ModelService? profileSvc]) =>
+      svc.name?.toLowerCase() == 'massage' ||
+      profileSvc?.variants?.isNotEmpty == true;
+
   Future<void> _handleAdd(
     BuildContext context,
     ServiceLogic logic,
     ServiceModel svc,
   ) async {
-    final rate = await _showRateSheet(
-      context,
-      serviceName: ServiceHelper.serviceOriginalName(svc.name),
-      billingLabel: _billingLabel(svc.billingType),
-      baseRate: svc.baseRate,
-    );
-    if (rate == null) return;
-    await logic.addService(serviceId: svc.id ?? "", customHourlyRate: rate);
+    if (_isMassage(svc, null)) {
+      final result = await _showMassageSheet(
+        context,
+        serviceName: ServiceHelper.serviceOriginalName(svc.name),
+        baseRate: svc.baseRate,
+      );
+      if (result == null) return;
+      await logic.addMassageService(
+        serviceId: svc.id ?? '',
+        massageVariants: result.variants,
+        serviceLocation: result.location,
+      );
+    } else {
+      final result = await _showRateSheet(
+        context,
+        serviceName: ServiceHelper.serviceOriginalName(svc.name),
+        billingLabel: _billingLabel(svc.billingType),
+        baseRate: svc.baseRate,
+      );
+      if (result == null) return;
+      await logic.addService(
+        serviceId: svc.id ?? '',
+        customHourlyRate: result.rate,
+        serviceLocation: result.location,
+      );
+    }
   }
 
   Future<void> _handleUpdate(
@@ -101,18 +123,38 @@ class ServiceManagementPage extends StatelessWidget {
     ServiceModel svc,
     ModelService profileSvc,
   ) async {
-    final rate = await _showRateSheet(
-      context,
-      serviceName: ServiceHelper.serviceOriginalName(svc.name),
-      billingLabel: _billingLabel(svc.billingType),
-      initialRate: profileSvc.customHourlyRate,
-      baseRate: svc.baseRate,
-    );
-    if (rate == null) return;
-    await logic.updateService(
-      modelServiceId: profileSvc.modelServiceId!,
-      customHourlyRate: rate,
-    );
+    if (_isMassage(svc, profileSvc)) {
+      final result = await _showMassageSheet(
+        context,
+        serviceName: ServiceHelper.serviceOriginalName(svc.name),
+        baseRate: svc.baseRate,
+        initialVariants: profileSvc.variants
+            ?.map((v) => {'name': v.name ?? '', 'pricePerHour': v.pricePerHour ?? 0.0})
+            .toList(),
+        initialLocation: profileSvc.serviceLocation,
+      );
+      if (result == null) return;
+      await logic.updateMassageService(
+        modelServiceId: profileSvc.modelServiceId!,
+        massageVariants: result.variants,
+        serviceLocation: result.location,
+      );
+    } else {
+      final result = await _showRateSheet(
+        context,
+        serviceName: ServiceHelper.serviceOriginalName(svc.name),
+        billingLabel: _billingLabel(svc.billingType),
+        initialRate: profileSvc.customHourlyRate,
+        initialLocation: profileSvc.serviceLocation,
+        baseRate: svc.baseRate,
+      );
+      if (result == null) return;
+      await logic.updateService(
+        modelServiceId: profileSvc.modelServiceId!,
+        customHourlyRate: result.rate,
+        serviceLocation: result.location,
+      );
+    }
   }
 
   Future<void> _handleDelete(
@@ -184,12 +226,20 @@ class _ServiceCard extends StatelessWidget {
           Padding(
             padding: EdgeInsets.fromLTRB(16.w, 0, 16.w, 16.h),
             child: _owned
-                ? _OwnedBody(
-                    service: service,
-                    profileService: profileService!,
-                    onUpdate: () => onUpdate(profileService!),
-                    onDelete: () => onDelete(profileService!),
-                  )
+                ? ((profileService!.variants?.isNotEmpty == true ||
+                        service.name?.toLowerCase() == 'massage')
+                    ? _MassageOwnedBody(
+                        service: service,
+                        profileService: profileService!,
+                        onUpdate: () => onUpdate(profileService!),
+                        onDelete: () => onDelete(profileService!),
+                      )
+                    : _OwnedBody(
+                        service: service,
+                        profileService: profileService!,
+                        onUpdate: () => onUpdate(profileService!),
+                        onDelete: () => onDelete(profileService!),
+                      ))
                 : _UnownedBody(service: service, onAdd: onAdd),
           ),
         ],
@@ -326,6 +376,23 @@ class _OwnedBody extends StatelessWidget {
           label: 'ຄ່າບໍລິການ/ຄັ້ງ',
           value: '${commission.toStringAsFixed(commission % 1 == 0 ? 0 : 1)}%',
         ),
+        if (profileService.serviceLocation != null &&
+            profileService.serviceLocation!.isNotEmpty) ...[
+          SizedBox(height: 6.h),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Icon(Icons.location_on_outlined, size: 14.r, color: AppColors.textHint),
+              SizedBox(width: 4.w),
+              Expanded(
+                child: Text(
+                  profileService.serviceLocation!,
+                  style: TextStyle(fontSize: 12.sp, color: AppColors.textSecondary),
+                ),
+              ),
+            ],
+          ),
+        ],
 
         // Dashed divider
         Padding(
@@ -381,6 +448,640 @@ class _OwnedBody extends StatelessWidget {
           ],
         ),
       ],
+    );
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  _MassageOwnedBody — variant list + buttons for massage service
+// ═══════════════════════════════════════════════════════════════
+class _MassageOwnedBody extends StatelessWidget {
+  final ServiceModel service;
+  final ModelService profileService;
+  final VoidCallback onUpdate;
+  final VoidCallback onDelete;
+
+  const _MassageOwnedBody({
+    required this.service,
+    required this.profileService,
+    required this.onUpdate,
+    required this.onDelete,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final variants = profileService.variants ?? [];
+    final commission = service.commission ?? 0;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(height: 0.5, color: Colors.black.withValues(alpha: 0.06)),
+        SizedBox(height: 14.h),
+
+        // ── Variants list ─────────────────────────────────
+        if (variants.isNotEmpty) ...[
+          Text(
+            'ລາຍການລາຄາ',
+            style: TextStyle(
+              fontSize: 12.sp,
+              fontWeight: FontWeight.w600,
+              color: AppColors.textSecondary,
+            ),
+          ),
+          SizedBox(height: 8.h),
+          ...variants.map((v) => Padding(
+            padding: EdgeInsets.only(bottom: 6.h),
+            child: Row(
+              children: [
+                Container(
+                  width: 6.r,
+                  height: 6.r,
+                  decoration: BoxDecoration(
+                    color: AppColors.primary,
+                    shape: BoxShape.circle,
+                  ),
+                ),
+                SizedBox(width: 8.w),
+                Expanded(
+                  child: Text(
+                    v.name ?? '',
+                    style: TextStyle(
+                      fontSize: 13.sp,
+                      color: AppColors.textPrimary,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
+                Text(
+                  '${CurrFormatter.format(v.pricePerHour ?? 0)} ກີບ/ຊມ',
+                  style: TextStyle(
+                    fontSize: 13.sp,
+                    fontWeight: FontWeight.w700,
+                    color: AppColors.primary,
+                  ),
+                ),
+              ],
+            ),
+          )),
+          SizedBox(height: 6.h),
+        ],
+
+        // ── Commission ────────────────────────────────────
+        _DetailRow(
+          label: 'ຄ່ານາຍໜ້າ/ຄັ້ງ',
+          value: '${commission.toStringAsFixed(commission % 1 == 0 ? 0 : 1)}%',
+        ),
+        if (profileService.serviceLocation != null &&
+            profileService.serviceLocation!.isNotEmpty) ...[
+          SizedBox(height: 6.h),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Icon(Icons.location_on_outlined, size: 14.r, color: AppColors.textHint),
+              SizedBox(width: 4.w),
+              Expanded(
+                child: Text(
+                  profileService.serviceLocation!,
+                  style: TextStyle(fontSize: 12.sp, color: AppColors.textSecondary),
+                ),
+              ),
+            ],
+          ),
+        ],
+
+        SizedBox(height: 14.h),
+
+        // ── Buttons ───────────────────────────────────────
+        Row(
+          children: [
+            Expanded(
+              child: AppOutlineButton(
+                label: 'ລຶບ',
+                leadingIcon: Icons.delete_outline_rounded,
+                borderColor: const Color(0xFFEF4444).withValues(alpha: 0.5),
+                textColor: const Color(0xFFEF4444),
+                height: 42,
+                onTap: onDelete,
+              ),
+            ),
+            SizedBox(width: 10.w),
+            Expanded(
+              child: AppPrimaryButton(
+                label: 'ອັບເດດ',
+                leadingIcon: Icons.edit_outlined,
+                height: 42,
+                onTap: onUpdate,
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  _showMassageSheet + _MassageVariantsSheet
+// ═══════════════════════════════════════════════════════════════
+
+// Variant row state for the sheet
+class _VRow {
+  final TextEditingController nameCtrl;
+  final TextEditingController priceCtrl;
+
+  _VRow({String name = '', String price = ''})
+      : nameCtrl = TextEditingController(text: name),
+        priceCtrl = TextEditingController(text: price);
+
+  bool get isFilled =>
+      nameCtrl.text.trim().isNotEmpty && priceCtrl.text.isNotEmpty;
+
+  int? get parsedPrice {
+    final raw = priceCtrl.text.replaceAll(',', '');
+    return raw.isEmpty ? null : int.tryParse(raw);
+  }
+
+  void dispose() {
+    nameCtrl.dispose();
+    priceCtrl.dispose();
+  }
+}
+
+typedef _MassageResult = ({List<Map<String, dynamic>> variants, String location});
+
+Future<_MassageResult?> _showMassageSheet(
+  BuildContext context, {
+  required String serviceName,
+  double? baseRate,
+  List<Map<String, dynamic>>? initialVariants,
+  String? initialLocation,
+}) {
+  return showModalBottomSheet<_MassageResult>(
+    context: context,
+    isScrollControlled: true,
+    backgroundColor: Colors.transparent,
+    barrierColor: Colors.black.withValues(alpha: 0.45),
+    builder: (_) => _MassageVariantsSheet(
+      serviceName: serviceName,
+      baseRate: baseRate,
+      initialVariants: initialVariants,
+      initialLocation: initialLocation,
+    ),
+  );
+}
+
+class _MassageVariantsSheet extends StatefulWidget {
+  final String serviceName;
+  final double? baseRate;
+  final List<Map<String, dynamic>>? initialVariants;
+  final String? initialLocation;
+
+  const _MassageVariantsSheet({
+    required this.serviceName,
+    this.baseRate,
+    this.initialVariants,
+    this.initialLocation,
+  });
+
+  @override
+  State<_MassageVariantsSheet> createState() => _MassageVariantsSheetState();
+}
+
+class _MassageVariantsSheetState extends State<_MassageVariantsSheet> {
+  final List<_VRow> _rows = [];
+  late final TextEditingController _locationCtrl;
+  String? _locationError;
+
+  static String _fmtInt(int n) {
+    final s = n.toString();
+    final buf = StringBuffer();
+    for (int i = 0; i < s.length; i++) {
+      if (i > 0 && (s.length - i) % 3 == 0) buf.write(',');
+      buf.write(s[i]);
+    }
+    return buf.toString();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _locationCtrl = TextEditingController(text: widget.initialLocation ?? '');
+    final init = widget.initialVariants;
+    if (init != null && init.isNotEmpty) {
+      for (final v in init) {
+        final p = v['pricePerHour'];
+        _rows.add(_VRow(
+          name: v['name']?.toString() ?? '',
+          price: p != null ? _fmtInt((p as num).toInt()) : '',
+        ));
+      }
+    } else {
+      _rows.add(_VRow());
+    }
+  }
+
+  @override
+  void dispose() {
+    _locationCtrl.dispose();
+    for (final r in _rows) r.dispose();
+    super.dispose();
+  }
+
+  bool get _canSubmit {
+    if (_rows.isEmpty) return false;
+    if (!_rows.every((r) => r.isFilled)) return false;
+    final base = (widget.baseRate ?? 0).toInt();
+    return _rows.every((r) {
+      final p = r.parsedPrice;
+      return p != null && p >= base;
+    });
+  }
+
+  void _submit() {
+    if (!_canSubmit) return;
+    if (_locationCtrl.text.trim().isEmpty) {
+      setState(() => _locationError = 'ກະລຸນາໃສ່ທີ່ຢູ່/ສະຖານທີ່');
+      return;
+    }
+    HapticFeedback.lightImpact();
+    final variants = _rows.map((r) => {
+      'name': r.nameCtrl.text.trim(),
+      'pricePerHour': r.parsedPrice,
+    }).toList();
+    Navigator.pop<_MassageResult>(
+      context,
+      (variants: variants, location: _locationCtrl.text.trim()),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final isUpdate = widget.initialVariants != null;
+
+    return Padding(
+      padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+      child: Container(
+        padding: EdgeInsets.fromLTRB(20.w, 0, 20.w, 0),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.vertical(top: Radius.circular(28.r)),
+        ),
+        child: SafeArea(
+          top: false,
+          child: StatefulBuilder(
+            builder: (ctx, setSheetState) => SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Handle
+                  Center(
+                    child: Container(
+                      margin: EdgeInsets.only(top: 12.h, bottom: 20.h),
+                      width: 40.w,
+                      height: 4.h,
+                      decoration: BoxDecoration(
+                        color: Colors.black.withValues(alpha: 0.10),
+                        borderRadius: BorderRadius.circular(4.r),
+                      ),
+                    ),
+                  ),
+
+                  // Icon + Title
+                  Row(
+                    children: [
+                      Container(
+                        width: 42.r,
+                        height: 42.r,
+                        decoration: BoxDecoration(
+                          color: AppColors.primary.withValues(alpha: 0.10),
+                          borderRadius: BorderRadius.circular(12.r),
+                        ),
+                        child: Icon(
+                          isUpdate ? Icons.edit_outlined : Icons.spa_outlined,
+                          size: 20.r,
+                          color: AppColors.primary,
+                        ),
+                      ),
+                      SizedBox(width: 12.w),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            isUpdate ? 'ອັບເດດລາຄານວດ' : 'ເພີ່ມລາຄານວດ',
+                            style: TextStyle(
+                              fontSize: 16.sp,
+                              fontWeight: FontWeight.w800,
+                              color: AppColors.textPrimary,
+                            ),
+                          ),
+                          Text(
+                            widget.serviceName,
+                            style: TextStyle(fontSize: 12.sp, color: AppColors.textHint),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 20.h),
+
+                  // Column headers
+                  Row(
+                    children: [
+                      Expanded(
+                        flex: 5,
+                        child: Text(
+                          'ຊື່ປະເພດ',
+                          style: TextStyle(
+                            fontSize: 12.sp,
+                            fontWeight: FontWeight.w600,
+                            color: AppColors.textSecondary,
+                          ),
+                        ),
+                      ),
+                      SizedBox(width: 8.w),
+                      Expanded(
+                        flex: 5,
+                        child: Row(
+                          children: [
+                            Text(
+                              'ລາຄາ (ກີບ/ຊມ)',
+                              style: TextStyle(
+                                fontSize: 12.sp,
+                                fontWeight: FontWeight.w600,
+                                color: AppColors.textSecondary,
+                              ),
+                            ),
+                            if (widget.baseRate != null) ...[
+                              SizedBox(width: 4.w),
+                              Text(
+                                'ຕ່ຳສຸດ ${_fmtInt(widget.baseRate!.toInt())}',
+                                style: TextStyle(fontSize: 10.sp, color: AppColors.textHint),
+                              ),
+                            ],
+                          ],
+                        ),
+                      ),
+                      SizedBox(width: 34.w),
+                    ],
+                  ),
+                  SizedBox(height: 8.h),
+
+                  // Rows
+                  ..._rows.asMap().entries.map((e) => Padding(
+                    padding: EdgeInsets.only(bottom: 8.h),
+                    child: _ManageVariantRow(
+                      row: e.value,
+                      canRemove: _rows.length > 1,
+                      baseRate: widget.baseRate,
+                      onRemove: () => setSheetState(() {
+                        _rows[e.key].dispose();
+                        _rows.removeAt(e.key);
+                      }),
+                      onChanged: () => setSheetState(() {}),
+                    ),
+                  )),
+
+                  // Add row button
+                  GestureDetector(
+                    onTap: () => setSheetState(() => _rows.add(_VRow())),
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(vertical: 6.h),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(Icons.add_circle_outline_rounded, size: 16.r, color: AppColors.primary),
+                          SizedBox(width: 6.w),
+                          Text(
+                            'ເພີ່ມປະເພດ',
+                            style: TextStyle(
+                              fontSize: 13.sp,
+                              fontWeight: FontWeight.w600,
+                              color: AppColors.primary,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 16.h),
+
+                  // Location
+                  Text(
+                    'ທີ່ຢູ່/ສະຖານທີ່',
+                    style: TextStyle(
+                      fontSize: 13.sp,
+                      fontWeight: FontWeight.w700,
+                      color: AppColors.textSecondary,
+                    ),
+                  ),
+                  SizedBox(height: 8.h),
+                  TextField(
+                    controller: _locationCtrl,
+                    keyboardType: TextInputType.streetAddress,
+                    onChanged: (_) {
+                      if (_locationError != null) setState(() => _locationError = null);
+                    },
+                    decoration: InputDecoration(
+                      hintText: 'ເຊັ່ນ: ນະຄອນຫຼວງວຽງຈັນ, ສີສັດຕະນາກ',
+                      hintStyle: TextStyle(color: AppColors.textDisabled, fontSize: 13.sp),
+                      prefixIcon: Icon(Icons.location_on_outlined, size: 18.r, color: AppColors.textHint),
+                      errorText: _locationError,
+                      filled: true,
+                      fillColor: AppColors.bg,
+                      contentPadding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 12.h),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(14.r),
+                        borderSide: BorderSide(color: Colors.black.withValues(alpha: 0.08), width: 0.8),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(14.r),
+                        borderSide: BorderSide(color: Colors.black.withValues(alpha: 0.08), width: 0.8),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(14.r),
+                        borderSide: const BorderSide(color: AppColors.primary, width: 1.4),
+                      ),
+                      errorBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(14.r),
+                        borderSide: const BorderSide(color: Color(0xFFEF4444), width: 1.2),
+                      ),
+                      focusedErrorBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(14.r),
+                        borderSide: const BorderSide(color: Color(0xFFEF4444), width: 1.4),
+                      ),
+                    ),
+                    style: TextStyle(fontSize: 13.sp, color: AppColors.textPrimary),
+                  ),
+                  SizedBox(height: 16.h),
+
+                  // Submit
+                  AppPrimaryButton(
+                    label: isUpdate ? 'ອັບເດດ' : 'ເພີ່ມ',
+                    height: 50,
+                    onTap: _submit,
+                  ),
+                  SizedBox(height: 10.h),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+// ── Variant row widget inside the sheet ─────────────────────────
+class _ManageVariantRow extends StatelessWidget {
+  final _VRow row;
+  final bool canRemove;
+  final double? baseRate;
+  final VoidCallback onRemove;
+  final VoidCallback onChanged;
+
+  const _ManageVariantRow({
+    required this.row,
+    required this.canRemove,
+    required this.onRemove,
+    required this.onChanged,
+    this.baseRate,
+  });
+
+  bool get _priceHasError {
+    if (row.priceCtrl.text.isEmpty) return false;
+    final p = row.parsedPrice;
+    final base = (baseRate ?? 0).toInt();
+    return p == null || p < base;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Expanded(
+          flex: 5,
+          child: _ManageMiniTextField(
+            ctrl: row.nameCtrl,
+            hint: 'ຊື່ປະເພດ',
+            hasError: false,
+            isNumber: false,
+            onChanged: onChanged,
+          ),
+        ),
+        SizedBox(width: 8.w),
+        Expanded(
+          flex: 5,
+          child: _ManageMiniTextField(
+            ctrl: row.priceCtrl,
+            hint: '0',
+            hasError: _priceHasError,
+            isNumber: true,
+            onChanged: onChanged,
+          ),
+        ),
+        SizedBox(width: 6.w),
+        GestureDetector(
+          onTap: canRemove ? onRemove : null,
+          child: Container(
+            width: 28.r,
+            height: 28.r,
+            decoration: BoxDecoration(
+              color: canRemove ? Colors.red.shade50 : AppColors.bg,
+              borderRadius: BorderRadius.circular(8.r),
+            ),
+            child: Icon(
+              Icons.close_rounded,
+              size: 16.r,
+              color: canRemove ? Colors.red.shade400 : AppColors.textDisabled,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+// ── Focus-aware mini text field ──────────────────────────────────
+class _ManageMiniTextField extends StatefulWidget {
+  final TextEditingController ctrl;
+  final String hint;
+  final bool hasError;
+  final bool isNumber;
+  final VoidCallback onChanged;
+
+  const _ManageMiniTextField({
+    required this.ctrl,
+    required this.hint,
+    required this.hasError,
+    required this.isNumber,
+    required this.onChanged,
+  });
+
+  @override
+  State<_ManageMiniTextField> createState() => _ManageMiniTextFieldState();
+}
+
+class _ManageMiniTextFieldState extends State<_ManageMiniTextField> {
+  late final FocusNode _focus;
+  bool _focused = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _focus = FocusNode();
+    _focus.addListener(() {
+      if (mounted) setState(() => _focused = _focus.hasFocus);
+    });
+  }
+
+  @override
+  void dispose() {
+    _focus.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final borderColor = widget.hasError
+        ? Colors.red.shade300
+        : _focused
+            ? AppColors.primary
+            : const Color(0x1A000000);
+
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 150),
+      height: 42.h,
+      decoration: BoxDecoration(
+        color: AppColors.bg,
+        borderRadius: BorderRadius.circular(12.r),
+        border: Border.all(
+          color: borderColor,
+          width: (_focused && !widget.hasError) ? 1.5 : 1.0,
+        ),
+      ),
+      child: TextField(
+        controller: widget.ctrl,
+        focusNode: _focus,
+        keyboardType: widget.isNumber ? TextInputType.number : TextInputType.text,
+        inputFormatters: widget.isNumber ? [_ThousandsSeparatorFormatter()] : [],
+        textAlign: TextAlign.start,
+        textAlignVertical: TextAlignVertical.center,
+        onChanged: (_) => widget.onChanged(),
+        style: TextStyle(
+          fontSize: 14.sp,
+          fontWeight: FontWeight.w500,
+          color: widget.hasError ? Colors.red.shade400 : AppColors.textPrimary,
+        ),
+        decoration: InputDecoration(
+          hintText: widget.hint,
+          hintStyle: TextStyle(fontSize: 14.sp, color: AppColors.textDisabled),
+          contentPadding: EdgeInsets.symmetric(horizontal: 12.w,vertical: 12.h),
+          border: InputBorder.none,
+          isDense: true,
+        ),
+      ),
     );
   }
 }
@@ -570,14 +1271,17 @@ class _EmptyView extends StatelessWidget {
 // ═══════════════════════════════════════════════════════════════
 //  _RateInputSheet — bottom sheet to enter / update custom rate
 // ═══════════════════════════════════════════════════════════════
-Future<double?> _showRateSheet(
+typedef _RateResult = ({double rate, String location});
+
+Future<_RateResult?> _showRateSheet(
   BuildContext context, {
   required String serviceName,
   required String billingLabel,
   double? initialRate,
+  String? initialLocation,
   double? baseRate,
 }) {
-  return showModalBottomSheet<double>(
+  return showModalBottomSheet<_RateResult>(
     context: context,
     isScrollControlled: true,
     backgroundColor: Colors.transparent,
@@ -586,6 +1290,7 @@ Future<double?> _showRateSheet(
       serviceName: serviceName,
       billingLabel: billingLabel,
       initialRate: initialRate,
+      initialLocation: initialLocation,
       baseRate: baseRate,
     ),
   );
@@ -595,12 +1300,14 @@ class _RateInputSheet extends StatefulWidget {
   final String serviceName;
   final String billingLabel;
   final double? initialRate;
+  final String? initialLocation;
   final double? baseRate;
 
   const _RateInputSheet({
     required this.serviceName,
     required this.billingLabel,
     this.initialRate,
+    this.initialLocation,
     this.baseRate,
   });
 
@@ -610,7 +1317,9 @@ class _RateInputSheet extends StatefulWidget {
 
 class _RateInputSheetState extends State<_RateInputSheet> {
   late final TextEditingController _ctrl;
+  late final TextEditingController _locationCtrl;
   String? _errorMsg;
+  String? _locationError;
 
   static String _fmt(String digits) {
     if (digits.isEmpty) return '';
@@ -627,11 +1336,13 @@ class _RateInputSheetState extends State<_RateInputSheet> {
           ? _fmt(widget.initialRate!.toStringAsFixed(0))
           : '',
     );
+    _locationCtrl = TextEditingController(text: widget.initialLocation ?? '');
   }
 
   @override
   void dispose() {
     _ctrl.dispose();
+    _locationCtrl.dispose();
     super.dispose();
   }
 
@@ -640,17 +1351,23 @@ class _RateInputSheetState extends State<_RateInputSheet> {
     final raw = _ctrl.text.replaceAll(',', '').trim();
     final val = double.tryParse(raw);
     if (val == null || val <= 0) {
-      setState(() => _errorMsg = 'ກະລຸນາໃສ່ລາຄາທີ່ຖືກຕ້ອງ');
+      setState(() { _errorMsg = 'ກະລຸນາໃສ່ລາຄາທີ່ຖືກຕ້ອງ'; });
       return;
     }
     if (widget.baseRate != null && val < widget.baseRate!) {
-      setState(
-        () => _errorMsg =
-            'ລາຄາຕ່ຳສຸດ: ${CurrFormatter.format(widget.baseRate!)} ກີບ',
-      );
+      setState(() {
+        _errorMsg = 'ລາຄາຕ່ຳສຸດ: ${CurrFormatter.format(widget.baseRate!)} ກີບ';
+      });
       return;
     }
-    Navigator.pop(context, val);
+    if (_locationCtrl.text.trim().isEmpty) {
+      setState(() => _locationError = 'ກະລຸນາໃສ່ທີ່ຢູ່/ສະຖານທີ່');
+      return;
+    }
+    Navigator.pop<_RateResult>(
+      context,
+      (rate: val, location: _locationCtrl.text.trim()),
+    );
   }
 
   @override
@@ -809,6 +1526,55 @@ class _RateInputSheetState extends State<_RateInputSheet> {
                   fontWeight: FontWeight.w700,
                   color: AppColors.textPrimary,
                 ),
+              ),
+              SizedBox(height: 16.h),
+
+              // Location
+              Text(
+                'ທີ່ຢູ່/ສະຖານທີ່',
+                style: TextStyle(
+                  fontSize: 13.sp,
+                  fontWeight: FontWeight.w700,
+                  color: AppColors.textSecondary,
+                ),
+              ),
+              SizedBox(height: 8.h),
+              TextField(
+                controller: _locationCtrl,
+                keyboardType: TextInputType.streetAddress,
+                onChanged: (_) {
+                  if (_locationError != null) setState(() => _locationError = null);
+                },
+                decoration: InputDecoration(
+                  hintText: 'ເຊັ່ນ: ນະຄອນຫຼວງວຽງຈັນ, ສີສັດຕະນາກ',
+                  hintStyle: TextStyle(color: AppColors.textDisabled, fontSize: 13.sp),
+                  prefixIcon: Icon(Icons.location_on_outlined, size: 18.r, color: AppColors.textHint),
+                  errorText: _locationError,
+                  filled: true,
+                  fillColor: AppColors.bg,
+                  contentPadding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 12.h),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(14.r),
+                    borderSide: BorderSide(color: Colors.black.withValues(alpha: 0.08), width: 0.8),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(14.r),
+                    borderSide: BorderSide(color: Colors.black.withValues(alpha: 0.08), width: 0.8),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(14.r),
+                    borderSide: const BorderSide(color: AppColors.primary, width: 1.4),
+                  ),
+                  errorBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(14.r),
+                    borderSide: const BorderSide(color: Color(0xFFEF4444), width: 1.2),
+                  ),
+                  focusedErrorBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(14.r),
+                    borderSide: const BorderSide(color: Color(0xFFEF4444), width: 1.4),
+                  ),
+                ),
+                style: TextStyle(fontSize: 13.sp, color: AppColors.textPrimary),
               ),
               SizedBox(height: 20.h),
 

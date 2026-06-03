@@ -278,7 +278,7 @@ class _ProfilePageState extends State<ProfilePage> {
           Obx(() {
             final uploading = _profileLogic.state.profileImageUploading;
             return Container(
-              margin: EdgeInsets.only(top: 40.h),
+              margin: EdgeInsets.only(top: 20.h),
               padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
               decoration: BoxDecoration(
                 color: Colors.white,
@@ -458,20 +458,20 @@ class _ProfilePageState extends State<ProfilePage> {
                   Row(
                     children: [
                       StatCell(
-                        value: '${model?.counts?.totalLikes}',
+                        value: '${model?.counts?.totalLikes ?? 0}',
                         label: 'ຖືກໃຈ',
                         isBorder: false,
                       ),
                       StatCell(
-                        value: '${model?.counts?.totalFriends}',
+                        value: '${model?.counts?.totalFriends ?? 0}',
                         label: 'ໝູ່',
                       ),
                       StatCell(
-                        value: '${model?.totalReferredCustomers}★',
+                        value: '${model?.totalReferredCustomers  ?? 0}★',
                         label: 'ຄໍາລິຊົມ',
                       ),
                       StatCell(
-                        value: '${model?.counts?.totalBookings}',
+                        value: '${model?.counts?.totalBookings ?? 0}',
                         label: 'ຈອງ',
                       ),
                     ],
@@ -488,7 +488,16 @@ class _ProfilePageState extends State<ProfilePage> {
               children: [
                 ShareEnableCard(
                   enabled: st.hidden,
-                  onShareTap: () {},
+                  onShareTap: () {
+                    final model =
+                        Get.find<LoginLogic>().state.modelProfile;
+                    if (model != null) {
+                      Get.toNamed(
+                        AppRoutes.shareLink,
+                        arguments: model,
+                      );
+                    }
+                  },
                   onToggle: _profileLogic.toggleHidden,
                   enableDesc:
                       'ເຊື່ອງໂປຣໄຟຂອງທ່ານບໍ່ໃຫ້ລູກຄ້າເຫັນ. '

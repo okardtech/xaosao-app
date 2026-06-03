@@ -5,8 +5,11 @@ import 'package:xaosao/constants/app_color.dart';
 import 'package:xaosao/models/profile_model.dart';
 import 'package:xaosao/constants/app_routes.dart';
 import 'package:xaosao/pages/login/getx/login_logic.dart';
+import 'package:xaosao/widgets/app_image_preview.dart';
 import 'package:xaosao/widgets/app_network_image.dart';
 import 'package:xaosao/widgets/gradient_app_bar.dart';
+
+import '../../utils/service_helper.dart';
 
 class ProfileDetailPage extends StatefulWidget {
   final bool isClient;
@@ -340,13 +343,16 @@ class _AvatarCircle extends StatelessWidget {
   Widget build(BuildContext context) {
     final url = profile.profile;
     if (url != null && url.isNotEmpty) {
-      return ClipRRect(
-        borderRadius: BorderRadius.circular(35.r),
-        child: AppNetworkImage(
-          imageUrl: url,
-          width: 70.r,
-          height: 70.r,
-          accentColor: AppColors.primary,
+      return GestureDetector(
+        onTap: () => AppImagePreview.show(context, [url]),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(35.r),
+          child: AppNetworkImage(
+            imageUrl: url,
+            width: 70.r,
+            height: 70.r,
+            accentColor: AppColors.primary,
+          ),
         ),
       );
     }
@@ -551,20 +557,13 @@ class _ServiceChip extends StatelessWidget {
           border: Border.all(
               color: AppColors.primary.withOpacity(0.28), width: 0.8),
         ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(Icons.stars_rounded, size: 12.r, color: AppColors.primary),
-            SizedBox(width: 4.w),
-            Text(
-              name,
+        child: Text(
+              ServiceHelper.serviceOriginalName(name),
               style: TextStyle(
-                fontSize: 11.sp,
-                fontWeight: FontWeight.w600,
+                fontSize: 12.sp,
+                fontWeight: FontWeight.w400,
                 color: AppColors.primary,
               ),
             ),
-          ],
-        ),
       );
 }

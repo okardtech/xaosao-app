@@ -262,7 +262,7 @@ class _FeedbackCard extends StatelessWidget {
                 child: Text(
                   item.subject ?? '—',
                   style: TextStyle(
-                    fontSize: 13.sp,
+                    fontSize: 14.sp,
                     fontWeight: FontWeight.w700,
                     color: AppColors.textPrimary,
                   ),
@@ -270,8 +270,8 @@ class _FeedbackCard extends StatelessWidget {
                   overflow: TextOverflow.ellipsis,
                 ),
               ),
-              SizedBox(width: 8.w),
-              _StatusBadge(label: chip.label, fg: chip.fg, bg: chip.bg),
+              // SizedBox(width: 8.w),
+              // _StatusBadge(label: chip.label, fg: chip.fg, bg: chip.bg),
             ],
           ),
           SizedBox(height: 8.h),
@@ -302,7 +302,7 @@ class _FeedbackCard extends StatelessWidget {
                     ? DateFormat('dd MMM yyyy, HH:mm').format(item.createdAt!)
                     : '—',
                 style: TextStyle(
-                  fontSize: 10.sp,
+                  fontSize: 12.sp,
                   color: AppColors.textHint,
                 ),
               ),

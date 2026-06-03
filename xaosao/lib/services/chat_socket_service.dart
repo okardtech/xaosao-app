@@ -76,6 +76,12 @@ class ChatSocketService extends GetxService {
       ..on('message_notification', (data) {
         debugPrint('[Socket] 🔔 message_notification: $data');
         onMessageNotification?.call(data);
+      })
+      ..onAny((event, data) {
+        // Log every event to surface unexpected event names from the server
+        if (event != 'user_typing') {
+          debugPrint('[Socket] ← event "$event": $data');
+        }
       });
 
     _socket!.connect();
@@ -90,7 +96,16 @@ class ChatSocketService extends GetxService {
 
   // ── Room management ────────────────────────────────────────
   void joinConversation(String conversationId) {
-    _emit('join_conversation', {'conversation_id': conversationId});
+    if (_socket == null || !_socket!.connected) {
+      debugPrint('[Socket] ⚠️ join_conversation "$conversationId" dropped — not connected');
+      return;
+    }
+    debugPrint('[Socket] → join_conversation: $conversationId');
+    _socket!.emitWithAck(
+      'join_conversation',
+      {'conversation_id': conversationId},
+      ack: (ack) => debugPrint('[Socket] ✓ join_conversation ack: $ack'),
+    );
   }
 
   void leaveConversation(String conversationId) {

@@ -1,5 +1,7 @@
 import 'package:get/get.dart';
 import 'package:xaosao/pages/chat/getx/chat_logic.dart';
+import 'package:xaosao/pages/referral_analytics/getx/referral_analytics_logic.dart';
+import 'package:xaosao/services/location_manager.dart';
 import 'package:xaosao/pages/forgot_password/getx/forgot_logic.dart';
 import 'package:xaosao/services/chat_socket_service.dart';
 import 'package:xaosao/pages/home/getx/home_logic.dart';
@@ -14,6 +16,7 @@ import 'package:xaosao/pages/model_discover/getx/model_discover_logic.dart';
 import 'package:xaosao/pages/qr_manage/getx/qr_logic.dart';
 import 'package:xaosao/pages/services_manage/getx/service_logic.dart';
 import 'package:xaosao/services/api_service.dart';
+import 'package:xaosao/services/appsflyer_service.dart';
 import 'package:xaosao/services/authe_service.dart';
 
 import '../pages/register/getx/register_logic.dart';
@@ -26,7 +29,9 @@ import '../pages/package/getx/package_logic.dart';
 class InitialBinding extends Bindings {
   @override
   void dependencies() {
+    Get.putAsync<LocationManager>(() => LocationManager().init(), permanent: true);
     Get.putAsync<ApiService>(() => ApiService().init(), permanent: true);
+    Get.putAsync<AppsFlyerService>(() => AppsFlyerService().init(), permanent: true);
     Get.putAsync<ChatSocketService>(() => ChatSocketService().init(), permanent: true);
     Get.lazyPut<AuthService>(() => AuthService(), fenix: true);
 
@@ -47,7 +52,8 @@ class InitialBinding extends Bindings {
     Get.lazyPut<PackageLogic>(() => PackageLogic(), fenix: true);
     Get.lazyPut<MeetUpLogic>(() => MeetUpLogic(), fenix: true);
     Get.lazyPut<ViewCompanionLogic>(() => ViewCompanionLogic(), fenix: true);
-     Get.lazyPut<PostLogic>(() => PostLogic(), fenix: true);
+    Get.lazyPut<PostLogic>(() => PostLogic(), fenix: true);
     Get.lazyPut<ChatLogic>(() => ChatLogic(), fenix: true);
+    Get.lazyPut<ReferralAnalyticsLogic>(() => ReferralAnalyticsLogic(), fenix: true);
   }
 }

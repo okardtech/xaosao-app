@@ -35,6 +35,8 @@ import '../pages/package/subscription_checkout_page.dart';
 import '../pages/booking/booking_args.dart';
 import '../pages/booking/booking_page.dart';
 import '../pages/meet_ups/booking_detail_loader_page.dart';
+import '../pages/share_linked/share_linked_page.dart';
+import '../pages/referral_analytics/referral_analytics_page.dart';
 
 class AppRoutes {
   static const String splash = '/';
@@ -68,6 +70,8 @@ class AppRoutes {
   static const String booking = '/booking';
   static const String bookingDetail = '/booking-detail';
   static const String chatDetail = '/chat-detail';
+  static const String shareLink = '/share-link';
+  static const String referralAnalytics = '/referral-analytics';
 
   static Route<dynamic> onGenerateRoute(RouteSettings settings) {
     switch (settings.name) {
@@ -166,6 +170,11 @@ class AppRoutes {
           conversationId: args['conversationId'] as String,
           conv: args['conv'] as ConversationModel,
         ));
+      case shareLink:
+        final model = settings.arguments as ModelProfileModel;
+        return _slideRight(ShareLinkedPage(model: model));
+      case referralAnalytics:
+        return _slideRight(const ReferralAnalyticsPage());
       default:
         return _fade(const SplashPage());
     }

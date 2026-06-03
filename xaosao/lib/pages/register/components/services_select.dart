@@ -5,11 +5,9 @@ import 'package:get/get.dart';
 import 'package:xaosao/constants/app_color.dart';
 import 'package:xaosao/models/service_model.dart';
 import 'package:xaosao/utils/service_helper.dart';
-import 'package:xaosao/pages/register/components/register_app_bar.dart';
 import 'package:xaosao/pages/register/getx/register_logic.dart';
 import 'package:xaosao/pages/register/getx/register_state.dart';
 import '../../../widgets/gradient_app_bar.dart';
-import '../../login/getx/login_state.dart';
 
 // ── Thousands comma formatter ──────────────────────────────────────────────────
 class _ThousandsFormatter extends TextInputFormatter {
@@ -53,11 +51,43 @@ String _fmtInt(int n) {
   return buf.toString();
 }
 
+// ── Variant row for massage service ───────────────────────────────────────────
+class _VariantRow {
+  final TextEditingController nameCtrl;
+  final TextEditingController priceCtrl;
+
+  _VariantRow({String name = '', String price = ''})
+    : nameCtrl = TextEditingController(text: name),
+      priceCtrl = TextEditingController(text: price);
+
+  bool get isFilled =>
+      nameCtrl.text.trim().isNotEmpty && priceCtrl.text.isNotEmpty;
+
+  bool get isPartiallyFilled {
+    final nameEmpty = nameCtrl.text.trim().isEmpty;
+    final priceEmpty = priceCtrl.text.trim().isEmpty;
+    return nameEmpty != priceEmpty;
+  }
+
+  int? get parsedPrice {
+    final raw = priceCtrl.text.replaceAll(',', '');
+    return raw.isEmpty ? null : int.tryParse(raw);
+  }
+
+  void dispose() {
+    nameCtrl.dispose();
+    priceCtrl.dispose();
+  }
+}
+
 // ── Service entry (wraps ServiceModel with UI state) ──────────────────────────
 class _ServiceEntry {
   final ServiceModel service;
   bool selected;
-  final TextEditingController priceCtrl;
+  final TextEditingController priceCtrl; // non-massage only
+  final List<_VariantRow> variants; // massage only
+
+  bool get isMassage => service.name?.toLowerCase() == 'massage';
 
   _ServiceEntry({required this.service})
     : selected = false,
@@ -65,14 +95,41 @@ class _ServiceEntry {
         text: service.baseRate != null
             ? _fmtInt(service.baseRate!.toInt())
             : '',
-      );
+      ),
+      variants = service.name?.toLowerCase() == 'massage'
+          ? (service.massageVariants?.isNotEmpty == true
+                ? service.massageVariants!
+                      .map(
+                        (v) => _VariantRow(
+                          name: v.name ?? '',
+                          price: v.pricePerHour != null
+                              ? _fmtInt(v.pricePerHour!.toInt())
+                              : '',
+                        ),
+                      )
+                      .toList()
+                : [_VariantRow()])
+          : [];
 
   double? get parsedPrice {
     final raw = priceCtrl.text.replaceAll(',', '');
     return raw.isEmpty ? null : double.tryParse(raw);
   }
 
+  List<_VariantRow> get filledVariants =>
+      variants.where((v) => v.isFilled).toList();
+
   bool get isValid {
+    if (!selected) return false;
+    if (isMassage) {
+      if (variants.isEmpty) return false;
+      if (!variants.every((v) => v.isFilled)) return false;
+      final base = service.baseRate ?? 0;
+      return variants.every((v) {
+        final p = v.parsedPrice;
+        return p != null && p >= base;
+      });
+    }
     final p = parsedPrice;
     if (p == null) return false;
     return p >= (service.baseRate ?? 0);
@@ -87,7 +144,29 @@ class _ServiceEntry {
     return null;
   }
 
-  void dispose() => priceCtrl.dispose();
+  Map<String, dynamic> toApiPayload() {
+    if (isMassage) {
+      return {
+        'serviceId': service.id,
+        'massageVariants': filledVariants
+            .map(
+              (v) => {
+                'name': v.nameCtrl.text.trim(),
+                'pricePerHour': v.parsedPrice,
+              },
+            )
+            .toList(),
+      };
+    }
+    return {'serviceId': service.id, 'customRate': parsedPrice!.toInt()};
+  }
+
+  void dispose() {
+    priceCtrl.dispose();
+    for (final v in variants) {
+      v.dispose();
+    }
+  }
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -139,12 +218,7 @@ class _ServicesSelectState extends State<ServicesSelect> {
     FocusScope.of(context).unfocus();
     final selectedServices = _entries
         .where((e) => e.selected)
-        .map(
-          (e) => {
-            'serviceId': e.service.id,
-            'customRate': e.parsedPrice!.toInt(),
-          },
-        )
+        .map((e) => e.toApiPayload())
         .toList();
     await Get.find<RegisterLogic>().registerModel(
       selectedServices: selectedServices,
@@ -165,16 +239,10 @@ class _ServicesSelectState extends State<ServicesSelect> {
       behavior: HitTestBehavior.opaque,
       child: Scaffold(
         backgroundColor: AppColors.bg,
-        appBar:  GradientAppBar(
+        appBar: GradientAppBar(
           title: "ເລືອກບໍລິການ",
           subtitle: 'ກຳນົດປະເພດ ແລະ ລາຄາບໍລິການຂອງທ່ານ',
         ),
-        // appBar: RegisterAppBar(
-        //   role: RegisterRole.companion,
-        //   currentStep: 2,
-        //   title: 'ເລືອກບໍລິການ',
-        //   subtitle: 'ກຳນົດປະເພດ ແລະ ລາຄາບໍລິການຂອງທ່ານ',
-        // ),
         body: SafeArea(
           child: Column(
             children: [
@@ -214,30 +282,63 @@ class _ServicesSelectState extends State<ServicesSelect> {
                         ..._entries.asMap().entries.map((mapEntry) {
                           final idx = mapEntry.key;
                           final entry = mapEntry.value;
+                          print(
+                            'Rendering service card for ${entry.service.name}, selected: ${entry.selected}, price: ${entry.priceCtrl.text}, variants: ${entry.variants.length}',
+                          );
                           return Padding(
                             padding: EdgeInsets.only(
                               bottom: idx < _entries.length - 1 ? 12.h : 0,
                             ),
-                            child: _ServiceCard(
-                              selected: entry.selected,
-                              isValid: entry.isValid,
-                              onToggle: () {
-                                entry.selected = !entry.selected;
-                                if (!entry.selected) {
-                                  final base = entry.service.baseRate;
-                                  entry.priceCtrl.text = base != null
-                                      ? _fmtInt(base.toInt())
-                                      : '';
-                                }
-                                _entries.refresh();
-                              },
-                              label: ServiceHelper.serviceOriginalName(entry.service.name),
-                              description: entry.service.description,
-                              priceCtrl: entry.priceCtrl,
-                              baseRate: entry.service.baseRate,
-                              priceError: entry.priceError,
-                              onChanged: () => _entries.refresh(),
-                            ),
+                            child: entry.isMassage
+                                ? _MassageServiceCard(
+                                    entry: entry,
+                                    onToggle: () {
+                                      entry.selected = !entry.selected;
+                                      if (!entry.selected) {
+                                        for (final v in entry.variants) {
+                                          v.dispose();
+                                        }
+                                        entry.variants.clear();
+                                        entry.variants.add(_VariantRow());
+                                      }
+                                      _entries.refresh();
+                                    },
+                                    onAddVariant: () {
+                                      entry.variants.add(_VariantRow());
+                                      _entries.refresh();
+                                    },
+                                    onRemoveVariant: (i) {
+                                      entry.variants[i].dispose();
+                                      entry.variants.removeAt(i);
+                                      if (entry.variants.isEmpty) {
+                                        entry.variants.add(_VariantRow());
+                                      }
+                                      _entries.refresh();
+                                    },
+                                    onChanged: () => _entries.refresh(),
+                                  )
+                                : _ServiceCard(
+                                    selected: entry.selected,
+                                    isValid: entry.isValid,
+                                    onToggle: () {
+                                      entry.selected = !entry.selected;
+                                      if (!entry.selected) {
+                                        final base = entry.service.baseRate;
+                                        entry.priceCtrl.text = base != null
+                                            ? _fmtInt(base.toInt())
+                                            : '';
+                                      }
+                                      _entries.refresh();
+                                    },
+                                    label: ServiceHelper.serviceOriginalName(
+                                      entry.service.name,
+                                    ),
+                                    description: entry.service.description,
+                                    priceCtrl: entry.priceCtrl,
+                                    baseRate: entry.service.baseRate,
+                                    priceError: entry.priceError,
+                                    onChanged: () => _entries.refresh(),
+                                  ),
                           );
                         }),
                         SizedBox(height: 28.h),
@@ -319,7 +420,7 @@ class _InfoBanner extends StatelessWidget {
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════
-//  _ServiceCard — single card for any service
+//  _ServiceCard — single price card for non-massage services
 // ═══════════════════════════════════════════════════════════════════════════════
 class _ServiceCard extends StatelessWidget {
   final bool selected;
@@ -372,7 +473,6 @@ class _ServiceCard extends StatelessWidget {
             padding: EdgeInsets.all(16.r),
             child: Row(
               children: [
-                // Checkbox
                 GestureDetector(
                   onTap: onToggle,
                   child: AnimatedContainer(
@@ -399,7 +499,6 @@ class _ServiceCard extends StatelessWidget {
                   ),
                 ),
                 SizedBox(width: 10.w),
-                // Icon circle
                 AnimatedContainer(
                   duration: const Duration(milliseconds: 200),
                   width: 38.r,
@@ -417,7 +516,6 @@ class _ServiceCard extends StatelessWidget {
                   ),
                 ),
                 SizedBox(width: 10.w),
-                // Label + description
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -444,15 +542,11 @@ class _ServiceCard extends StatelessWidget {
                   ),
                 ),
                 if (isValid)
-                  Icon(
-                    Icons.check,
-                    size: 20.r,
-                    color: Colors.green.shade400,
-                  ),
+                  Icon(Icons.check, size: 20.r, color: Colors.green.shade400),
               ],
             ),
           ),
-          // ── Price input (shown when selected) ────────────────
+          // ── Price input ──────────────────────────────────────
           AnimatedSize(
             duration: const Duration(milliseconds: 200),
             curve: Curves.easeInOut,
@@ -469,7 +563,7 @@ class _ServiceCard extends StatelessWidget {
                             Row(
                               children: [
                                 Text(
-                                  'ລາຄາ (ກີບ/ຊມ) *',
+                                  'ລາຄາ (ກີບ/ຊົ່ວໂມງ) *',
                                   style: TextStyle(
                                     fontSize: 12.sp,
                                     fontWeight: FontWeight.w600,
@@ -519,6 +613,402 @@ class _ServiceCard extends StatelessWidget {
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════
+//  _MassageServiceCard — multi-variant card for massage (name == 'message')
+// ═══════════════════════════════════════════════════════════════════════════════
+class _MassageServiceCard extends StatelessWidget {
+  final _ServiceEntry entry;
+  final VoidCallback onToggle;
+  final VoidCallback onAddVariant;
+  final void Function(int index) onRemoveVariant;
+  final VoidCallback onChanged;
+
+  const _MassageServiceCard({
+    required this.entry,
+    required this.onToggle,
+    required this.onAddVariant,
+    required this.onRemoveVariant,
+    required this.onChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final selected = entry.selected;
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 200),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16.r),
+        border: Border.all(
+          color: selected
+              ? AppColors.primary.withValues(alpha: 0.35)
+              : const Color(0x1A000000),
+          width: selected ? 1.5 : 1,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.04),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Column(
+        children: [
+          // ── Header ───────────────────────────────────────────
+          Padding(
+            padding: EdgeInsets.all(16.r),
+            child: Row(
+              children: [
+                GestureDetector(
+                  onTap: onToggle,
+                  child: AnimatedContainer(
+                    duration: const Duration(milliseconds: 200),
+                    width: 24.r,
+                    height: 24.r,
+                    decoration: BoxDecoration(
+                      color: selected ? AppColors.primary : Colors.transparent,
+                      borderRadius: BorderRadius.circular(6.r),
+                      border: Border.all(
+                        color: selected
+                            ? AppColors.primary
+                            : AppColors.textDisabled,
+                        width: 2,
+                      ),
+                    ),
+                    child: selected
+                        ? Icon(
+                            Icons.check_rounded,
+                            size: 14.r,
+                            color: Colors.white,
+                          )
+                        : const SizedBox.shrink(),
+                  ),
+                ),
+                SizedBox(width: 10.w),
+                AnimatedContainer(
+                  duration: const Duration(milliseconds: 200),
+                  width: 38.r,
+                  height: 38.r,
+                  decoration: BoxDecoration(
+                    color: selected
+                        ? AppColors.primary.withValues(alpha: 0.10)
+                        : AppColors.bg,
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(
+                    Icons.spa_outlined,
+                    size: 20.r,
+                    color: selected ? AppColors.primary : AppColors.textHint,
+                  ),
+                ),
+                SizedBox(width: 10.w),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        ServiceHelper.serviceOriginalName(entry.service.name),
+                        style: TextStyle(
+                          fontSize: 15.sp,
+                          fontWeight: FontWeight.w700,
+                          color: AppColors.textPrimary,
+                        ),
+                      ),
+                      Text(
+                        'ເພີ່ມໄດ້ທຸກປະເພດ',
+                        style: TextStyle(
+                          fontSize: 11.sp,
+                          color: AppColors.textHint,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                if (entry.isValid)
+                  Icon(Icons.check, size: 20.r, color: Colors.green.shade400),
+              ],
+            ),
+          ),
+          // ── Variants section ─────────────────────────────────
+          AnimatedSize(
+            duration: const Duration(milliseconds: 200),
+            curve: Curves.easeInOut,
+            child: selected
+                ? _MassageVariantsSection(
+                    variants: entry.variants,
+                    baseRate: entry.service.baseRate,
+                    onAdd: onAddVariant,
+                    onRemove: onRemoveVariant,
+                    onChanged: onChanged,
+                  )
+                : const SizedBox.shrink(),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+//  _MassageVariantsSection
+// ═══════════════════════════════════════════════════════════════════════════════
+class _MassageVariantsSection extends StatelessWidget {
+  final List<_VariantRow> variants;
+  final double? baseRate;
+  final VoidCallback onAdd;
+  final void Function(int) onRemove;
+  final VoidCallback onChanged;
+
+  const _MassageVariantsSection({
+    required this.variants,
+    required this.onAdd,
+    required this.onRemove,
+    required this.onChanged,
+    this.baseRate,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Divider(height: 1, color: Color(0x0F000000)),
+        Padding(
+          padding: EdgeInsets.fromLTRB(16.w, 14.h, 16.w, 16.h),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Text(
+                    'ປະເພດ ແລະ ລາຄາ (ກີບ/ຊົ່ວໂມງ) *',
+                    style: TextStyle(
+                      fontSize: 12.sp,
+                      fontWeight: FontWeight.w600,
+                      color: AppColors.textSecondary,
+                    ),
+                  ),
+                  if (baseRate != null) ...[
+                    SizedBox(width: 6.w),
+                    Text(
+                      'ຕ່ຳສຸດ ${_fmtInt(baseRate!.toInt())} ກີບ',
+                      style: TextStyle(
+                        fontSize: 11.sp,
+                        color: AppColors.textHint,
+                      ),
+                    ),
+                  ],
+                ],
+              ),
+              SizedBox(height: 10.h),
+              ...variants.asMap().entries.map(
+                (e) => Padding(
+                  padding: EdgeInsets.only(bottom: 8.h),
+                  child: _VariantRowWidget(
+                    row: e.value,
+                    canRemove: variants.length > 1,
+                    onRemove: () => onRemove(e.key),
+                    onChanged: onChanged,
+                    baseRate: baseRate,
+                  ),
+                ),
+              ),
+              SizedBox(height: 4.h),
+              GestureDetector(
+                onTap: onAdd,
+                child: Padding(
+                  padding: EdgeInsets.symmetric(vertical: 4.h),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        Icons.add_circle_outline_rounded,
+                        size: 16.r,
+                        color: AppColors.primary,
+                      ),
+                      SizedBox(width: 6.w),
+                      Text(
+                        'ເພີ່ມປະເພດ',
+                        style: TextStyle(
+                          fontSize: 13.sp,
+                          fontWeight: FontWeight.w600,
+                          color: AppColors.primary,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+//  _VariantRowWidget — one name+price row inside the massage card
+// ═══════════════════════════════════════════════════════════════════════════════
+class _VariantRowWidget extends StatelessWidget {
+  final _VariantRow row;
+  final bool canRemove;
+  final VoidCallback onRemove;
+  final VoidCallback onChanged;
+  final double? baseRate;
+
+  const _VariantRowWidget({
+    required this.row,
+    required this.canRemove,
+    required this.onRemove,
+    required this.onChanged,
+    this.baseRate,
+  });
+
+  bool get _priceHasError {
+    if (row.priceCtrl.text.isEmpty) return false;
+    final p = row.parsedPrice;
+    final base = (baseRate ?? 0).toInt();
+    return p == null || p < base;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Expanded(
+          flex: 5,
+          child: _MiniTextField(
+            ctrl: row.nameCtrl,
+            hint: 'ຊື່ປະເພດ',
+            hasError: false,
+            isNumber: false,
+            onChanged: onChanged,
+          ),
+        ),
+        SizedBox(width: 8.w),
+        Expanded(
+          flex: 5,
+          child: _MiniTextField(
+            ctrl: row.priceCtrl,
+            hint: '0',
+            hasError: _priceHasError,
+            isNumber: true,
+            onChanged: onChanged,
+          ),
+        ),
+        SizedBox(width: 6.w),
+        GestureDetector(
+          onTap: canRemove ? onRemove : null,
+          child: Container(
+            width: 28.r,
+            height: 28.r,
+            decoration: BoxDecoration(
+              color: canRemove ? Colors.red.shade50 : AppColors.bg,
+              borderRadius: BorderRadius.circular(8.r),
+            ),
+            child: Icon(
+              Icons.close_rounded,
+              size: 16.r,
+              color: canRemove ? Colors.red.shade400 : AppColors.textDisabled,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+//  _MiniTextField — focus-aware input for variant rows
+// ═══════════════════════════════════════════════════════════════════════════════
+class _MiniTextField extends StatefulWidget {
+  final TextEditingController ctrl;
+  final String hint;
+  final bool hasError;
+  final bool isNumber;
+  final VoidCallback onChanged;
+
+  const _MiniTextField({
+    required this.ctrl,
+    required this.hint,
+    required this.hasError,
+    required this.isNumber,
+    required this.onChanged,
+  });
+
+  @override
+  State<_MiniTextField> createState() => _MiniTextFieldState();
+}
+
+class _MiniTextFieldState extends State<_MiniTextField> {
+  late final FocusNode _focus;
+  bool _focused = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _focus = FocusNode();
+    _focus.addListener(() {
+      if (mounted) setState(() => _focused = _focus.hasFocus);
+    });
+  }
+
+  @override
+  void dispose() {
+    _focus.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final borderColor = widget.hasError
+        ? Colors.red.shade300
+        : _focused
+        ? AppColors.primary
+        : const Color(0x1A000000);
+    final borderWidth = (_focused && !widget.hasError) ? 1.5 : 1.0;
+
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 150),
+      height: 40.h,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(10.r),
+        border: Border.all(color: borderColor, width: borderWidth),
+      ),
+      child: TextField(
+        controller: widget.ctrl,
+        focusNode: _focus,
+        keyboardType: widget.isNumber
+            ? TextInputType.number
+            : TextInputType.text,
+        inputFormatters: widget.isNumber ? [_ThousandsFormatter()] : [],
+        textAlign: TextAlign.start,
+        textAlignVertical: TextAlignVertical.center,
+        onChanged: (_) => widget.onChanged(),
+        style: TextStyle(
+          fontSize: 13.sp,
+          fontWeight: FontWeight.w500,
+          color: widget.hasError ? Colors.red.shade400 : AppColors.textPrimary,
+        ),
+
+        decoration: InputDecoration(
+          hintText: widget.hint,
+          hintStyle: TextStyle(fontSize: 13.sp, color: AppColors.textDisabled),
+          contentPadding: EdgeInsets.symmetric(
+            horizontal: 10.w,
+            vertical: 12.h,
+          ),
+          border: InputBorder.none,
+          isDense: true,
+        ),
+      ),
+    );
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
 //  _PriceSuffixField
 // ═══════════════════════════════════════════════════════════════════════════════
 class _PriceSuffixField extends StatelessWidget {
@@ -545,7 +1035,7 @@ class _PriceSuffixField extends StatelessWidget {
           color: hasError
               ? Colors.red.shade300
               : isValid
-              ? Colors.green.shade300
+              ? AppColors.textSecondary.withAlpha(50)
               : const Color(0x1A000000),
         ),
         boxShadow: [
@@ -589,9 +1079,6 @@ class _PriceSuffixField extends StatelessWidget {
           Container(
             height: double.infinity,
             padding: EdgeInsets.symmetric(horizontal: 12.w),
-            // decoration: const BoxDecoration(
-            //   // border: Border(left: BorderSide(color: Color(0x1A000000))),
-            // ),
             child: Center(
               child: Text(
                 'ກີບ/ຊມ',

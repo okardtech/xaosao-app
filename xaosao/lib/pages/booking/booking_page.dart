@@ -99,18 +99,7 @@ class BookingPickerBox extends StatelessWidget {
                 : Colors.black.withValues(alpha: 0.1),
             width: 1,
           ),
-          boxShadow: [
-            BoxShadow(
-              color: AppColors.primary.withValues(alpha: 0.10),
-              blurRadius: 20,
-              offset: const Offset(0, 6),
-            ),
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.05),
-              blurRadius: 10,
-              offset: const Offset(0, 2),
-            ),
-          ],
+         
         ),
         child: showInternalLabel
             ? Column(
@@ -185,9 +174,9 @@ class BookingSectionLabel extends StatelessWidget {
     return Text(
       text.toUpperCase(),
       style: TextStyle(
-        fontSize: 12.sp,
-        fontWeight: FontWeight.w700,
-        color: AppColors.textHint,
+        fontSize: 14.sp,
+        fontWeight: FontWeight.w400,
+        color: AppColors.textSecondary,
         letterSpacing: 0.6,
       ),
     );

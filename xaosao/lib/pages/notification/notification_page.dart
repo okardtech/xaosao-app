@@ -297,7 +297,7 @@ class _NotifTile extends StatelessWidget {
                         children: [
                           Expanded(
                             child: Text(
-                              item.title ?? _labelForType(type),
+                              _labelForType(type),
                               style: TextStyle(
                                 fontSize: 14.sp,
                                 fontWeight: read
@@ -468,10 +468,19 @@ IconData _iconForType(String type) {
       return Icons.people_rounded;
     case 'account_approved':
       return Icons.verified_rounded;
+    case 'account_role_changed':
+      return Icons.manage_accounts_rounded;
+    case 'account_reported':
+      return Icons.flag_rounded;
     case 'account_rejected':
     case 'account_banned':
     case 'account_deleted':
       return Icons.block_rounded;
+    case 'new_model_service':
+      return Icons.design_services_rounded;
+    case 'new_model_post':
+    case 'new_customer_post':
+      return Icons.article_rounded;
     default:
       return Icons.notifications_rounded;
   }
@@ -509,8 +518,16 @@ Color _colorForType(String type) {
     case 'topup_created':
       return const Color(0xFF6366F1);
     case 'new_model_registered':
+    case 'new_model_service':
     case 'friend_added':
       return const Color(0xFF8B5CF6);
+    case 'new_model_post':
+    case 'new_customer_post':
+      return const Color(0xFF0EA5E9);
+    case 'account_role_changed':
+      return const Color(0xFF22C55E);
+    case 'account_reported':
+      return const Color(0xFFF59E0B);
     default:
       return AppColors.textHint;
   }
@@ -562,12 +579,22 @@ String _labelForType(String type) {
       return 'ບັນຊີຖືກລຶບ';
     case 'new_model_registered':
       return 'Companion ໃໝ່ເຂົ້າຮ່ວມ';
+    case 'new_model_service':
+      return 'Companion ເພີ່ມບໍລິການໃໝ່';
+    case 'new_model_post':
+      return 'Companion ໂພສໃໝ່';
+    case 'new_customer_post':
+      return 'ລູກຄ້າໂພສໃໝ່';
     case 'profile_liked':
       return 'ກົດໄລ້ໂປຣໄຟລ໌ຂອງທ່ານ';
     case 'profile_viewed':
       return 'ເບິ່ງໂປຣໄຟລ໌ຂອງທ່ານ';
     case 'friend_added':
       return 'ເພີ່ມທ່ານເປັນເພື່ອນ';
+    case 'account_role_changed':
+      return 'ສິດທິ໌ບັນຊີຖືກປ່ຽນແປງ';
+    case 'account_reported':
+      return 'ບັນຊີຂອງທ່ານຖືກລາຍງານ';
     default:
       return 'ການແຈ້ງເຕືອນ';
   }

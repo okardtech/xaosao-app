@@ -58,6 +58,13 @@ dependencies:
   socket_io_client: ^3.1.4
   emoji_picker_flutter: ^4.4.0
   geolocator: ^14.0.2
+  photo_view: ^0.15.0
+  dropdown_button2: ^3.1.0
+  appsflyer_sdk: ^6.18.0
+  share_plus: ^13.1.0
+  qr_flutter: ^4.1.0
+  saver_gallery: ^4.1.2
+  fl_chart: ^1.2.0
 
 dev_dependencies:
   flutter_test:

@@ -101,6 +101,7 @@ class ApiConstants {
   static const String systemQR = 'system/payment-qr-code';
   // booking
   static const String booking = 'bookings';
+  static const String bookingSlots = 'bookings/booked-slots';
   // model booking
   static const String modelBooking = 'model/bookings';
   // my post
@@ -114,4 +115,6 @@ class ApiConstants {
   static const String chatConversations = 'chat/conversations';
   static const String chatMessages = 'chat/messages';
   static const String chatUnreadCount = 'chat/unread-count';
+  // referral
+  static const String referral = 'model/referrals';
 }

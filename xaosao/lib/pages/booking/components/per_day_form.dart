@@ -94,8 +94,8 @@ class _PerDayFormState extends State<PerDayForm> {
                                         Text(
                                           'ວັນທີອອກເດີນທາງ',
                                           style: TextStyle(
-                                            fontSize: 12.sp,
-                                            fontWeight: FontWeight.w600,
+                                            fontSize: 14.sp,
+                                            fontWeight: FontWeight.w400,
                                             color: AppColors.textSecondary,
                                           ),
                                         ),
@@ -122,8 +122,8 @@ class _PerDayFormState extends State<PerDayForm> {
                                         Text(
                                           'ວັນທີກັບມາ',
                                           style: TextStyle(
-                                            fontSize: 12.sp,
-                                            fontWeight: FontWeight.w600,
+                                            fontSize: 14.sp,
+                                            fontWeight: FontWeight.w400,
                                             color: AppColors.textSecondary,
                                           ),
                                         ),

@@ -5,12 +5,16 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:xaosao/constants/app_color.dart';
 import 'package:xaosao/models/Recommended_model.dart';
+import 'package:xaosao/models/conversation_model.dart';
+import 'package:xaosao/pages/chat/getx/chat_logic.dart';
+import 'package:xaosao/pages/model_discover/getx/model_discover_logic.dart';
 import 'package:xaosao/repository/review_repo.dart';
+import 'package:xaosao/services/location_manager.dart';
 import 'package:xaosao/services/storage_service.dart';
+import 'package:xaosao/utils/location_utils.dart';
+import 'package:xaosao/widgets/app_image_preview.dart';
 import 'package:xaosao/widgets/app_like_button.dart';
 import 'package:xaosao/widgets/app_network_image.dart';
-import 'package:xaosao/widgets/gift_sheet.dart';
-import '../topup/topup_amount.dart';
 
 class ModelDetailPage extends StatefulWidget {
   final RecommendedModel model;
@@ -23,6 +27,10 @@ class ModelDetailPage extends StatefulWidget {
 class _ModelDetailPageState extends State<ModelDetailPage> {
   late final ScrollController _scrollCtrl;
   bool _showTitle = false;
+
+  final _chatLoading = false.obs;
+  final _friendLoading = false.obs;
+  final _isFriend = false.obs;
 
   static const double _photoHeight = 420;
   static const double _titleThreshold = 280;
@@ -49,6 +57,7 @@ class _ModelDetailPageState extends State<ModelDetailPage> {
   @override
   void initState() {
     super.initState();
+    _isFriend.value = widget.model.isFriend ?? false;
     _scrollCtrl = ScrollController()..addListener(_onScroll);
     SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
       statusBarColor: Colors.transparent,
@@ -124,6 +133,12 @@ class _ModelDetailPageState extends State<ModelDetailPage> {
                           'customer';
                   final res = await ReviewRepo()
                       .addLike(isClient: isClient, id: widget.model.id ?? '');
+                  if (res.success) {
+                    try {
+                      Get.find<ModelDiscoverLogic>()
+                          .syncLike(widget.model.id ?? '');
+                    } catch (_) {}
+                  }
                   return res.success;
                 },
               ),
@@ -254,77 +269,156 @@ class _ModelDetailPageState extends State<ModelDetailPage> {
       padding: EdgeInsets.fromLTRB(16.w, 14.h, 16.w, 0),
       child: Row(
         children: [
+          // ── Chat button ──────────────────────────────────────
           Expanded(
-            child: GestureDetector(
-              onTap: () {},
-              child: Container(
-                height: 44.h,
+            child: Obx(() {
+              final loading = _chatLoading.value;
+              return GestureDetector(
+                onTap: loading ? null : _startChat,
+                child: Container(
+                  height: 44.h,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(13.r),
+                    border: Border.all(
+                      color: Colors.black.withValues(alpha: 0.08),
+                      width: 0.5,
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: AppColors.primary.withValues(alpha: 0.10),
+                        blurRadius: 20,
+                        offset: const Offset(0, 6),
+                      ),
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: 0.05),
+                        blurRadius: 10,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
+                  ),
+                  child: loading
+                      ? Center(
+                          child: SizedBox(
+                            width: 16.r,
+                            height: 16.r,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              color: AppColors.textPrimary,
+                            ),
+                          ),
+                        )
+                      : Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.chat_bubble_outline_rounded,
+                              size: 15.r,
+                              color: AppColors.textPrimary,
+                            ),
+                            SizedBox(width: 6.w),
+                            Text(
+                              'ສົ່ງຂໍ້ຄວາມ',
+                              style: TextStyle(
+                                fontSize: 12.sp,
+                                fontWeight: FontWeight.w700,
+                                color: AppColors.textPrimary,
+                              ),
+                            ),
+                          ],
+                        ),
+                ),
+              );
+            }),
+          ),
+          SizedBox(width: 8.w),
+          // ── Add friend button ────────────────────────────────
+          Obx(() {
+            final loading = _friendLoading.value;
+            final isFriend = _isFriend.value;
+            return GestureDetector(
+              onTap: loading ? null : _toggleFriend,
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 200),
+                width: 44.r,
+                height: 44.r,
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: isFriend
+                      ? AppColors.primary.withValues(alpha: 0.08)
+                      : Colors.white,
                   borderRadius: BorderRadius.circular(13.r),
                   border: Border.all(
-                    color: Colors.black.withValues(alpha: 0.08),
-                    width: 0.5,
+                    color: isFriend
+                        ? AppColors.primary.withValues(alpha: 0.30)
+                        : Colors.black.withValues(alpha: 0.08),
+                    width: isFriend ? 1.0 : 0.5,
                   ),
-                  boxShadow: [
-                    BoxShadow(
-                      color: AppColors.primary.withValues(alpha: 0.10),
-                      blurRadius: 20,
-                      offset: const Offset(0, 6),
-                    ),
-                    BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.05),
-                      blurRadius: 10,
-                      offset: const Offset(0, 2),
-                    ),
-                  ],
                 ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      Icons.chat_bubble_outline_rounded,
-                      size: 15.r,
-                      color: AppColors.textPrimary,
-                    ),
-                    SizedBox(width: 6.w),
-                    Text(
-                      'ສົ່ງຂໍ້ຄວາມ',
-                      style: TextStyle(
-                        fontSize: 12.sp,
-                        fontWeight: FontWeight.w700,
-                        color: AppColors.textPrimary,
+                child: loading
+                    ? Center(
+                        child: SizedBox(
+                          width: 16.r,
+                          height: 16.r,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            color: AppColors.primary,
+                          ),
+                        ),
+                      )
+                    : Icon(
+                        isFriend
+                            ? Icons.person_rounded
+                            : Icons.person_add_alt_1_rounded,
+                        size: 18.r,
+                        color: isFriend
+                            ? AppColors.primary
+                            : AppColors.textPrimary,
                       ),
-                    ),
-                  ],
-                ),
               ),
-            ),
-          ),
-          SizedBox(width: 8.w),
-          // _ActionBtn(
-          //   icon: Icons.card_giftcard_rounded,
-          //   color: const Color(0xFFD97706),
-          //   onTap: () => GiftSheet.show(
-          //     context,
-          //     companionName: widget.model.firstName ?? 'ຄູ່ຮ່ວມທາງ',
-          //     balanceKip: 125000,
-          //     onSent: (gift) => GiftSentSnackbar.show(context, gift: gift),
-          //     onTopUp: () => Navigator.push(
-          //       context,
-          //       MaterialPageRoute(builder: (_) => const TopUpAmountPage()),
-          //     ),
-          //   ),
-          // ),
-          SizedBox(width: 8.w),
-          _ActionBtn(
-            icon: Icons.person_add_alt_1_rounded,
-            color: AppColors.textPrimary,
-            onTap: () {},
-          ),
+            );
+          }),
         ],
       ),
     );
+  }
+
+  // ── Start chat ─────────────────────────────────────────────
+  Future<void> _startChat() async {
+    if (_chatLoading.value) return;
+    _chatLoading.value = true;
+    try {
+      final m = widget.model;
+      final hint = ConversationParticipant(
+        id: m.id ?? '',
+        firstName: m.firstName,
+        lastName: m.lastName,
+        profileImage: m.profile,
+        isOnline: m.online,
+      );
+      await Get.find<ChatLogic>().startConversation(m.id ?? '', partnerHint: hint);
+    } finally {
+      _chatLoading.value = false;
+    }
+  }
+
+  // ── Toggle friend ──────────────────────────────────────────
+  Future<void> _toggleFriend() async {
+    if (_friendLoading.value) return;
+    final wasFriend = _isFriend.value;
+    _isFriend.value = !wasFriend; // optimistic
+    _friendLoading.value = true;
+    try {
+      final isClient =
+          Get.find<StorageService>().read<String>('role') == 'customer';
+      final res = wasFriend
+          ? await ReviewRepo().unFriend(isClient: isClient, id: widget.model.id ?? '')
+          : await ReviewRepo().addFriend(isClient: isClient, id: widget.model.id ?? '');
+      if (!res.success) _isFriend.value = wasFriend; // revert
+    } catch (_) {
+      _isFriend.value = wasFriend; // revert
+    } finally {
+      _friendLoading.value = false;
+    }
   }
 }
 
@@ -372,12 +466,19 @@ class _PhotoSliderState extends State<_PhotoSlider> {
             itemCount: _count,
             physics: const BouncingScrollPhysics(),
             onPageChanged: (i) => setState(() => _current = i),
-            itemBuilder: (_, i) {
+            itemBuilder: (context, i) {
               if (widget.photos.isNotEmpty) {
-                return AppNetworkImage(
-                  imageUrl: widget.photos[i],
-                  fit: BoxFit.cover,
-                  errorWidget: _gradientFallback(),
+                return GestureDetector(
+                  onTap: () => AppImagePreview.show(
+                    context,
+                    widget.photos,
+                    initialIndex: i,
+                  ),
+                  child: AppNetworkImage(
+                    imageUrl: widget.photos[i],
+                    fit: BoxFit.cover,
+                    errorWidget: _gradientFallback(),
+                  ),
                 );
               }
               return _gradientFallback();
@@ -482,6 +583,19 @@ class _InfoOverlay extends StatelessWidget {
   final int age;
   const _InfoOverlay({required this.model, required this.age});
 
+  String _distanceText() {
+    try {
+      final pos = Get.find<LocationManager>().position.value;
+      if (pos != null && model.latitude != null && model.longitude != null) {
+        return formatDistanceKm(
+          distanceKmBetween(pos.latitude, pos.longitude, model.latitude!, model.longitude!),
+        );
+      }
+    } catch (_) {}
+    if (model.distanceKm != null) return formatDistanceKm(model.distanceKm!);
+    return '—';
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -535,7 +649,7 @@ class _InfoOverlay extends StatelessWidget {
               ),
               SizedBox(width: 3.w),
               Text(
-                'ໃກ້ທ່ານ',
+                _distanceText(),
                 style: TextStyle(
                   fontSize: 11.sp,
                   color: Colors.white60,

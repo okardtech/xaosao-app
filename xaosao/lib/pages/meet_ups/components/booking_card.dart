@@ -7,6 +7,7 @@ import 'package:xaosao/models/my_booking_model.dart';
 import 'package:xaosao/pages/chat/getx/chat_logic.dart';
 import 'package:xaosao/pages/meet_ups/getx/meet_ups_logic.dart';
 import 'package:xaosao/utils/app_snackbar.dart';
+import 'package:xaosao/utils/service_helper.dart';
 import 'package:xaosao/widgets/confirm_sheet.dart';
 import 'package:xaosao/utils/currency_formatter.dart';
 import 'package:xaosao/utils/date_time_formatter.dart';
@@ -117,16 +118,7 @@ class BookingCard extends StatelessWidget {
 
   static String _serviceTypeName(MyBookingModel b) {
     final svc = b.modelService;
-    if (svc != null) {
-      if (svc.customRate != null) return 'ບໍລິການລາຍວັນ';
-      if (svc.customHourlyRate != null) return 'ບໍລິການລາຍຊົ່ວໂມງ';
-      if (svc.customOneTimePrice != null) return 'ບໍລິການຄັ້ງດຽວ';
-      if (svc.customOneNightPrice != null) return 'ບໍລິການຄືນດຽວ';
-      if (svc.customMinuteRate != null) return 'ບໍລິການລາຍນາທີ';
-    }
-    if (b.dayAmount != null) return 'ບໍລິການລາຍວັນ';
-    if (b.hours != null) return 'ບໍລິການລາຍຊົ່ວໂມງ';
-    return 'ບໍລິການ';
+    return ServiceHelper.serviceOriginalName(svc?.service?.name);
   }
 
   static const _divider = Color(0x0F000000);
@@ -201,20 +193,24 @@ class BookingCard extends StatelessWidget {
 
     if (isCustomer) {
       final model = b.model;
-      final name = [model?.firstName, model?.lastName]
-          .where((s) => s != null && s.isNotEmpty)
-          .join(' ');
+      final name = [
+        model?.firstName,
+        model?.lastName,
+      ].where((s) => s != null && s.isNotEmpty).join(' ');
       profileUrl = model?.profile ?? '';
       displayName = name.isEmpty ? 'ບໍ່ມີຊື່' : name;
       age = model?.age;
     } else {
       final customer = b.customer;
-      final name = [customer?.firstName, customer?.lastName]
-          .where((s) => s != null && s.isNotEmpty)
-          .join(' ');
+      final name = [
+        customer?.firstName,
+        customer?.lastName,
+      ].where((s) => s != null && s.isNotEmpty).join(' ');
       final fallback = customer?.name ?? '';
       profileUrl = customer?.profile ?? '';
-      displayName = name.isNotEmpty ? name : (fallback.isNotEmpty ? fallback : 'ບໍ່ມີຊື່');
+      displayName = name.isNotEmpty
+          ? name
+          : (fallback.isNotEmpty ? fallback : 'ບໍ່ມີຊື່');
       age = customer?.age;
     }
 
@@ -429,7 +425,6 @@ class BookingCard extends StatelessWidget {
 
   // ── Action buttons ─────────────────────────────────────────────
   List<Widget> _buildActions(BuildContext context, MyBookingModel b) {
-    
     final now = DateTime.now();
     final start = b.startDate;
     final end = b.endDate;
@@ -528,7 +523,6 @@ class BookingCard extends StatelessWidget {
         ];
       }
     } else {
-      
       // ── MODEL ──────────────────────────────────────────────────
       if (status == 'pending') {
         return [

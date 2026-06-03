@@ -10,6 +10,8 @@ import 'package:xaosao/pages/home/components/companion_filter.dart';
 import 'package:xaosao/pages/home/components/home_shimmer.dart';
 import 'package:xaosao/pages/home/getx/home_logic.dart';
 import 'package:xaosao/pages/home/getx/home_state.dart';
+import 'package:xaosao/services/location_manager.dart';
+import 'package:xaosao/utils/location_utils.dart';
 import 'package:xaosao/widgets/app_search_field.dart';
 import 'package:xaosao/widgets/notif_badge.dart';
 
@@ -391,13 +393,30 @@ class _ExplorePageState extends State<ExplorePage> {
     final age = dob != null
         ? (DateTime.now().difference(dob).inDays ~/ 365)
         : 0;
+
+    // Calculate distance from current position; fall back to server value
+    double? dist;
+    try {
+      final pos = Get.find<LocationManager>().position.value;
+      if (pos != null && m.latitude != null && m.longitude != null) {
+        dist = distanceKmBetween(
+          pos.latitude, pos.longitude,
+          m.latitude!, m.longitude!,
+        );
+      } else {
+        dist = m.distanceKm;
+      }
+    } catch (_) {
+      dist = m.distanceKm;
+    }
+
     return CompanionModel(
       id: m.id ?? '',
       name: '${m.firstName ?? ''} ${m.lastName ?? ''}'.trim(),
       age: age,
       imageUrl: m.profile ?? '',
-      district: '',
-      distanceKm: 0,
+      district: m.address ?? '',
+      distanceKm: dist,
       rating: (m.rating ?? 0).toDouble(),
       reviewCount: m.totalReview ?? 0,
       isOnline: m.availableStatus == 'online',

@@ -543,8 +543,6 @@ class _PackageCard extends StatelessWidget {
                       fontWeight: FontWeight.w800,
                       color: isCurrentPlan
                           ? Colors.white
-                          : pkg.isPopular == true
-                          ? Colors.white
                           : AppColors.textPrimary,
                     ),
                   ),
@@ -619,7 +617,9 @@ class _PackageListShimmer extends StatelessWidget {
                                 borderRadius: BorderRadius.circular(6.r),
                                 boxShadow: [
                                   BoxShadow(
-                                    color: AppColors.primary.withValues(alpha: 0.10),
+                                    color: AppColors.primary.withValues(
+                                      alpha: 0.10,
+                                    ),
                                     blurRadius: 20,
                                     offset: const Offset(0, 6),
                                   ),
@@ -641,7 +641,9 @@ class _PackageListShimmer extends StatelessWidget {
                             borderRadius: BorderRadius.circular(14.r),
                             boxShadow: [
                               BoxShadow(
-                                color: AppColors.primary.withValues(alpha: 0.10),
+                                color: AppColors.primary.withValues(
+                                  alpha: 0.10,
+                                ),
                                 blurRadius: 20,
                                 offset: const Offset(0, 6),
                               ),

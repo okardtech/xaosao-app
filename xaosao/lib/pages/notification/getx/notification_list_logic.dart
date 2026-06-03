@@ -122,24 +122,62 @@ class NotifListLogic extends GetxController {
         Get.find<StorageService>().read<String>('role') == 'customer';
 
     switch (type) {
-      // ── Wallet / finance ──────────────────────────────────────
-      case 'topup_created':
-      case 'topup_approved':
-      case 'topup_rejected':
-      case 'withdraw_approved':
-      case 'withdraw_rejected':
-      case 'booking_payout_released':
-        Get.toNamed(isCustomer ? AppRoutes.wallet : AppRoutes.modelWallet);
+      // ── Home ──────────────────────────────────────────────────
+      case 'welcome':
+      case 'account_deleted':
+        Get.until((r) => r.settings.name == AppRoutes.dashboard);
         return;
 
-      // ── Account ───────────────────────────────────────────────
+      // ── Account (profile) ─────────────────────────────────────
       case 'account_approved':
       case 'account_rejected':
       case 'account_banned':
-      case 'account_deleted':
       case 'account_role_changed':
       case 'account_reported':
         Get.toNamed(AppRoutes.profileDetail, arguments: isCustomer);
+        return;
+
+      // ── New model / service ───────────────────────────────────
+      case 'new_model_registered':
+      case 'new_model_service':
+        final modelId = data?.modelId ?? '';
+        if (modelId.isNotEmpty) {
+          Get.toNamed(AppRoutes.companionProfile, arguments: modelId);
+        }
+        return;
+
+      // ── Post interactions ─────────────────────────────────────
+      case 'post_like':
+      case 'post_comment':
+      case 'post_comment_reply':
+      case 'post_gift_received':
+      case 'new_model_post':
+      case 'new_customer_post':
+        final modelId = data?.modelId ?? '';
+        if (modelId.isNotEmpty) {
+          Get.toNamed(AppRoutes.companionProfile, arguments: modelId);
+        }
+        return;
+
+      // ── Profile interactions ──────────────────────────────────
+      case 'profile_viewed':
+        final id = data?.viewerId ?? data?.modelId ?? '';
+        if (id.isNotEmpty) Get.toNamed(AppRoutes.companionProfile, arguments: id);
+        return;
+
+      case 'profile_liked':
+        final id = data?.likerId ?? data?.modelId ?? '';
+        if (id.isNotEmpty) Get.toNamed(AppRoutes.companionProfile, arguments: id);
+        return;
+
+      case 'friend_added':
+        final id = data?.friendId ?? data?.modelId ?? '';
+        if (id.isNotEmpty) Get.toNamed(AppRoutes.companionProfile, arguments: id);
+        return;
+
+      case 'gift_received':
+        final id = data?.senderId ?? data?.modelId ?? '';
+        if (id.isNotEmpty) Get.toNamed(AppRoutes.companionProfile, arguments: id);
         return;
 
       // ── Booking ───────────────────────────────────────────────
@@ -157,15 +195,14 @@ class NotifListLogic extends GetxController {
         }
         return;
 
-      // ── Post interactions → companion profile ─────────────────
-      case 'post_comment':
-      case 'post_comment_reply':
-      case 'post_like':
-      case 'post_gift_received':
-        final modelId = data?.modelId ?? '';
-        if (modelId.isNotEmpty) {
-          Get.toNamed(AppRoutes.companionProfile, arguments: modelId);
-        }
+      // ── Wallet / finance ──────────────────────────────────────
+      case 'topup_created':
+      case 'topup_approved':
+      case 'topup_rejected':
+      case 'withdraw_approved':
+      case 'withdraw_rejected':
+      case 'booking_payout_released':
+        Get.toNamed(isCustomer ? AppRoutes.wallet : AppRoutes.modelWallet);
         return;
 
       default:

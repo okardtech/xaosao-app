@@ -294,6 +294,7 @@ class ModelService {
   dynamic customOneTimePrice;
   dynamic customOneNightPrice;
   dynamic customMinuteRate;
+  Service? service;
 
   ModelService({
     this.id,
@@ -303,6 +304,7 @@ class ModelService {
     this.customOneTimePrice,
     this.customOneNightPrice,
     this.customMinuteRate,
+    this.service,
   });
 
   ModelService copyWith({
@@ -313,6 +315,7 @@ class ModelService {
     dynamic customOneTimePrice,
     dynamic customOneNightPrice,
     dynamic customMinuteRate,
+    Service? service,
   }) => ModelService(
     id: id ?? this.id,
     name: name ?? this.name,
@@ -321,6 +324,7 @@ class ModelService {
     customOneTimePrice: customOneTimePrice ?? this.customOneTimePrice,
     customOneNightPrice: customOneNightPrice ?? this.customOneNightPrice,
     customMinuteRate: customMinuteRate ?? this.customMinuteRate,
+    service: service ?? this.service,
   );
 
   factory ModelService.fromJson(Map<String, dynamic> json) => ModelService(
@@ -331,6 +335,9 @@ class ModelService {
     customOneTimePrice: json["customOneTimePrice"],
     customOneNightPrice: json["customOneNightPrice"],
     customMinuteRate: json["customMinuteRate"],
+    service: json["service"] == null
+        ? null
+        : Service.fromJson(json["service"]),
   );
 
   Map<String, dynamic> toJson() => {
@@ -341,5 +348,26 @@ class ModelService {
     "customOneTimePrice": customOneTimePrice,
     "customOneNightPrice": customOneNightPrice,
     "customMinuteRate": customMinuteRate,
+    "service": service?.toJson(),
   };
+}
+
+class Service {
+    String? id;
+    String? name;
+
+    Service({
+        this.id,
+        this.name,
+    });
+
+    factory Service.fromJson(Map<String, dynamic> json) => Service(
+        id: json["id"],
+        name: json["name"],
+    );
+
+    Map<String, dynamic> toJson() => {
+        "id": id,
+        "name": name,
+    };
 }

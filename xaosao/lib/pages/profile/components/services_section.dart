@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:xaosao/constants/app_color.dart';
 import 'package:xaosao/models/profile_model.dart';
 import 'package:xaosao/pages/profile/components/profile_constant.dart';
+import 'package:xaosao/utils/service_helper.dart';
 
 class ServicesSection extends StatelessWidget {
   final List<ModelService> services;
@@ -27,7 +28,12 @@ class ServicesSection extends StatelessWidget {
             runSpacing: 6.h,
             children: services.map((s) {
               final c = _colorsFor(s.serviceName);
-              return _SvcChip(s.serviceName ?? '—', c.fg, c.bg, c.bd);
+              return _SvcChip(
+                ServiceHelper.serviceOriginalName(s.serviceName),
+                c.fg,
+                c.bg,
+                c.bd,
+              );
             }).toList(),
           ),
         SizedBox(height: 12.h),

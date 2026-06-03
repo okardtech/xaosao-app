@@ -131,5 +131,16 @@ class ModelDiscoverLogic extends GetxController {
     }
   }
 
+  /// Flip the like state in the grid without making an API call.
+  /// Call this after a successful like toggle from a detail page.
+  void syncLike(String modelId) {
+    final idx = state.models.indexWhere((m) => m.id == modelId);
+    if (idx == -1) return;
+    final m = state.models[idx];
+    final updated = [...state.models];
+    updated[idx] = m.copyWith(isLikedByMe: !m.isLiked);
+    _update(state.copyWith(models: updated));
+  }
+
   void _update(ModelDiscoverState s) => _state.value = s;
 }

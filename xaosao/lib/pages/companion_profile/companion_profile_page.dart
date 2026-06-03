@@ -17,6 +17,7 @@ import 'package:xaosao/utils/currency_formatter.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:xaosao/models/conversation_model.dart';
 import 'package:xaosao/pages/chat/getx/chat_logic.dart';
+import 'package:xaosao/widgets/app_image_preview.dart';
 import 'package:xaosao/widgets/app_like_button.dart';
 import 'package:xaosao/widgets/app_network_image.dart';
 import '../../models/model_available.dart';
@@ -700,36 +701,39 @@ class _CompanionProfilePageState extends State<CompanionProfilePage> {
   Future<void> _onBook() async {
     final svc = _logic.selectedService;
     if (svc == null) return;
-
     final profile = _logic.state.profile;
     if (profile == null) return;
 
-    final wallet = Get.find<WalletLogic>().state.wallet?.availableBalance ?? 0;
-    final serviceRate = svc.effectiveRate ?? 0.0;
+    // 1. Check subscription status first
+    final activeRes = await PackageRepo().packageActive();
+    if (!mounted) return;
 
-    if (wallet < serviceRate) {
-      final activeRes = await PackageRepo().packageActive();
-      if (!mounted) return;
+    final active = activeRes.data;
 
-      if (activeRes.data?.hasPendingSubscription == true) {
-        showPendingSubscriptionBanner(context);
-        return;
-      }
-
-      final pkgLogic = Get.find<PackageLogic>();
-      var hourPkg = pkgLogic.state.packageHour;
-      if (hourPkg == null) {
-        final hourRes = await PackageRepo().packageHour();
-        if (!mounted) return;
-        if (hourRes.data?.plan == null) return;
-        hourPkg = hourRes.data;
-      }
-      if (hourPkg != null && mounted) {
-        showSubscriptionBanner(context, hourPkg);
-      }
+    if (active?.hasPendingSubscription == true) {
+      showPendingSubscriptionBanner(context);
       return;
     }
 
+    if (active?.hasActiveSubscription != true) {
+      showNoSubscriptionBanner(context);
+      return;
+    }
+
+    // 2. Check wallet balance
+    final wallet = (Get.find<WalletLogic>().state.wallet?.availableBalance ?? 0).toDouble();
+    final serviceRate = _serviceRate(svc);
+
+    if (wallet < serviceRate) {
+      showInsufficientWalletBanner(
+        context,
+        walletBalance: wallet,
+        serviceRate: serviceRate,
+      );
+      return;
+    }
+
+    // 3. Navigate to booking
     final name = [
       profile.firstName,
       profile.lastName,
@@ -743,6 +747,18 @@ class _CompanionProfilePageState extends State<CompanionProfilePage> {
         companionPhoto: profile.profile,
       ),
     );
+  }
+
+  double _serviceRate(ModelAvailable svc) {
+    final isMassage = svc.name?.toLowerCase().contains('massage') ?? false;
+    if (isMassage) {
+      final vs = svc.variants;
+      if (vs != null && vs.isNotEmpty) {
+        final prices = vs.map((v) => v.pricePerHour).whereType<double>().toList();
+        if (prices.isNotEmpty) return prices.reduce((a, b) => a < b ? a : b);
+      }
+    }
+    return svc.effectiveRate ?? 0.0;
   }
 }
 
@@ -791,12 +807,19 @@ class _PhotoSliderState extends State<_PhotoSlider> {
             itemCount: _count,
             physics: const BouncingScrollPhysics(),
             onPageChanged: (i) => setState(() => _current = i),
-            itemBuilder: (_, i) {
+            itemBuilder: (context, i) {
               if (widget.photos.isNotEmpty) {
-                return AppNetworkImage(
-                  imageUrl: widget.photos[i],
-                  fit: BoxFit.cover,
-                  errorWidget: _gradientFallback(),
+                return GestureDetector(
+                  onTap: () => AppImagePreview.show(
+                    context,
+                    widget.photos,
+                    initialIndex: i,
+                  ),
+                  child: AppNetworkImage(
+                    imageUrl: widget.photos[i],
+                    fit: BoxFit.cover,
+                    errorWidget: _gradientFallback(),
+                  ),
                 );
               }
               return _gradientFallback();
@@ -1237,6 +1260,14 @@ class _ServiceCard extends StatelessWidget {
     required this.onTap,
   });
 
+  double? get _variantMinPrice {
+    final vs = service.variants;
+    if (vs == null || vs.isEmpty) return null;
+    final prices = vs.map((v) => v.pricePerHour).whereType<double>().toList();
+    if (prices.isEmpty) return null;
+    return prices.reduce((a, b) => a < b ? a : b);
+  }
+
   @override
   Widget build(BuildContext context) {
     final i = index % _serviceIconData.length;
@@ -1244,7 +1275,7 @@ class _ServiceCard extends StatelessWidget {
     final bgColor = _serviceBgColors[i];
     final icon = _serviceIconData[i];
 
-    final price = service.effectiveRate;
+    final price = service.effectiveRate ?? _variantMinPrice;
     final priceStr = price != null ? CurrFormatter.format(price.toInt()) : '—';
     final billing = ServiceHelper.serviceName(service.billingType);
 
