@@ -15,7 +15,6 @@ import 'package:xaosao/pages/services_manage/getx/service_logic.dart';
 import 'package:xaosao/services/storage_service.dart';
 import 'package:intl/intl.dart';
 import '../../../constants/app_color.dart';
-import '../../../widgets/gradient_app_bar.dart';
 import '../../chat/getx/chat_logic.dart';
 import '../../package/getx/package_logic.dart';
 import '../../wallet/getx/wallet_logic.dart';
@@ -203,7 +202,7 @@ class _CustomerProfilePageState extends State<CustomerProfilePage> {
                         iconColor: AppColors.primaryVariant,
                         icon: Icons.help_outline_rounded,
                         label: 'ຊ່ວຍເຫຼືອ / FAQ',
-                        onTap: () {},
+                        onTap: () => Get.toNamed(AppRoutes.helperCenter),
                       ),
                       ProfileMenuRow(
                         iconBg: const Color(0xFFFFF0F6),
@@ -212,6 +211,13 @@ class _CustomerProfilePageState extends State<CustomerProfilePage> {
                         label: 'ຄຳຕິຊົມ',
                         sub: 'ລາຍງານບັນຫາ ຫຼື ສົ່ງຄຳຄິດເຫັນ',
                         onTap: () => Get.toNamed(AppRoutes.feedback),
+                      ),
+                      ProfileMenuRow(
+                        iconBg: AppColors.bg,
+                        iconColor: AppColors.primaryVariant,
+                        icon: Icons.description_outlined,
+                        label: 'ຂໍ້ກຳນົດ ແລະ ນະໂຍບາຍ',
+                        onTap: () => Get.toNamed(AppRoutes.customerPolicyPrivacy),
                       ),
                     ],
                   ),
@@ -279,9 +285,7 @@ class _CustomerProfilePageState extends State<CustomerProfilePage> {
             ),
           ],
         ),
-        child: SafeArea(
-          bottom: false,
-          child: Column(
+        child: Column(
             children: [
               Row(
                 children: [
@@ -425,7 +429,6 @@ class _CustomerProfilePageState extends State<CustomerProfilePage> {
               ),
             ],
           ),
-        ),
       );
     });
   }

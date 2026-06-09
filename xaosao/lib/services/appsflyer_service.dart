@@ -31,6 +31,7 @@
 
 import 'package:appsflyer_sdk/appsflyer_sdk.dart';
 import 'package:get/get.dart';
+import 'storage_service.dart';
 
 class AppsFlyerService extends GetxService {
   static const _devKey = 's9xWA3UhoYsAmq2ovtVsLo';
@@ -44,7 +45,7 @@ class AppsFlyerService extends GetxService {
     final options = AppsFlyerOptions(
       afDevKey: _devKey,
       appId: _iosAppId,
-      showDebug: false,
+      showDebug: true,
       timeToWaitForATTUserAuthorization: 15,
     );
 
@@ -55,6 +56,7 @@ class AppsFlyerService extends GetxService {
         final refCode = res.deepLink?.getStringValue('code');
         if (refCode != null && refCode.isNotEmpty) {
           incomingRefCode.value = refCode;
+          Get.find<StorageService>().write('pending_ref_code', refCode);
         }
       }
     });
@@ -71,3 +73,5 @@ class AppsFlyerService extends GetxService {
   static String buildShareLink(String refCode) =>
       'https://xaosao.onelink.me/TfaF/ieh44kax?code=$refCode';
 }
+
+// a6fc87a0-bc3b-4990-b595-10ca1ad1abe1

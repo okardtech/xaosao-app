@@ -10,15 +10,6 @@ import 'package:xaosao/pages/login/getx/login_logic.dart';
 import '../../constants/app_color.dart';
 import 'getx/login_state.dart';
 
-// ═══════════════════════════════════════════════════════════════
-//  LoginPage — ໜ້າ Login ດຽວ ມີ 2 role tabs
-//  Customer  = ຜູ້ບໍລິການ  (pink theme)
-//  Companion = ຜູ້ໃຫ້ບໍລິການ (navy theme)
-//
-//  Navigate in:
-//    Navigator.pushReplacement(context,
-//      MaterialPageRoute(builder: (_) => const LoginPage()))
-// ═══════════════════════════════════════════════════════════════
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
   @override
@@ -26,30 +17,39 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  bool _obscure = true;
+  // Rx booleans — no setState, so the page itself never rebuilds on these changes
+  final _obscure = true.obs;
+  final _isCustomer = true.obs;
 
   final _phoneFocus = FocusNode();
   final _passFocus = FocusNode();
   final _phoneCtrl = TextEditingController();
   final _passCtrl = TextEditingController();
 
+  void _onRoleChange(RegisterRole role) {
+    Get.find<LoginLogic>().setRole(role);
+    _isCustomer.value = role == RegisterRole.customer;
+  }
+
   Future<void> _submit() async {
-    if (_phoneCtrl.text.trim().length < 8) {
+    final phone = _phoneCtrl.text.trim();
+    final pass = _passCtrl.text;
+
+    if (phone.length < 8) {
       AppSnackbar.error('ກະລຸນາໃສ່ເບີໂທລະສັບໃຫ້ຖືກຕ້ອງ');
       return;
     }
-    if (_passCtrl.text.isEmpty) {
+    if (pass.isEmpty) {
       AppSnackbar.error('ກະລຸນາໃສ່ລະຫັດຜ່ານ');
       return;
     }
     FocusScope.of(context).unfocus();
-    await Get.find<LoginLogic>().login(
-      phone: _phoneCtrl.text.trim(),
-      password: _passCtrl.text,
-    );
-    // On failure, restore focus to password so text stays visible and active
-    if (mounted &&
-        Get.find<LoginLogic>().state.status == LoginStatus.failure) {
+    await Get.find<LoginLogic>().login(phone: phone, password: pass);
+    if (!mounted) return;
+    if (Get.find<LoginLogic>().state.status == LoginStatus.failure) {
+      // Safety restore in case the dialog show/hide cycle cleared the fields
+      if (_phoneCtrl.text.isEmpty) _phoneCtrl.text = phone;
+      if (_passCtrl.text.isEmpty) _passCtrl.text = pass;
       _passFocus.requestFocus();
     }
   }
@@ -74,10 +74,8 @@ class _LoginPageState extends State<LoginPage> {
     super.dispose();
   }
 
-  // ══════════════════════════════════════════════════════════
   @override
   Widget build(BuildContext context) {
-    final login = Get.find<LoginLogic>();
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       behavior: HitTestBehavior.opaque,
@@ -85,7 +83,6 @@ class _LoginPageState extends State<LoginPage> {
         backgroundColor: AppColors.bg,
         resizeToAvoidBottomInset: true,
         body: SingleChildScrollView(
-          // physics: const BouncingScrollPhysics(),
           child: ConstrainedBox(
             constraints: BoxConstraints(
               minHeight: MediaQuery.of(context).size.height,
@@ -93,10 +90,10 @@ class _LoginPageState extends State<LoginPage> {
             child: IntrinsicHeight(
               child: Column(
                 children: [
-                  // ── Hero ────────────────────────────────────────
+                  // ── Hero ──────────────────────────────────────────
                   Center(child: const LoginHero()),
 
-                  // ── Form card (overlaps hero) ───────────────────
+                  // ── Form card ─────────────────────────────────────
                   Expanded(
                     child: Transform.translate(
                       offset: Offset(0, -16.h),
@@ -108,95 +105,102 @@ class _LoginPageState extends State<LoginPage> {
                           ),
                         ),
                         padding: EdgeInsets.fromLTRB(18.w, 22.h, 18.w, 0),
-                        child: Obx(() {
-                          final state = login.state;
-                          return Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'ຍິນດີຕ້ອນຮັບ 👋',
-                                style: TextStyle(
-                                  fontSize: 18.sp,
-                                  fontWeight: FontWeight.w900,
-                                  color: AppColors.primaryVariant,
-                                  letterSpacing: 1.2,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'ຍິນດີຕ້ອນຮັບ 👋',
+                              style: TextStyle(
+                                fontSize: 18.sp,
+                                fontWeight: FontWeight.w900,
+                                color: AppColors.primaryVariant,
+                                letterSpacing: 1.2,
+                              ),
+                            ),
+                            SizedBox(height: 3.h),
+                            Text(
+                              'ທ່ານເຂົ້າໃນຖານະໃດ?',
+                              style: TextStyle(
+                                fontSize: 14.sp,
+                                color: AppColors.textHint,
+                              ),
+                            ),
+                            SizedBox(height: 14.h),
+
+                            // ── Role tabs ─────────────────────────────
+                            Obx(() => RoleCards(
+                              selected: _isCustomer.value
+                                  ? RegisterRole.customer
+                                  : RegisterRole.companion,
+                              onSelect: _onRoleChange,
+                            )),
+                            SizedBox(height: 20.h),
+
+                            // ── Phone ─────────────────────────────────
+                            FieldLabel(label: 'ເບີໂທລະສັບ'),
+                            SizedBox(height: 5.h),
+                            Obx(() => PhoneField(
+                              ctrl: _phoneCtrl,
+                              focus: _phoneFocus,
+                              nextFocus: _passFocus,
+                              accent: _isCustomer.value
+                                  ? AppColors.primary
+                                  : AppColors.primaryVariant,
+                            )),
+                            SizedBox(height: 12.h),
+
+                            // ── Password ──────────────────────────────
+                            FieldLabel(label: 'ລະຫັດຜ່ານ'),
+                            SizedBox(height: 5.h),
+                            Obx(() => PasswordField(
+                              ctrl: _passCtrl,
+                              focus: _passFocus,
+                              accent: _isCustomer.value
+                                  ? AppColors.primary
+                                  : AppColors.primaryVariant,
+                              obscure: _obscure.value,
+                              onToggle: () =>
+                                  _obscure.value = !_obscure.value,
+                              onSubmit: _submit,
+                            )),
+                            SizedBox(height: 8.h),
+
+                            // ── Forgot ────────────────────────────────
+                            Align(
+                              alignment: Alignment.centerRight,
+                              child: GestureDetector(
+                                onTap: () => Navigator.pushNamed(
+                                  context,
+                                  AppRoutes.forgotPassword,
                                 ),
-                              ),
-                              SizedBox(height: 3.h),
-                              Text(
-                                'ທ່ານເຂົ້າໃນຖານະໃດ?',
-                                style: TextStyle(
-                                  fontSize: 14.sp,
-                                  color: AppColors.textHint,
-                                ),
-                              ),
-                              SizedBox(height: 14.h),
-                              // ── Role tabs ──────────────────────────
-                              RoleCards(
-                                selected: state.role,
-                                onSelect: login.setRole,
-                              ),
-                              SizedBox(height: 20.h),
-                              // ── Phone ──────────────────────────────
-                              FieldLabel(label: 'ເບີໂທລະສັບ'),
-                              SizedBox(height: 5.h),
-                              PhoneField(
-                                ctrl: _phoneCtrl,
-                                focus: _phoneFocus,
-                                nextFocus: _passFocus,
-                                accent: state.role == RegisterRole.customer
-                                    ? AppColors.primary
-                                    : AppColors.primaryVariant,
-                              ),
-                              SizedBox(height: 12.h),
-                              // ── Password ───────────────────────────
-                              FieldLabel(label: 'ລະຫັດຜ່ານ'),
-                              SizedBox(height: 5.h),
-                              PasswordField(
-                                ctrl: _passCtrl,
-                                focus: _passFocus,
-                                accent: state.role == RegisterRole.customer
-                                    ? AppColors.primary
-                                    : AppColors.primaryVariant,
-                                obscure: _obscure,
-                                onToggle: () =>
-                                    setState(() => _obscure = !_obscure),
-                                onSubmit: _submit,
-                              ),
-                              SizedBox(height: 8.h),
-                              // ── Forgot ─────────────────────────────
-                              Align(
-                                alignment: Alignment.centerRight,
-                                child: GestureDetector(
-                                  onTap: () {
-                                    Navigator.pushNamed(
-                                      context,
-                                      AppRoutes.forgotPassword,
-                                    );
-                                  },
-                                  child: Text(
-                                    'ລືມລະຫັດຜ່ານ?',
-                                    style: TextStyle(
-                                      fontSize: 14.sp,
-                                      color: AppColors.textHint,
-                                    ),
+                                child: Text(
+                                  'ລືມລະຫັດຜ່ານ?',
+                                  style: TextStyle(
+                                    fontSize: 14.sp,
+                                    color: AppColors.textHint,
                                   ),
                                 ),
                               ),
-                              SizedBox(height: 18.h),
-                              // ── Login button ───────────────────────
-                              LoginButton(
-                                isCustomer: state.role == RegisterRole.customer,
-                                onTap: _submit,
-                              ),
-                              SizedBox(height: 16.h),
-                              // ── Divider ────────────────────────────
-                              _OrDivider(),
-                              SizedBox(height: 14.h),
-                              RegisterLink(role: state.role),
-                            ],
-                          );
-                        }),
+                            ),
+                            SizedBox(height: 18.h),
+
+                            // ── Login button ──────────────────────────
+                            Obx(() => LoginButton(
+                              isCustomer: _isCustomer.value,
+                              onTap: _submit,
+                            )),
+                            SizedBox(height: 16.h),
+
+                            // ── Divider + register ────────────────────
+                            _OrDivider(),
+                            SizedBox(height: 14.h),
+                            Obx(() => RegisterLink(
+                              role: _isCustomer.value
+                                  ? RegisterRole.customer
+                                  : RegisterRole.companion,
+                            )),
+                          ],
+                        ),
                       ),
                     ),
                   ),
@@ -210,14 +214,16 @@ class _LoginPageState extends State<LoginPage> {
   }
 }
 
-// ── Or divider ─────────────────────────────────────────────────
 class _OrDivider extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
       children: [
         Expanded(
-          child: Container(height: 0.5, color: Colors.black.withOpacity(0.08)),
+          child: Container(
+            height: 0.5,
+            color: Colors.black.withValues(alpha: 0.08),
+          ),
         ),
         Padding(
           padding: EdgeInsets.symmetric(horizontal: 10.w),
@@ -227,7 +233,10 @@ class _OrDivider extends StatelessWidget {
           ),
         ),
         Expanded(
-          child: Container(height: 0.5, color: Colors.black.withOpacity(0.08)),
+          child: Container(
+            height: 0.5,
+            color: Colors.black.withValues(alpha: 0.08),
+          ),
         ),
       ],
     );

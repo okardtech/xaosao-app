@@ -32,11 +32,16 @@ class NotificationService {
   /// Global reactive notification badge.
   static final RxInt unreadCount = 0.obs;
 
-  /// Global reactive chat unread badge.
+  /// Global reactive badge counts from me/badges API.
   static final RxInt chatUnreadCount = 0.obs;
+  static final RxInt bookingUnreadCount = 0.obs;
+  static final RxInt postUnreadCount = 0.obs;
 
   /// Fires when a foreground push arrives so NotifListLogic can refresh.
   static Function()? onNewNotification;
+
+  /// Fires with (type, data) so controllers can refresh type-specific data.
+  static Function(String type, Map<String, dynamic> data)? onForegroundNotification;
 
   // ── Channel constants (must match AndroidManifest default_notification_channel_id) ──
   static const String _channelId = 'default_channel';
@@ -106,8 +111,11 @@ class NotificationService {
     // Terminated tap → app was launched by tapping the notification
     final initial = await FirebaseMessaging.instance.getInitialMessage();
     if (initial != null) {
-      // Delay until the widget tree is ready
-      Future.delayed(const Duration(milliseconds: 600), _navigateToNotifications);
+      // Longer delay: splash + login/dashboard controllers must be registered first
+      Future.delayed(
+        const Duration(milliseconds: 1200),
+        () => _navigateFromData(initial.data),
+      );
     }
 
     // FCM token
@@ -128,23 +136,147 @@ class NotificationService {
       data: message.data,
     );
     onNewNotification?.call();
+    final type = message.data['type'] as String? ?? '';
+    onForegroundNotification?.call(type, message.data);
   }
 
   // ── Tap handlers ───────────────────────────────────────────────────────────
-  static void _onRemoteTap(RemoteMessage _) => _navigateToNotifications();
-  static void _onLocalTap(NotificationResponse _) => _navigateToNotifications();
+  static void _onRemoteTap(RemoteMessage message) =>
+      _navigateFromData(message.data);
 
-  // ── Auth-gated navigation ──────────────────────────────────────────────────
-  static void _navigateToNotifications() {
+  static void _onLocalTap(NotificationResponse response) {
+    try {
+      final payload = response.payload;
+      final data = (payload != null && payload.isNotEmpty)
+          ? Map<String, dynamic>.from(jsonDecode(payload) as Map)
+          : <String, dynamic>{};
+      _navigateFromData(data);
+    } catch (_) {
+      _navigateFromData({});
+    }
+  }
+
+  // ── Auth-gated deep navigation entry point ────────────────────────────────
+  static void _navigateFromData(Map<String, dynamic> data) {
     try {
       final role = Get.find<StorageService>().read<String>('role');
       if (role == null || role.isEmpty) {
         Get.offAllNamed(AppRoutes.login);
         return;
       }
-      Get.toNamed(AppRoutes.notifications);
+      final type = data['type'] as String? ?? '';
+      final isCustomer = role == 'customer';
+      if (type.isEmpty) {
+        Get.toNamed(AppRoutes.notifications);
+        return;
+      }
+      _navigateByType(type, data, isCustomer);
     } catch (_) {
       // StorageService not ready — app still initialising from terminated state
+    }
+  }
+
+  // ── Type-specific navigation (mirrors notification_list_logic) ─────────────
+  static void _navigateByType(
+    String type,
+    Map<String, dynamic> data,
+    bool isCustomer,
+  ) {
+    String _s(String key) => (data[key] as String?) ?? '';
+
+    switch (type) {
+      // ── Home ────────────────────────────────────────────────────
+      case 'welcome':
+      case 'account_deleted':
+        Get.until((r) => r.settings.name == AppRoutes.dashboard);
+        return;
+
+      // ── Account ─────────────────────────────────────────────────
+      case 'account_approved':
+      case 'account_rejected':
+      case 'account_banned':
+      case 'account_role_changed':
+      case 'account_reported':
+        Get.toNamed(AppRoutes.profileDetail, arguments: isCustomer);
+        return;
+
+      // ── New companion ────────────────────────────────────────────
+      case 'new_model_registered':
+      case 'new_model_service':
+        final modelId = _s('modelId');
+        if (modelId.isNotEmpty) {
+          Get.toNamed(AppRoutes.companionProfile, arguments: modelId);
+        }
+        return;
+
+      // ── Gifts ────────────────────────────────────────────────────
+      case 'post_gift_received':
+      case 'gift_received':
+        final postId = _s('postId');
+        if (postId.isNotEmpty) {
+          Get.toNamed(AppRoutes.myGifts, arguments: postId);
+        }
+        return;
+
+      // ── Post interactions (comment/like/new post) ─────────────────
+      // CommentSheet requires BuildContext → navigate to post detail instead
+      case 'post_comment':
+      case 'post_comment_reply':
+      case 'post_like':
+      case 'new_model_post':
+      case 'new_customer_post':
+        final postId = _s('postId');
+        if (postId.isNotEmpty) {
+          Get.toNamed(AppRoutes.postDetail, arguments: postId);
+        } else {
+          Get.toNamed(AppRoutes.notifications);
+        }
+        return;
+
+      // ── Profile interactions ──────────────────────────────────────
+      case 'profile_viewed':
+        final id = _s('viewerId').isNotEmpty ? _s('viewerId') : _s('modelId');
+        if (id.isNotEmpty) Get.toNamed(AppRoutes.companionProfile, arguments: id);
+        return;
+
+      case 'profile_liked':
+        final id = _s('likerId').isNotEmpty ? _s('likerId') : _s('modelId');
+        if (id.isNotEmpty) Get.toNamed(AppRoutes.companionProfile, arguments: id);
+        return;
+
+      case 'friend_added':
+        final id = _s('friendId').isNotEmpty ? _s('friendId') : _s('modelId');
+        if (id.isNotEmpty) Get.toNamed(AppRoutes.companionProfile, arguments: id);
+        return;
+
+      // ── Booking ───────────────────────────────────────────────────
+      case 'booking_created':
+      case 'booking_accepted':
+      case 'booking_rejected':
+      case 'booking_cancelled':
+      case 'booking_completed':
+        final bookingId = _s('bookingId');
+        if (bookingId.isNotEmpty) {
+          Get.toNamed(AppRoutes.bookingDetail, arguments: {
+            'bookingId': bookingId,
+            'isCustomer': isCustomer,
+          });
+        }
+        return;
+
+      // ── Wallet / finance ──────────────────────────────────────────
+      case 'topup_created':
+      case 'topup_approved':
+      case 'topup_rejected':
+      case 'withdraw_approved':
+      case 'withdraw_rejected':
+      case 'booking_payout_released':
+        Get.toNamed(isCustomer ? AppRoutes.wallet : AppRoutes.modelWallet);
+        return;
+
+      default:
+        Get.toNamed(AppRoutes.notifications);
+        return;
     }
   }
 

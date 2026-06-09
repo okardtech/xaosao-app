@@ -7,6 +7,9 @@ import 'package:xaosao/models/chat_message_model.dart';
 import 'package:xaosao/models/conversation_model.dart';
 import 'package:xaosao/services/base_repo.dart';
 
+import '../models/bage_model.dart';
+import '../models/gift_post_model.dart';
+
 class ChatRepo extends BaseRepository {
   Future<ApiResponse<List<ConversationModel>>> getConversations() => safeCall(
     () => api.get(ApiConstants.chatConversations),
@@ -115,12 +118,18 @@ class ChatRepo extends BaseRepository {
     authRequired: true,
   );
 
-  Future<ApiResponse<int>> chatUnreadCount() {
+  Future<ApiResponse<BadgeModel>> bageUnreadCount() {
     return safeCall(
-      () => api.get(ApiConstants.chatUnreadCount),
-      fromJson: (json) =>
-          (json as Map<String, dynamic>)['unread_count'] as int? ?? 0,
+      () => api.get(ApiConstants.bages),
+      fromJson: (json) => BadgeModel.fromJson(json),
       authRequired: true,
+    );
+  }
+
+  Future<ApiResponse<GiftPostModel>> getGiftPost({required String postId}) {
+    return safeCall(
+      () => api.get('${ApiConstants.giftPost}/$postId'),
+      fromJson: (json) => GiftPostModel.fromJson(json),
     );
   }
 }

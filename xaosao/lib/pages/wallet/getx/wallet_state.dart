@@ -8,9 +8,9 @@ enum TxStatus { completed, pending, processing, cancelled }
 
 extension TxStatusX on TxStatus {
   static TxStatus from(String? s) => switch (s) {
-        'approved' || 'completed' => TxStatus.completed,
+        'approved' || 'completed' || 'released' => TxStatus.completed,
         'pending' => TxStatus.pending,
-        'processing' => TxStatus.processing,
+        'processing' || 'held' || 'pending_release' => TxStatus.processing,
         _ => TxStatus.cancelled,
       };
 

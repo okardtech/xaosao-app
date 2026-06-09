@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 import 'package:xaosao/constants/app_routes.dart';
 import 'package:xaosao/models/notification_item_model.dart';
+import 'package:xaosao/pages/posts/components/comment_sheet.dart';
 import 'package:xaosao/pages/notification/getx/notification_list_state.dart';
 import 'package:xaosao/repository/notification_repo.dart';
 import 'package:xaosao/services/notification_service.dart';
@@ -146,16 +147,30 @@ class NotifListLogic extends GetxController {
         }
         return;
 
-      // ── Post interactions ─────────────────────────────────────
-      case 'post_like':
+      // ── Post gifts ────────────────────────────────────────────
+      case 'post_gift_received':
+        final giftPostId = data?.postId ?? '';
+        if (giftPostId.isNotEmpty) {
+          Get.toNamed(AppRoutes.myGifts, arguments: giftPostId);
+        }
+        return;
+
+      // ── Post comments ─────────────────────────────────────────
       case 'post_comment':
       case 'post_comment_reply':
-      case 'post_gift_received':
+        final commentPostId = data?.postId ?? '';
+        if (commentPostId.isNotEmpty && Get.context != null) {
+          CommentSheet.show(Get.context!, postId: commentPostId);
+        }
+        return;
+
+      // ── Post views / new posts ────────────────────────────────
+      case 'post_like':
       case 'new_model_post':
       case 'new_customer_post':
-        final modelId = data?.modelId ?? '';
-        if (modelId.isNotEmpty) {
-          Get.toNamed(AppRoutes.companionProfile, arguments: modelId);
+        final viewPostId = data?.postId ?? '';
+        if (viewPostId.isNotEmpty) {
+          Get.toNamed(AppRoutes.postDetail, arguments: viewPostId);
         }
         return;
 
@@ -176,8 +191,10 @@ class NotifListLogic extends GetxController {
         return;
 
       case 'gift_received':
-        final id = data?.senderId ?? data?.modelId ?? '';
-        if (id.isNotEmpty) Get.toNamed(AppRoutes.companionProfile, arguments: id);
+        final giftPostId2 = data?.postId ?? '';
+        if (giftPostId2.isNotEmpty) {
+          Get.toNamed(AppRoutes.myGifts, arguments: giftPostId2);
+        }
         return;
 
       // ── Booking ───────────────────────────────────────────────

@@ -161,7 +161,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           icon: Icons.help_outline_rounded,
                           iconColor: AppColors.textPrimary,
                           label: 'ຊ່ວຍເຫຼືອ / FAQ',
-                          onTap: () {},
+                          onTap: () => Get.toNamed(AppRoutes.helperCenter),
                         ),
                         _MenuItem(
                           iconBg: AppColors.primary.withValues(alpha: 0.10),
@@ -176,7 +176,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           icon: Icons.description_outlined,
                           iconColor: AppColors.textPrimary,
                           label: 'ຂໍ້ກຳນົດ ແລະ ນະໂຍບາຍ',
-                          onTap: () {},
+                          onTap: () => Get.toNamed(AppRoutes.companionPolicyPrivacy),
                         ),
                       ],
                     ),

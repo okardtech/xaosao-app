@@ -37,6 +37,11 @@ import '../pages/booking/booking_page.dart';
 import '../pages/meet_ups/booking_detail_loader_page.dart';
 import '../pages/share_linked/share_linked_page.dart';
 import '../pages/referral_analytics/referral_analytics_page.dart';
+import '../pages/setting/companion_policy_privacy.dart';
+import '../pages/setting/customer_policy_privacy.dart';
+import '../pages/setting/center_helper_page.dart';
+import '../pages/posts/gift/gifted_posts_page.dart';
+import '../pages/posts/post_detail/post_detail_page.dart';
 
 class AppRoutes {
   static const String splash = '/';
@@ -72,6 +77,11 @@ class AppRoutes {
   static const String chatDetail = '/chat-detail';
   static const String shareLink = '/share-link';
   static const String referralAnalytics = '/referral-analytics';
+  static const String companionPolicyPrivacy = '/companion-policy-privacy';
+  static const String customerPolicyPrivacy = '/customer-policy-privacy';
+  static const String helperCenter = '/helper-center';
+  static const String myGifts = '/my-gifts';
+  static const String postDetail = '/post-detail';
 
   static Route<dynamic> onGenerateRoute(RouteSettings settings) {
     switch (settings.name) {
@@ -175,6 +185,18 @@ class AppRoutes {
         return _slideRight(ShareLinkedPage(model: model));
       case referralAnalytics:
         return _slideRight(const ReferralAnalyticsPage());
+      case companionPolicyPrivacy:
+        return _slideRight(const CompanionPolicyPrivacy());
+      case customerPolicyPrivacy:
+        return _slideRight(const CustomerPolicyPrivacy());
+      case helperCenter:
+        return _slideRight(const CenterHelperPage());
+      case myGifts:
+        final postId = settings.arguments as String;
+        return _slideRight(GiftedPostsPage(postId: postId));
+      case postDetail:
+        final detailPostId = settings.arguments as String;
+        return _slideRight(PostDetailPage(postId: detailPostId));
       default:
         return _fade(const SplashPage());
     }

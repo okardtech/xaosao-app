@@ -5,6 +5,7 @@ import '../models/api_response.dart';
 import '../models/comment_model.dart';
 import '../models/fee_model.dart';
 import '../models/my_post_model.dart';
+import '../models/post_detail_model.dart';
 import '../services/base_repo.dart';
 
 class MyPost extends BaseRepository {
@@ -33,6 +34,14 @@ class MyPost extends BaseRepository {
       fromJson: (json) => (json['data'] as List)
           .map((item) => FeeModel.fromJson(item as Map<String, dynamic>))
           .toList(),
+    );
+  }
+
+  Future<ApiResponse<PostDetailModel>> getPostDetail({required String postId}) {
+    return safeCall(
+      () => api.get('${ApiConstants.myPost}/$postId'),
+      fromJson: (json) =>
+          PostDetailModel.fromJson(json as Map<String, dynamic>),
     );
   }
 
@@ -137,6 +146,7 @@ class MyPost extends BaseRepository {
       fromJson: (json) => true,
     );
   }
+
   Future<ApiResponse<bool>> hidePost({required String postId}) {
     return safeCall(
       () => api.post('${ApiConstants.myPost}/$postId/fulfill'),

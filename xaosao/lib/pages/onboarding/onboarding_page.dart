@@ -8,8 +8,6 @@ import 'package:xaosao/pages/onboarding/components/companion_widget.dart';
 import 'package:xaosao/widgets/app_network_image.dart';
 import 'package:xaosao/pages/onboarding/components/service_card_large.dart';
 import 'package:xaosao/pages/onboarding/getx/onboarding_logic.dart';
-import 'package:xaosao/widgets/show_loading_alert.dart';
-
 import '../../models/models_hot.dart';
 import '../../utils/age_formatter.dart';
 import 'getx/onboarding_state.dart';
@@ -37,7 +35,6 @@ class _XaosaoHomePageState extends State<XaosaoHomePage>
   static const _kSections = 4;
   late final List<Animation<double>> _secFade;
   late final List<Animation<Offset>> _secSlide;
-
 
   @override
   void initState() {
@@ -159,24 +156,32 @@ class _XaosaoHomePageState extends State<XaosaoHomePage>
                 padding: EdgeInsets.only(right: 20.w),
                 child: Stack(
                   children: [
-                    Container(
-                      width: 40.r,
-                      height: 40.r,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        shape: BoxShape.circle,
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.07),
-                            blurRadius: 10,
-                            offset: const Offset(0, 2),
-                          ),
-                        ],
-                      ),
-                      child: Icon(
-                        Icons.notifications_outlined,
-                        size: 20.r,
-                        color: const Color(0xFF1A1A2E),
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => LoginPage()),
+                        );
+                      },
+                      child: Container(
+                        width: 40.r,
+                        height: 40.r,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          shape: BoxShape.circle,
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.07),
+                              blurRadius: 10,
+                              offset: const Offset(0, 2),
+                            ),
+                          ],
+                        ),
+                        child: Icon(
+                          Icons.notifications_outlined,
+                          size: 20.r,
+                          color: const Color(0xFF1A1A2E),
+                        ),
                       ),
                     ),
                     Positioned(

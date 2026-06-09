@@ -15,16 +15,20 @@ import '../profile/components/customer_profile.dart';
 import '../profile/profile_page.dart';
 import 'getx/dashboard_logic.dart';
 
-class _ChatBadgeIcon extends StatelessWidget {
+class _NavBadgeIcon extends StatelessWidget {
+  final IconData icon;
+  final RxInt rxCount;
+  const _NavBadgeIcon({required this.icon, required this.rxCount});
+
   @override
   Widget build(BuildContext context) {
     return Obx(() {
-      final count = NotificationService.chatUnreadCount.value;
-      if (count == 0) return const Icon(Icons.article_outlined);
+      final count = rxCount.value;
+      if (count == 0) return Icon(icon);
       return Stack(
         clipBehavior: Clip.none,
         children: [
-          const Icon(Icons.article_outlined),
+          Icon(icon),
           Positioned(
             top: -4,
             right: -4,
@@ -139,15 +143,24 @@ class _DashboardPageState extends State<DashboardPage> {
               label: 'ຄົ້ນຫາ',
             ),
             BottomNavigationBarItem(
-              icon: _ChatBadgeIcon(),
+              icon: _NavBadgeIcon(
+                icon: Icons.article_outlined,
+                rxCount: NotificationService.chatUnreadCount,
+              ),
               label: 'ຄູ່ເເຊັດ',
             ),
-            const BottomNavigationBarItem(
-              icon: Icon(Icons.chat_bubble_outline_rounded),
+            BottomNavigationBarItem(
+              icon: _NavBadgeIcon(
+                icon: Icons.chat_bubble_outline_rounded,
+                rxCount: NotificationService.bookingUnreadCount,
+              ),
               label: 'ນັດພົບ',
             ),
-            const BottomNavigationBarItem(
-              icon: Icon(Icons.post_add_outlined),
+            BottomNavigationBarItem(
+              icon: _NavBadgeIcon(
+                icon: Icons.post_add_outlined,
+                rxCount: NotificationService.postUnreadCount,
+              ),
               label: 'ໂພສຫາຄູ່',
             ),
             const BottomNavigationBarItem(

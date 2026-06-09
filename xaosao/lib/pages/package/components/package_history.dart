@@ -33,28 +33,32 @@ String _fmtKip(int? n) => '${NumberFormat.decimalPattern().format(n ?? 0)} ກ�
 
 // Status helpers
 Color _accentColor(String? s) => switch (s) {
-  'active' => AppColors.online,
-  'completed' => AppColors.online,
-  'pending' => const Color(0xFFF59E0B),
-  'canceled' => const Color(0xFFEF4444),
+  'active' || 'completed' || 'approved' || 'released' => AppColors.online,
+  'pending' || 'pending_release' || 'held' => const Color(0xFFF59E0B),
+  'canceled' || 'rejected' => const Color(0xFFEF4444),
+  'refunded' => const Color(0xFF8B5CF6),
   'expired' => AppColors.textHint,
   'upgraded' => const Color(0xFF3B82F6),
   _ => AppColors.textHint,
 };
 
 Color _badgeBg(String? s) => switch (s) {
-  'active' || 'completed' => const Color(0xFFEDFAF3),
-  'pending' => const Color(0xFFFFFBEB),
-  'canceled' => const Color(0xFFFEF2F2),
+  'active' || 'completed' || 'approved' || 'released' =>
+    const Color(0xFFEDFAF3),
+  'pending' || 'pending_release' || 'held' => const Color(0xFFFFFBEB),
+  'canceled' || 'rejected' => const Color(0xFFFEF2F2),
+  'refunded' => const Color(0xFFF5F3FF),
   'expired' => AppColors.surfaceSecondary,
   'upgraded' => const Color(0xFFEFF6FF),
   _ => AppColors.surfaceSecondary,
 };
 
 Color _badgeFg(String? s) => switch (s) {
-  'active' || 'completed' => const Color(0xFF15803D),
-  'pending' => const Color(0xFF92400E),
-  'canceled' => const Color(0xFFB91C1C),
+  'active' || 'completed' || 'approved' || 'released' =>
+    const Color(0xFF15803D),
+  'pending' || 'pending_release' || 'held' => const Color(0xFF92400E),
+  'canceled' || 'rejected' => const Color(0xFFB91C1C),
+  'refunded' => const Color(0xFF6D28D9),
   'expired' => AppColors.textHint,
   'upgraded' => const Color(0xFF1D4ED8),
   _ => AppColors.textHint,
@@ -62,11 +66,14 @@ Color _badgeFg(String? s) => switch (s) {
 
 String _statusLabel(String? s) => switch (s) {
   'active' => 'ກຳລັງໃຊ້',
-  'completed' => 'ສຳເລັດ',
+  'completed' || 'approved' || 'released' => 'ສຳເລັດ',
   'pending' => 'ລໍຖ້າ',
-  'canceled' => 'ຍົກເລີກ',
+  'pending_release' => 'ລໍຖ້າໂອນ',
+  'canceled' || 'rejected' => 'ຍົກເລີກ',
+  'refunded' => 'ຄືນເງິນ',
   'expired' => 'ໝົດອາຍຸ',
   'upgraded' => 'ອັບເກຣດ',
+  'held' => 'ຄ້ຳປະກັນ',
   _ => s ?? '—',
 };
 

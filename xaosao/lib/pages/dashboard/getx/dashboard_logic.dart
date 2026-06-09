@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 import 'package:xaosao/pages/chat/getx/chat_logic.dart';
 import 'package:xaosao/pages/meet_ups/getx/meet_ups_logic.dart';
+import 'package:xaosao/pages/model_wallet/getx/model_wallet_logic.dart';
 import 'package:xaosao/pages/posts/getx/post_logic.dart';
 import 'package:xaosao/pages/wallet/getx/wallet_logic.dart';
 import 'package:xaosao/repository/chat_repo.dart';
@@ -16,12 +17,49 @@ class DashboardLogic extends GetxController {
   final _notifRepo = NotificationRepo();
   final _chatRepo = ChatRepo();
 
+  static const _walletTypes = {
+    'topup_created', 'topup_approved', 'topup_rejected',
+    'withdraw_approved', 'withdraw_rejected', 'booking_payout_released',
+  };
+
   @override
   void onInit() {
     super.onInit();
     _fetchUnreadCount();
-    _fetchChatUnreadCount();
+    _fetchBadgeCounts();
     LocationService.push();
+    NotificationService.onForegroundNotification = _onForegroundPush;
+  }
+
+  @override
+  void onClose() {
+    if (NotificationService.onForegroundNotification == _onForegroundPush) {
+      NotificationService.onForegroundNotification = null;
+    }
+    super.onClose();
+  }
+
+  void _onForegroundPush(String type, Map<String, dynamic> data) {
+    // Refresh API-based counts on every push
+    _fetchUnreadCount();
+    _fetchBadgeCounts();
+
+    // Booking push → refresh the bookings list with current filter
+    if (type.startsWith('booking_')) {
+      try {
+        final m = Get.find<MeetUpLogic>();
+        m.filterBy(m.state.selectedStatus);
+      } catch (_) {}
+    }
+
+    // Wallet/topup/withdraw push → refresh the wallet page data
+    if (_walletTypes.contains(type)) {
+      if (isCustomer) {
+        try { Get.find<WalletLogic>().refresh(); } catch (_) {}
+      } else {
+        try { Get.find<ModelWalletLogic>().refresh(); } catch (_) {}
+      }
+    }
   }
 
   Future<void> _fetchUnreadCount() async {
@@ -33,11 +71,14 @@ class DashboardLogic extends GetxController {
     } catch (_) {}
   }
 
-  Future<void> _fetchChatUnreadCount() async {
+  Future<void> _fetchBadgeCounts() async {
     try {
-      final res = await _chatRepo.chatUnreadCount();
+      final res = await _chatRepo.bageUnreadCount();
       if (res.success && res.data != null) {
-        NotificationService.chatUnreadCount.value = res.data!;
+        final b = res.data!;
+        NotificationService.chatUnreadCount.value = b.unreadChats ?? 0;
+        NotificationService.bookingUnreadCount.value = b.pendingBookings ?? 0;
+        NotificationService.postUnreadCount.value = b.activePosts ?? 0;
       }
     } catch (_) {}
   }
@@ -48,7 +89,7 @@ class DashboardLogic extends GetxController {
   void jumpTo(int index) {
     _state.value = state.copyWith(currentIndex: index);
     if (index == 1) {
-      _fetchChatUnreadCount();
+      _fetchBadgeCounts();
       try {
         Get.find<ChatLogic>().fetchConversations();
       } catch (_) {}

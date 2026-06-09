@@ -104,7 +104,7 @@ class _PostsPageState extends State<PostsPage> {
                 ),
                 SizedBox(height: 4.h),
                 Text(
-                  'ຄົ້ນຫາ Companion ທີ່ໃຊ່ຂອງທ່ານ',
+                  'ຄົ້ນຫາ Companion ທີ່ໃຊ້ຂອງທ່ານ',
                   style: TextStyle(
                     fontSize: 11.sp,
                     color: AppColors.textHint,
@@ -340,6 +340,10 @@ class _PostsPageState extends State<PostsPage> {
                     postId: post.id ?? '',
                     commentCount: post.counts?.comments ?? 0,
                     onCommentAdded: () => _logic.bumpCommentCount(post.id ?? ''),
+                  ),
+                  onGift: () => Get.toNamed(
+                    AppRoutes.myGifts,
+                    arguments: post.id ?? '',
                   ),
                 ),
               );

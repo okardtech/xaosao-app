@@ -7,6 +7,8 @@ import 'package:xaosao/constants/app_color.dart';
 import 'package:xaosao/pages/booking/booking_page.dart';
 import 'package:xaosao/utils/service_helper.dart';
 import 'package:xaosao/pages/booking/getx/booking_logic.dart';
+import 'package:xaosao/pages/package/components/subscription_banner.dart';
+import 'package:xaosao/pages/wallet/getx/wallet_logic.dart';
 import 'package:xaosao/utils/currency_formatter.dart';
 import 'package:xaosao/widgets/app_text_field.dart';
 
@@ -346,6 +348,20 @@ class _PerHourFormState extends State<PerHourForm> {
         );
       }),
     );
+  }
+
+  void _checkWalletAndBook() {
+    final wallet = (Get.find<WalletLogic>().state.wallet?.availableBalance ?? 0).toDouble();
+    final total = _logic.totalHour;
+    if (total > wallet) {
+      showInsufficientWalletBanner(
+        context,
+        walletBalance: wallet,
+        serviceRate: total,
+      );
+      return;
+    }
+    _logic.submit();
   }
 
   void _showVariantSheet() {
@@ -861,7 +877,7 @@ class _PerHourFormState extends State<PerHourForm> {
                 ),
                 BookingBottomBar(
                   canBook: _logic.canBookHour,
-                  onBook: _logic.submit,
+                  onBook: _checkWalletAndBook,
                 ),
               ],
             );

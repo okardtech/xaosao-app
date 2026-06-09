@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:xaosao/constants/app_color.dart';
 import 'package:xaosao/constants/app_data_config.dart';
+import 'package:xaosao/constants/app_routes.dart';
 import 'package:xaosao/utils/phone_validate.dart';
 import 'package:xaosao/utils/picker_date.dart';
 import '../../login/getx/login_state.dart';
@@ -536,12 +537,12 @@ class TermsCheckbox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onToggle,
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          AnimatedContainer(
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        GestureDetector(
+          onTap: onToggle,
+          child: AnimatedContainer(
             duration: const Duration(milliseconds: 150),
             width: 20.r,
             height: 20.r,
@@ -558,8 +559,16 @@ class TermsCheckbox extends StatelessWidget {
                 ? Icon(Icons.check_rounded, size: 13.r, color: Colors.white)
                 : null,
           ),
-          SizedBox(width: 10.w),
-          Expanded(
+        ),
+        SizedBox(width: 10.w),
+        Expanded(
+          child: GestureDetector(
+            onTap: () => Navigator.pushNamed(
+              context,
+              role == RegisterRole.companion
+                  ? AppRoutes.companionPolicyPrivacy
+                  : AppRoutes.customerPolicyPrivacy,
+            ),
             child: Text.rich(
               TextSpan(
                 style: TextStyle(
@@ -589,8 +598,8 @@ class TermsCheckbox extends StatelessWidget {
               ),
             ),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

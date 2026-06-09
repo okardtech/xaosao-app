@@ -2,7 +2,6 @@ import '../constants/api_constants.dart';
 import '../models/api_response.dart';
 import '../models/model_available.dart';
 import '../models/review_model.dart';
-import '../models/service_model.dart';
 import '../services/base_repo.dart';
 
 class ReviewRepo extends BaseRepository {
