@@ -231,6 +231,7 @@ class _PhoneFieldState extends State<PhoneField> {
 
   @override
   Widget build(BuildContext context) {
+    print('values: ${widget.ctrl.text}: ${widget.focus.hasFocus}');
     return AnimatedContainer(
       duration: const Duration(milliseconds: 180),
       height: 48.h,
@@ -241,18 +242,6 @@ class _PhoneFieldState extends State<PhoneField> {
           color: _focused ? widget.accent : Colors.black.withOpacity(0.12),
           width: _focused ? 1.5 : 0.8,
         ),
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.primary.withValues(alpha: 0.10),
-            blurRadius: 20,
-            offset: const Offset(0, 6),
-          ),
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 2),
-          ),
-        ],
       ),
       child: Row(
         children: [
@@ -297,7 +286,6 @@ class _PhoneFieldState extends State<PhoneField> {
             child: TextField(
               controller: widget.ctrl,
               focusNode: widget.focus,
-
               keyboardType: TextInputType.phone,
               inputFormatters: [FilteringTextInputFormatter.digitsOnly],
               textInputAction: TextInputAction.next,
@@ -341,7 +329,6 @@ class PasswordField extends StatefulWidget {
   final Color accent;
   final bool obscure;
   final VoidCallback onToggle;
-  final VoidCallback onSubmit;
 
   const PasswordField({
     super.key,
@@ -350,7 +337,6 @@ class PasswordField extends StatefulWidget {
     required this.accent,
     required this.obscure,
     required this.onToggle,
-    required this.onSubmit,
   });
 
   @override
@@ -388,18 +374,6 @@ class _PasswordFieldState extends State<PasswordField> {
           color: _focused ? widget.accent : Colors.black.withOpacity(0.12),
           width: _focused ? 1.5 : 0.8,
         ),
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.primary.withValues(alpha: 0.10),
-            blurRadius: 20,
-            offset: const Offset(0, 6),
-          ),
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 2),
-          ),
-        ],
       ),
       child: Row(
         children: [
@@ -419,7 +393,6 @@ class _PasswordFieldState extends State<PasswordField> {
               focusNode: widget.focus,
               obscureText: widget.obscure,
               textInputAction: TextInputAction.done,
-              onSubmitted: (_) => widget.onSubmit(),
               decoration: InputDecoration(
                 hintText: 'ລະຫັດຜ່ານ',
                 hintStyle: TextStyle(

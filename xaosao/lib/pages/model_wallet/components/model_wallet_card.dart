@@ -138,7 +138,7 @@ class ModelWalletCard extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 28.sp,
                       fontWeight: FontWeight.w900,
-                      color: Colors.white,
+                      color: amountsVisible ? AppColors.online : Colors.white,
                       letterSpacing: -0.8,
                       height: 1,
                     ),
@@ -152,6 +152,7 @@ class ModelWalletCard extends StatelessWidget {
                       child: _StatPill(
                         label: 'ລໍຖ້າ',
                         value: amountsVisible ? pending : _masked,
+                        valueColor: amountsVisible ? AppColors.star : null,
                       ),
                     ),
                     SizedBox(width: 6.w),
@@ -230,7 +231,8 @@ class ModelWalletCard extends StatelessWidget {
 class _StatPill extends StatelessWidget {
   final String label;
   final String value;
-  const _StatPill({required this.label, required this.value});
+  final Color? valueColor;
+  const _StatPill({required this.label, required this.value, this.valueColor});
 
   @override
   Widget build(BuildContext context) {
@@ -254,7 +256,7 @@ class _StatPill extends StatelessWidget {
             style: TextStyle(
               fontSize: 12.sp,
               fontWeight: FontWeight.w800,
-              color: Colors.white,
+              color: valueColor ?? Colors.white,
               letterSpacing: -0.2,
             ),
           ),

@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:xaosao/constants/app_color.dart';
+import 'package:xaosao/constants/app_image.dart';
 import 'package:xaosao/constants/app_routes.dart';
 import 'package:xaosao/models/notification_item_model.dart';
 import 'package:xaosao/widgets/empty_state.dart';
@@ -247,7 +248,7 @@ class _NotifTile extends StatelessWidget {
     final type = item.type ?? '';
     final read = item.isRead ?? false;
     final color = _colorForType(type);
-    final icon = _iconForType(type);
+    // final icon = _iconForType(type);
 
     return GestureDetector(
       onTap: onTap,
@@ -278,8 +279,12 @@ class _NotifTile extends StatelessWidget {
                   decoration: BoxDecoration(
                     color: color.withValues(alpha: 0.12),
                     shape: BoxShape.circle,
+                    image: DecorationImage(
+                      image: AssetImage(AppImage.xaosao),
+                      // fit: BoxFit.cover,
+                    ),
                   ),
-                  child: Icon(icon, size: 20.r, color: color),
+                  // child: Icon(icon, size: 20.r, color: color),
                 ),
               ),
 
@@ -297,7 +302,8 @@ class _NotifTile extends StatelessWidget {
                         children: [
                           Expanded(
                             child: Text(
-                              _labelForType(type),
+                              // _labelForType(type),
+                              item.laTitle ?? item.title ?? '',
                               style: TextStyle(
                                 fontSize: 14.sp,
                                 fontWeight: read
@@ -343,10 +349,10 @@ class _NotifTile extends StatelessWidget {
                           ),
                         ],
                       ),
-                      if (item.message != null && item.message!.isNotEmpty) ...[
+                      if (item.laMessage != null && item.laMessage!.isNotEmpty) ...[
                         SizedBox(height: 4.h),
                         Text(
-                          item.message!,
+                          item.laMessage!,
                           style: TextStyle(
                             fontSize: 12.sp,
                             color: AppColors.textHint,
@@ -533,72 +539,72 @@ Color _colorForType(String type) {
   }
 }
 
-String _labelForType(String type) {
-  switch (type) {
-    case 'post_like':
-      return 'ກົດໄລ້ໂພສຂອງທ່ານ';
-    case 'post_comment':
-      return 'ຄອມເມັນໂພສຂອງທ່ານ';
-    case 'post_comment_reply':
-      return 'ຕອບຄອມເມັນຂອງທ່ານ';
-    case 'post_gift_received':
-      return 'ໄດ້ຮັບຂອງຂວັນໃນໂພສ';
-    case 'gift_received':
-      return 'ໄດ້ຮັບຂອງຂວັນ';
-    case 'booking_created':
-      return 'ມີການຈອງໃໝ່';
-    case 'booking_accepted':
-      return 'ການຈອງໄດ້ຮັບການຍອມຮັບ';
-    case 'booking_rejected':
-      return 'ການຈອງຖືກປະຕິເສດ';
-    case 'booking_cancelled':
-      return 'ການຈອງຖືກຍົກເລີກ';
-    case 'booking_completed':
-      return 'ການຈອງສຳເລັດ';
-    case 'booking_payout_released':
-      return 'ໂອນເງິນການຈອງ';
-    case 'topup_created':
-      return 'ສ້າງຄຳຂໍເຕີມເງິນ';
-    case 'topup_approved':
-      return 'ເຕີມເງິນສຳເລັດ';
-    case 'topup_rejected':
-      return 'ຄຳຂໍເຕີມເງິນຖືກປະຕິເສດ';
-    case 'withdraw_approved':
-      return 'ຖອນເງິນສຳເລັດ';
-    case 'withdraw_rejected':
-      return 'ຄຳຂໍຖອນເງິນຖືກປະຕິເສດ';
-    case 'welcome':
-      return 'ຍິນດີຕ້ອນຮັບ!';
-    case 'account_approved':
-      return 'ບັນຊີໄດ້ຮັບການຢືນຢັນ';
-    case 'account_rejected':
-      return 'ບັນຊີຖືກປະຕິເສດ';
-    case 'account_banned':
-      return 'ບັນຊີຖືກລະງັບ';
-    case 'account_deleted':
-      return 'ບັນຊີຖືກລຶບ';
-    case 'new_model_registered':
-      return 'Companion ໃໝ່ເຂົ້າຮ່ວມ';
-    case 'new_model_service':
-      return 'Companion ເພີ່ມບໍລິການໃໝ່';
-    case 'new_model_post':
-      return 'Companion ໂພສໃໝ່';
-    case 'new_customer_post':
-      return 'ລູກຄ້າໂພສໃໝ່';
-    case 'profile_liked':
-      return 'ກົດໄລ້ໂປຣໄຟລ໌ຂອງທ່ານ';
-    case 'profile_viewed':
-      return 'ເບິ່ງໂປຣໄຟລ໌ຂອງທ່ານ';
-    case 'friend_added':
-      return 'ເພີ່ມທ່ານເປັນເພື່ອນ';
-    case 'account_role_changed':
-      return 'ສິດທິ໌ບັນຊີຖືກປ່ຽນແປງ';
-    case 'account_reported':
-      return 'ບັນຊີຂອງທ່ານຖືກລາຍງານ';
-    default:
-      return 'ການແຈ້ງເຕືອນ';
-  }
-}
+// String _labelForType(String type) {
+//   switch (type) {
+//     case 'post_like':
+//       return 'ກົດໄລ້ໂພສຂອງທ່ານ';
+//     case 'post_comment':
+//       return 'ຄອມເມັນໂພສຂອງທ່ານ';
+//     case 'post_comment_reply':
+//       return 'ຕອບຄອມເມັນຂອງທ່ານ';
+//     case 'post_gift_received':
+//       return 'ໄດ້ຮັບຂອງຂວັນໃນໂພສ';
+//     case 'gift_received':
+//       return 'ໄດ້ຮັບຂອງຂວັນ';
+//     case 'booking_created':
+//       return 'ມີການຈອງໃໝ່';
+//     case 'booking_accepted':
+//       return 'ການຈອງໄດ້ຮັບການຍອມຮັບ';
+//     case 'booking_rejected':
+//       return 'ການຈອງຖືກປະຕິເສດ';
+//     case 'booking_cancelled':
+//       return 'ການຈອງຖືກຍົກເລີກ';
+//     case 'booking_completed':
+//       return 'ການຈອງສຳເລັດ';
+//     case 'booking_payout_released':
+//       return 'ໂອນເງິນການຈອງ';
+//     case 'topup_created':
+//       return 'ສ້າງຄຳຂໍເຕີມເງິນ';
+//     case 'topup_approved':
+//       return 'ເຕີມເງິນສຳເລັດ';
+//     case 'topup_rejected':
+//       return 'ຄຳຂໍເຕີມເງິນຖືກປະຕິເສດ';
+//     case 'withdraw_approved':
+//       return 'ຖອນເງິນສຳເລັດ';
+//     case 'withdraw_rejected':
+//       return 'ຄຳຂໍຖອນເງິນຖືກປະຕິເສດ';
+//     case 'welcome':
+//       return 'ຍິນດີຕ້ອນຮັບ!';
+//     case 'account_approved':
+//       return 'ບັນຊີໄດ້ຮັບການຢືນຢັນ';
+//     case 'account_rejected':
+//       return 'ບັນຊີຖືກປະຕິເສດ';
+//     case 'account_banned':
+//       return 'ບັນຊີຖືກລະງັບ';
+//     case 'account_deleted':
+//       return 'ບັນຊີຖືກລຶບ';
+//     case 'new_model_registered':
+//       return 'Companion ໃໝ່ເຂົ້າຮ່ວມ';
+//     case 'new_model_service':
+//       return 'Companion ເພີ່ມບໍລິການໃໝ່';
+//     case 'new_model_post':
+//       return 'Companion ໂພສໃໝ່';
+//     case 'new_customer_post':
+//       return 'ລູກຄ້າໂພສໃໝ່';
+//     case 'profile_liked':
+//       return 'ກົດໄລ້ໂປຣໄຟລ໌ຂອງທ່ານ';
+//     case 'profile_viewed':
+//       return 'ເບິ່ງໂປຣໄຟລ໌ຂອງທ່ານ';
+//     case 'friend_added':
+//       return 'ເພີ່ມທ່ານເປັນເພື່ອນ';
+//     case 'account_role_changed':
+//       return 'ສິດທິ໌ບັນຊີຖືກປ່ຽນແປງ';
+//     case 'account_reported':
+//       return 'ບັນຊີຂອງທ່ານຖືກລາຍງານ';
+//     default:
+//       return 'ການແຈ້ງເຕືອນ';
+//   }
+// }
 
 String _relativeTime(DateTime? dt) {
   if (dt == null) return '';

@@ -8,6 +8,7 @@ import 'package:xaosao/repository/chat_repo.dart';
 import 'package:xaosao/repository/notification_repo.dart';
 import 'package:xaosao/services/location_service.dart';
 import 'package:xaosao/services/notification_service.dart';
+import '../../package/getx/package_logic.dart';
 import 'dashboard_state.dart';
 
 class DashboardLogic extends GetxController {
@@ -18,8 +19,12 @@ class DashboardLogic extends GetxController {
   final _chatRepo = ChatRepo();
 
   static const _walletTypes = {
-    'topup_created', 'topup_approved', 'topup_rejected',
-    'withdraw_approved', 'withdraw_rejected', 'booking_payout_released',
+    'topup_created',
+    'topup_approved',
+    'topup_rejected',
+    'withdraw_approved',
+    'withdraw_rejected',
+    'booking_payout_released',
   };
 
   @override
@@ -55,9 +60,19 @@ class DashboardLogic extends GetxController {
     // Wallet/topup/withdraw push → refresh the wallet page data
     if (_walletTypes.contains(type)) {
       if (isCustomer) {
-        try { Get.find<WalletLogic>().refresh(); } catch (_) {}
+        try {
+          Get.find<WalletLogic>().refresh();
+        } catch (_) {}
+        try {
+          Get.find<PackageLogic>().fetchPackages();
+        } catch (_) {}
       } else {
-        try { Get.find<ModelWalletLogic>().refresh(); } catch (_) {}
+        try {
+          Get.find<ModelWalletLogic>().refresh();
+        } catch (_) {}
+        try {
+          Get.find<PackageLogic>().fetchPackages();
+        } catch (_) {}
       }
     }
   }
@@ -70,6 +85,8 @@ class DashboardLogic extends GetxController {
       }
     } catch (_) {}
   }
+
+  void refreshBadges() => _fetchBadgeCounts();
 
   Future<void> _fetchBadgeCounts() async {
     try {

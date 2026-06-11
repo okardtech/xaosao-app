@@ -499,9 +499,11 @@ class _ProfilePageState extends State<ProfilePage> {
                     }
                   },
                   onToggle: _profileLogic.toggleHidden,
-                  enableDesc:
-                      'ເຊື່ອງໂປຣໄຟຂອງທ່ານບໍ່ໃຫ້ລູກຄ້າເຫັນ. '
-                      'ທ່ານສາມາດເປີດ-ປີດໄດ້ຕະຫຼອດເວລາ.',
+                  enableDesc: st.hidden
+                      ? 'ໂປຣໄຟຂອງທ່ານຖືກຊ່ອນຢູ່ — ລູກຄ້າບໍ່ສາມາດເຫັນທ່ານໄດ້'
+                      : 'ເຊື່ອງໂປຣໄຟຂອງທ່ານບໍ່ໃຫ້ລູກຄ້າເຫັນ. ທ່ານສາມາດເປີດ-ປີດໄດ້ຕະຫຼອດເວລາ.',
+                  enableDescColor:
+                      st.hidden ? const Color(0xFFE65100) : null,
                 ),
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.center,

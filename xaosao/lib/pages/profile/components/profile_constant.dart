@@ -202,6 +202,7 @@ class ShareEnableCard extends StatelessWidget {
   final VoidCallback onShareTap;
   final VoidCallback onToggle;
   final String enableDesc;
+  final Color? enableDescColor;
 
   const ShareEnableCard({
     super.key,
@@ -209,6 +210,7 @@ class ShareEnableCard extends StatelessWidget {
     required this.onShareTap,
     required this.onToggle,
     required this.enableDesc,
+    this.enableDescColor,
   });
 
   @override
@@ -260,11 +262,11 @@ class ShareEnableCard extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(width: 9),
-                    const Expanded(
+                    Expanded(
                       child: Text(
                         'ແຊຣ໌ Profile Link',
                         style: TextStyle(
-                          fontSize: 13,
+                          fontSize: 14.sp,
                           fontWeight: FontWeight.w700,
                           color: AppColors.primaryVariant,
                         ),
@@ -291,10 +293,10 @@ class ShareEnableCard extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text(
+                        Text(
                           'ເຊື່ອງໂປຣໄຟຂອງທ່ານ',
                           style: TextStyle(
-                            fontSize: 12,
+                            fontSize: 12.sp,
                             fontWeight: FontWeight.w700,
                             color: AppColors.primaryVariant,
                           ),
@@ -302,9 +304,9 @@ class ShareEnableCard extends StatelessWidget {
                         const SizedBox(height: 3),
                         Text(
                           enableDesc,
-                          style: const TextStyle(
-                            fontSize: 10,
-                            color: AppColors.textHint,
+                          style: TextStyle(
+                            fontSize: 12.sp,
+                            color: enableDescColor ?? AppColors.textHint,
                             height: 1.55,
                           ),
                         ),

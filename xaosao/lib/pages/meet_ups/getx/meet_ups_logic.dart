@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:xaosao/pages/dashboard/getx/dashboard_logic.dart';
 import 'package:xaosao/pages/meet_ups/getx/meet_ups_state.dart';
 import 'package:xaosao/repository/booking_repo.dart';
 import 'package:xaosao/services/storage_service.dart';
@@ -97,6 +98,7 @@ class MeetUpLogic extends GetxController {
       hideLoadingDialog();
       if (res.data != null) {
         await filterBy(state.selectedStatus);
+        _refreshDashboardBadges();
         return true;
       }
       _showError(res.message);
@@ -116,6 +118,7 @@ class MeetUpLogic extends GetxController {
       hideLoadingDialog();
       if (res.data != null) {
         await filterBy(state.selectedStatus);
+        _refreshDashboardBadges();
         return true;
       }
       _showError(res.message);
@@ -135,6 +138,7 @@ class MeetUpLogic extends GetxController {
       hideLoadingDialog();
       if (res.data != null) {
         await filterBy(state.selectedStatus);
+        _refreshDashboardBadges();
         return true;
       }
       _showError(res.message);
@@ -154,6 +158,7 @@ class MeetUpLogic extends GetxController {
       hideLoadingDialog();
       if (res.data != null) {
         await filterBy(state.selectedStatus);
+        _refreshDashboardBadges();
         return true;
       }
       _showError(res.message);
@@ -173,6 +178,7 @@ class MeetUpLogic extends GetxController {
       hideLoadingDialog();
       if (res.data != null) {
         await filterBy(state.selectedStatus);
+        _refreshDashboardBadges();
         return true;
       }
       _showError(res.message);
@@ -192,6 +198,7 @@ class MeetUpLogic extends GetxController {
       hideLoadingDialog();
       if (res.data != null) {
         await filterBy(state.selectedStatus);
+        _refreshDashboardBadges();
         return true;
       }
       _showError(res.message);
@@ -211,6 +218,7 @@ class MeetUpLogic extends GetxController {
       hideLoadingDialog();
       if (res.data != null) {
         await filterBy(state.selectedStatus);
+        _refreshDashboardBadges();
         return true;
       }
       _showError(res.message);
@@ -220,6 +228,10 @@ class MeetUpLogic extends GetxController {
       _showError(null);
       return false;
     }
+  }
+
+  void _refreshDashboardBadges() {
+    try { Get.find<DashboardLogic>().refreshBadges(); } catch (_) {}
   }
 
   void _showError(String? msg) {

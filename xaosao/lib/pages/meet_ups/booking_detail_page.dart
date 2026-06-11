@@ -120,7 +120,7 @@ class BookingDetailPage extends StatelessWidget {
           SliverAppBar(
             expandedHeight: 300.h,
             pinned: true,
-            backgroundColor: _dark,
+            backgroundColor: AppColors.primary,
             foregroundColor: Colors.white,
             elevation: 0,
             automaticallyImplyLeading: false,

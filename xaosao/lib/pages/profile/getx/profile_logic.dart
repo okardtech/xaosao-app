@@ -58,6 +58,8 @@ class ProfileLogic extends GetxController {
     _updateState(state.copyWith(hidden: hidden, photos: photos));
   }
 
+  void syncHidden(bool value) => _updateState(state.copyWith(hidden: value));
+
   Future<void> toggleHidden() async {
     if (_isClient || _togglingHidden) return;
     _togglingHidden = true;
@@ -65,7 +67,9 @@ class ProfileLogic extends GetxController {
     _updateState(state.copyWith(hidden: newHidden));
     try {
       final res = await _galleryRepo.visibility(hidden: newHidden);
-      if (!res.success) {
+      if (res.success) {
+        Get.find<LoginLogic>().updateModelProfileHidden(newHidden);
+      } else {
         _updateState(state.copyWith(hidden: !newHidden));
         AppSnackbar.error(res.laMessage ?? 'ປ່ຽນສະຖານະບໍ່ສຳເລັດ');
       }

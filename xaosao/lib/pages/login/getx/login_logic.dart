@@ -20,6 +20,23 @@ class LoginLogic extends GetxController {
 
   void setRole(RegisterRole role) => _updateState(state.copyWith(role: role));
 
+  void onRoleChange(RegisterRole role) => _updateState(state.copyWith(
+        role: role,
+        isCustomer: role == RegisterRole.customer,
+      ));
+
+  void toggleObscure() => _updateState(state.copyWith(obscure: !state.obscure));
+
+  void updateModelProfileHidden(bool isHidden) {
+    if (state.modelProfile != null) {
+      _updateState(
+        state.copyWith(
+          modelProfile: state.modelProfile!.copyWith(isProfileHidden: isHidden),
+        ),
+      );
+    }
+  }
+
   void updateProfileUrl(String url, bool isClient) {
     if (isClient && state.customerProfile != null) {
       _updateState(
@@ -54,7 +71,6 @@ class LoginLogic extends GetxController {
         AppSnackbar.error(res.laMessage ?? 'ເຂົ້າສູ່ລະບົບບໍ່ສຳເລັດ');
         return;
       }
-
       final loginData = res.data!;
       final storage = Get.find<StorageService>();
       await storage.write('token', loginData.accessToken ?? '');

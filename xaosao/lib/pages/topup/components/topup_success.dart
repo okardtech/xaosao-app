@@ -87,7 +87,12 @@ class _TopUpSuccessPageState extends State<TopUpSuccessPage>
               child: AppPrimaryButton(
                 label: 'ກັບໜ້າກະເປົ໋າ',
                 leadingIcon: Icons.account_balance_wallet_outlined,
-                onTap: () => Navigator.popUntil(context, (r) => r.isFirst),
+                onTap: () {
+                  Navigator.pop(context);
+                  Navigator.pop(context);
+                  Navigator.pop(context);
+                  Navigator.pop(context);
+                },
               ),
             ),
             SizedBox(height: 32.h),
@@ -103,11 +108,7 @@ class _Hero extends StatelessWidget {
   final Animation<double> scale;
   final Animation<double> fade;
   final int amount;
-  const _Hero({
-    required this.scale,
-    required this.fade,
-    required this.amount,
-  });
+  const _Hero({required this.scale, required this.fade, required this.amount});
 
   @override
   Widget build(BuildContext context) {

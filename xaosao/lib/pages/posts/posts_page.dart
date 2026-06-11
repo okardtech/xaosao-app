@@ -10,6 +10,8 @@ import 'package:xaosao/constants/app_routes.dart';
 import 'package:xaosao/pages/posts/components/comment_sheet.dart';
 import 'package:xaosao/pages/posts/components/post_card.dart';
 import 'package:xaosao/models/service_model.dart';
+import 'package:xaosao/models/conversation_model.dart';
+import 'package:xaosao/pages/chat/getx/chat_logic.dart';
 import 'package:xaosao/pages/login/getx/login_logic.dart';
 import 'package:xaosao/pages/posts/getx/post_logic.dart';
 import 'package:xaosao/pages/posts/getx/post_state.dart';
@@ -104,7 +106,7 @@ class _PostsPageState extends State<PostsPage> {
                 ),
                 SizedBox(height: 4.h),
                 Text(
-                  'ຄົ້ນຫາ Companion ທີ່ໃຊ້ຂອງທ່ານ',
+                  'ຄົ້ນຫາຜູ້ໃຫ້ບໍລິການທີ່ໃຊ້ຂອງທ່ານ',
                   style: TextStyle(
                     fontSize: 11.sp,
                     color: AppColors.textHint,
@@ -235,7 +237,6 @@ class _PostsPageState extends State<PostsPage> {
                       context,
                       postId: post.id ?? '',
                       companionName: name.isEmpty ? 'Companion' : name,
-                      balanceKip: 0,
                       onSent: (gift) {
                         GiftSentSnackbar.show(gift: gift);
                         _logic.bumpGiftCount(post.id ?? '');
@@ -252,12 +253,26 @@ class _PostsPageState extends State<PostsPage> {
                     context,
                     postId: post.id ?? '',
                     commentCount: post.totalCommentCount ?? 0,
-                    onCommentAdded: () => _logic.bumpCommentCount(post.id ?? ''),
+                    onCommentAdded: () =>
+                        _logic.bumpCommentCount(post.id ?? ''),
                   ),
                   onBook: () => Get.toNamed(
                     AppRoutes.companionProfile,
                     arguments: post.author?.id ?? '',
                   ),
+                  onChat: () {
+                    final id = post.author?.id;
+                    if (id == null || id.isEmpty) return;
+                    Get.find<ChatLogic>().startConversation(
+                      id,
+                      partnerHint: ConversationParticipant(
+                        id: id,
+                        firstName: post.author?.firstName,
+                        lastName: post.author?.lastName,
+                        profileImage: post.author?.profile,
+                      ),
+                    );
+                  },
                   onMore: () => _showMoreSheet(isMyPost: false),
                   onTap: () {},
                 ),
@@ -333,18 +348,17 @@ class _PostsPageState extends State<PostsPage> {
                 child: MyPostCard(
                   post: post,
                   onDelete: () => _confirmDelete(post.id ?? ''),
-                  onHide: () => _logic.hideMyPost(post.id ?? ''),
+                  onHide: () => _confirmHide(post.id ?? ''),
                   onTap: () {},
                   onComment: () => CommentSheet.show(
                     context,
                     postId: post.id ?? '',
                     commentCount: post.counts?.comments ?? 0,
-                    onCommentAdded: () => _logic.bumpCommentCount(post.id ?? ''),
+                    onCommentAdded: () =>
+                        _logic.bumpCommentCount(post.id ?? ''),
                   ),
-                  onGift: () => Get.toNamed(
-                    AppRoutes.myGifts,
-                    arguments: post.id ?? '',
-                  ),
+                  onGift: () =>
+                      Get.toNamed(AppRoutes.myGifts, arguments: post.id ?? ''),
                 ),
               );
             }
@@ -360,8 +374,8 @@ class _PostsPageState extends State<PostsPage> {
   }
 
   // ── Create post sheet ───────────────────────────────────────
-  void _showCreatePostSheet() {
-    showModalBottomSheet(
+  Future<void> _showCreatePostSheet() async {
+    final created = await showModalBottomSheet<bool>(
       context: context,
       isScrollControlled: true,
       isDismissible: true,
@@ -374,6 +388,7 @@ class _PostsPageState extends State<PostsPage> {
       ),
       builder: (_) => _CreatePostSheet(logic: _logic),
     );
+    if (created == true) _logic.setTab(1);
   }
 
   // ── More sheet ──────────────────────────────────────────────
@@ -439,6 +454,19 @@ class _PostsPageState extends State<PostsPage> {
       isDanger: true,
     );
     if (confirmed == true) _logic.deleteMyPost(postId);
+  }
+
+  // ── Confirm hide ────────────────────────────────────────────
+  Future<void> _confirmHide(String postId) async {
+    final confirmed = await ConfirmSheet.show(
+      context,
+      title: 'ປິດໂພສ',
+      message: 'ທ່ານແນ່ໃຈທີ່ຈະປິດໂພສນີ້ບໍ?\nລູກຄ້າຈະບໍ່ສາມາດເຫັນໂພສນີ້ໄດ້',
+      confirmLabel: 'ປິດໄພສ',
+      icon: Icons.visibility_off_outlined,
+      isDanger: false,
+    );
+    if (confirmed == true) _logic.hideMyPost(postId);
   }
 }
 
@@ -733,7 +761,7 @@ class _CreatePostSheetState extends State<_CreatePostSheet> {
       location: _locationCtrl.text.trim(),
       hasTip: _hasTip,
     );
-    if (ok && mounted) Navigator.pop(context);
+    if (ok && mounted) Navigator.pop(context, true);
   }
 
   @override
@@ -761,7 +789,7 @@ class _CreatePostSheetState extends State<_CreatePostSheet> {
 
           // ── title bar ────────────────────────────────────────
           Padding(
-            padding: EdgeInsets.fromLTRB(20.w, 0, 8.w, 12.h),
+            padding: EdgeInsets.fromLTRB(20.w, 0, 8.w, 6.h),
             child: Row(
               children: [
                 Text(
@@ -794,11 +822,11 @@ class _CreatePostSheetState extends State<_CreatePostSheet> {
             ),
           ),
 
-          Divider(
-            height: 1,
-            thickness: 1,
-            color: Colors.black.withValues(alpha: 0.06),
-          ),
+          // Divider(
+          //   height: 1,
+          //   thickness: 1,
+          //   color: Colors.black.withValues(alpha: 0.06),
+          // ),
 
           // ── scrollable body ──────────────────────────────────
           Flexible(
@@ -852,15 +880,15 @@ class _CreatePostSheetState extends State<_CreatePostSheet> {
                                 children: [
                                   Icon(
                                     Icons.public_rounded,
-                                    size: 9.r,
+                                    size: 12.r,
                                     color: AppColors.primary,
                                   ),
                                   SizedBox(width: 3.w),
                                   Text(
                                     'ໂພສສາທາລະນະ',
                                     style: TextStyle(
-                                      fontSize: 9.sp,
-                                      fontWeight: FontWeight.w600,
+                                      fontSize: 12.sp,
+                                      fontWeight: FontWeight.w400,
                                       color: AppColors.primary,
                                     ),
                                   ),
@@ -873,12 +901,12 @@ class _CreatePostSheetState extends State<_CreatePostSheet> {
                     ],
                   ),
                   SizedBox(height: 16.h),
-
                   // ── content textarea ───────────────────────
+                  _SheetSectionLabel("ທ່ານກຳລັງຊອກຫາຄູ່ເເບບໃດ?"),
+                  SizedBox(height: 8.h),
                   Container(
                     padding: EdgeInsets.fromLTRB(14.w, 14.h, 14.w, 10.h),
                     decoration: BoxDecoration(
-                      color: AppColors.flexBg,
                       borderRadius: BorderRadius.circular(14.r),
                       border: Border.all(
                         color: Colors.black.withValues(alpha: 0.07),
@@ -896,12 +924,11 @@ class _CreatePostSheetState extends State<_CreatePostSheet> {
                           maxLength: 500,
                           decoration: InputDecoration(
                             hintText: _isModel
-                                ? 'ແຊຣ໌ຄວາມຮູ້ສຶກ ຫຼື ອັບເດດ... #hashtag'
-                                : 'ຊອກຫາ Companion ຢ່າງໃດ? ລົມລາຍລະອຽດ... #hashtag',
+                                ? 'ຕົວຢ່າງ: ຂ້ອຍກຳລັງຊ່ວຍລູກຄ້າທີ່ໂພສນີ້ ເພື່ອຫາຄູ່ດື່ມ'
+                                : 'ຕົວຢ່າງ: ຂ້ອຍຕ້ອງການ 2 ຄົນເປັນຄູ່ດື່ມຄືນນີ້',
                             hintStyle: TextStyle(
-                              fontSize: 12.sp,
-                              color: AppColors.textHint,
-                              height: 1.5,
+                              fontSize: 14.sp,
+                              color: const Color(0xFFC4C4D0),
                             ),
                             border: InputBorder.none,
                             contentPadding: EdgeInsets.zero,
@@ -974,14 +1001,6 @@ class _CreatePostSheetState extends State<_CreatePostSheet> {
                                       fontSize: 13.sp,
                                       fontWeight: FontWeight.w700,
                                       color: AppColors.primary,
-                                    ),
-                                  ),
-                                  SizedBox(height: 3.h),
-                                  Text(
-                                    'ກ້ອງຖ່າຍ ຫຼື ຄັງຮູບ · ທາງເລືອກ',
-                                    style: TextStyle(
-                                      fontSize: 10.sp,
-                                      color: AppColors.textHint,
                                     ),
                                   ),
                                 ],
@@ -1070,12 +1089,16 @@ class _CreatePostSheetState extends State<_CreatePostSheet> {
                                       ),
                                       boxShadow: [
                                         BoxShadow(
-                                          color: AppColors.primary.withValues(alpha: 0.10),
+                                          color: AppColors.primary.withValues(
+                                            alpha: 0.10,
+                                          ),
                                           blurRadius: 20,
                                           offset: const Offset(0, 6),
                                         ),
                                         BoxShadow(
-                                          color: Colors.black.withValues(alpha: 0.05),
+                                          color: Colors.black.withValues(
+                                            alpha: 0.05,
+                                          ),
                                           blurRadius: 10,
                                           offset: const Offset(0, 2),
                                         ),
@@ -1108,7 +1131,7 @@ class _CreatePostSheetState extends State<_CreatePostSheet> {
                     SizedBox(height: 8.h),
                   ] else ...[
                     // ── gender (customer) ──────────────────────
-                    _SheetSectionLabel('ເພດທີ່ຊອກຫາ'),
+                    _SheetSectionLabel('ເລືອກເພດ'),
                     SizedBox(height: 10.h),
                     _GenderSelector(
                       selected: _targetGender,
@@ -1117,7 +1140,7 @@ class _CreatePostSheetState extends State<_CreatePostSheet> {
                     SizedBox(height: 16.h),
 
                     // ── service (customer) ────────────────────
-                    _SheetSectionLabel('ປະເພດບໍລິການ'),
+                    _SheetSectionLabel('ເລືອກບໍລິການ'),
                     SizedBox(height: 10.h),
                     _ServicePicker(
                       services: _services,
@@ -1134,7 +1157,7 @@ class _CreatePostSheetState extends State<_CreatePostSheet> {
                     AppTextField(
                       controller: _locationCtrl,
                       focusNode: _locationFocus,
-                      hint: 'ຕ.ຢ.: ວຽງຈັນ, ດາວໂອຍຈາລ',
+                      hint: 'ຕົວຢ່າງ: ຮ້ານອາຫານ,ດາວອັງຄານ...',
                       accent: AppColors.primary,
                       prefixIcon: Icons.location_on_outlined,
                       action: TextInputAction.done,
@@ -1155,14 +1178,6 @@ class _CreatePostSheetState extends State<_CreatePostSheet> {
                               ? const Color(0xFFFFF7ED)
                               : AppColors.surfaceSecondary,
                           borderRadius: BorderRadius.circular(14.r),
-                          border: Border.all(
-                            color: _hasTip
-                                ? const Color(
-                                    0xFFF59E0B,
-                                  ).withValues(alpha: 0.35)
-                                : Colors.black.withValues(alpha: 0.07),
-                            width: 0.8,
-                          ),
                         ),
                         child: Row(
                           children: [
@@ -1249,7 +1264,7 @@ class _CreatePostSheetState extends State<_CreatePostSheet> {
                 SizedBox(width: 12.w),
                 Expanded(
                   child: AppPrimaryButton(
-                    label: 'ໂພສ ແລ້ວ ແຈ້ງໂຕອນ',
+                    label: 'ໂພສ ແລະ ແຈ້ງເຕື່ອນ',
                     leadingIcon: Icons.send_rounded,
                     height: 44,
                     enabled: _canPost,
@@ -1479,31 +1494,14 @@ class _SheetSectionLabel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Container(
-          width: 3.w,
-          height: 13.h,
-          decoration: BoxDecoration(
-            gradient: const LinearGradient(
-              colors: [AppColors.primary, Color(0xFFFF6B85)],
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-            ),
-            borderRadius: BorderRadius.circular(2.r),
-          ),
-        ),
-        SizedBox(width: 8.w),
-        Text(
-          text,
-          style: TextStyle(
-            fontSize: 12.sp,
-            fontWeight: FontWeight.w700,
-            color: AppColors.textPrimary,
-            letterSpacing: 0.1,
-          ),
-        ),
-      ],
+    return Text(
+      text,
+      style: TextStyle(
+        fontSize: 14.sp,
+        fontWeight: FontWeight.w400,
+        color: AppColors.textPrimary,
+        letterSpacing: 0.1,
+      ),
     );
   }
 }

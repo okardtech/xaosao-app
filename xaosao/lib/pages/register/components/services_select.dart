@@ -84,29 +84,27 @@ class _VariantRow {
 class _ServiceEntry {
   final ServiceModel service;
   bool selected;
-  final TextEditingController priceCtrl; // non-massage only
-  final List<_VariantRow> variants; // massage only
+  final TextEditingController priceCtrl;         // non-massage only
+  final TextEditingController serviceLocationCtrl; // massage only
+  final List<_VariantRow> variants;              // massage only
 
   bool get isMassage => service.name?.toLowerCase() == 'massage';
 
   _ServiceEntry({required this.service})
     : selected = false,
       priceCtrl = TextEditingController(
-        text: service.baseRate != null
-            ? _fmtInt(service.baseRate!.toInt())
-            : '',
+        text: service.baseRate != null ? _fmtInt(service.baseRate!.toInt()) : '',
       ),
+      serviceLocationCtrl = TextEditingController(),
       variants = service.name?.toLowerCase() == 'massage'
           ? (service.massageVariants?.isNotEmpty == true
                 ? service.massageVariants!
-                      .map(
-                        (v) => _VariantRow(
-                          name: v.name ?? '',
-                          price: v.pricePerHour != null
-                              ? _fmtInt(v.pricePerHour!.toInt())
-                              : '',
-                        ),
-                      )
+                      .map((v) => _VariantRow(
+                            name: v.name ?? '',
+                            price: v.pricePerHour != null
+                                ? _fmtInt(v.pricePerHour!.toInt())
+                                : '',
+                          ))
                       .toList()
                 : [_VariantRow()])
           : [];
@@ -122,6 +120,7 @@ class _ServiceEntry {
   bool get isValid {
     if (!selected) return false;
     if (isMassage) {
+      if (serviceLocationCtrl.text.trim().isEmpty) return false;
       if (variants.isEmpty) return false;
       if (!variants.every((v) => v.isFilled)) return false;
       final base = service.baseRate ?? 0;
@@ -148,13 +147,12 @@ class _ServiceEntry {
     if (isMassage) {
       return {
         'serviceId': service.id,
+        'serviceLocation': serviceLocationCtrl.text.trim(),
         'massageVariants': filledVariants
-            .map(
-              (v) => {
-                'name': v.nameCtrl.text.trim(),
-                'pricePerHour': v.parsedPrice,
-              },
-            )
+            .map((v) => {
+                  'name': v.nameCtrl.text.trim(),
+                  'pricePerHour': v.parsedPrice,
+                })
             .toList(),
       };
     }
@@ -163,6 +161,7 @@ class _ServiceEntry {
 
   void dispose() {
     priceCtrl.dispose();
+    serviceLocationCtrl.dispose();
     for (final v in variants) {
       v.dispose();
     }
@@ -736,6 +735,7 @@ class _MassageServiceCard extends StatelessWidget {
             child: selected
                 ? _MassageVariantsSection(
                     variants: entry.variants,
+                    locationCtrl: entry.serviceLocationCtrl,
                     baseRate: entry.service.baseRate,
                     onAdd: onAddVariant,
                     onRemove: onRemoveVariant,
@@ -754,6 +754,7 @@ class _MassageServiceCard extends StatelessWidget {
 // ═══════════════════════════════════════════════════════════════════════════════
 class _MassageVariantsSection extends StatelessWidget {
   final List<_VariantRow> variants;
+  final TextEditingController locationCtrl;
   final double? baseRate;
   final VoidCallback onAdd;
   final void Function(int) onRemove;
@@ -761,6 +762,7 @@ class _MassageVariantsSection extends StatelessWidget {
 
   const _MassageVariantsSection({
     required this.variants,
+    required this.locationCtrl,
     required this.onAdd,
     required this.onRemove,
     required this.onChanged,
@@ -778,6 +780,25 @@ class _MassageVariantsSection extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              // ── Service location input ───────────────────────
+              Text(
+                'ສະຖານທີ່ໃຫ້ບໍລິການ *',
+                style: TextStyle(
+                  fontSize: 12.sp,
+                  fontWeight: FontWeight.w600,
+                  color: AppColors.textSecondary,
+                ),
+              ),
+              SizedBox(height: 8.h),
+              _MiniTextField(
+                ctrl: locationCtrl,
+                hint: 'ເຊັ່ນ: ເຮືອນ, ໂຮງແຮມ, ສະຖານທີ່ລູກຄ້າ',
+                hasError: false,
+                isNumber: false,
+                onChanged: onChanged,
+              ),
+              SizedBox(height: 14.h),
+              // ── Variants ─────────────────────────────────────
               Row(
                 children: [
                   Text(

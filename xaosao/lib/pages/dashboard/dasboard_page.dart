@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:xaosao/constants/app_color.dart';
 import 'package:xaosao/services/notification_service.dart';
 import 'package:xaosao/services/storage_service.dart';
+import '../login/getx/login_logic.dart';
 import '../chat/chat_page.dart';
 import '../home/home_page.dart';
 import '../meet_ups/meet_ups_page.dart';
@@ -12,6 +13,7 @@ import '../model_discover/model_discover_page.dart';
 import '../package/getx/package_logic.dart';
 import '../posts/posts_page.dart';
 import '../profile/components/customer_profile.dart';
+import '../profile/components/hidden_profile_banner.dart';
 import '../profile/profile_page.dart';
 import 'getx/dashboard_logic.dart';
 
@@ -102,6 +104,13 @@ class _DashboardPageState extends State<DashboardPage> {
     if (_isCustomer) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (mounted) Get.find<PackageLogic>().checkSubscription(context);
+      });
+    } else {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+        final isHidden =
+            Get.find<LoginLogic>().state.modelProfile?.isProfileHidden ?? false;
+        if (isHidden) showHiddenProfileBanner(context);
       });
     }
   }

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:xaosao/models/gift_model.dart';
+import 'package:xaosao/pages/wallet/getx/wallet_logic.dart';
 import 'package:xaosao/repository/gift_repo.dart';
 import 'package:xaosao/utils/app_snackbar.dart';
 import 'package:xaosao/widgets/app_network_image.dart';
@@ -45,7 +47,6 @@ class GiftSheet {
     BuildContext context, {
     required String postId,
     required String companionName,
-    required int balanceKip,
     void Function(GiftModel)? onSent,
     VoidCallback? onTopUp,
   }) {
@@ -58,7 +59,6 @@ class GiftSheet {
       builder: (_) => _GiftSheetContent(
         postId: postId,
         companionName: companionName,
-        balanceKip: balanceKip,
         onSent: onSent,
         onTopUp: onTopUp,
       ),
@@ -72,14 +72,12 @@ class GiftSheet {
 class _GiftSheetContent extends StatefulWidget {
   final String postId;
   final String companionName;
-  final int balanceKip;
   final void Function(GiftModel)? onSent;
   final VoidCallback? onTopUp;
 
   const _GiftSheetContent({
     required this.postId,
     required this.companionName,
-    required this.balanceKip,
     this.onSent,
     this.onTopUp,
   });
@@ -95,6 +93,9 @@ class _GiftSheetContentState extends State<_GiftSheetContent> {
   bool _loadingGifts = true;
   GiftModel? _selected;
   bool _sending = false;
+
+  int get _balance =>
+      Get.find<WalletLogic>().state.wallet?.availableBalance ?? 0;
 
   @override
   void initState() {
@@ -136,6 +137,7 @@ class _GiftSheetContentState extends State<_GiftSheetContent> {
       );
       if (!mounted) return;
       if (res.success) {
+        Get.find<WalletLogic>().fetchWallet();
         Navigator.pop(context);
         widget.onSent?.call(gift);
       } else {
@@ -275,7 +277,7 @@ class _GiftSheetContentState extends State<_GiftSheetContent> {
                         ),
                       ),
                       Text(
-                        _fmt(widget.balanceKip),
+                        _fmt(_balance),
                         style: TextStyle(
                           fontSize: 12.sp,
                           fontWeight: FontWeight.w700,
@@ -340,6 +342,7 @@ class _GiftSheetContentState extends State<_GiftSheetContent> {
                     : _GiftGrid(
                         gifts: _gifts,
                         selected: _selected,
+                        balanceKip: _balance,
                         onSelect: (g) => setState(() => _selected = g),
                       ),
           ),
@@ -370,11 +373,13 @@ class _GiftSheetContentState extends State<_GiftSheetContent> {
 class _GiftGrid extends StatelessWidget {
   final List<GiftModel> gifts;
   final GiftModel? selected;
+  final int balanceKip;
   final void Function(GiftModel) onSelect;
 
   const _GiftGrid({
     required this.gifts,
     required this.selected,
+    required this.balanceKip,
     required this.onSelect,
   });
 
@@ -395,13 +400,18 @@ class _GiftGrid extends StatelessWidget {
         final isSelected = selected?.id == gift.id;
         final isRight = i % 3 != 2;
         final isBottom = i < gifts.length - 3;
+        final canAfford = (gift.price?.toInt() ?? 0) <= balanceKip;
 
         return GestureDetector(
-          onTap: () {
-            HapticFeedback.lightImpact();
-            onSelect(gift);
-          },
-          child: AnimatedContainer(
+          onTap: canAfford
+              ? () {
+                  HapticFeedback.lightImpact();
+                  onSelect(gift);
+                }
+              : null,
+          child: Opacity(
+            opacity: canAfford ? 1.0 : 0.35,
+            child: AnimatedContainer(
             duration: const Duration(milliseconds: 180),
             decoration: BoxDecoration(
               color: isSelected ? const Color(0xFFFFF0F6) : Colors.white,
@@ -490,6 +500,7 @@ class _GiftGrid extends StatelessWidget {
                   ),
               ],
             ),
+          ),
           ),
         );
       },

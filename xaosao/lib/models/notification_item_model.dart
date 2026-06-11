@@ -13,6 +13,8 @@ class NotificationItemModel {
     String? type;
     String? title;
     String? message;
+    String? laTitle;
+    String? laMessage;
     Data? data;
     bool? isRead;
     DateTime? createdAt;
@@ -22,6 +24,8 @@ class NotificationItemModel {
         this.type,
         this.title,
         this.message,
+        this.laTitle,
+        this.laMessage,
         this.data,
         this.isRead,
         this.createdAt,
@@ -32,6 +36,8 @@ class NotificationItemModel {
         type: json["type"],
         title: json["title"],
         message: json["message"],
+        laTitle: json["la_title"],
+        laMessage: json["la_message"],
         data: json["data"] == null ? null : Data.fromJson(json["data"]),
         isRead: json["is_read"],
         createdAt: json["created_at"] == null ? null : DateTime.parse(json["created_at"]),
@@ -42,6 +48,8 @@ class NotificationItemModel {
         "type": type,
         "title": title,
         "message": message,
+        "la_title": laTitle,
+        "la_message": laMessage,
         "data": data?.toJson(),
         "is_read": isRead,
         "created_at": createdAt?.toIso8601String(),

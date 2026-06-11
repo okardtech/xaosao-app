@@ -121,6 +121,12 @@ class BookingCard extends StatelessWidget {
     return ServiceHelper.serviceOriginalName(svc?.service?.name);
   }
 
+  static String? _durationLabel(MyBookingModel b) {
+    if (b.dayAmount != null) return '${b.dayAmount} ວັນ';
+    if (b.hours != null) return '${b.hours} ຊົ່ວໂມງ';
+    return null;
+  }
+
   static const _divider = Color(0x0F000000);
   static const _dark = Color(0xFF1A1A2E);
 
@@ -224,13 +230,28 @@ class BookingCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Expanded(
-                child: Text(
-                  _serviceTypeName(b),
-                  style: TextStyle(
-                    fontSize: 17.sp,
-                    fontWeight: FontWeight.w900,
-                    color: _dark,
-                    letterSpacing: -0.4,
+                child: RichText(
+                  text: TextSpan(
+                    children: [
+                      TextSpan(
+                        text: _serviceTypeName(b),
+                        style: TextStyle(
+                          fontSize: 14.sp,
+                          fontWeight: FontWeight.w900,
+                          color: _dark,
+                          letterSpacing: -0.4,
+                        ),
+                      ),
+                      if (_durationLabel(b) != null)
+                        TextSpan(
+                          text: '  ${_durationLabel(b)}',
+                          style: TextStyle(
+                            fontSize: 12.sp,
+                            fontWeight: FontWeight.w500,
+                            color: const Color(0xFF9B9BAD),
+                          ),
+                        ),
+                    ],
                   ),
                 ),
               ),

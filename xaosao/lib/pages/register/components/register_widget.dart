@@ -86,18 +86,6 @@ class _RegFieldState extends State<RegField> {
           color: _focused ? AppColors.primary : Colors.black.withOpacity(0.12),
           width: _focused ? 1.5 : 0.8,
         ),
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.primary.withValues(alpha: 0.10),
-            blurRadius: 20,
-            offset: const Offset(0, 6),
-          ),
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 2),
-          ),
-        ],
       ),
       child: Row(
         children: [
@@ -220,18 +208,6 @@ class _PhoneRegFieldState extends State<PhoneRegField> {
             color: Colors.white,
             borderRadius: BorderRadius.circular(14.r),
             border: Border.all(color: borderColor, width: borderWidth),
-            boxShadow: [
-              BoxShadow(
-                color: AppColors.primary.withValues(alpha: 0.10),
-                blurRadius: 20,
-                offset: const Offset(0, 6),
-              ),
-              BoxShadow(
-                color: Colors.black.withValues(alpha: 0.05),
-                blurRadius: 10,
-                offset: const Offset(0, 2),
-              ),
-            ],
           ),
           child: Row(
             children: [
@@ -395,18 +371,18 @@ class _GChip extends StatelessWidget {
             color: _isOn ? AppColors.primary : AppColors.border,
             width: _isOn ? 1.2 : 0.8,
           ),
-          boxShadow: [
-            BoxShadow(
-              color: AppColors.primary.withValues(alpha: 0.10),
-              blurRadius: 20,
-              offset: const Offset(0, 6),
-            ),
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.05),
-              blurRadius: 10,
-              offset: const Offset(0, 2),
-            ),
-          ],
+          // boxShadow: [
+          //   BoxShadow(
+          //     color: AppColors.primary.withValues(alpha: 0.10),
+          //     blurRadius: 20,
+          //     offset: const Offset(0, 6),
+          //   ),
+          //   BoxShadow(
+          //     color: Colors.black.withValues(alpha: 0.05),
+          //     blurRadius: 10,
+          //     offset: const Offset(0, 2),
+          //   ),
+          // ],
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -476,18 +452,6 @@ class DatePickerField extends StatelessWidget {
             color: Colors.black.withValues(alpha: 0.12),
             width: 0.8,
           ),
-          boxShadow: [
-            BoxShadow(
-              color: AppColors.primary.withValues(alpha: 0.10),
-              blurRadius: 20,
-              offset: const Offset(0, 6),
-            ),
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.05),
-              blurRadius: 10,
-              offset: const Offset(0, 2),
-            ),
-          ],
         ),
         padding: EdgeInsets.symmetric(horizontal: 11.w),
         child: Row(

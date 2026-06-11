@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:xaosao/constants/app_color.dart';
+import 'package:xaosao/utils/currency_formatter.dart';
 import 'package:xaosao/models/bank_account_model.dart';
 import 'package:xaosao/pages/model_wallet/components/model_wallet_shimmer.dart';
 import 'package:xaosao/pages/model_wallet/getx/model_wallet_logic.dart';
@@ -81,8 +81,10 @@ class _WithdrawPageState extends State<WithdrawPage> {
                       _BalanceInfoCard(
                         wallet: wallet,
                         onTapAll: wallet.canWithdraw == true
-                            ? () => _amountCtrl.text =
-                                  (wallet.withdrawableBalance ?? 0).toString()
+                            ? () {
+                                final n = wallet.withdrawableBalance ?? 0;
+                                _amountCtrl.text = NumberFormat('#,###', 'en_US').format(n);
+                              }
                             : null,
                       ),
                     if (wallet != null) SizedBox(height: 16.h),
@@ -144,7 +146,7 @@ class _WithdrawPageState extends State<WithdrawPage> {
                       prefixIcon: Icons.attach_money_rounded,
                       suffixLabel: 'ກີບ',
                       keyboardType: TextInputType.number,
-                      formatters: [FilteringTextInputFormatter.digitsOnly],
+                      formatters: [ThousandsSeparatorFormatter()],
                       accent: AppColors.primary,
                     ),
                     SizedBox(height: 8.h),

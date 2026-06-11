@@ -4,7 +4,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:xaosao/constants/app_color.dart';
 import 'package:xaosao/models/refferal_validate_model.dart';
-import 'package:xaosao/pages/register/components/register_app_bar.dart';
 import 'package:xaosao/pages/register/components/register_widget.dart';
 import 'package:xaosao/widgets/app_network_image.dart';
 import 'package:xaosao/widgets/gradient_app_bar.dart';
@@ -123,8 +122,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       // ── Referral banner (Companion only) ──────
                       if (_isCompanion)
                         Obx(() {
-                          final referrer =
-                              logic.state.referralInfo?.referrer;
+                          final referrer = logic.state.referralInfo?.referrer;
                           if (referrer == null) return const SizedBox.shrink();
                           return Padding(
                             padding: EdgeInsets.only(bottom: 12.h),
@@ -194,7 +192,12 @@ class _RegisterPageState extends State<RegisterPage> {
                           child: DatePickerField(
                             value: dateTime,
                             role: widget.role,
-                            onPick: (d) => logic.setDob(d),
+                            onPick: (d) {
+                              logic.setDob(d);
+                              WidgetsBinding.instance.addPostFrameCallback((_) {
+                                _paFocus.requestFocus();
+                              });
+                            },
                           ),
                         );
                       }),
@@ -219,7 +222,7 @@ class _RegisterPageState extends State<RegisterPage> {
                         RegField(
                           ctrl: _address,
                           focus: _adFocus,
-                          hint: 'ເຊັ່ນ: ໂຊນ 1, ວຽງຈັນ',
+                          hint: 'ນາທົ່ມ,ໜອງວຽງຄຳ,ວຽງຈັນ...',
                           icon: Icons.location_on_outlined,
                           role: widget.role,
                           action: TextInputAction.done,
@@ -297,9 +300,7 @@ class _ReferralBanner extends StatelessWidget {
       decoration: BoxDecoration(
         color: AppColors.primary.withValues(alpha: 0.08),
         borderRadius: BorderRadius.circular(12.r),
-        border: Border.all(
-          color: AppColors.primary.withValues(alpha: 0.25),
-        ),
+        border: Border.all(color: AppColors.primary.withValues(alpha: 0.25)),
       ),
       child: Row(
         children: [
