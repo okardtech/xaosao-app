@@ -3,8 +3,10 @@ import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:xaosao/constants/app_color.dart';
+import 'package:xaosao/constants/app_icons.dart';
 import 'package:xaosao/services/notification_service.dart';
 import 'package:xaosao/services/storage_service.dart';
+import 'package:xaosao/widgets/app_svg_icon.dart';
 import '../login/getx/login_logic.dart';
 import '../chat/chat_page.dart';
 import '../home/home_page.dart';
@@ -18,19 +20,19 @@ import '../profile/profile_page.dart';
 import 'getx/dashboard_logic.dart';
 
 class _NavBadgeIcon extends StatelessWidget {
-  final IconData icon;
+  final Widget child;
   final RxInt rxCount;
-  const _NavBadgeIcon({required this.icon, required this.rxCount});
+  const _NavBadgeIcon({required this.child, required this.rxCount});
 
   @override
   Widget build(BuildContext context) {
     return Obx(() {
       final count = rxCount.value;
-      if (count == 0) return Icon(icon);
+      if (count == 0) return child;
       return Stack(
         clipBehavior: Clip.none,
         children: [
-          Icon(icon),
+          child,
           Positioned(
             top: -4,
             right: -4,
@@ -147,33 +149,47 @@ class _DashboardPageState extends State<DashboardPage> {
           unselectedLabelStyle: const TextStyle(fontWeight: FontWeight.w500),
           elevation: 12,
           items: [
-            const BottomNavigationBarItem(
-              icon: Icon(Icons.explore_rounded),
+            BottomNavigationBarItem(
+              icon: AppSvgIcon(assetName: AppIcons.exploreFill, color: AppColors.primaryVariant),
+              activeIcon: AppSvgIcon(assetName: AppIcons.exploreFill, color: AppColors.primary),
               label: 'ຄົ້ນຫາ',
             ),
             BottomNavigationBarItem(
               icon: _NavBadgeIcon(
-                icon: Icons.article_outlined,
+                child: AppSvgIcon(assetName: AppIcons.chatFill, color: AppColors.primaryVariant),
+                rxCount: NotificationService.chatUnreadCount,
+              ),
+              activeIcon: _NavBadgeIcon(
+                child: AppSvgIcon(assetName: AppIcons.chatFill, color: AppColors.primary),
                 rxCount: NotificationService.chatUnreadCount,
               ),
               label: 'ຄູ່ເເຊັດ',
             ),
             BottomNavigationBarItem(
               icon: _NavBadgeIcon(
-                icon: Icons.chat_bubble_outline_rounded,
+                child: AppSvgIcon(assetName: AppIcons.calendar, color: AppColors.primaryVariant),
+                rxCount: NotificationService.bookingUnreadCount,
+              ),
+              activeIcon: _NavBadgeIcon(
+                child: AppSvgIcon(assetName: AppIcons.calendar, color: AppColors.primary),
                 rxCount: NotificationService.bookingUnreadCount,
               ),
               label: 'ນັດພົບ',
             ),
             BottomNavigationBarItem(
               icon: _NavBadgeIcon(
-                icon: Icons.post_add_outlined,
+                child: AppSvgIcon(assetName: AppIcons.comment, color: AppColors.primaryVariant),
+                rxCount: NotificationService.postUnreadCount,
+              ),
+              activeIcon: _NavBadgeIcon(
+                child: AppSvgIcon(assetName: AppIcons.comment, color: AppColors.primary),
                 rxCount: NotificationService.postUnreadCount,
               ),
               label: 'ໂພສຫາຄູ່',
             ),
-            const BottomNavigationBarItem(
-              icon: Icon(Icons.person_outline_rounded),
+            BottomNavigationBarItem(
+              icon: AppSvgIcon(assetName: AppIcons.user, color: AppColors.primaryVariant),
+              activeIcon: AppSvgIcon(assetName: AppIcons.user, color: AppColors.primary),
               label: 'ໂປຮໄຟລ໌',
             ),
           ],

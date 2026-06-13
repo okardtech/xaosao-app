@@ -139,6 +139,12 @@ class ChatLogic extends GetxController {
       _socket.markRead(convId);
     }
 
+    final convIdx = state.conversations.indexWhere((c) => c.id == convId);
+    if (convIdx == -1) {
+      fetchConversations();
+      return;
+    }
+
     _patchConversationPreview(
       convId: convId,
       lastMessageText: msg.messageText,
@@ -194,7 +200,40 @@ class ChatLogic extends GetxController {
     final convId = data['conversation_id']?.toString();
     if (convId == null) return;
     if (convId == activeConversationId.value) return;
-    _patchConversationPreview(convId: convId, incrementUnread: true);
+
+    final msgMap = data['message'] is Map
+        ? Map<String, dynamic>.from(data['message'] as Map)
+        : null;
+
+    final msgType = msgMap?['messageType']?.toString() ?? 'text';
+    final msgText = msgMap?['messageText']?.toString() ??
+        data['last_message']?.toString() ??
+        data['message_text']?.toString() ??
+        data['body']?.toString();
+
+    final lastText = msgType == 'image' ? '📷 ຮູບພາບ' : msgText;
+
+    final senderId = msgMap?['sender']?.toString() ??
+        (data['sender'] is Map ? data['sender']['id']?.toString() : null);
+
+    DateTime? sentAt;
+    final rawSentAt = msgMap?['sendAt']?.toString() ?? msgMap?['createdAt']?.toString();
+    if (rawSentAt != null) sentAt = DateTime.tryParse(rawSentAt);
+
+    final idx = state.conversations.indexWhere((c) => c.id == convId);
+    if (idx == -1) {
+      fetchConversations();
+      return;
+    }
+
+    _patchConversationPreview(
+      convId: convId,
+      incrementUnread: true,
+      lastMessageText: lastText,
+      lastMessageType: msgType,
+      lastMessageSenderId: senderId,
+      lastMessageAt: sentAt,
+    );
   }
 
   // ── Conversation list ──────────────────────────────────────
@@ -225,10 +264,8 @@ class ChatLogic extends GetxController {
     activeConversationId.value = conversationId;
     _socket.joinConversation(conversationId);
 
-    final current = msgStateOf(conversationId);
-    if (current.status == MsgLoadStatus.initial) {
-      fetchMessages(conversationId, refresh: true);
-    }
+    // Always refresh to surface any messages that arrived since last visit
+    fetchMessages(conversationId, refresh: true);
 
     _patchConversationPreview(convId: conversationId, unreadCount: 0);
     _socket.markRead(conversationId);

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:xaosao/constants/app_color.dart';
 import 'package:xaosao/models/Recommended_model.dart';
 import 'package:xaosao/pages/home/components/companion_card.dart';
 import 'package:xaosao/pages/home/components/companion_filter.dart';
@@ -139,7 +140,12 @@ class _ExplorePageState extends State<ExplorePage> {
             ],
           ),
           const Spacer(),
-          NotifBadge(child: _iconBtn(Icons.notifications_outlined, () => Get.toNamed(AppRoutes.notifications))),
+          NotifBadge(
+            child: _iconBtn(
+              Icons.notifications_outlined,
+              () => Get.toNamed(AppRoutes.notifications),
+            ),
+          ),
           SizedBox(width: 8.w),
           Obx(
             () => _iconBtn(
@@ -261,7 +267,7 @@ class _ExplorePageState extends State<ExplorePage> {
             _sectionHeader(
               icon: Icons.fiber_new_rounded,
               iconColor: const Color(0xFF4CAF50),
-              title: 'ອອນລາຍດຽວນີ້',
+              title: 'ກຳລັງອອນລາຍ',
             ),
             const OnlineLoadingShimmer(),
             SizedBox(height: 28.h),
@@ -275,7 +281,7 @@ class _ExplorePageState extends State<ExplorePage> {
           _sectionHeader(
             icon: Icons.fiber_new_rounded,
             iconColor: const Color(0xFF4CAF50),
-            title: 'ອອນລາຍດຽວນີ້',
+            title: 'ກຳລັງອອນລາຍ',
             onViewAll: () => Navigator.push(
               context,
               MaterialPageRoute(builder: (_) => const ViewAllCompanionsPage()),
@@ -302,7 +308,7 @@ class _ExplorePageState extends State<ExplorePage> {
             _sectionHeader(
               icon: Icons.star_rounded,
               iconColor: const Color(0xFFFFB800),
-              title: 'ແນະນຳ',
+              title: 'ແນະນຳສຳລັບທ່ານ',
             ),
             RecommendedLoadingShimmer(count: 4),
           ],
@@ -323,7 +329,7 @@ class _ExplorePageState extends State<ExplorePage> {
           _sectionHeader(
             icon: Icons.star_rounded,
             iconColor: const Color(0xFFFFB800),
-            title: 'ແນະນຳ',
+            title: 'ແນະນຳສຳລັບທ່ານ',
             onViewAll: () => Navigator.push(
               context,
               MaterialPageRoute(builder: (_) => const ViewAllCompanionsPage()),
@@ -400,8 +406,10 @@ class _ExplorePageState extends State<ExplorePage> {
       final pos = Get.find<LocationManager>().position.value;
       if (pos != null && m.latitude != null && m.longitude != null) {
         dist = distanceKmBetween(
-          pos.latitude, pos.longitude,
-          m.latitude!, m.longitude!,
+          pos.latitude,
+          pos.longitude,
+          m.latitude!,
+          m.longitude!,
         );
       } else {
         dist = m.distanceKm;
@@ -454,13 +462,22 @@ class _ExplorePageState extends State<ExplorePage> {
           if (onViewAll != null)
             GestureDetector(
               onTap: onViewAll,
-              child: Text(
-                'ເບິ່ງທັງໝົດ ›',
-                style: TextStyle(
-                  fontSize: 12.sp,
-                  fontWeight: FontWeight.w600,
-                  color: const Color(0xFFF06292),
-                ),
+              child: Row(
+                children: [
+                  Text(
+                    'ເບິ່ງທັງໝົດ',
+                    style: TextStyle(
+                      fontSize: 12.sp,
+                      fontWeight: FontWeight.w600,
+                      color: AppColors.primary,
+                    ),
+                  ),
+                  Icon(
+                    Icons.arrow_forward_ios,
+                    size: 12.sp,
+                    color: AppColors.primary,
+                  ),
+                ],
               ),
             ),
         ],
@@ -506,7 +523,9 @@ class _ExplorePageState extends State<ExplorePage> {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(28.r)),
       ),
-      builder: (_) => Padding(
+      builder: (_) => SafeArea(
+        top: false,
+        child: Padding(
         padding: EdgeInsets.all(24.r),
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -567,6 +586,7 @@ class _ExplorePageState extends State<ExplorePage> {
             ),
             SizedBox(height: 10.h),
           ],
+        ),
         ),
       ),
     );

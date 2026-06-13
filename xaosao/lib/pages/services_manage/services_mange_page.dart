@@ -112,7 +112,7 @@ class ServiceManagementPage extends StatelessWidget {
       await logic.addService(
         serviceId: svc.id ?? '',
         customHourlyRate: result.rate,
-        serviceLocation: result.location,
+        serviceLocation: null,
       );
     }
   }
@@ -145,14 +145,13 @@ class ServiceManagementPage extends StatelessWidget {
         serviceName: ServiceHelper.serviceOriginalName(svc.name),
         billingLabel: _billingLabel(svc.billingType),
         initialRate: profileSvc.customHourlyRate,
-        initialLocation: profileSvc.serviceLocation,
         baseRate: svc.baseRate,
       );
       if (result == null) return;
       await logic.updateService(
         modelServiceId: profileSvc.modelServiceId!,
         customHourlyRate: result.rate,
-        serviceLocation: result.location,
+        serviceLocation: null,
       );
     }
   }
@@ -1271,14 +1270,13 @@ class _EmptyView extends StatelessWidget {
 // ═══════════════════════════════════════════════════════════════
 //  _RateInputSheet — bottom sheet to enter / update custom rate
 // ═══════════════════════════════════════════════════════════════
-typedef _RateResult = ({double rate, String location});
+typedef _RateResult = ({double rate});
 
 Future<_RateResult?> _showRateSheet(
   BuildContext context, {
   required String serviceName,
   required String billingLabel,
   double? initialRate,
-  String? initialLocation,
   double? baseRate,
 }) {
   return showModalBottomSheet<_RateResult>(
@@ -1290,7 +1288,6 @@ Future<_RateResult?> _showRateSheet(
       serviceName: serviceName,
       billingLabel: billingLabel,
       initialRate: initialRate,
-      initialLocation: initialLocation,
       baseRate: baseRate,
     ),
   );
@@ -1300,14 +1297,12 @@ class _RateInputSheet extends StatefulWidget {
   final String serviceName;
   final String billingLabel;
   final double? initialRate;
-  final String? initialLocation;
   final double? baseRate;
 
   const _RateInputSheet({
     required this.serviceName,
     required this.billingLabel,
     this.initialRate,
-    this.initialLocation,
     this.baseRate,
   });
 
@@ -1317,9 +1312,7 @@ class _RateInputSheet extends StatefulWidget {
 
 class _RateInputSheetState extends State<_RateInputSheet> {
   late final TextEditingController _ctrl;
-  late final TextEditingController _locationCtrl;
   String? _errorMsg;
-  String? _locationError;
 
   static String _fmt(String digits) {
     if (digits.isEmpty) return '';
@@ -1336,13 +1329,11 @@ class _RateInputSheetState extends State<_RateInputSheet> {
           ? _fmt(widget.initialRate!.toStringAsFixed(0))
           : '',
     );
-    _locationCtrl = TextEditingController(text: widget.initialLocation ?? '');
   }
 
   @override
   void dispose() {
     _ctrl.dispose();
-    _locationCtrl.dispose();
     super.dispose();
   }
 
@@ -1360,14 +1351,7 @@ class _RateInputSheetState extends State<_RateInputSheet> {
       });
       return;
     }
-    if (_locationCtrl.text.trim().isEmpty) {
-      setState(() => _locationError = 'ກະລຸນາໃສ່ທີ່ຢູ່/ສະຖານທີ່');
-      return;
-    }
-    Navigator.pop<_RateResult>(
-      context,
-      (rate: val, location: _locationCtrl.text.trim()),
-    );
+    Navigator.pop<_RateResult>(context, (rate: val));
   }
 
   @override
@@ -1526,55 +1510,6 @@ class _RateInputSheetState extends State<_RateInputSheet> {
                   fontWeight: FontWeight.w700,
                   color: AppColors.textPrimary,
                 ),
-              ),
-              SizedBox(height: 16.h),
-
-              // Location
-              Text(
-                'ທີ່ຢູ່/ສະຖານທີ່',
-                style: TextStyle(
-                  fontSize: 13.sp,
-                  fontWeight: FontWeight.w700,
-                  color: AppColors.textSecondary,
-                ),
-              ),
-              SizedBox(height: 8.h),
-              TextField(
-                controller: _locationCtrl,
-                keyboardType: TextInputType.streetAddress,
-                onChanged: (_) {
-                  if (_locationError != null) setState(() => _locationError = null);
-                },
-                decoration: InputDecoration(
-                  hintText: 'ເຊັ່ນ: ນະຄອນຫຼວງວຽງຈັນ, ສີສັດຕະນາກ',
-                  hintStyle: TextStyle(color: AppColors.textDisabled, fontSize: 13.sp),
-                  prefixIcon: Icon(Icons.location_on_outlined, size: 18.r, color: AppColors.textHint),
-                  errorText: _locationError,
-                  filled: true,
-                  fillColor: AppColors.bg,
-                  contentPadding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 12.h),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(14.r),
-                    borderSide: BorderSide(color: Colors.black.withValues(alpha: 0.08), width: 0.8),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(14.r),
-                    borderSide: BorderSide(color: Colors.black.withValues(alpha: 0.08), width: 0.8),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(14.r),
-                    borderSide: const BorderSide(color: AppColors.primary, width: 1.4),
-                  ),
-                  errorBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(14.r),
-                    borderSide: const BorderSide(color: Color(0xFFEF4444), width: 1.2),
-                  ),
-                  focusedErrorBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(14.r),
-                    borderSide: const BorderSide(color: Color(0xFFEF4444), width: 1.4),
-                  ),
-                ),
-                style: TextStyle(fontSize: 13.sp, color: AppColors.textPrimary),
               ),
               SizedBox(height: 20.h),
 

@@ -26,11 +26,19 @@ class RegisterLogic extends GetxController {
   String _pendingAddress = '';
   String _pendingFilePath = '';
 
+  // Saved service selections so they survive back-navigation within the registration flow
+  List<Map<String, dynamic>> savedServiceSelections = [];
+
   void _updateState(RegisterState newState) => _state.value = newState;
 
   void setRole(RegisterRole role) {
     _updateState(state.copyWith(role: role));
+    savedServiceSelections = []; // fresh registration start — clear any prior selections
     if (role == RegisterRole.companion) _loadAndValidateReferral();
+  }
+
+  void saveServiceSelections(List<Map<String, dynamic>> data) {
+    savedServiceSelections = data;
   }
 
   Future<void> _loadAndValidateReferral() async {
@@ -271,11 +279,13 @@ class RegisterLogic extends GetxController {
 
   void clearState() {
     _updateState(RegisterState());
+    savedServiceSelections = [];
     _pendingFirstName = '';
     _pendingLastName = '';
     _pendingPhone = null;
     _pendingPassword = '';
     _pendingAddress = '';
     _pendingFilePath = '';
+    Get.find<StorageService>().remove('pending_ref_code');
   }
 }

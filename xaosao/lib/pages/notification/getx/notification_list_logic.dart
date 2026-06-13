@@ -114,20 +114,22 @@ class NotifListLogic extends GetxController {
   // ── Tap handler (in-app notification list tap) ──────────────────
   void handleTap(NotificationItemModel item) {
     markRead(item.id ?? '');
-    _navigateFromType(item.type ?? '', item.data);
+    _navigateFromType(item.type ?? '', item.data, item);
   }
 
   // ── Type-specific navigation ────────────────────────────────────
-  void _navigateFromType(String type, Data? data) {
+  void _navigateFromType(String type, Data? data, [NotificationItemModel? item]) {
     final isCustomer =
         Get.find<StorageService>().read<String>('role') == 'customer';
 
     switch (type) {
       // ── Home ──────────────────────────────────────────────────
       case 'welcome':
-      case 'account_deleted':
-        Get.until((r) => r.settings.name == AppRoutes.dashboard);
+        Get.toNamed(AppRoutes.welcomeNotification, arguments: item);
         return;
+      // case 'account_deleted':
+      //   Get.until((r) => r.settings.name == AppRoutes.dashboard);
+      //   return;
 
       // ── Account (profile) ─────────────────────────────────────
       case 'account_approved':

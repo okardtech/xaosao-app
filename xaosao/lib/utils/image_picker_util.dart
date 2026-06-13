@@ -54,6 +54,7 @@ class _SourceSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
+      top: false,
       child: Container(
         padding: EdgeInsets.only(bottom: 20),
         decoration: BoxDecoration(

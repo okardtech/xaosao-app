@@ -11,7 +11,7 @@ import 'package:xaosao/pages/package/getx/package_logic.dart';
 import 'package:xaosao/pages/services_manage/getx/service_logic.dart';
 import 'package:xaosao/pages/profile/components/amberwarning.dart';
 import 'package:xaosao/widgets/confirm_sheet.dart';
-import 'package:xaosao/pages/profile/components/photo_grid.dart';
+import 'package:xaosao/pages/profile/components/gallery_preview.dart';
 import 'package:xaosao/pages/profile/components/qr_row.dart';
 import 'package:xaosao/pages/profile/components/services_section.dart';
 import 'package:xaosao/pages/profile/components/state_cell.dart';
@@ -240,7 +240,10 @@ class _ProfilePageState extends State<ProfilePage> {
     if (confirmed != true || !mounted) return;
     Get.find<LoginLogic>().clearState();
     _deleteUserControllers();
-    await Get.find<StorageService>().clear();
+    final storage = Get.find<StorageService>();
+    final lastRole = storage.read<String>('last_role');
+    await storage.clear();
+    if (lastRole != null) await storage.write('last_role', lastRole);
     if (!mounted) return;
     Navigator.pushNamedAndRemoveUntil(context, AppRoutes.login, (_) => false);
   }
@@ -526,13 +529,12 @@ class _ProfilePageState extends State<ProfilePage> {
                     ],
                   ],
                 ),
-                PhotoGrid(
+                SizedBox(height: 8.h),
+                GalleryPreview(
                   photos: st.photos,
+                  isOwner: true,
                   maxPhotos: _maxPhotos,
-                  onAdd: _profileLogic.pickAndUpload,
-                  onRemove: _profileLogic.removePhoto,
                   uploadingIndex: st.uploadingIndex,
-                  deletingIndex: st.deletingIndex,
                 ),
               ],
             );

@@ -29,7 +29,7 @@ class _Tab {
 const _tabs = [
   _Tab(label: 'ທັງໝົດ', icon: Icons.grid_view_rounded, filter: null),
   _Tab(label: 'ສຳລັບທ່ານ', icon: Icons.auto_awesome_rounded, filter: 'for-you'),
-  _Tab(label: 'ຖືກໃຈຂ້ອຍ', icon: Icons.favorite_rounded, filter: 'who-like-me'),
+  _Tab(label: 'ຖືກໃຈຂ້ອຍ', icon: Icons.favorite_rounded, filter: 'who-liked-me'),
   _Tab(label: 'ຂ້ອຍຖືກໃຈ', icon: Icons.star_rounded, filter: 'i-liked'),
 ];
 

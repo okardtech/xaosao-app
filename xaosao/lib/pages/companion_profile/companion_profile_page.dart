@@ -679,6 +679,21 @@ class _CompanionProfilePageState extends State<CompanionProfilePage> {
     if (_logic.chatLoading.value) return;
     _logic.chatLoading.value = true;
     try {
+      final activeRes = await PackageRepo().packageActive();
+      if (!mounted) return;
+
+      final active = activeRes.data;
+
+      if (active?.hasPendingSubscription == true) {
+        showPendingSubscriptionBanner(context);
+        return;
+      }
+
+      if (active?.hasActiveSubscription != true) {
+        showNoSubscriptionBanner(context);
+        return;
+      }
+
       final profile = _logic.state.profile;
       final hint = profile == null
           ? null
@@ -1525,7 +1540,7 @@ class _BookingBar extends StatelessWidget {
     final billing = svc?.billingType ?? '';
 
     return Container(
-      padding: EdgeInsets.fromLTRB(16.w, 10.h, 16.w, 16.h),
+      padding: EdgeInsets.fromLTRB(16.w, 10.h, 16.w, 16.h + MediaQuery.of(context).padding.bottom),
       decoration: BoxDecoration(
         color: Colors.white,
         border: Border(

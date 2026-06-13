@@ -104,6 +104,7 @@ class _ChatAppBarTitle extends StatelessWidget {
                 )
               : ChatInitials(name: ctrl.partnerName, size: 13.sp),
         ),
+        if(ctrl.isOnline)
         Positioned(
           bottom: 1,
           right: 1,

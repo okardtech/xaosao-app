@@ -2,6 +2,7 @@
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:xaosao/constants/app_color.dart';
+import 'package:xaosao/constants/app_routes.dart';
 import 'package:xaosao/pages/topup/components/topup_constant.dart';
 import 'package:xaosao/pages/topup/getx/topup_logic.dart';
 import 'package:xaosao/widgets/app_button.dart';
@@ -88,10 +89,13 @@ class _TopUpSuccessPageState extends State<TopUpSuccessPage>
                 label: 'ກັບໜ້າກະເປົ໋າ',
                 leadingIcon: Icons.account_balance_wallet_outlined,
                 onTap: () {
-                  Navigator.pop(context);
-                  Navigator.pop(context);
-                  Navigator.pop(context);
-                  Navigator.pop(context);
+                  Get.until((route) =>
+                    route.settings.name == AppRoutes.wallet ||
+                    route.isFirst,
+                  );
+                  if (Get.currentRoute != AppRoutes.wallet) {
+                    Get.toNamed(AppRoutes.wallet);
+                  }
                 },
               ),
             ),

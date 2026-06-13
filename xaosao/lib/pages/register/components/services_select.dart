@@ -210,6 +210,55 @@ class _ServicesSelectState extends State<ServicesSelect> {
     _entries.assignAll(
       logic.state.services.map((s) => _ServiceEntry(service: s)).toList(),
     );
+    _restoreSelections(logic);
+  }
+
+  void _restoreSelections(RegisterLogic logic) {
+    final saved = logic.savedServiceSelections;
+    if (saved.isEmpty) return;
+    for (final entry in _entries) {
+      final match = saved
+          .where((m) => m['serviceId'] == entry.service.id)
+          .firstOrNull;
+      if (match == null) continue;
+      entry.selected = match['selected'] as bool? ?? false;
+      if (entry.isMassage) {
+        entry.serviceLocationCtrl.text =
+            match['serviceLocation'] as String? ?? '';
+        final vList = match['variants'] as List<dynamic>? ?? [];
+        if (vList.isNotEmpty) {
+          for (final v in entry.variants) v.dispose();
+          entry.variants
+            ..clear()
+            ..addAll(
+              vList.map(
+                (v) => _VariantRow(
+                  name: v['name'] as String? ?? '',
+                  price: v['price'] as String? ?? '',
+                ),
+              ),
+            );
+        }
+      } else {
+        entry.priceCtrl.text = match['price'] as String? ?? '';
+      }
+    }
+  }
+
+  void _saveSelections() {
+    if (_entries.isEmpty) return;
+    final logic = Get.find<RegisterLogic>();
+    logic.saveServiceSelections(
+      _entries.map((e) => {
+        'serviceId': e.service.id,
+        'selected': e.selected,
+        'price': e.priceCtrl.text,
+        'serviceLocation': e.serviceLocationCtrl.text,
+        'variants': e.variants
+            .map((v) => {'name': v.nameCtrl.text, 'price': v.priceCtrl.text})
+            .toList(),
+      }).toList(),
+    );
   }
 
   Future<void> _continue() async {
@@ -226,6 +275,7 @@ class _ServicesSelectState extends State<ServicesSelect> {
 
   @override
   void dispose() {
+    _saveSelections();
     for (final e in _entries) e.dispose();
     super.dispose();
   }

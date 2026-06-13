@@ -20,10 +20,13 @@ class LoginLogic extends GetxController {
 
   void setRole(RegisterRole role) => _updateState(state.copyWith(role: role));
 
-  void onRoleChange(RegisterRole role) => _updateState(state.copyWith(
-        role: role,
-        isCustomer: role == RegisterRole.customer,
-      ));
+  void onRoleChange(RegisterRole role) {
+    _updateState(state.copyWith(
+      role: role,
+      isCustomer: role == RegisterRole.customer,
+    ));
+    Get.find<StorageService>().write('last_role', role == RegisterRole.customer ? 'customer' : 'model');
+  }
 
   void toggleObscure() => _updateState(state.copyWith(obscure: !state.obscure));
 
@@ -149,10 +152,19 @@ class LoginLogic extends GetxController {
     }
   }
 
-  void clearState() => _updateState(LoginState());
+  void clearState() {
+    final saved = Get.find<StorageService>().read<String>('last_role');
+    final role = saved == 'model' ? RegisterRole.companion : RegisterRole.customer;
+    _updateState(LoginState(role: role, isCustomer: role == RegisterRole.customer));
+  }
 
   @override
   void onInit() {
     super.onInit();
+    final saved = Get.find<StorageService>().read<String>('last_role');
+    if (saved != null) {
+      final role = saved == 'model' ? RegisterRole.companion : RegisterRole.customer;
+      _updateState(state.copyWith(role: role, isCustomer: role == RegisterRole.customer));
+    }
   }
 }

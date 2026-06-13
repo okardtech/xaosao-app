@@ -5,6 +5,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
 import 'package:xaosao/constants/app_routes.dart';
+import 'package:xaosao/models/notification_item_model.dart';
 import 'package:xaosao/services/storage_service.dart';
 
 /// Handles all push notification concerns for the app.
@@ -187,6 +188,17 @@ class NotificationService {
     switch (type) {
       // ── Home ────────────────────────────────────────────────────
       case 'welcome':
+        Get.toNamed(
+          AppRoutes.welcomeNotification,
+          arguments: NotificationItemModel(
+            type: 'welcome',
+            title: data['title'] as String?,
+            laTitle: data['la_title'] as String?,
+            message: data['body'] as String?,
+            laMessage: data['la_body'] as String?,
+          ),
+        );
+        return;
       case 'account_deleted':
         Get.until((r) => r.settings.name == AppRoutes.dashboard);
         return;

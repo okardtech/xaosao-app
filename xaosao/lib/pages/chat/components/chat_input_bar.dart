@@ -3,6 +3,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:xaosao/constants/app_color.dart';
 import 'package:xaosao/pages/chat/getx/chat_detail_controller.dart';
+import 'package:xaosao/pages/package/components/subscription_banner.dart';
+import 'package:xaosao/repository/package_repo.dart';
+import 'package:xaosao/services/storage_service.dart';
 
 class ChatInputBar extends StatelessWidget {
   final ChatDetailController ctrl;
@@ -181,7 +184,21 @@ class _SendButton extends StatelessWidget {
   final bool canAct;
   const _SendButton({required this.ctrl, required this.canAct});
 
-  Future<void> _onTap() async {
+  Future<void> _onTap(BuildContext context) async {
+    final role = Get.find<StorageService>().read<String>('role');
+    if (role == 'customer') {
+      final activeRes = await PackageRepo().packageActive();
+      final active = activeRes.data;
+      if (active?.hasPendingSubscription == true) {
+        showPendingSubscriptionBanner(context);
+        return;
+      }
+      if (active?.hasActiveSubscription != true) {
+        showNoSubscriptionBanner(context);
+        return;
+      }
+    }
+
     final ok = await ctrl.sendMessage();
     if (ok) {
       WidgetsBinding.instance.addPostFrameCallback(
@@ -204,7 +221,7 @@ class _SendButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: canAct ? _onTap : null,
+      onTap: canAct ? () => _onTap(context) : null,
       child: Obx(() {
         final sending = ctrl.isSending.value;
         return AnimatedContainer(

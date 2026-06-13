@@ -5,7 +5,7 @@ import 'package:xaosao/constants/app_routes.dart';
 import 'package:xaosao/pages/login/getx/login_logic.dart';
 import 'package:xaosao/pages/profile/components/amberwarning.dart';
 import 'package:xaosao/widgets/confirm_sheet.dart';
-import 'package:xaosao/pages/profile/components/photo_grid.dart';
+import 'package:xaosao/pages/profile/components/gallery_preview.dart';
 import 'package:xaosao/pages/profile/components/profile_constant.dart';
 import 'package:xaosao/pages/feedback/getx/feedback_logic.dart';
 import 'package:xaosao/pages/home/getx/home_logic.dart';
@@ -85,13 +85,11 @@ class _CustomerProfilePageState extends State<CustomerProfilePage> {
                           ],
                         ),
                         SizedBox(height: 8.h),
-                        PhotoGrid(
+                        GalleryPreview(
                           photos: st.photos,
+                          isOwner: true,
                           maxPhotos: _maxPhotos,
-                          onAdd: _profileLogic.pickAndUpload,
-                          onRemove: _profileLogic.removePhoto,
                           uploadingIndex: st.uploadingIndex,
-                          deletingIndex: st.deletingIndex,
                         ),
                         SizedBox(height: 14.h),
                       ],
@@ -425,7 +423,8 @@ class _CustomerProfilePageState extends State<CustomerProfilePage> {
               _WalletCard(
                 showAmounts: _showAmt,
                 onToggle: () => setState(() => _showAmt = !_showAmt),
-                onTopUp: () => Get.toNamed(AppRoutes.wallet),
+                onTopUp: () => Get.toNamed(AppRoutes.topupAmount),
+                onHistory: () => Get.toNamed(AppRoutes.wallet),
               ),
             ],
           ),
@@ -462,7 +461,10 @@ class _CustomerProfilePageState extends State<CustomerProfilePage> {
     if (confirmed != true || !mounted) return;
     Get.find<LoginLogic>().clearState();
     _deleteUserControllers();
-    await Get.find<StorageService>().clear();
+    final storage = Get.find<StorageService>();
+    final lastRole = storage.read<String>('last_role');
+    await storage.clear();
+    if (lastRole != null) await storage.write('last_role', lastRole);
     if (!mounted) return;
     Navigator.pushNamedAndRemoveUntil(context, AppRoutes.login, (_) => false);
   }
@@ -486,11 +488,13 @@ class _WalletCard extends StatelessWidget {
   final bool showAmounts;
   final VoidCallback onToggle;
   final VoidCallback onTopUp;
+  final VoidCallback onHistory;
 
   const _WalletCard({
     required this.showAmounts,
     required this.onToggle,
     required this.onTopUp,
+    required this.onHistory,
   });
 
   String _mask(String v) => '••••••';
@@ -593,7 +597,7 @@ class _WalletCard extends StatelessWidget {
                     children: List.generate(2, (index) {
                       return Expanded(
                         child: GestureDetector(
-                          onTap: onTopUp,
+                          onTap: index == 0 ? onTopUp : onHistory,
                           child: Container(
                             padding: EdgeInsets.symmetric(vertical: 12.h),
                             decoration: BoxDecoration(

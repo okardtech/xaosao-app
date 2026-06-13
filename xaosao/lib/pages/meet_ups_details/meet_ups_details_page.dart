@@ -752,7 +752,7 @@ class _MeetUpsDetailsPageState extends State<MeetUpsDetailsPage> {
     final actions = _buildActions(m, context);
     if (actions.isEmpty) return const SizedBox.shrink();
     return Container(
-      padding: EdgeInsets.fromLTRB(16.w, 10.h, 16.w, 14.h),
+      padding: EdgeInsets.fromLTRB(16.w, 10.h, 16.w, 14.h + MediaQuery.of(context).padding.bottom),
       decoration: BoxDecoration(
         color: Colors.white,
         border: Border(

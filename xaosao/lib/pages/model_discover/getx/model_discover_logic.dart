@@ -89,10 +89,19 @@ class ModelDiscoverLogic extends GetxController {
 
   void _applyFilter(String? filter) {
     if (state.filter == filter) return;
+    _loading = false;
     if (filter == null) {
-      _update(state.copyWith(clearFilter: true));
+      _update(state.copyWith(
+        clearFilter: true,
+        models: [],
+        status: DiscoverStatus.loading,
+      ));
     } else {
-      _update(state.copyWith(filter: filter));
+      _update(state.copyWith(
+        filter: filter,
+        models: [],
+        status: DiscoverStatus.loading,
+      ));
     }
     loadModels(refresh: true);
   }

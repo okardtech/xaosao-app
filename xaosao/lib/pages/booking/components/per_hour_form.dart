@@ -255,7 +255,9 @@ class _PerHourFormState extends State<PerHourForm> {
       ),
       builder: (_) => Obx(() {
         final selected = _logic.state.hours;
-        return Column(
+        return SafeArea(
+          top: false,
+          child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             SizedBox(height: 12.h),
@@ -345,6 +347,7 @@ class _PerHourFormState extends State<PerHourForm> {
               ),
             ),
           ],
+        ),
         );
       }),
     );

@@ -14,6 +14,7 @@ class FeedbackRepo extends BaseRepository {
   }
 
   Future<ApiResponse<bool>> addFeedback({
+    required String type,
     required String subject,
     required String desc,
   }) {
@@ -21,7 +22,7 @@ class FeedbackRepo extends BaseRepository {
       () => api.post(
         ApiConstants.feedback,
         data: {
-          "type": "bug",
+          "type": type,
           "subject": subject,
           "description": desc,
           "deviceInfo": "iPhone 15, iOS 18.1",

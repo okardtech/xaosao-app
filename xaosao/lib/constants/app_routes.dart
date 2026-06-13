@@ -8,6 +8,8 @@ import 'package:xaosao/pages/dashboard/dasboard_page.dart';
 import 'package:xaosao/pages/feedback/feedback_page.dart';
 import 'package:xaosao/pages/notification/components/notification_setting.dart';
 import 'package:xaosao/pages/notification/notification_page.dart';
+import 'package:xaosao/models/notification_item_model.dart';
+import 'package:xaosao/pages/notification/welcome_page.dart';
 import 'package:xaosao/pages/forgot_password/forgot_new_password_page.dart';
 import 'package:xaosao/pages/forgot_password/forgot_otp_page.dart';
 import 'package:xaosao/pages/forgot_password/forgot_phone_page.dart';
@@ -82,6 +84,7 @@ class AppRoutes {
   static const String helperCenter = '/helper-center';
   static const String myGifts = '/my-gifts';
   static const String postDetail = '/post-detail';
+  static const String welcomeNotification = '/welcome-notification';
 
   static Route<dynamic> onGenerateRoute(RouteSettings settings) {
     switch (settings.name) {
@@ -197,6 +200,11 @@ class AppRoutes {
       case postDetail:
         final detailPostId = settings.arguments as String;
         return _slideRight(PostDetailPage(postId: detailPostId));
+      case welcomeNotification:
+        final notif = settings.arguments is NotificationItemModel
+            ? settings.arguments as NotificationItemModel
+            : null;
+        return _fadeScale(WelcomeNotificationPage(notification: notif));
       default:
         return _fade(const SplashPage());
     }

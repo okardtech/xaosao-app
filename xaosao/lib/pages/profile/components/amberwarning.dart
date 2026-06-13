@@ -13,7 +13,7 @@ class AmberWarning extends StatelessWidget {
         text,
         style: TextStyle(
           fontSize: 12.sp,
-          color: AppColors.commissionFg,
+          color: AppColors.star,
           height: 1.5,
           fontStyle: FontStyle.italic,
         ),

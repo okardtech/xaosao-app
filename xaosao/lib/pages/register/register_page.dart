@@ -103,7 +103,7 @@ class _RegisterPageState extends State<RegisterPage> {
       child: Scaffold(
         backgroundColor: AppColors.bg,
         appBar: GradientAppBar(
-          title: "ສ້າງບັນຊີ ສຳລັບລູກຄ້າ",
+          title: _isCompanion ? 'ສ້າງບັນຊີ ສຳລັບຜູ້ໃຫ້ບໍລິການ' : 'ສ້າງບັນຊີ ສຳລັບລູກຄ້າ',
           subtitle: 'ກະລຸນາຕື່ມຂໍ້ມູນໃຫ້ຄົບ',
         ),
         body: SafeArea(

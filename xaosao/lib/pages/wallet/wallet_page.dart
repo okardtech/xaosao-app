@@ -24,7 +24,7 @@ class _WalletPageState extends State<WalletPage> {
 
   static const _chips = <(String, String?)>[
     ('ທັງໝົດ', null),
-    ('ສຳເລັດ', 'completed'),
+    ('ສຳເລັດ', 'approved'),
     ('ລໍຖ້າ', 'pending'),
     ('ດຳເນີນການ', 'processing'),
     ('ຍົກເລີກ', 'rejected'),

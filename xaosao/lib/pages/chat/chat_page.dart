@@ -6,6 +6,7 @@ import 'package:xaosao/constants/app_color.dart';
 import 'package:xaosao/constants/app_routes.dart';
 import 'package:xaosao/models/conversation_model.dart';
 import 'package:xaosao/pages/chat/getx/chat_logic.dart';
+import 'package:xaosao/utils/date_time_formatter.dart';
 import 'package:xaosao/widgets/confirm_sheet.dart';
 import 'package:xaosao/widgets/notif_badge.dart';
 
@@ -339,22 +340,6 @@ class _ChatRow extends StatelessWidget {
     return _gradients[idx].cast<Color>();
   }
 
-  String get _timeLabel {
-    final t = conv.lastMessageAt;
-    if (t == null) return '';
-    final now = DateTime.now();
-    final diff = now.difference(t);
-    if (diff.inMinutes < 60) {
-      final h = t.hour.toString().padLeft(2, '0');
-      final m = t.minute.toString().padLeft(2, '0');
-      return '$h:$m';
-    }
-    if (diff.inDays == 0) return 'ມື້ນີ້';
-    if (diff.inDays == 1) return 'ມື້ວານ';
-    if (diff.inDays < 7) return '${diff.inDays} ວັນ';
-    const days = ['ອາ', 'ຈ', 'ອ', 'ພ', 'ພຫ', 'ສຸ', 'ສ'];
-    return '${days[t.weekday % 7]}. ${t.day}';
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -380,7 +365,6 @@ class _ChatRow extends StatelessWidget {
               name: name, imageUrl: imageUrl,
               gradient: _gradient, isOnline: isOnline && !isBlocked),
           SizedBox(width: 12.w),
-
           // Name + message
           Expanded(
             child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -404,8 +388,8 @@ class _ChatRow extends StatelessWidget {
                     ],
                   ]),
                 ),
-                Text(_timeLabel, style: TextStyle(
-                    fontSize: 10.sp, color: AppColors.textSecondary)),
+                Text(DateTimeFormatter.chatTimeLabel(conv.lastMessageAt), style: TextStyle(
+                    fontSize: 12.sp, color: AppColors.textSecondary)),
               ]),
               SizedBox(height: 3.h),
               Row(children: [
@@ -437,7 +421,7 @@ class _ChatRow extends StatelessWidget {
                       borderRadius: BorderRadius.circular(20.r),
                     ),
                     child: Text('${conv.unreadCountFor(myRole)}', style: TextStyle(
-                        fontSize: 9.sp, fontWeight: FontWeight.w800,
+                        fontSize: 12.sp, fontWeight: FontWeight.w800,
                         color: Colors.white)),
                   ),
               ]),
@@ -483,6 +467,7 @@ class _ConvAvatar extends StatelessWidget {
                     errorBuilder: (_, __, ___) => _Initials(name: name)))
             : _Initials(name: name),
       ),
+      if(isOnline)
       Positioned(
         bottom: 1, right: 1,
         child: Container(
