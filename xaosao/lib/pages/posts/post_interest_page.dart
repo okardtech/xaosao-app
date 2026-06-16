@@ -12,6 +12,7 @@ import 'package:xaosao/pages/posts/getx/interest_state.dart';
 import 'package:xaosao/repository/package_repo.dart';
 import 'package:xaosao/services/storage_service.dart';
 import 'package:xaosao/widgets/app_network_image.dart';
+import 'package:xaosao/constants/app_routes.dart';
 import 'package:xaosao/widgets/gradient_app_bar.dart';
 
 import '../../constants/app_icons.dart';
@@ -116,6 +117,16 @@ class _PostInterestPageState extends State<PostInterestPage> {
               (_, i) => _InterestTile(
                 item: state.items[i],
                 onChat: () => _startChat(state.items[i].user),
+                onProfile: () {
+                  final id = state.items[i].user?.id ?? '';
+                  if (id.isEmpty) return;
+                  final isModel = state.items[i].userType == 'model';
+                  if (isModel) {
+                    Get.toNamed(AppRoutes.companionProfile, arguments: id);
+                  } else {
+                    Get.toNamed(AppRoutes.customerProfile, arguments: id);
+                  }
+                },
               ),
               childCount: state.items.length,
             ),
@@ -136,9 +147,7 @@ class _PostInterestPageState extends State<PostInterestPage> {
                     ),
                   ),
                 )
-              : state.hasMore
-              ? const SizedBox.shrink()
-              : _EndMarker(count: state.items.length),
+              : const SizedBox.shrink(),
         ),
       ],
     );
@@ -149,7 +158,8 @@ class _PostInterestPageState extends State<PostInterestPage> {
 class _InterestTile extends StatelessWidget {
   final InterestModel item;
   final VoidCallback? onChat;
-  const _InterestTile({required this.item, this.onChat});
+  final VoidCallback? onProfile;
+  const _InterestTile({required this.item, this.onChat, this.onProfile});
 
   String _ago(DateTime? dt) {
     if (dt == null) return '';
@@ -192,43 +202,54 @@ class _InterestTile extends StatelessWidget {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            // Avatar with heart badge
-            Stack(
-              clipBehavior: Clip.none,
-              children: [
-                ClipOval(
-                  child: AppNetworkImage(
-                    imageUrl: user?.profile ?? '',
-                    width: 46.r,
-                    height: 46.r,
-                    fit: BoxFit.cover,
-                    accentColor: AppColors.primary,
+            // Avatar + name (tappable → profile)
+            GestureDetector(
+              onTap: onProfile,
+              behavior: HitTestBehavior.opaque,
+              child: Row(
+                children: [
+                  Stack(
+                    clipBehavior: Clip.none,
+                    children: [
+                      ClipOval(
+                        child: AppNetworkImage(
+                          imageUrl: user?.profile ?? '',
+                          width: 46.r,
+                          height: 46.r,
+                          fit: BoxFit.cover,
+                          accentColor: AppColors.primary,
+                        ),
+                      ),
+                      Positioned(
+                        right: -4,
+                        bottom: -4,
+                        child: Container(
+                          width: 20.r,
+                          height: 20.r,
+                          decoration: BoxDecoration(
+                            color: AppColors.primary,
+                            shape: BoxShape.circle,
+                            border: Border.all(color: Colors.white, width: 1.5),
+                          ),
+                          child: Icon(
+                            Icons.favorite_rounded,
+                            size: 10.r,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                ),
-                Positioned(
-                  right: -4,
-                  bottom: -4,
-                  child: Container(
-                    width: 20.r,
-                    height: 20.r,
-                    decoration: BoxDecoration(
-                      color: AppColors.primary,
-                      shape: BoxShape.circle,
-                      border: Border.all(color: Colors.white, width: 1.5),
-                    ),
-                    child: Icon(
-                      Icons.favorite_rounded,
-                      size: 10.r,
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
-              ],
+                  SizedBox(width: 12.w),
+                ],
+              ),
             ),
-            SizedBox(width: 12.w),
 
             // Name + time
             Expanded(
+              child: GestureDetector(
+              onTap: onProfile,
+              behavior: HitTestBehavior.opaque,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -262,7 +283,8 @@ class _InterestTile extends StatelessWidget {
                   ),
                 ],
               ),
-            ),
+              ),  // GestureDetector
+            ),    // Expanded
             SizedBox(width: 10.w),
 
             GestureDetector(
@@ -459,41 +481,6 @@ class _EmptySliver extends StatelessWidget {
             ),
           ],
         ),
-      ),
-    );
-  }
-}
-
-// ── End-of-list marker ──────────────────────────────────────────
-class _EndMarker extends StatelessWidget {
-  final int count;
-  const _EndMarker({required this.count});
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.symmetric(vertical: 20.h),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Container(
-            width: 30.w,
-            height: 0.5,
-            color: Colors.black.withValues(alpha: 0.12),
-          ),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 10.w),
-            child: Text(
-              'ທັງໝົດ $count ຄົນ',
-              style: TextStyle(fontSize: 12.sp, color: AppColors.textHint),
-            ),
-          ),
-          Container(
-            width: 30.w,
-            height: 0.5,
-            color: Colors.black.withValues(alpha: 0.12),
-          ),
-        ],
       ),
     );
   }

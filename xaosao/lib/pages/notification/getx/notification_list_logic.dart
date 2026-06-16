@@ -119,6 +119,7 @@ class NotifListLogic extends GetxController {
 
   // ── Type-specific navigation ────────────────────────────────────
   void _navigateFromType(String type, Data? data, [NotificationItemModel? item]) {
+    // print('type ${type}');
     final isCustomer =
         Get.find<StorageService>().read<String>('role') == 'customer';
 
@@ -166,8 +167,15 @@ class NotifListLogic extends GetxController {
         }
         return;
 
-      // ── Post views / new posts ────────────────────────────────
+      // ── Post like → interest page ─────────────────────────────
       case 'post_like':
+        final likePostId = data?.postId ?? '';
+        if (likePostId.isNotEmpty) {
+          Get.toNamed(AppRoutes.postInterests, arguments: likePostId);
+        }
+        return;
+
+      // ── New posts → post detail ───────────────────────────────
       case 'new_model_post':
       case 'new_customer_post':
         final viewPostId = data?.postId ?? '';
@@ -179,17 +187,32 @@ class NotifListLogic extends GetxController {
       // ── Profile interactions ──────────────────────────────────
       case 'profile_viewed':
         final id = data?.viewerId ?? data?.modelId ?? '';
-        if (id.isNotEmpty) Get.toNamed(AppRoutes.companionProfile, arguments: id);
+        if (id.isNotEmpty) {
+          Get.toNamed(
+            isCustomer ? AppRoutes.companionProfile : AppRoutes.customerProfile,
+            arguments: id,
+          );
+        }
         return;
 
       case 'profile_liked':
         final id = data?.likerId ?? data?.modelId ?? '';
-        if (id.isNotEmpty) Get.toNamed(AppRoutes.companionProfile, arguments: id);
+        if (id.isNotEmpty) {
+          Get.toNamed(
+            isCustomer ? AppRoutes.companionProfile : AppRoutes.customerProfile,
+            arguments: id,
+          );
+        }
         return;
 
       case 'friend_added':
         final id = data?.friendId ?? data?.modelId ?? '';
-        if (id.isNotEmpty) Get.toNamed(AppRoutes.companionProfile, arguments: id);
+        if (id.isNotEmpty) {
+          Get.toNamed(
+            isCustomer ? AppRoutes.companionProfile : AppRoutes.customerProfile,
+            arguments: id,
+          );
+        }
         return;
 
       case 'gift_received':

@@ -128,8 +128,8 @@ class NotificationService {
 
   // ── Foreground handler ─────────────────────────────────────────────────────
   static Future<void> _onForegroundMessage(RemoteMessage message) async {
-    print('message received: ${message.messageId}, data: ${message.data}');
-    print('notification: ${message.notification?.title}/${message.notification?.body}');
+    // print('message received: ${message.messageId}, data: ${message.data}');
+    // print('notification: ${message.notification?.title}/${message.notification?.body}');
     unreadCount.value++;
     await _showBanner(
       title: message.notification?.title ?? 'ແຈ້ງເຕືອນໃໝ່',
@@ -230,11 +230,28 @@ class NotificationService {
         }
         return;
 
-      // ── Post interactions (comment/like/new post) ─────────────────
-      // CommentSheet requires BuildContext → navigate to post detail instead
+      // ── Post comments → post detail (no BuildContext for CommentSheet) ──
       case 'post_comment':
       case 'post_comment_reply':
+        final commentPostId = _s('postId');
+        if (commentPostId.isNotEmpty) {
+          Get.toNamed(AppRoutes.postDetail, arguments: commentPostId);
+        } else {
+          Get.toNamed(AppRoutes.notifications);
+        }
+        return;
+
+      // ── Post like → interest page ─────────────────────────────────
       case 'post_like':
+        final likePostId = _s('postId');
+        if (likePostId.isNotEmpty) {
+          Get.toNamed(AppRoutes.postInterests, arguments: likePostId);
+        } else {
+          Get.toNamed(AppRoutes.notifications);
+        }
+        return;
+
+      // ── New posts → post detail ───────────────────────────────────
       case 'new_model_post':
       case 'new_customer_post':
         final postId = _s('postId');
@@ -247,18 +264,33 @@ class NotificationService {
 
       // ── Profile interactions ──────────────────────────────────────
       case 'profile_viewed':
-        final id = _s('viewerId').isNotEmpty ? _s('viewerId') : _s('modelId');
-        if (id.isNotEmpty) Get.toNamed(AppRoutes.companionProfile, arguments: id);
+        final viewId = _s('viewerId').isNotEmpty ? _s('viewerId') : _s('modelId');
+        if (viewId.isNotEmpty) {
+          Get.toNamed(
+            isCustomer ? AppRoutes.companionProfile : AppRoutes.customerProfile,
+            arguments: viewId,
+          );
+        }
         return;
 
       case 'profile_liked':
-        final id = _s('likerId').isNotEmpty ? _s('likerId') : _s('modelId');
-        if (id.isNotEmpty) Get.toNamed(AppRoutes.companionProfile, arguments: id);
+        final likeId = _s('likerId').isNotEmpty ? _s('likerId') : _s('modelId');
+        if (likeId.isNotEmpty) {
+          Get.toNamed(
+            isCustomer ? AppRoutes.companionProfile : AppRoutes.customerProfile,
+            arguments: likeId,
+          );
+        }
         return;
 
       case 'friend_added':
-        final id = _s('friendId').isNotEmpty ? _s('friendId') : _s('modelId');
-        if (id.isNotEmpty) Get.toNamed(AppRoutes.companionProfile, arguments: id);
+        final friendId = _s('friendId').isNotEmpty ? _s('friendId') : _s('modelId');
+        if (friendId.isNotEmpty) {
+          Get.toNamed(
+            isCustomer ? AppRoutes.companionProfile : AppRoutes.customerProfile,
+            arguments: friendId,
+          );
+        }
         return;
 
       // ── Booking ───────────────────────────────────────────────────

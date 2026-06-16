@@ -40,6 +40,8 @@ class _CompanionProfilePageState extends State<CompanionProfilePage> {
   late final CompanionLogic _logic;
   late final ScrollController _scrollCtrl;
   bool _showTitle = false;
+  bool _scrolledToService = false;
+  final GlobalKey _serviceKey = GlobalKey();
 
   static const double _photoHeight = 340;
   static const double _titleThreshold = 200;
@@ -218,6 +220,7 @@ class _CompanionProfilePageState extends State<CompanionProfilePage> {
                     child: _buildInfoGrid(profile),
                   ),
                 _Section(
+                  key: _serviceKey,
                   title: 'ເລືອກບໍລິການ',
                   child: Obx(() => _buildServicesSection()),
                 ),
@@ -334,6 +337,17 @@ class _CompanionProfilePageState extends State<CompanionProfilePage> {
     );
   }
 
+  void _scrollToService() {
+    final ctx = _serviceKey.currentContext;
+    if (ctx == null || !_scrollCtrl.hasClients) return;
+    Scrollable.ensureVisible(
+      ctx,
+      duration: const Duration(milliseconds: 500),
+      curve: Curves.easeOutCubic,
+      alignment: 0.0,
+    );
+  }
+
   // ── Services section ──────────────────────────────────────────
   Widget _buildServicesSection() {
     final st = _logic.state;
@@ -345,6 +359,11 @@ class _CompanionProfilePageState extends State<CompanionProfilePage> {
 
     if (st.servicesStatus == CompanionLoadStatus.failure) {
       return _RetryCard(onRetry: _logic.loadServices);
+    }
+
+    if (!_scrolledToService) {
+      _scrolledToService = true;
+      WidgetsBinding.instance.addPostFrameCallback((_) => _scrollToService());
     }
 
     if (st.services.isEmpty) {
@@ -1192,7 +1211,7 @@ class _Section extends StatelessWidget {
   final String? subtitle;
   final Widget child;
 
-  const _Section({required this.title, required this.child, this.subtitle});
+  const _Section({super.key, required this.title, required this.child, this.subtitle});
 
   @override
   Widget build(BuildContext context) {

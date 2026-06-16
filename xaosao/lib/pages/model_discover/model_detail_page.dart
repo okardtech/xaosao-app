@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -10,6 +10,8 @@ import 'package:xaosao/services/storage_service.dart';
 import 'package:xaosao/widgets/app_image_preview.dart';
 import 'package:xaosao/widgets/app_like_button.dart';
 import 'package:xaosao/widgets/app_network_image.dart';
+import '../../constants/app_icons.dart';
+import '../../widgets/app_svg_icon.dart';
 import 'getx/customer_detail_logic.dart';
 import 'getx/customer_detail_state.dart';
 
@@ -36,10 +38,12 @@ class _ModelDetailPageState extends State<ModelDetailPage> {
       tag: widget.customerId,
     );
     _scrollCtrl = ScrollController()..addListener(_onScroll);
-    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-      statusBarColor: Colors.transparent,
-      statusBarIconBrightness: Brightness.light,
-    ));
+    SystemChrome.setSystemUIOverlayStyle(
+      const SystemUiOverlayStyle(
+        statusBarColor: Colors.transparent,
+        statusBarIconBrightness: Brightness.light,
+      ),
+    );
   }
 
   @override
@@ -119,13 +123,18 @@ class _ModelDetailPageState extends State<ModelDetailPage> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(Icons.error_outline_rounded,
-                      size: 48.r, color: AppColors.textHint),
+                  Icon(
+                    Icons.error_outline_rounded,
+                    size: 48.r,
+                    color: AppColors.textHint,
+                  ),
                   SizedBox(height: 12.h),
                   Text(
                     msg ?? 'ໂຫຼດຂໍ້ມູນບໍ່ສຳເລັດ',
-                    style:
-                        TextStyle(fontSize: 14.sp, color: AppColors.textHint),
+                    style: TextStyle(
+                      fontSize: 14.sp,
+                      color: AppColors.textHint,
+                    ),
                   ),
                   SizedBox(height: 16.h),
                   TextButton(
@@ -193,9 +202,11 @@ class _ModelDetailPageState extends State<ModelDetailPage> {
               onToggle: () async {
                 final isClient =
                     Get.find<StorageService>().read<String>('role') ==
-                        'customer';
-                final res = await ReviewRepo()
-                    .addLike(isClient: isClient, id: profile.id);
+                    'customer';
+                final res = await ReviewRepo().addLike(
+                  isClient: isClient,
+                  id: profile.id,
+                );
                 return res.success;
               },
             ),
@@ -210,10 +221,7 @@ class _ModelDetailPageState extends State<ModelDetailPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               _buildActionRow(profile),
-              _Section(
-                title: 'ຂໍ້ມູນສ່ວນຕົວ',
-                child: _buildInfoGrid(profile),
-              ),
+              _Section(title: 'ຂໍ້ມູນສ່ວນຕົວ', child: _buildInfoGrid(profile)),
               SizedBox(height: 32.h),
             ],
           ),
@@ -270,14 +278,14 @@ class _ModelDetailPageState extends State<ModelDetailPage> {
                       : Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Icon(
-                              Icons.chat_bubble_outline_rounded,
-                              size: 15.r,
-                              color: AppColors.textPrimary,
+                            AppSvgIcon(
+                              assetName: AppIcons.chatFill,
+                              width: 12.w,
+                              height: 12.h,
                             ),
                             SizedBox(width: 6.w),
                             Text(
-                              'ສົ່ງຂໍ້ຄວາມ',
+                              'ເເຊັດ',
                               style: TextStyle(
                                 fontSize: 12.sp,
                                 fontWeight: FontWeight.w700,
@@ -349,8 +357,7 @@ class _ModelDetailPageState extends State<ModelDetailPage> {
         : '—';
     final tier = profile.tier ?? '—';
     final tierColor = profile.isVip ? AppColors.vipGold : AppColors.textPrimary;
-    final location =
-        profile.country != null ? '${profile.country}' : '—';
+    final location = profile.country != null ? '${profile.country}' : '—';
 
     return Container(
       decoration: BoxDecoration(
@@ -375,16 +382,11 @@ class _ModelDetailPageState extends State<ModelDetailPage> {
           IntrinsicHeight(
             child: Row(
               children: [
-                _StatStrip(
-                    label: 'ອາຍຸ', value: age > 0 ? '$age ປີ' : '—'),
+                _StatStrip(label: 'ອາຍຸ', value: age > 0 ? '$age ປີ' : '—'),
                 _StatStripDivider(),
                 _StatStrip(label: 'ສະມາຊິກຕັ້ງແຕ່', value: memberSince),
                 _StatStripDivider(),
-                _StatStrip(
-                  label: 'ລະດັບ',
-                  value: tier,
-                  valueColor: tierColor,
-                ),
+                _StatStrip(label: 'ລະດັບ', value: tier, valueColor: tierColor),
               ],
             ),
           ),
@@ -586,14 +588,14 @@ class _PhotoSliderState extends State<_PhotoSlider> {
   }
 
   Widget _gradientFallback() => Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: AppColors.pinkGradient,
-          ),
-        ),
-      );
+    decoration: const BoxDecoration(
+      gradient: LinearGradient(
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
+        colors: AppColors.pinkGradient,
+      ),
+    ),
+  );
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -719,8 +721,7 @@ class _StatsStrip extends StatelessWidget {
   final CustomerPublicProfile profile;
   const _StatsStrip({required this.profile});
 
-  String _fmt(int n) =>
-      n >= 1000 ? '${(n / 1000).toStringAsFixed(1)}k' : '$n';
+  String _fmt(int n) => n >= 1000 ? '${(n / 1000).toStringAsFixed(1)}k' : '$n';
 
   @override
   Widget build(BuildContext context) {
@@ -748,7 +749,7 @@ class _StatsStrip extends StatelessWidget {
             icon: Icons.calendar_today_rounded,
             iconColor: AppColors.vipGold,
             value: _fmt(profile.bookingCount),
-            label: 'ຈອງ',
+            label: 'ຄະເເນນ',
           ),
           _vDivider(),
           _StatCell(
@@ -777,10 +778,10 @@ class _StatsStrip extends StatelessWidget {
   }
 
   Widget _vDivider() => Container(
-        width: 0.5,
-        height: 44.h,
-        color: Colors.white.withValues(alpha: 0.08),
-      );
+    width: 0.5,
+    height: 44.h,
+    color: Colors.white.withValues(alpha: 0.08),
+  );
 }
 
 // ═══════════════════════════════════════════════════════════════

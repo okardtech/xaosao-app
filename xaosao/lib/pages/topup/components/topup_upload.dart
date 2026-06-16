@@ -7,6 +7,7 @@ import 'package:xaosao/constants/app_color.dart';
 import 'package:xaosao/constants/app_routes.dart';
 import 'package:xaosao/pages/topup/components/topup_constant.dart';
 import 'package:xaosao/pages/topup/getx/topup_logic.dart';
+import 'package:xaosao/constants/app_image.dart';
 import 'package:xaosao/widgets/app_button.dart';
 import 'package:xaosao/widgets/gradient_app_bar.dart';
 
@@ -102,8 +103,8 @@ class _UploadState extends State<TopUpUploadSlipPage> {
                   ],
                 ),
                 SizedBox(height: 12.h),
-                // _GuideCard(),
-                // SizedBox(height: 12.h),
+                _SlipExample(),
+                SizedBox(height: 12.h),
                 _AmberNote(),
                 SizedBox(height: 20.h),
 
@@ -269,6 +270,64 @@ class _Thumbnail extends StatelessWidget {
   }
 }
 
+// ── Slip example ───────────────────────────────────────────────
+class _SlipExample extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(13.r),
+        border: Border.all(
+          color: AppColors.primary.withValues(alpha: 0.25),
+          width: 1,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.04),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: EdgeInsets.fromLTRB(13.w, 10.h, 13.w, 8.h),
+            child: Row(
+              children: [
+                Icon(Icons.image_outlined, size: 14.r, color: AppColors.primary),
+                SizedBox(width: 6.w),
+                Text(
+                  'ຕົວຢ່າງໃບຍືນຢັນທາງດ່ວນ',
+                  style: TextStyle(
+                    fontSize: 12.sp,
+                    fontWeight: FontWeight.w700,
+                    color: AppColors.primary,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.fromLTRB(10.w, 0, 10.w, 10.h),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(9.r),
+              child: Image.asset(
+                AppImage.slip,
+                width: double.infinity,
+                height: 160.h,
+                fit: BoxFit.cover,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 // ── Guide card ─────────────────────────────────────────────────
 class _GuideCard extends StatelessWidget {
   @override
@@ -381,7 +440,7 @@ class _AmberNote extends StatelessWidget {
           SizedBox(width: 10.w),
           Expanded(
             child: Text(
-              'ຂອບໃຈສຳລັບຄວາມໄວ້ວາງໃຈ: ທີມງານຈະກວດສອບ ແລະ ເຕີມເງິນໃຫ້ທ່ານ ພາຍໃນ 1–2 ຊ.ມ. ຫຼັງຈາກໄດ້ຮັບໃບຍືນຢັນແລ້ວ.',
+              'ຂອບໃຈສຳລັບຄວາມໄວ້ວາງໃຈ: ທີມງານຈະກວດສອບ ແລະ ເຕີມເງິນໃຫ້ທ່ານ ພາຍໃນ 1–2 ຊົ່ວໂມງ. ຫຼັງຈາກໄດ້ຮັບໃບຍືນຢັນແລ້ວ.',
               style: TextStyle(
                 fontSize: 12.sp,
                 color: const Color(0xFF78350F),

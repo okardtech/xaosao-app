@@ -46,6 +46,7 @@ import '../pages/posts/gift/gifted_posts_page.dart';
 import '../pages/posts/gift/gift_history_page.dart';
 import '../pages/posts/post_detail/post_detail_page.dart';
 import '../pages/posts/post_interest_page.dart';
+import '../pages/model_discover/model_detail_page.dart';
 
 class AppRoutes {
   static const String splash = '/';
@@ -89,6 +90,7 @@ class AppRoutes {
   static const String postDetail = '/post-detail';
   static const String postInterests = '/post-interests';
   static const String welcomeNotification = '/welcome-notification';
+  static const String customerProfile = '/customer-profile';
 
   static Route<dynamic> onGenerateRoute(RouteSettings settings) {
     switch (settings.name) {
@@ -209,6 +211,9 @@ class AppRoutes {
       case postInterests:
         final interestPostId = settings.arguments as String;
         return _slideRight(PostInterestPage(postId: interestPostId));
+      case customerProfile:
+        final customerId = settings.arguments as String;
+        return _slideRight(ModelDetailPage(customerId: customerId));
       case welcomeNotification:
         final notif = settings.arguments is NotificationItemModel
             ? settings.arguments as NotificationItemModel

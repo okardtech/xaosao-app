@@ -15,6 +15,7 @@ import 'package:xaosao/widgets/app_network_image.dart';
 import 'package:xaosao/widgets/app_text_field.dart';
 import 'package:xaosao/widgets/confirm_sheet.dart';
 
+import '../../constants/app_routes.dart';
 import '../../utils/service_helper.dart';
 import '../../widgets/gradient_app_bar.dart';
 
@@ -99,6 +100,7 @@ class BookingDetailPage extends StatelessWidget {
           padding: EdgeInsets.fromLTRB(16.w, 20.h, 16.w, 32.h),
           child: _DetailCard(
             booking: b,
+            isCustomer: isCustomer,
             badgeBg: _badgeBg(b.status),
             badgeFg: _badgeFg(b.status),
             statusLabel: _statusLabel(b.status),
@@ -121,6 +123,7 @@ class BookingDetailPage extends StatelessWidget {
 // ═══════════════════════════════════════════════════════════════
 class _DetailCard extends StatelessWidget {
   final MyBookingModel booking;
+  final bool isCustomer;
   final Color badgeBg;
   final Color badgeFg;
   final String statusLabel;
@@ -129,6 +132,7 @@ class _DetailCard extends StatelessWidget {
 
   const _DetailCard({
     required this.booking,
+    required this.isCustomer,
     required this.badgeBg,
     required this.badgeFg,
     required this.statusLabel,
@@ -169,6 +173,7 @@ class _DetailCard extends StatelessWidget {
           // ── Profile header ─────────────────────────────────────
           _ProfileHeader(
             booking: b,
+            isCustomer: isCustomer,
             badgeBg: badgeBg,
             badgeFg: badgeFg,
             statusLabel: statusLabel,
@@ -304,23 +309,41 @@ class _DetailCard extends StatelessWidget {
 // ═══════════════════════════════════════════════════════════════
 class _ProfileHeader extends StatelessWidget {
   final MyBookingModel booking;
+  final bool isCustomer;
   final Color badgeBg;
   final Color badgeFg;
   final String statusLabel;
 
   const _ProfileHeader({
     required this.booking,
+    required this.isCustomer,
     required this.badgeBg,
     required this.badgeFg,
     required this.statusLabel,
   });
 
+  void _openProfile() {
+    if (isCustomer) {
+      final id = booking.model?.id ?? '';
+      if (id.isNotEmpty) Get.toNamed(AppRoutes.companionProfile, arguments: id);
+    } else {
+      final id = booking.customer?.id ?? '';
+      if (id.isNotEmpty) Get.toNamed(AppRoutes.customerProfile, arguments: id);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final b = booking;
-    final model = b.model;
-    final nameParts = [model?.firstName, model?.lastName]
-        .where((s) => s != null && s.isNotEmpty);
+    // Customer sees the model; model sees the customer
+    final profileImage = isCustomer
+        ? b.model?.profile ?? ''
+        : b.customer?.profile ?? '';
+    final firstName = isCustomer ? b.model?.firstName : b.customer?.firstName;
+    final lastName  = isCustomer ? b.model?.lastName  : b.customer?.lastName;
+    final age       = isCustomer ? b.model?.age       : b.customer?.age;
+
+    final nameParts = [firstName, lastName].where((s) => s != null && s.isNotEmpty);
     final displayName = nameParts.isEmpty ? 'ບໍ່ມີຊື່' : nameParts.join(' ');
 
     return Padding(
@@ -328,81 +351,88 @@ class _ProfileHeader extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          // ── Avatar ──────────────────────────────────────────────
-          Container(
-            width: 62.r,
-            height: 62.r,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              border: Border.all(
-                color: AppColors.primary.withValues(alpha: 0.25),
-                width: 2.5,
-              ),
-              boxShadow: [
-                BoxShadow(
-                  color: AppColors.primary.withValues(alpha: 0.15),
-                  blurRadius: 10,
-                  offset: const Offset(0, 4),
+          // ── Avatar (tappable) ────────────────────────────────────
+          GestureDetector(
+            onTap: _openProfile,
+            child: Container(
+              width: 62.r,
+              height: 62.r,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border: Border.all(
+                  color: AppColors.primary.withValues(alpha: 0.25),
+                  width: 2.5,
                 ),
-              ],
-            ),
-            child: ClipOval(
-              child: AppNetworkImage(
-                imageUrl: model?.profile ?? '',
-                width: 62.r,
-                height: 62.r,
-                fit: BoxFit.cover,
-                accentColor: AppColors.primary,
+                boxShadow: [
+                  BoxShadow(
+                    color: AppColors.primary.withValues(alpha: 0.15),
+                    blurRadius: 10,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
+              ),
+              child: ClipOval(
+                child: AppNetworkImage(
+                  imageUrl: profileImage,
+                  width: 62.r,
+                  height: 62.r,
+                  fit: BoxFit.cover,
+                  accentColor: AppColors.primary,
+                ),
               ),
             ),
           ),
           SizedBox(width: 14.w),
 
-          // ── Name + service type ──────────────────────────────────
+          // ── Name + date (tappable) ───────────────────────────────
           Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.baseline,
-                  textBaseline: TextBaseline.alphabetic,
-                  children: [
-                    Flexible(
-                      child: Text(
-                        displayName,
-                        style: TextStyle(
-                          fontSize: 17.sp,
-                          fontWeight: FontWeight.w900,
-                          color: const Color(0xFF1A1A2E),
-                          letterSpacing: -0.3,
-                        ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                    if (model?.age != null) ...[
-                      SizedBox(width: 6.w),
-                      Text(
-                        '· ${model!.age} ປີ',
-                        style: TextStyle(
-                          fontSize: 13.sp,
-                          color: const Color(0xFF9B9BAD),
+            child: GestureDetector(
+              onTap: _openProfile,
+              behavior: HitTestBehavior.opaque,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.baseline,
+                    textBaseline: TextBaseline.alphabetic,
+                    children: [
+                      Flexible(
+                        child: Text(
+                          displayName,
+                          style: TextStyle(
+                            fontSize: 17.sp,
+                            fontWeight: FontWeight.w900,
+                            color: const Color(0xFF1A1A2E),
+                            letterSpacing: -0.3,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                         ),
                       ),
+                      if (age != null) ...[
+                        SizedBox(width: 6.w),
+                        Text(
+                          '· $age ປີ',
+                          style: TextStyle(
+                            fontSize: 13.sp,
+                            color: const Color(0xFF9B9BAD),
+                          ),
+                        ),
+                      ],
                     ],
-                  ],
-                ),
-                if (b.createdAt != null) ...[
-                  SizedBox(height: 4.h),
-                  Text(
-                    DateTimeFormatter.dateFormatter(b.createdAt) ?? '',
-                    style: TextStyle(
-                      fontSize: 11.sp,
-                      color: const Color(0xFF9B9BAD),
-                    ),
                   ),
+                  if (b.createdAt != null) ...[
+                    SizedBox(height: 4.h),
+                    Text(
+                      DateTimeFormatter.dateFormatter(b.createdAt) ?? '',
+                      style: TextStyle(
+                        fontSize: 11.sp,
+                        color: const Color(0xFF9B9BAD),
+                      ),
+                    ),
+                  ],
                 ],
-              ],
+              ),
             ),
           ),
 
@@ -716,7 +746,7 @@ class _BottomBar extends StatelessWidget {
     }
 
     final msgBtn = _Btn(
-      label: 'ຂໍ້ຄວາມ',
+      label: 'ເເຊັດ',
       icon: Icons.chat_bubble_outline_rounded,
       style: _BtnStyle.outline,
       onTap: _openChat,

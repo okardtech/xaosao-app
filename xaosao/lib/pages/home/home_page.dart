@@ -156,8 +156,8 @@ class _ExplorePageState extends State<ExplorePage> {
               active: _logic.searchOpen.value,
             ),
           ),
-          SizedBox(width: 10.w),
-          _iconBtn(Icons.tune_rounded, _showFilterSheet),
+          // SizedBox(width: 10.w),
+          // _iconBtn(Icons.tune_rounded, _showFilterSheet),
         ],
       ),
     );
