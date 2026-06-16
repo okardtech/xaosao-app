@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:xaosao/models/conversation_model.dart';
+import 'package:xaosao/pages/model_discover/model_detail_page.dart';
 import 'package:xaosao/pages/chat/getx/chat_logic.dart';
 import 'package:xaosao/pages/chat/getx/chat_state.dart';
 
@@ -163,6 +164,13 @@ class ChatDetailController extends GetxController {
     );
     isSending.value = false;
     return ok;
+  }
+
+  // ── Open partner profile ──────────────────────────────────
+  void openPartnerProfile() {
+    final p = partner;
+    if (p == null || p.id.isEmpty) return;
+    Get.to(() => ModelDetailPage(customerId: p.id));
   }
 
   // ── Typing indicator ──────────────────────────────────────

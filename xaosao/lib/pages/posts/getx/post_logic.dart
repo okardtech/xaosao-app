@@ -155,35 +155,47 @@ class PostLogic extends GetxController {
       fetchMyPosts(refresh: true);
   }
 
-  // ── Toggle Interest (optimistic) ─────────────────────────
+  // ── Toggle Interest (optimistic + server sync) ───────────
 
-  void toggleInterest(String postId) {
+  Future<void> toggleInterest(String postId) async {
     final idx = state.feed.indexWhere((p) => p.id == postId);
     if (idx == -1) return;
     final o = state.feed[idx];
     final nowOn = !(o.isInterested ?? false);
+
+    // Optimistic update
+    _patchFeedInterest(idx, o, isInterested: nowOn,
+        interestedCount: ((o.interestedCount ?? 0) + (nowOn ? 1 : -1)).clamp(0, 999999));
+
+    final res = await _repo.toggleInterest(postId: postId);
+
+    // Sync with server values on success; revert on failure
+    final currentIdx = state.feed.indexWhere((p) => p.id == postId);
+    if (currentIdx == -1) return;
+    final current = state.feed[currentIdx];
+    if (res.success && res.data != null) {
+      _patchFeedInterest(currentIdx, current,
+          isInterested: res.data!.isInterested,
+          interestedCount: res.data!.interestedCount);
+    } else {
+      // Revert to original values
+      _patchFeedInterest(currentIdx, current,
+          isInterested: o.isInterested ?? false,
+          interestedCount: o.interestedCount ?? 0);
+    }
+  }
+
+  void _patchFeedInterest(int idx, FeeModel o,
+      {required bool isInterested, required int interestedCount}) {
     final patched = List<FeeModel>.of(state.feed);
     patched[idx] = FeeModel(
-      id: o.id,
-      authorType: o.authorType,
-      content: o.content,
-      images: o.images,
-      hasTip: o.hasTip,
-      status: o.status,
-      expiresAt: o.expiresAt,
-      interestedCount: ((o.interestedCount ?? 0) + (nowOn ? 1 : -1)).clamp(
-        0,
-        999999,
-      ),
-      totalCommentCount: o.totalCommentCount,
-      totalGiftCount: o.totalGiftCount,
-      isInterested: nowOn,
-      createdAt: o.createdAt,
-      updatedAt: o.updatedAt,
-      author: o.author,
-      service: o.service,
-      location: o.location,
-      targetGender: o.targetGender,
+      id: o.id, authorType: o.authorType, content: o.content,
+      images: o.images, hasTip: o.hasTip, status: o.status,
+      expiresAt: o.expiresAt, interestedCount: interestedCount,
+      totalCommentCount: o.totalCommentCount, totalGiftCount: o.totalGiftCount,
+      isInterested: isInterested, createdAt: o.createdAt, updatedAt: o.updatedAt,
+      author: o.author, service: o.service,
+      location: o.location, targetGender: o.targetGender,
     );
     _update(state.copyWith(feed: patched));
   }

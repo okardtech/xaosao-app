@@ -329,6 +329,9 @@ class _PostsPageState extends State<PostsPage> {
         );
       }
 
+      final isCustomer = _logic.isClient;
+      final offset = isCustomer ? 1 : 0;
+
       return RefreshIndicator(
         color: AppColors.primary,
         backgroundColor: Colors.white,
@@ -339,10 +342,12 @@ class _PostsPageState extends State<PostsPage> {
             parent: BouncingScrollPhysics(),
           ),
           padding: EdgeInsets.fromLTRB(16.w, 14.h, 16.w, 90.h),
-          itemCount: posts.length + 1,
+          itemCount: posts.length + 1 + offset,
           itemBuilder: (_, i) {
-            if (i < posts.length) {
-              final post = posts[i];
+            if (isCustomer && i == 0) return _GiftHistoryBanner();
+            final postIndex = i - offset;
+            if (postIndex < posts.length) {
+              final post = posts[postIndex];
               return Padding(
                 padding: EdgeInsets.only(bottom: 14.h),
                 child: MyPostCard(
@@ -350,6 +355,10 @@ class _PostsPageState extends State<PostsPage> {
                   onDelete: () => _confirmDelete(post.id ?? ''),
                   onHide: () => _confirmHide(post.id ?? ''),
                   onTap: () {},
+                  onInterest: () => Get.toNamed(
+                    AppRoutes.postInterests,
+                    arguments: post.id ?? '',
+                  ),
                   onComment: () => CommentSheet.show(
                     context,
                     postId: post.id ?? '',
@@ -1553,6 +1562,98 @@ class _SheetItem extends StatelessWidget {
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  _GiftHistoryBanner  (customer-only entry point)
+// ═══════════════════════════════════════════════════════════════
+class _GiftHistoryBanner extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.only(bottom: 14.h),
+      child: GestureDetector(
+        onTap: () => Get.toNamed(AppRoutes.giftHistory),
+        child: Container(
+          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
+          decoration: BoxDecoration(
+            gradient: const LinearGradient(
+              colors: [AppColors.secondary, AppColors.primary],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+            borderRadius: BorderRadius.circular(20.r),
+            boxShadow: [
+              BoxShadow(
+                color: AppColors.primary.withValues(alpha: 0.35),
+                blurRadius: 18,
+                offset: const Offset(0, 6),
+              ),
+            ],
+          ),
+          child: Row(
+            children: [
+              // Icon bubble
+              Container(
+                width: 46.r,
+                height: 46.r,
+                decoration: BoxDecoration(
+                  color: Colors.white.withValues(alpha: 0.20),
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(
+                  Icons.card_giftcard_rounded,
+                  size: 22.r,
+                  color: Colors.white,
+                ),
+              ),
+              SizedBox(width: 14.w),
+
+              // Text
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'ປະຫວັດຂອງຂວັນ',
+                      style: TextStyle(
+                        fontSize: 14.sp,
+                        fontWeight: FontWeight.w800,
+                        color: Colors.white,
+                      ),
+                    ),
+                    SizedBox(height: 2.h),
+                    Text(
+                      'ດູລາຍການຂອງຂວັນທີ່ທ່ານສົ່ງໃຫ້ໂມເດວ',
+                      style: TextStyle(
+                        fontSize: 11.sp,
+                        color: Colors.white.withValues(alpha: 0.85),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
+              // Arrow
+              Container(
+                width: 30.r,
+                height: 30.r,
+                decoration: BoxDecoration(
+                  color: Colors.white.withValues(alpha: 0.20),
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(
+                  Icons.arrow_forward_ios_rounded,
+                  size: 13.r,
+                  color: Colors.white,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

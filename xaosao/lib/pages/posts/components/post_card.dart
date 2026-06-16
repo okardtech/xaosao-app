@@ -380,6 +380,7 @@ class MyPostCard extends StatelessWidget {
   final VoidCallback? onTap;
   final VoidCallback? onComment;
   final VoidCallback? onGift;
+  final VoidCallback? onInterest;
 
   const MyPostCard({
     super.key,
@@ -389,6 +390,7 @@ class MyPostCard extends StatelessWidget {
     this.onTap,
     this.onComment,
     this.onGift,
+    this.onInterest,
   });
 
   String? get _firstImage {
@@ -533,10 +535,16 @@ class MyPostCard extends StatelessWidget {
                 ),
                 child: Row(
                   children: [
-                    _QuickStat(
-                      icon: Icons.favorite_outline_rounded,
-                      count: interests,
-                      color: AppColors.textHint,
+                    GestureDetector(
+                      onTap: onInterest,
+                      behavior: HitTestBehavior.opaque,
+                      child: _QuickStat(
+                        icon: Icons.favorite_rounded,
+                        count: interests,
+                        color: interests > 0
+                            ? AppColors.primary
+                            : AppColors.textHint,
+                      ),
                     ),
                     SizedBox(width: 16.w),
                     GestureDetector(

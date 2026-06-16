@@ -20,8 +20,10 @@ import 'package:xaosao/pages/chat/getx/chat_logic.dart';
 import 'package:xaosao/widgets/app_image_preview.dart';
 import 'package:xaosao/widgets/app_like_button.dart';
 import 'package:xaosao/widgets/app_network_image.dart';
+import '../../constants/app_icons.dart';
 import '../../models/model_available.dart';
 import '../../utils/service_helper.dart';
+import '../../widgets/app_svg_icon.dart';
 import '../booking/booking_args.dart';
 import 'getx/companion_logic.dart';
 import 'getx/companion_state.dart';
@@ -209,10 +211,7 @@ class _CompanionProfilePageState extends State<CompanionProfilePage> {
                 if (status == CompanionLoadStatus.initial ||
                     status == CompanionLoadStatus.loading ||
                     profile == null)
-                  _Section(
-                    title: 'ຂໍ້ມູນສ່ວນຕົວ',
-                    child: _ProfileInfoShimmer(),
-                  )
+                  _Section(title: 'ຂໍ້ມູນສ່ວນຕົວ', child: _ProfileInfoShimmer())
                 else
                   _Section(
                     title: 'ຂໍ້ມູນສ່ວນຕົວ',
@@ -604,14 +603,14 @@ class _CompanionProfilePageState extends State<CompanionProfilePage> {
                       : Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Icon(
-                              Icons.chat_bubble_outline_rounded,
-                              size: 15.r,
-                              color: AppColors.textPrimary,
+                            AppSvgIcon(
+                              assetName: AppIcons.chatFill,
+                              width: 12.w,
+                              height: 12.h,
                             ),
                             SizedBox(width: 6.w),
                             Text(
-                              'ສົ່ງຂໍ້ຄວາມ',
+                              'ເເຊັດ',
                               style: TextStyle(
                                 fontSize: 12.sp,
                                 fontWeight: FontWeight.w700,
@@ -736,7 +735,8 @@ class _CompanionProfilePageState extends State<CompanionProfilePage> {
     }
 
     // 2. Check wallet balance
-    final wallet = (Get.find<WalletLogic>().state.wallet?.availableBalance ?? 0).toDouble();
+    final wallet = (Get.find<WalletLogic>().state.wallet?.availableBalance ?? 0)
+        .toDouble();
     final serviceRate = _serviceRate(svc);
 
     if (wallet < serviceRate) {
@@ -769,7 +769,10 @@ class _CompanionProfilePageState extends State<CompanionProfilePage> {
     if (isMassage) {
       final vs = svc.variants;
       if (vs != null && vs.isNotEmpty) {
-        final prices = vs.map((v) => v.pricePerHour).whereType<double>().toList();
+        final prices = vs
+            .map((v) => v.pricePerHour)
+            .whereType<double>()
+            .toList();
         if (prices.isNotEmpty) return prices.reduce((a, b) => a < b ? a : b);
       }
     }
@@ -1314,18 +1317,18 @@ class _ServiceCard extends StatelessWidget {
                     offset: const Offset(0, 3),
                   ),
                 ]
-              :  [
-            BoxShadow(
-              color: AppColors.primary.withValues(alpha: 0.10),
-              blurRadius: 20,
-              offset: const Offset(0, 6),
-            ),
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.05),
-              blurRadius: 10,
-              offset: const Offset(0, 2),
-            ),
-          ],
+              : [
+                  BoxShadow(
+                    color: AppColors.primary.withValues(alpha: 0.10),
+                    blurRadius: 20,
+                    offset: const Offset(0, 6),
+                  ),
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.05),
+                    blurRadius: 10,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
         ),
         child: Row(
           children: [
@@ -1374,7 +1377,10 @@ class _ServiceCard extends StatelessWidget {
                 if (billing.isNotEmpty)
                   Text(
                     billing,
-                    style: TextStyle(fontSize: 12.sp, color: AppColors.textHint),
+                    style: TextStyle(
+                      fontSize: 12.sp,
+                      color: AppColors.textHint,
+                    ),
                   ),
               ],
             ),
@@ -1540,7 +1546,12 @@ class _BookingBar extends StatelessWidget {
     final billing = svc?.billingType ?? '';
 
     return Container(
-      padding: EdgeInsets.fromLTRB(16.w, 10.h, 16.w, 16.h + MediaQuery.of(context).padding.bottom),
+      padding: EdgeInsets.fromLTRB(
+        16.w,
+        10.h,
+        16.w,
+        16.h + MediaQuery.of(context).padding.bottom,
+      ),
       decoration: BoxDecoration(
         color: Colors.white,
         border: Border(
@@ -1708,7 +1719,6 @@ class _AppBarIcon extends StatelessWidget {
   }
 }
 
-
 // ═══════════════════════════════════════════════════════════════
 //  _Stars — read-only star row
 // ═══════════════════════════════════════════════════════════════
@@ -1747,10 +1757,7 @@ class _PhotoShimmer extends StatelessWidget {
     return Shimmer.fromColors(
       baseColor: const Color(0xFFD0D0DC),
       highlightColor: const Color(0xFFE8E8F4),
-      child: Container(
-        height: height,
-        color: Colors.white,
-      ),
+      child: Container(height: height, color: Colors.white),
     );
   }
 }

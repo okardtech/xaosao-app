@@ -2,34 +2,33 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:xaosao/constants/app_color.dart';
-import 'package:xaosao/models/gift_post_model.dart';
-import 'package:xaosao/pages/posts/gift/getx/gifted_posts_logic.dart';
-import 'package:xaosao/pages/posts/gift/getx/gifted_posts_state.dart';
+import 'package:xaosao/models/my_gift_history_model.dart';
+import 'package:xaosao/pages/posts/gift/getx/gift_history_logic.dart';
+import 'package:xaosao/pages/posts/gift/getx/gift_history_state.dart';
 import 'package:xaosao/widgets/app_network_image.dart';
-import 'package:xaosao/widgets/empty_state.dart';
 import 'package:xaosao/widgets/gradient_app_bar.dart';
 
-class GiftedPostsPage extends StatefulWidget {
-  final String postId;
-  const GiftedPostsPage({super.key, required this.postId});
+class GiftHistoryPage extends StatefulWidget {
+  const GiftHistoryPage({super.key});
 
   @override
-  State<GiftedPostsPage> createState() => _GiftedPostsPageState();
+  State<GiftHistoryPage> createState() => _GiftHistoryPageState();
 }
 
-class _GiftedPostsPageState extends State<GiftedPostsPage> {
-  late final GiftedPostsLogic _logic;
+class _GiftHistoryPageState extends State<GiftHistoryPage> {
+  late final GiftHistoryLogic _logic;
 
   @override
   void initState() {
     super.initState();
-    _logic = Get.put(GiftedPostsLogic(postId: widget.postId));
+    _logic = Get.put(GiftHistoryLogic());
   }
 
   @override
   void dispose() {
-    Get.delete<GiftedPostsLogic>();
+    Get.delete<GiftHistoryLogic>();
     super.dispose();
   }
 
@@ -38,45 +37,24 @@ class _GiftedPostsPageState extends State<GiftedPostsPage> {
     return Scaffold(
       backgroundColor: AppColors.bg,
       appBar: GradientAppBar(
-        title: 'ຂອງຂວັນ',
-        subtitle: 'ຂອງຂວັນທີ່ທ່ານໄດ້ຮັບ',
+        title: 'ປະຫວັດຂອງຂວັນ',
+        subtitle: 'ລາຍການຂອງຂວັນທີ່ທ່ານໄດ້ສົ່ງ',
       ),
       body: SafeArea(top: false, child: Obx(() => _buildBody(_logic.state))),
     );
   }
 
-  Widget _buildBody(GiftedPostsState state) {
-    switch (state.status) {
-      case GiftedPostsStatus.initial:
-      case GiftedPostsStatus.loading:
-        return _buildLoading();
-
-      case GiftedPostsStatus.failure:
-        return AppEmptyState(
-          icon: Icons.wifi_off_rounded,
-          title: 'ບໍ່ສາມາດໂຫຼດຂໍ້ມູນ',
-          subtitle: state.error ?? 'ກະລຸນາລອງໃໝ່ອີກຄັ້ງ',
-          iconColor: AppColors.primary,
-          actionLabel: 'ລອງໃໝ່',
-          onAction: _logic.fetch,
-        );
-
-      case GiftedPostsStatus.success:
-        final summaries = state.data?.gifts ?? [];
-        if (summaries.isEmpty) {
-          return AppEmptyState(
-            icon: Icons.card_giftcard_rounded,
-            title: 'ຍັງບໍ່ມີຂອງຂວັນ',
-            subtitle: 'ຂອງຂວັນທີ່ຄົນສົ່ງໃຫ້ຈະສະແດງທີ່ນີ້',
-            iconColor: AppColors.primary,
-          );
-        }
-        return _buildContent(state);
-    }
+  Widget _buildBody(GiftHistoryState state) {
+    return switch (state.status) {
+      GiftHistoryStatus.initial || GiftHistoryStatus.loading => _buildShimmer(),
+      GiftHistoryStatus.failure => _buildFailure(state.error),
+      GiftHistoryStatus.success =>
+        state.items.isEmpty ? _buildEmpty() : _buildList(state.items),
+    };
   }
 
-  // ── Loading shimmer ────────────────────────────────────────────
-  Widget _buildLoading() {
+  // ── Shimmer ──────────────────────────────────────────────────
+  Widget _buildShimmer() {
     return Padding(
       padding: EdgeInsets.fromLTRB(16.w, 20.h, 16.w, 0),
       child: Column(
@@ -96,10 +74,92 @@ class _GiftedPostsPageState extends State<GiftedPostsPage> {
     );
   }
 
-  // ── Loaded content ─────────────────────────────────────────────
-  Widget _buildContent(GiftedPostsState state) {
-    final total = state.data?.totalGifts ?? 0;
-    final gifts = state.data?.gifts ?? [];
+  // ── Failure ──────────────────────────────────────────────────
+  Widget _buildFailure(String? error) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(Icons.wifi_off_rounded, size: 40.r, color: AppColors.textHint),
+          SizedBox(height: 14.h),
+          Text(
+            error ?? 'ໂຫຼດຂໍ້ມູນບໍ່ສຳເລັດ',
+            style: TextStyle(
+              fontSize: 15.sp,
+              fontWeight: FontWeight.w700,
+              color: AppColors.textPrimary,
+            ),
+          ),
+          SizedBox(height: 16.h),
+          GestureDetector(
+            onTap: _logic.fetch,
+            child: Container(
+              padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
+              decoration: BoxDecoration(
+                color: AppColors.primary.withValues(alpha: 0.10),
+                borderRadius: BorderRadius.circular(12.r),
+              ),
+              child: Text(
+                'ລອງໃໝ່',
+                style: TextStyle(
+                  fontSize: 13.sp,
+                  fontWeight: FontWeight.w700,
+                  color: AppColors.primary,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // ── Empty ────────────────────────────────────────────────────
+  Widget _buildEmpty() {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
+            width: 80.r,
+            height: 80.r,
+            decoration: BoxDecoration(
+              color: AppColors.primary.withValues(alpha: 0.08),
+              shape: BoxShape.circle,
+            ),
+            child: Icon(
+              Icons.card_giftcard_rounded,
+              size: 36.r,
+              color: AppColors.primary.withValues(alpha: 0.5),
+            ),
+          ),
+          SizedBox(height: 16.h),
+          Text(
+            'ຍັງບໍ່ມີປະຫວັດຂອງຂວັນ',
+            style: TextStyle(
+              fontSize: 16.sp,
+              fontWeight: FontWeight.w700,
+              color: AppColors.textPrimary,
+            ),
+          ),
+          SizedBox(height: 6.h),
+          Text(
+            'ເມື່ອທ່ານສົ່ງຂອງຂວັນໃຫ້ໂມເດວ,\nລາຍການຈະສະແດງຢູ່ນີ້',
+            style: TextStyle(
+              fontSize: 13.sp,
+              color: AppColors.textHint,
+              height: 1.5,
+            ),
+            textAlign: TextAlign.center,
+          ),
+        ],
+      ),
+    );
+  }
+
+  // ── List ─────────────────────────────────────────────────────
+  Widget _buildList(List<MyGiftHistoryModel> items) {
+    final total = items.fold<int>(0, (sum, e) => sum + ((e.amount ?? 0)));
 
     return RefreshIndicator(
       color: AppColors.primary,
@@ -111,10 +171,12 @@ class _GiftedPostsPageState extends State<GiftedPostsPage> {
           parent: BouncingScrollPhysics(),
         ),
         slivers: [
-          // ── Hero banner ──────────────────────────────────────
-          SliverToBoxAdapter(child: _GiftHeroBanner(total: total)),
+          // Hero banner
+          SliverToBoxAdapter(
+            child: _SummaryHero(count: items.length, total: total),
+          ),
 
-          // ── Section label ────────────────────────────────────
+          // Section label
           SliverPadding(
             padding: EdgeInsets.fromLTRB(20.w, 4.h, 20.w, 10.h),
             sliver: SliverToBoxAdapter(
@@ -130,16 +192,16 @@ class _GiftedPostsPageState extends State<GiftedPostsPage> {
             ),
           ),
 
-          // ── Gift list ────────────────────────────────────────
+          // Items
           SliverPadding(
             padding: EdgeInsets.fromLTRB(16.w, 0, 16.w, 32.h),
             sliver: SliverList(
               delegate: SliverChildBuilderDelegate(
                 (_, i) => Padding(
                   padding: EdgeInsets.only(bottom: 10.h),
-                  child: _GiftRow(element: gifts[i]),
+                  child: _GiftHistoryTile(item: items[i]),
                 ),
-                childCount: gifts.length,
+                childCount: items.length,
               ),
             ),
           ),
@@ -149,12 +211,11 @@ class _GiftedPostsPageState extends State<GiftedPostsPage> {
   }
 }
 
-// ═══════════════════════════════════════════════════════════════
-//  Hero banner — total gift count
-// ═══════════════════════════════════════════════════════════════
-class _GiftHeroBanner extends StatelessWidget {
+// ── Summary hero banner ──────────────────────────────────────────
+class _SummaryHero extends StatelessWidget {
+  final int count;
   final int total;
-  const _GiftHeroBanner({required this.total});
+  const _SummaryHero({required this.count, required this.total});
 
   @override
   Widget build(BuildContext context) {
@@ -197,7 +258,7 @@ class _GiftHeroBanner extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
-                    '$total',
+                    '$count',
                     style: TextStyle(
                       fontSize: 42.sp,
                       fontWeight: FontWeight.w900,
@@ -207,11 +268,19 @@ class _GiftHeroBanner extends StatelessWidget {
                   ),
                   SizedBox(height: 5.h),
                   Text(
-                    'ຂອງຂວັນທີ່ໄດ້ຮັບທັງໝົດ',
+                    'ຄັ້ງທີ່ທ່ານສົ່ງຂອງຂວັນ',
                     style: TextStyle(
-                      fontSize: 13.sp,
+                      fontSize: 14.sp,
                       fontWeight: FontWeight.w500,
                       color: Colors.white.withValues(alpha: 0.85),
+                    ),
+                  ),
+                  SizedBox(height: 4.h),
+                  Text(
+                    'ໃຊ້ຈ່າຍ ${NumberFormat('#,###').format(total)} ກີບ',
+                    style: TextStyle(
+                      fontSize: 12.sp,
+                      color: Colors.white.withValues(alpha: 0.70),
                     ),
                   ),
                 ],
@@ -232,12 +301,10 @@ class _GiftHeroBanner extends StatelessWidget {
   }
 }
 
-// ═══════════════════════════════════════════════════════════════
-//  Gift row (list item — one GiftElement per row)
-// ═══════════════════════════════════════════════════════════════
-class _GiftRow extends StatelessWidget {
-  final GiftElement element;
-  const _GiftRow({required this.element});
+// ── Single gift history tile ──────────────────────────────────────
+class _GiftHistoryTile extends StatelessWidget {
+  final MyGiftHistoryModel item;
+  const _GiftHistoryTile({required this.item});
 
   String _fmtLak(int v) => NumberFormat('#,##0', 'en_US').format(v) + ' ກີບ';
 
@@ -253,8 +320,9 @@ class _GiftRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final gift = element.gift;
+    final gift = item.gift;
     final hasImage = (gift?.image ?? '').isNotEmpty;
+    final total = (item.amount ?? 0);
 
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 12.h),
@@ -275,7 +343,7 @@ class _GiftRow extends StatelessWidget {
       ),
       child: Row(
         children: [
-          // ── Gift image ───────────────────────────────────────
+          // Gift image
           Container(
             width: 52.r,
             height: 52.r,
@@ -288,6 +356,8 @@ class _GiftRow extends StatelessWidget {
                     borderRadius: BorderRadius.circular(14.r),
                     child: AppNetworkImage(
                       imageUrl: gift!.image!,
+                      width: 52.r,
+                      height: 52.r,
                       fit: BoxFit.cover,
                       accentColor: AppColors.primary,
                     ),
@@ -300,7 +370,7 @@ class _GiftRow extends StatelessWidget {
           ),
           SizedBox(width: 12.w),
 
-          // ── Name + price ─────────────────────────────────────
+          // Name + amount badge
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -319,7 +389,7 @@ class _GiftRow extends StatelessWidget {
                 Row(
                   children: [
                     Text(
-                      _ago(element.createdAt),
+                      _ago(item.createdAt),
                       style: TextStyle(
                         fontSize: 10.sp,
                         color: AppColors.textHint,
@@ -332,14 +402,14 @@ class _GiftRow extends StatelessWidget {
           ),
           SizedBox(width: 10.w),
 
-          // ── Time ago ─────────────────────────────────────────
+          // Total + time
           Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               Text('🎁', style: TextStyle(fontSize: 16.sp)),
               SizedBox(height: 4.h),
               Text(
-                _fmtLak(element.amount ?? 0),
+                _fmtLak(total),
                 style: TextStyle(
                   fontSize: 14.sp,
                   fontWeight: FontWeight.w700,

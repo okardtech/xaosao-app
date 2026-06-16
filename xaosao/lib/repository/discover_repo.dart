@@ -3,6 +3,7 @@ import 'package:xaosao/models/models_hot.dart';
 import '../constants/api_constants.dart';
 import '../models/Recommended_model.dart';
 import '../models/api_response.dart';
+import '../models/customer_public_profile.dart';
 import '../services/base_repo.dart';
 
 class DiscoverRepo extends BaseRepository {
@@ -106,6 +107,18 @@ class DiscoverRepo extends BaseRepository {
       () => api.get(url),
       authRequired: true,
       fromJson: (json) => RecommendedModel.fromJson(json),
+    );
+  }
+
+  Future<ApiResponse<CustomerPublicProfile>> getCustomerById({
+    required String customerId,
+  }) async {
+    final url = '${ApiConstants.modelDiscoverCustomer}/$customerId';
+    return safeCall(
+      () => api.get(url),
+      authRequired: true,
+      fromJson: (json) =>
+          CustomerPublicProfile.fromJson((json['data'] ?? json) as Map<String, dynamic>),
     );
   }
 }

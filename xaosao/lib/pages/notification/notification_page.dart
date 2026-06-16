@@ -615,5 +615,5 @@ String _relativeTime(DateTime? dt) {
   if (diff.inDays == 1) return 'ມື້ວານ';
   if (diff.inDays < 7) return '${diff.inDays} ມື້ກ່ອນ';
   if (diff.inDays < 30) return '${(diff.inDays / 7).floor()} ອາທິດຜ່ານມາ';
-  return '${(diff.inDays / 30).floor()} ເດືອນ';
+  return '${(diff.inDays / 30).floor()} ເດືອນກ່ອນ';
 }

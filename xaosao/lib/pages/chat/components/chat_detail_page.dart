@@ -57,7 +57,11 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
             backgroundColor: AppColors.bg,
             appBar: GradientAppBar(
               title: _ctrl.partnerName,
-              titleWidget: _ChatAppBarTitle(ctrl: _ctrl),
+              titleWidget: GestureDetector(
+                onTap: _ctrl.openPartnerProfile,
+                behavior: HitTestBehavior.opaque,
+                child: _ChatAppBarTitle(ctrl: _ctrl),
+              ),
               expandedHeight: 62,
             ),
             body: Column(children: [

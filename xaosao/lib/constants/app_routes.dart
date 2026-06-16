@@ -43,7 +43,9 @@ import '../pages/setting/companion_policy_privacy.dart';
 import '../pages/setting/customer_policy_privacy.dart';
 import '../pages/setting/center_helper_page.dart';
 import '../pages/posts/gift/gifted_posts_page.dart';
+import '../pages/posts/gift/gift_history_page.dart';
 import '../pages/posts/post_detail/post_detail_page.dart';
+import '../pages/posts/post_interest_page.dart';
 
 class AppRoutes {
   static const String splash = '/';
@@ -83,7 +85,9 @@ class AppRoutes {
   static const String customerPolicyPrivacy = '/customer-policy-privacy';
   static const String helperCenter = '/helper-center';
   static const String myGifts = '/my-gifts';
+  static const String giftHistory = '/gift-history';
   static const String postDetail = '/post-detail';
+  static const String postInterests = '/post-interests';
   static const String welcomeNotification = '/welcome-notification';
 
   static Route<dynamic> onGenerateRoute(RouteSettings settings) {
@@ -197,9 +201,14 @@ class AppRoutes {
       case myGifts:
         final postId = settings.arguments as String;
         return _slideRight(GiftedPostsPage(postId: postId));
+      case giftHistory:
+        return _slideRight(const GiftHistoryPage());
       case postDetail:
         final detailPostId = settings.arguments as String;
         return _slideRight(PostDetailPage(postId: detailPostId));
+      case postInterests:
+        final interestPostId = settings.arguments as String;
+        return _slideRight(PostInterestPage(postId: interestPostId));
       case welcomeNotification:
         final notif = settings.arguments is NotificationItemModel
             ? settings.arguments as NotificationItemModel

@@ -63,6 +63,7 @@ class ApiConstants {
   static const String discover = 'discover/list';
   // model to see customer
   static const String modelDiscover = '/model/discover/customers';
+  static const String modelDiscoverCustomer = '/model/discover/customer';
 
   // feedback
   static const String feedback = 'feedback';
@@ -105,7 +106,7 @@ class ApiConstants {
   // model booking
   static const String modelBooking = 'model/bookings';
   // my post
-  static const String myPost = '/posts';
+  static const String myPost = 'posts';
   // my gift
   static const String gift = 'gifts';
   static const String giftPost = 'gifts/post';

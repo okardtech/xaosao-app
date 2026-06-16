@@ -141,7 +141,7 @@ class _MeetUpsDetailsPageState extends State<MeetUpsDetailsPage> {
     if (m.dayAmount != null) {
       durationLabel = '$svcName × ${m.dayAmount} ວັນ';
     } else if (m.hours != null) {
-      durationLabel = '$svcName × ${m.hours} ຊ.ມ.';
+      durationLabel = '$svcName × ${m.hours} ຊົ່ວໂມງ';
     } else {
       durationLabel = svcName;
     }

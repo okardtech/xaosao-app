@@ -21,14 +21,26 @@ class WalletLogic extends GetxController {
 
   Future<void> refresh() async {
     if (!isCustomer) return;
+    // Clear stale wallet + transactions before re-fetching
+    _state.value = WalletState(filter: state.filter);
     await Future.wait([fetchWallet(), _fetchTransactions(reset: true)]);
   }
 
   Future<void> fetchWallet() async {
-    _state.value = state.copyWith(loadingWallet: true);
+    // Clear stale wallet so UI reflects loading instead of old balance
+    _state.value = WalletState(
+      wallet: null,
+      transactions: state.transactions,
+      filter: state.filter,
+      loadingWallet: true,
+      loadingTx: state.loadingTx,
+      hasMore: state.hasMore,
+      page: state.page,
+    );
     final res = await _repo.customerWallet();
+    // Use res.data directly — don't fall back to stale wallet on failure
     _state.value = state.copyWith(
-      wallet: res.data ?? state.wallet,
+      wallet: res.data,
       loadingWallet: false,
     );
   }
@@ -36,7 +48,15 @@ class WalletLogic extends GetxController {
   Future<void> _fetchTransactions({bool reset = false}) async {
     if (!reset && (!state.hasMore || state.loadingTx)) return;
     final page = reset ? 1 : state.page;
-    _state.value = state.copyWith(loadingTx: true);
+    // When resetting, clear old transactions immediately
+    _state.value = reset
+        ? WalletState(
+            wallet: state.wallet,
+            filter: state.filter,
+            loadingWallet: state.loadingWallet,
+            loadingTx: true,
+          )
+        : state.copyWith(loadingTx: true);
 
     final res = await _repo.getTransactions(
       isCustomer: true,

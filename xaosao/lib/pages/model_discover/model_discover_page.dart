@@ -311,7 +311,8 @@ class _ModelDiscoverPageState extends State<ModelDiscoverPage> {
           onTap: () => Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (_) => ModelDetailPage(model: st.models[i]),
+              builder: (_) =>
+                  ModelDetailPage(customerId: st.models[i].id ?? ''),
             ),
           ),
         );
