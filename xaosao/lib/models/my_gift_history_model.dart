@@ -3,6 +3,7 @@
 //     final myGiftHistoryModel = myGiftHistoryModelFromJson(jsonString);
 
 import 'dart:convert';
+import 'package:xaosao/utils/api_date_parser.dart';
 
 List<MyGiftHistoryModel> myGiftHistoryModelFromJson(String str) => List<MyGiftHistoryModel>.from(json.decode(str).map((x) => MyGiftHistoryModel.fromJson(x)));
 
@@ -57,7 +58,7 @@ class MyGiftHistoryModel {
         postId: json["postId"],
         modelId: json["modelId"],
         amount: json["amount"],
-        createdAt: json["createdAt"] == null ? null : DateTime.parse(json["createdAt"]),
+        createdAt: parseApiDateTime(json["createdAt"]),
         gift: json["gift"] == null ? null : Gift.fromJson(json["gift"]),
     );
 

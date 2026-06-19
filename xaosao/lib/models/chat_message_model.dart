@@ -1,3 +1,5 @@
+import 'package:xaosao/utils/api_date_parser.dart';
+
 class ChatMessageModel {
   final String id;
   final String? conversationId;
@@ -61,8 +63,7 @@ class ChatMessageModel {
     );
   }
 
-  static DateTime? _tryParse(dynamic v) =>
-      v != null ? DateTime.tryParse(v.toString()) : null;
+  static DateTime? _tryParse(dynamic v) => parseApiDateTime(v);
 
   ChatMessageModel copyWith({
     bool? isRead,

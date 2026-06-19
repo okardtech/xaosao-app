@@ -3,6 +3,7 @@
 //     final notificationItemModel = notificationItemModelFromJson(jsonString);
 
 import 'dart:convert';
+import 'package:xaosao/utils/api_date_parser.dart';
 
 List<NotificationItemModel> notificationItemModelFromJson(String str) => List<NotificationItemModel>.from(json.decode(str).map((x) => NotificationItemModel.fromJson(x)));
 
@@ -40,7 +41,7 @@ class NotificationItemModel {
         laMessage: json["la_message"],
         data: json["data"] == null ? null : Data.fromJson(json["data"]),
         isRead: json["is_read"],
-        createdAt: json["created_at"] == null ? null : DateTime.parse(json["created_at"]),
+        createdAt: parseApiDateTime(json["created_at"]),
     );
 
     Map<String, dynamic> toJson() => {

@@ -6,6 +6,7 @@ import '../models/comment_model.dart';
 import '../models/fee_model.dart';
 import '../models/interest_model.dart';
 import '../models/my_post_model.dart';
+import '../models/post_count_model.dart';
 import '../models/post_detail_model.dart';
 import '../services/base_repo.dart';
 
@@ -182,6 +183,13 @@ class MyPost extends BaseRepository {
       fromJson: (json) => (json['data'] as List)
           .map((e) => InterestModel.fromJson(e as Map<String, dynamic>))
           .toList(),
+    );
+  }
+
+  Future<ApiResponse<PostCountModel>> getPostCount({required String postId}) {
+    return safeCall(
+      () => api.get('${ApiConstants.myPost}/$postId/counts'),
+      fromJson: (json) => PostCountModel.fromJson(json),
     );
   }
 }

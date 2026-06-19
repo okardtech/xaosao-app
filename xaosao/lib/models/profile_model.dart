@@ -1,4 +1,5 @@
 import 'package:xaosao/models/service_model.dart';
+import 'package:xaosao/utils/api_date_parser.dart';
 
 // ─── Shared base fields ───────────────────────────────────────────────────────
 abstract class BaseProfileModel {
@@ -138,7 +139,7 @@ class CustomerProfileModel extends BaseProfileModel {
         lastName: json["lastName"],
         profile: json["profile"],
         gender: json["gender"],
-        dob: json["dob"] == null ? null : DateTime.parse(json["dob"]),
+        dob: parseApiDateTime(json["dob"]),
         whatsapp: json["whatsapp"] == null ? null : (json["whatsapp"]),
         latitude: json["latitude"] == null
             ? null
@@ -148,12 +149,8 @@ class CustomerProfileModel extends BaseProfileModel {
             : (json["longitude"] as num).toDouble(),
         isPhoneVerified: json["isPhoneVerified"],
         status: json["status"],
-        createdAt: json["createdAt"] == null
-            ? null
-            : DateTime.parse(json["createdAt"]),
-        updatedAt: json["updatedAt"] == null
-            ? null
-            : DateTime.parse(json["updatedAt"]),
+        createdAt: parseApiDateTime(json["createdAt"]),
+        updatedAt: parseApiDateTime(json["updatedAt"]),
         gallery: json["gallery"] == null
             ? []
             : List<GalleryItem>.from(
@@ -332,7 +329,7 @@ class ModelProfileModel extends BaseProfileModel {
         lastName: json["lastName"],
         profile: json["profile"],
         gender: json["gender"],
-        dob: json["dob"] == null ? null : DateTime.parse(json["dob"]),
+        dob: parseApiDateTime(json["dob"]),
         whatsapp: json["whatsapp"] == null ? null : (json["whatsapp"]),
         latitude: json["latitude"] == null
             ? null
@@ -342,12 +339,8 @@ class ModelProfileModel extends BaseProfileModel {
             : (json["longitude"] as num).toDouble(),
         isPhoneVerified: json["isPhoneVerified"],
         status: json["status"],
-        createdAt: json["createdAt"] == null
-            ? null
-            : DateTime.parse(json["createdAt"]),
-        updatedAt: json["updatedAt"] == null
-            ? null
-            : DateTime.parse(json["updatedAt"]),
+        createdAt: parseApiDateTime(json["createdAt"]),
+        updatedAt: parseApiDateTime(json["updatedAt"]),
         gallery: json["gallery"] == null
             ? []
             : List<GalleryItem>.from(
@@ -456,9 +449,7 @@ class GalleryItem {
     id: json["id"],
     url: json["url"],
     status: json["status"],
-    createdAt: json["createdAt"] == null
-        ? null
-        : DateTime.parse(json["createdAt"]),
+    createdAt: parseApiDateTime(json["createdAt"]),
   );
 
   Map<String, dynamic> toJson() => {

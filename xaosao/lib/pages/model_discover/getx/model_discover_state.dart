@@ -14,7 +14,7 @@ class ModelDiscoverState {
     this.models = const [],
     this.status = DiscoverStatus.initial,
     this.hasMore = true,
-    this.skip = 0,
+    this.skip = 1,
     this.filter,
     this.search,
   });

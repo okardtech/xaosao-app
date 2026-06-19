@@ -271,18 +271,6 @@ class _FilterChipsDelegate extends SliverPersistentHeaderDelegate {
   final ValueChanged<String?> onSelect;
   final double height;
 
-  static Color _accentFor(String? s) => switch (s) {
-    'pending' => const Color(0xFF3B82F6),
-    'confirmed' => const Color(0xFF8B5CF6),
-    'in_progress' => const Color(0xFFF59E0B),
-    'awaiting_confirmation' => const Color(0xFFF97316),
-    'completed' => const Color(0xFF22C55E),
-    'cancelled' => const Color(0xFF9B9BAD),
-    'rejected' => const Color(0xFFEF4444),
-    'disputed' => const Color(0xFFEC4899),
-    _ => const Color(0xFF1A1A2E),
-  };
-
   const _FilterChipsDelegate({
     required this.selectedStatus,
     required this.chips,

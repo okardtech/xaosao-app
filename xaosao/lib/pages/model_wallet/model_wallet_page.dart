@@ -19,7 +19,7 @@ class ModelWalletPage extends StatefulWidget {
 }
 
 class _ModelWalletPageState extends State<ModelWalletPage> {
-  bool _amountsVisible = true;
+  bool _amountsVisible = false;
   late final ModelWalletLogic _logic;
 
   static const _chips = <(String, String?)>[

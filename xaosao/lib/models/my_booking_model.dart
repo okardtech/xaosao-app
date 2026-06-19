@@ -3,6 +3,7 @@
 //     final myBookingModel = myBookingModelFromJson(jsonString);
 
 import 'dart:convert';
+import 'package:xaosao/utils/api_date_parser.dart';
 
 List<MyBookingModel> myBookingModelFromJson(String str) =>
     List<MyBookingModel>.from(
@@ -123,10 +124,8 @@ class MyBookingModel {
     locationLat: json["locationLat"],
     locationLng: json["locationLng"],
     preferredAttire: json["preferredAttire"],
-    startDate: json["startDate"] == null
-        ? null
-        : DateTime.parse(json["startDate"]),
-    endDate: json["endDate"] == null ? null : DateTime.parse(json["endDate"]),
+    startDate: parseApiDateTime(json["startDate"]),
+    endDate: parseApiDateTime(json["endDate"]),
     status: json["status"],
     paymentStatus: json["paymentStatus"],
     hasTip: json["hasTip"],
@@ -140,12 +139,8 @@ class MyBookingModel {
         : ModelService.fromJson(json["modelService"]),
     customerHidden: json["customerHidden"],
     modelHidden: json["modelHidden"],
-    createdAt: json["createdAt"] == null
-        ? null
-        : DateTime.parse(json["createdAt"]),
-    updatedAt: json["updatedAt"] == null
-        ? null
-        : DateTime.parse(json["updatedAt"]),
+    createdAt: parseApiDateTime(json["createdAt"]),
+    updatedAt: parseApiDateTime(json["updatedAt"]),
     isContact: json["isContact"],
   );
 
@@ -183,6 +178,7 @@ class Customer {
   String? name;
   String? profile;
   int? age;
+  int? whatsapp;
 
   Customer({
     this.id,
@@ -191,6 +187,7 @@ class Customer {
     this.name,
     this.profile,
     this.age,
+    this.whatsapp,
   });
 
   Customer copyWith({
@@ -200,6 +197,7 @@ class Customer {
     String? name,
     String? profile,
     int? age,
+    int? whatsapp,
   }) => Customer(
     id: id ?? this.id,
     firstName: firstName ?? this.firstName,
@@ -207,6 +205,7 @@ class Customer {
     name: name ?? this.name,
     profile: profile ?? this.profile,
     age: age ?? this.age,
+    whatsapp: whatsapp ?? this.whatsapp,
   );
 
   factory Customer.fromJson(Map<String, dynamic> json) => Customer(
@@ -216,6 +215,8 @@ class Customer {
     name: json["name"],
     profile: json["profile"],
     age: json["age"],
+    whatsapp: json["whatsapp"],
+
   );
 
   Map<String, dynamic> toJson() => {
@@ -225,6 +226,7 @@ class Customer {
     "name": name,
     "profile": profile,
     "age": age,
+    "whatsapp": whatsapp,
   };
 }
 
@@ -270,7 +272,7 @@ class Model {
     firstName: json["firstName"],
     lastName: json["lastName"],
     profile: json["profile"],
-    dob: json["dob"] == null ? null : DateTime.parse(json["dob"]),
+    dob: parseApiDateTime(json["dob"]),
     age: json["age"],
     whatsapp: json["whatsapp"],
   );

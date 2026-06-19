@@ -1,3 +1,5 @@
+import 'package:xaosao/utils/api_date_parser.dart';
+
 class ConversationParticipant {
   final String id;
   final String? firstName;
@@ -93,8 +95,7 @@ class ConversationModel {
     );
   }
 
-  static DateTime? _tryParse(dynamic v) =>
-      v != null ? DateTime.tryParse(v.toString()) : null;
+  static DateTime? _tryParse(dynamic v) => parseApiDateTime(v);
 
   ConversationParticipant? otherParticipant(String myRole) =>
       myRole == 'customer' ? model : customer;

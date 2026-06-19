@@ -39,28 +39,35 @@ Color _accentColor(String? s) => switch (s) {
   'refunded' => const Color(0xFF8B5CF6),
   'expired' => AppColors.textHint,
   'upgraded' => const Color(0xFF3B82F6),
+  'superseded' => const Color(0xFF6366F1),
   _ => AppColors.textHint,
 };
 
 Color _badgeBg(String? s) => switch (s) {
-  'active' || 'completed' || 'approved' || 'released' =>
-    const Color(0xFFEDFAF3),
+  'active' ||
+  'completed' ||
+  'approved' ||
+  'released' => const Color(0xFFEDFAF3),
   'pending' || 'pending_release' || 'held' => const Color(0xFFFFFBEB),
   'canceled' || 'rejected' => const Color(0xFFFEF2F2),
   'refunded' => const Color(0xFFF5F3FF),
   'expired' => AppColors.surfaceSecondary,
   'upgraded' => const Color(0xFFEFF6FF),
+  'superseded' => const Color(0xFFEEF2FF),
   _ => AppColors.surfaceSecondary,
 };
 
 Color _badgeFg(String? s) => switch (s) {
-  'active' || 'completed' || 'approved' || 'released' =>
-    const Color(0xFF15803D),
+  'active' ||
+  'completed' ||
+  'approved' ||
+  'released' => const Color(0xFF15803D),
   'pending' || 'pending_release' || 'held' => const Color(0xFF92400E),
   'canceled' || 'rejected' => const Color(0xFFB91C1C),
   'refunded' => const Color(0xFF6D28D9),
   'expired' => AppColors.textHint,
   'upgraded' => const Color(0xFF1D4ED8),
+  'superseded' => const Color(0xFF4338CA),
   _ => AppColors.textHint,
 };
 
@@ -74,14 +81,15 @@ String _statusLabel(String? s) => switch (s) {
   'expired' => 'ໝົດອາຍຸ',
   'upgraded' => 'ອັບເກຣດ',
   'held' => 'ຄ້ຳປະກັນ',
+  'superseded' => 'ຖືກແທນທີ່',
   _ => s ?? '—',
 };
 
 const _kChips = <(String, String?)>[
   ('ທັງໝົດ', null),
-  ('ລໍຖ້າ', 'pending'),
+  ('ອັບເກຣດ', 'upgraded'),
+  ('ຖືກແທນທີ່', 'superseded'),
   ('ກຳລັງໃຊ້', 'active'),
-  ('ໝົດອາຍຸ', 'expired'),
   ('ຍົກເລີກ', 'canceled'),
 ];
 
@@ -233,7 +241,9 @@ class _HistoryCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final accent = _accentColor(item.status);
     final isExpiredOrCanceled =
-        item.status == 'expired' || item.status == 'canceled';
+        item.status == 'expired' ||
+        item.status == 'canceled' ||
+        item.status == 'superseded';
     final isActive = item.status == 'active';
     final now = DateTime.now();
     final daysLeft = item.endDate != null && item.endDate!.isAfter(now)
@@ -315,11 +325,18 @@ class _HistoryCard extends StatelessWidget {
                                       borderRadius: BorderRadius.circular(20.r),
                                     ),
                                     child: Text(
-                                      '${item.durationDays} ວັນ',
+                                      'ຍັງເຫຼືອ ${item.durationDays} ວັນ',
                                       style: TextStyle(
                                         fontSize: 12.sp,
                                         fontWeight: FontWeight.w700,
-                                        color: accent,
+                                        color: isExpiredOrCanceled
+                                            ? AppColors.textDisabled
+                                            : accent,
+                                        decoration: isExpiredOrCanceled
+                                            ? TextDecoration.lineThrough
+                                            : null,
+                                        decorationColor: AppColors.textDisabled,
+                                        decorationThickness: 2,
                                       ),
                                     ),
                                   ),

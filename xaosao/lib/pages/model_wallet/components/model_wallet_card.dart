@@ -18,15 +18,15 @@ class ModelWalletCard extends StatelessWidget {
     required this.onWithdraw,
   });
 
-  String _fmt(int? n) =>
+  String _fmt(num? n) =>
       '${NumberFormat.decimalPattern().format(n ?? 0)} ກີບ';
 
   static const String _masked = '••••••';
 
   @override
   Widget build(BuildContext context) {
-    final balance = _fmt(wallet.totalBalance);
-    final pending = _fmt(wallet.totalPending);
+    final balance = _fmt(wallet.withdrawableBalance);
+    final pending = _fmt(wallet.pendingWithdrawals);
     final withdrawn = _fmt(wallet.totalWithdraw);
     final income = _fmt(wallet.totalIncome);
 
@@ -83,7 +83,7 @@ class ModelWalletCard extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      'ຍອດເງິນທັງໝົດ',
+                      'ຍອດເງິນສາມາດຖອນໄດ້',
                       style: TextStyle(
                         fontSize: 14.sp,
                         fontWeight: FontWeight.w600,
@@ -165,7 +165,7 @@ class ModelWalletCard extends StatelessWidget {
                     SizedBox(width: 6.w),
                     Expanded(
                       child: _StatPill(
-                        label: 'ລາຍຮັບ',
+                        label: 'ລາຍຮັບທັງໝົດ',
                         value: amountsVisible ? income : _masked,
                       ),
                     ),

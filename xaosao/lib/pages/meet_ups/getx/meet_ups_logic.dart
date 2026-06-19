@@ -21,9 +21,17 @@ class MeetUpLogic extends GetxController {
   // ── List loading ──────────────────────────────────────────────
 
   Future<void> filterBy(String? status) async {
+    // Preserve current detail so the detail page doesn't flash on list refresh.
+    final d = _state.value.bookingDetail;
+    final dl = _state.value.bookingDetailLoading;
+    final de = _state.value.bookingDetailError;
+
     _state.value = MeetUpState(
       status: MeetUpStatus.loading,
       selectedStatus: status,
+      bookingDetail: d,
+      bookingDetailLoading: dl,
+      bookingDetailError: de,
     );
     try {
       final result = await _repo.myBooking(
@@ -39,12 +47,18 @@ class MeetUpLogic extends GetxController {
           selectedStatus: status,
           hasMore: result.data!.length >= _limit,
           page: 2,
+          bookingDetail: _state.value.bookingDetail,
+          bookingDetailLoading: _state.value.bookingDetailLoading,
+          bookingDetailError: _state.value.bookingDetailError,
         );
       } else {
         _state.value = MeetUpState(
           status: MeetUpStatus.failure,
           error: result.message,
           selectedStatus: status,
+          bookingDetail: _state.value.bookingDetail,
+          bookingDetailLoading: _state.value.bookingDetailLoading,
+          bookingDetailError: _state.value.bookingDetailError,
         );
       }
     } catch (e) {
@@ -52,6 +66,9 @@ class MeetUpLogic extends GetxController {
         status: MeetUpStatus.failure,
         error: 'ມີຂໍ້ຜິດພາດ: $e',
         selectedStatus: status,
+        bookingDetail: _state.value.bookingDetail,
+        bookingDetailLoading: _state.value.bookingDetailLoading,
+        bookingDetailError: _state.value.bookingDetailError,
       );
     }
   }
@@ -73,6 +90,9 @@ class MeetUpLogic extends GetxController {
           selectedStatus: state.selectedStatus,
           hasMore: result.data!.length >= _limit,
           page: state.page + 1,
+          bookingDetail: _state.value.bookingDetail,
+          bookingDetailLoading: _state.value.bookingDetailLoading,
+          bookingDetailError: _state.value.bookingDetailError,
         );
       } else {
         _state.value = state.copyWith(
@@ -88,6 +108,42 @@ class MeetUpLogic extends GetxController {
     }
   }
 
+  // ── Booking detail loading ─────────────────────────────────────
+
+  Future<void> loadBookingDetail(
+    String bookingId, {
+    bool silent = false,
+  }) async {
+    if (!silent) {
+      // Clear stale detail and show loading screen.
+      _state.value = _state.value.withDetail(bookingDetailLoading: true);
+    }
+    try {
+      final res = await _repo.myBookingById(
+        isClient: isClient,
+        bookingId: bookingId,
+      );
+      if (res.success && res.data != null) {
+        _state.value = _state.value.withDetail(
+          bookingDetail: res.data,
+          bookingDetailLoading: false,
+        );
+      } else if (!silent) {
+        _state.value = _state.value.withDetail(
+          bookingDetailLoading: false,
+          bookingDetailError: res.message ?? 'ບໍ່ສາມາດໂຫຼດຂໍ້ມູນ',
+        );
+      }
+    } catch (e) {
+      if (!silent) {
+        _state.value = _state.value.withDetail(
+          bookingDetailLoading: false,
+          bookingDetailError: 'ມີຂໍ້ຜິດພາດ: $e',
+        );
+      }
+    }
+  }
+
   // ── Actions — return true on success, false on failure ────────
 
   Future<bool> cancelBooking(String bookingId) async {
@@ -99,6 +155,7 @@ class MeetUpLogic extends GetxController {
       if (res.data != null) {
         await filterBy(state.selectedStatus);
         _refreshDashboardBadges();
+        AppSnackbar.success('ຍົກເລີກການຈອງສຳເລັດ');
         return true;
       }
       _showError(res.message);
@@ -119,6 +176,7 @@ class MeetUpLogic extends GetxController {
       if (res.data != null) {
         await filterBy(state.selectedStatus);
         _refreshDashboardBadges();
+        AppSnackbar.success('ປ່ອຍເງີນສຳເລັດ');
         return true;
       }
       _showError(res.message);
@@ -139,6 +197,7 @@ class MeetUpLogic extends GetxController {
       if (res.data != null) {
         await filterBy(state.selectedStatus);
         _refreshDashboardBadges();
+        AppSnackbar.success('ສົ່ງຄຳຮ້ອງຂໍສຳເລັດ');
         return true;
       }
       _showError(res.message);
@@ -159,6 +218,7 @@ class MeetUpLogic extends GetxController {
       if (res.data != null) {
         await filterBy(state.selectedStatus);
         _refreshDashboardBadges();
+        AppSnackbar.success('ຢືນຢັນການຈອງສຳເລັດ');
         return true;
       }
       _showError(res.message);
@@ -179,6 +239,7 @@ class MeetUpLogic extends GetxController {
       if (res.data != null) {
         await filterBy(state.selectedStatus);
         _refreshDashboardBadges();
+        AppSnackbar.success('ປະຕິເສດການຈອງສຳເລັດ');
         return true;
       }
       _showError(res.message);
@@ -199,6 +260,7 @@ class MeetUpLogic extends GetxController {
       if (res.data != null) {
         await filterBy(state.selectedStatus);
         _refreshDashboardBadges();
+        AppSnackbar.success('ຮັບເງີນສຳເລັດ');
         return true;
       }
       _showError(res.message);
@@ -219,6 +281,7 @@ class MeetUpLogic extends GetxController {
       if (res.data != null) {
         await filterBy(state.selectedStatus);
         _refreshDashboardBadges();
+        AppSnackbar.success('ລຶບລາຍການສຳເລັດ');
         return true;
       }
       _showError(res.message);

@@ -3,6 +3,7 @@
 //     final giftPostModel = giftPostModelFromJson(jsonString);
 
 import 'dart:convert';
+import 'package:xaosao/utils/api_date_parser.dart';
 
 GiftPostModel giftPostModelFromJson(String str) => GiftPostModel.fromJson(json.decode(str));
 
@@ -108,7 +109,7 @@ class GiftElement {
         modelId: json["modelId"],
         amount: json["amount"],
         reaction: json["reaction"],
-        createdAt: json["createdAt"] == null ? null : DateTime.parse(json["createdAt"]),
+        createdAt: json["createdAt"] == null ? null : parseApiDateTime(json["createdAt"]),
         gift: json["gift"] == null ? null : GiftSummaryGift.fromJson(json["gift"]),
     );
 

@@ -3,6 +3,7 @@
 //     final interestModel = interestModelFromJson(jsonString);
 
 import 'dart:convert';
+import 'package:xaosao/utils/api_date_parser.dart';
 
 List<InterestModel> interestModelFromJson(String str) => List<InterestModel>.from(json.decode(str).map((x) => InterestModel.fromJson(x)));
 
@@ -37,7 +38,7 @@ class InterestModel {
     factory InterestModel.fromJson(Map<String, dynamic> json) => InterestModel(
         id: json["id"],
         userType: json["userType"],
-        createdAt: json["createdAt"] == null ? null : DateTime.parse(json["createdAt"]),
+        createdAt: parseApiDateTime(json["createdAt"]),
         user: json["user"] == null ? null : User.fromJson(json["user"]),
     );
 

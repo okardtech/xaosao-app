@@ -24,8 +24,8 @@ class HomeLogic extends GetxController {
 
   static const int _pageSize = 20;
 
-  int _recommendedSkip = 0;
-  int _onlineSkip = 0;
+  int _recommendedSkip = 1;
+  int _onlineSkip = 1;
 
   // Bool flags are the real concurrency locks — status is UI-only.
   bool _loadingRecommended = false;
@@ -43,8 +43,8 @@ class HomeLogic extends GetxController {
             ? 'male'
             : 'all';
     _updateState(state.copyWith(gender: defaultGender));
-    fetchRecommended();
-    fetchOnline();
+    fetchRecommended(refresh: true);
+    fetchOnline(refresh: true);
   }
 
   @override
@@ -84,7 +84,7 @@ class HomeLogic extends GetxController {
     final isFirstPage = refresh || _recommendedSkip == 0;
 
     if (refresh) {
-      _recommendedSkip = 0;
+      _recommendedSkip = 1;
       _updateState(state.copyWith(
         recommendedStatus: HomeStatus.loading,
         recommended: [],
@@ -99,7 +99,7 @@ class HomeLogic extends GetxController {
 
     try {
       final res = await _repo.getRecommended(
-        skip: _recommendedSkip,
+        page: _recommendedSkip,
         limit: _pageSize,
         maxDistanceKm: state.maxDistanceKm,
         genderType: state.gender == 'all' ? null : state.gender,
@@ -108,13 +108,14 @@ class HomeLogic extends GetxController {
       );
       if (res.success && res.data != null) {
         final newItems = res.data!;
-        _recommendedSkip += newItems.length;
+        _recommendedSkip++;
         _updateState(state.copyWith(
           recommendedStatus: HomeStatus.success,
           recommended: [...state.recommended, ...newItems],
           recommendedHasMore: newItems.length >= _pageSize,
         ));
       } else {
+        print('message ==>${res.message}');
         _updateState(state.copyWith(
           recommendedStatus:
               isFirstPage ? HomeStatus.failure : HomeStatus.success,
@@ -123,7 +124,8 @@ class HomeLogic extends GetxController {
           AppSnackbar.error(res.laMessage ?? 'ໂຫຼດຂໍ້ມູນແນະນຳບໍ່ສຳເລັດ');
         }
       }
-    } catch (_) {
+    } catch (e) {
+      print('error ==>${e}');
       _updateState(state.copyWith(
         recommendedStatus:
             isFirstPage ? HomeStatus.failure : HomeStatus.success,
@@ -147,7 +149,7 @@ class HomeLogic extends GetxController {
     final isFirstPage = refresh || _onlineSkip == 0;
 
     if (refresh) {
-      _onlineSkip = 0;
+      _onlineSkip = 1;
       _updateState(state.copyWith(
         onlineStatus: HomeStatus.loading,
         online: [],
@@ -162,7 +164,7 @@ class HomeLogic extends GetxController {
 
     try {
       final res = await _repo.getOnline(
-        skip: _onlineSkip,
+        page: _onlineSkip,
         limit: _pageSize,
         maxDistanceKm: state.maxDistanceKm,
         genderType: state.gender == 'all' ? null : state.gender,
@@ -171,7 +173,7 @@ class HomeLogic extends GetxController {
       );
       if (res.success && res.data != null) {
         final newItems = res.data!;
-        _onlineSkip += newItems.length;
+        _onlineSkip++;
         _updateState(state.copyWith(
           onlineStatus: HomeStatus.success,
           online: [...state.online, ...newItems],

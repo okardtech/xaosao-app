@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:xaosao/utils/api_date_parser.dart';
 
 List<RecommendedModel> recommendedModelFromJson(String str) =>
     List<RecommendedModel>.from(
@@ -118,7 +119,7 @@ class RecommendedModel {
         id: json["id"],
         firstName: json["firstName"],
         lastName: json["lastName"],
-        dob: json["dob"] == null ? null : DateTime.parse(json["dob"]),
+        dob: parseApiDateTime(json["dob"]),
         gender: json["gender"],
         bio: json["bio"],
         address: json["address"],
@@ -138,18 +139,14 @@ class RecommendedModel {
         totalReview: json["total_review"],
         status: json["status"],
         availableStatus: json["available_status"],
-        createdAt: json["createdAt"] == null
-            ? null
-            : DateTime.parse(json["createdAt"]),
+        createdAt: parseApiDateTime(json["createdAt"]),
         vip: json["vip"],
         friendsCount: json["friendsCount"],
         likeCount: json["likeCount"],
         isLikedByMe: json["isLikedByMe"],
         isFriend: json["isFriend"],
         isOnline: json["isOnline"],
-        lastOnlineAt: json["lastOnlineAt"] == null
-            ? null
-            : DateTime.parse(json["lastOnlineAt"]),
+        lastOnlineAt: parseApiDateTime(json["lastOnlineAt"]),
         distanceKm: json["distanceKm"] == null
             ? null
             : (json["distanceKm"] as num).toDouble(),

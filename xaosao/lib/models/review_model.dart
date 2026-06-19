@@ -3,6 +3,7 @@
 //     final reviewModel = reviewModelFromJson(jsonString);
 
 import 'dart:convert';
+import 'package:xaosao/utils/api_date_parser.dart';
 
 List<ReviewModel> reviewModelFromJson(String str) => List<ReviewModel>.from(json.decode(str).map((x) => ReviewModel.fromJson(x)));
 
@@ -53,7 +54,7 @@ class ReviewModel {
         reviewText: json["reviewText"],
         isAnonymous: json["isAnonymous"],
         customer: json["customer"] == null ? null : Customer.fromJson(json["customer"]),
-        createdAt: json["createdAt"] == null ? null : DateTime.parse(json["createdAt"]),
+        createdAt: parseApiDateTime(json["createdAt"]),
     );
 
     Map<String, dynamic> toJson() => {

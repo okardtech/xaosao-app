@@ -1,3 +1,5 @@
+import 'package:xaosao/utils/api_date_parser.dart';
+
 class CustomerPublicProfile {
   final String id;
   final String? firstName;
@@ -68,8 +70,7 @@ class CustomerPublicProfile {
     );
   }
 
-  static DateTime? _tryParse(dynamic v) =>
-      v != null ? DateTime.tryParse(v.toString()) : null;
+  static DateTime? _tryParse(dynamic v) => parseApiDateTime(v);
 
   String get displayName {
     final parts = [firstName, lastName]

@@ -27,7 +27,7 @@ class CustomerProfilePage extends StatefulWidget {
 
 class _CustomerProfilePageState extends State<CustomerProfilePage> {
   static const _maxPhotos = 6;
-  bool _showAmt = true;
+  bool _showAmt = false;
   late final ProfileLogic _profileLogic;
 
   @override

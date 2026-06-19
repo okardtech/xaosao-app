@@ -5,13 +5,17 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:xaosao/constants/app_color.dart';
+import 'package:xaosao/constants/app_icons.dart';
 import 'package:xaosao/constants/app_routes.dart';
 import 'package:xaosao/models/package_model.dart';
 import 'package:xaosao/pages/package/getx/package_logic.dart';
 import 'package:xaosao/pages/package/getx/package_state.dart';
 import 'package:xaosao/pages/package/subscription_checkout_page.dart';
 import 'package:xaosao/pages/wallet/getx/wallet_logic.dart';
+import 'package:xaosao/utils/date_time_formatter.dart';
 import 'package:xaosao/widgets/gradient_app_bar.dart';
+
+import '../../widgets/app_svg_icon.dart';
 
 // Gradient palette assigned by card index (cycles if more packages)
 const _kGradients = <List<Color>>[
@@ -126,8 +130,8 @@ class _PackagePageState extends State<PackagePage> {
       ),
       body: Column(
         children: [
-          _buildHero(),
-          SizedBox(height: 20.h),
+          Obx(() => _buildHeroOrPlanCard()),
+          SizedBox(height: 8.h),
           Expanded(child: Obx(() => _buildBody())),
           SizedBox(height: 14.h),
           Obx(() => _buildDots()),
@@ -140,6 +144,211 @@ class _PackagePageState extends State<PackagePage> {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  // ── Hero or current plan card ───────────────────────────────
+  Widget _buildHeroOrPlanCard() {
+    final st = _logic.state;
+    if (st.status == PackageStatus.success && st.currentPlan != null) {
+      return _buildCurrentPlanCard(st.currentPlan!);
+    }
+    return _buildHero();
+  }
+
+  Widget _buildCurrentPlanCard(CurrentSubscriptionPlan plan) {
+    final days = plan.daysRemaining ?? 0;
+    final isPending = plan.status == 'pending';
+    final isUrgent = !isPending && days > 0 && days <= 7;
+    final isExpired = !isPending && days == 0;
+
+    final Color accentColor = isPending
+        ? const Color(0xFF8B5CF6)
+        : isExpired
+        ? const Color(0xFF94A3B8)
+        : isUrgent
+        ? const Color(0xFFF59E0B)
+        : AppColors.primary;
+
+    final String statusLabel = isPending
+        ? 'ລໍຖ້າການຢືນຢັນ'
+        : isExpired
+        ? 'ໝົດອາຍຸແລ້ວ'
+        : isUrgent
+        ? 'ໃກ້ໝົດອາຍຸ'
+        : 'ກຳລັງໃຊ້ງານ';
+
+    return Padding(
+      padding: EdgeInsets.fromLTRB(24.w, 14.h, 24.w, 8.h),
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(20.r),
+          boxShadow: [
+            BoxShadow(
+              color: accentColor.withValues(alpha: 0.14),
+              blurRadius: 24,
+              offset: const Offset(0, 8),
+            ),
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.04),
+              blurRadius: 6,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(20.r),
+          child: Stack(
+            children: [
+              // Watermark plan name (background depth layer)
+              Positioned(
+                bottom: -6,
+                right: -2,
+                child: Text(
+                  plan.name ?? '',
+                  style: TextStyle(
+                    fontSize: 58.sp,
+                    fontWeight: FontWeight.w900,
+                    color: accentColor.withValues(alpha: 0.055),
+                    height: 1,
+                    letterSpacing: -2,
+                  ),
+                ),
+              ),
+              // Content
+              Padding(
+                padding: EdgeInsets.fromLTRB(16.w, 16.h, 16.w, 16.h),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // Status pill
+                          Container(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 9.w,
+                              vertical: 4.h,
+                            ),
+                            decoration: BoxDecoration(
+                              color: accentColor.withValues(alpha: 0.10),
+                              borderRadius: BorderRadius.circular(20.r),
+                            ),
+                            child: Text(
+                              statusLabel,
+                              style: TextStyle(
+                                fontSize: 10.sp,
+                                fontWeight: FontWeight.w700,
+                                color: accentColor,
+                              ),
+                            ),
+                          ),
+                          SizedBox(height: 9.h),
+                          // Plan name
+                          Text(
+                            plan.name ?? '',
+                            style: TextStyle(
+                              fontSize: 22.sp,
+                              fontWeight: FontWeight.w900,
+                              color: AppColors.textPrimary,
+                              letterSpacing: -0.5,
+                              height: 1,
+                            ),
+                          ),
+                          SizedBox(height: 6.h),
+                          // Date / pending message
+                          Row(
+                            children: [
+                              AppSvgIcon(
+                                assetName: AppIcons.calendar,
+                                width: 12.w,
+                                height: 12.h,
+                              ),
+                              SizedBox(width: 4.w),
+                              Text(
+                                isPending
+                                    ? 'ກຳລັງດຳເນີນການຢືນຢັນ...'
+                                    : 'ໝົດອາຍຸ ${DateTimeFormatter.laoDate(plan.endDate)}',
+                                style: TextStyle(
+                                  fontSize: 12.sp,
+                                  color: AppColors.textHint,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(width: 14.w),
+                    // Right badge
+                    if (isPending)
+                      Container(
+                        width: 54.r,
+                        height: 54.r,
+                        decoration: BoxDecoration(
+                          color: accentColor.withValues(alpha: 0.08),
+                          shape: BoxShape.circle,
+                        ),
+                        child: Icon(
+                          Icons.schedule_rounded,
+                          size: 24.r,
+                          color: accentColor,
+                        ),
+                      )
+                    else
+                      Column(
+                        children: [
+                          Container(
+                            width: 62.r,
+                            height: 62.r,
+                            decoration: BoxDecoration(
+                              color: accentColor.withValues(alpha: 0.08),
+                              shape: BoxShape.circle,
+                            ),
+                            child: Center(
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text(
+                                    '$days',
+                                    style: TextStyle(
+                                      fontSize: 22.sp,
+                                      fontWeight: FontWeight.w900,
+                                      color: accentColor,
+                                      height: 1,
+                                    ),
+                                  ),
+                                  Text(
+                                    'ວັນ',
+                                    style: TextStyle(
+                                      fontSize: 10.sp,
+                                      fontWeight: FontWeight.w700,
+                                      color: accentColor.withValues(alpha: 0.8),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          SizedBox(height: 4.h),
+                          Text(
+                            'ຄົງເຫຼືອ',
+                            style: TextStyle(
+                              fontSize: 12.sp,
+                              color: AppColors.textHint,
+                            ),
+                          ),
+                        ],
+                      ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -252,7 +461,9 @@ class _PackagePageState extends State<PackagePage> {
         ),
       );
     }
-    return PageView.builder(
+
+    final isPendingPlan = st.currentPlan?.status == 'pending';
+    final pageView = PageView.builder(
       controller: _pageCtrl,
       physics: const BouncingScrollPhysics(),
       itemCount: st.packages.length,
@@ -270,6 +481,45 @@ class _PackagePageState extends State<PackagePage> {
           onSelect: isCurrent ? null : () => _onSelect(pkg, _kAccents[gradIdx]),
         );
       },
+    );
+
+    if (isPendingPlan) {
+      return Column(
+        children: [
+          _buildPendingBanner(),
+          Expanded(child: pageView),
+        ],
+      );
+    }
+    return pageView;
+  }
+
+  Widget _buildPendingBanner() {
+    const purple = Color(0xFF8B5CF6);
+    return Container(
+      margin: EdgeInsets.fromLTRB(16.w, 0, 16.w, 8.h),
+      padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 10.h),
+      decoration: BoxDecoration(
+        color: purple.withValues(alpha: 0.07),
+        borderRadius: BorderRadius.circular(12.r),
+        border: Border.all(color: purple.withValues(alpha: 0.18), width: 1),
+      ),
+      child: Row(
+        children: [
+          Icon(Icons.schedule_rounded, size: 15.r, color: purple),
+          SizedBox(width: 10.w),
+          Expanded(
+            child: Text(
+              'ຄຳຮ້ອງຂໍຂອງທ່ານກຳລັງຖືກດຳເນີນການ · ກະລຸນາລໍຖ້າ',
+              style: TextStyle(
+                fontSize: 11.sp,
+                fontWeight: FontWeight.w600,
+                color: purple,
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 

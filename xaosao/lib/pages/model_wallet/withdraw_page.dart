@@ -7,6 +7,7 @@ import 'package:xaosao/utils/currency_formatter.dart';
 import 'package:xaosao/models/bank_account_model.dart';
 import 'package:xaosao/pages/model_wallet/components/model_wallet_shimmer.dart';
 import 'package:xaosao/pages/model_wallet/getx/model_wallet_logic.dart';
+import 'package:xaosao/pages/qr_manage/qr_mange_page.dart';
 import 'package:xaosao/widgets/app_button.dart';
 import 'package:xaosao/widgets/app_text_field.dart';
 import 'package:xaosao/widgets/gradient_app_bar.dart';
@@ -29,13 +30,47 @@ class _WithdrawPageState extends State<WithdrawPage> {
   void initState() {
     super.initState();
     _logic = Get.find<ModelWalletLogic>();
-    WidgetsBinding.instance.addPostFrameCallback(
-      (_) => _logic.fetchBankAccounts(),
-    );
     _amountCtrl.addListener(() {
       final raw = _amountCtrl.text.replaceAll(',', '').replaceAll(' ', '');
       setState(() => _amount = int.tryParse(raw) ?? 0);
     });
+    WidgetsBinding.instance.addPostFrameCallback((_) => _initBanks());
+  }
+
+  Future<void> _initBanks() async {
+    if (_logic.state.bankAccounts.isNotEmpty) {
+      _autoSelectBank(_logic.state.bankAccounts);
+      return;
+    }
+    await _logic.fetchBankAccounts();
+    if (!mounted) return;
+    _autoSelectBank(_logic.state.bankAccounts);
+  }
+
+  void _autoSelectBank(List<BankAccountModel> banks) {
+    if (banks.isEmpty) return;
+    BankAccountModel? defaultBank;
+    for (final b in banks) {
+      if (b.isDefault == true) {
+        defaultBank = b;
+        break;
+      }
+    }
+    final target = defaultBank ?? banks.first;
+    if (target.id != null && _selectedBankId != target.id) {
+      setState(() => _selectedBankId = target.id);
+    }
+  }
+
+  Future<void> _goAddBank() async {
+    await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => const QrManagementPage()),
+    );
+    if (!mounted) return;
+    await _logic.fetchBankAccounts();
+    if (!mounted) return;
+    _autoSelectBank(_logic.state.bankAccounts);
   }
 
   @override
@@ -45,7 +80,7 @@ class _WithdrawPageState extends State<WithdrawPage> {
     super.dispose();
   }
 
-  bool _canSubmit(int minWithdraw, int maxWithdraw) =>
+  bool _canSubmit(num minWithdraw, num maxWithdraw) =>
       _selectedBankId != null &&
       _amount >= minWithdraw &&
       _amount <= maxWithdraw;
@@ -103,7 +138,7 @@ class _WithdrawPageState extends State<WithdrawPage> {
                     if (st.loadingBanks && st.bankAccounts.isEmpty)
                       const BankAccountListShimmer()
                     else if (st.bankAccounts.isEmpty)
-                      _EmptyBankState()
+                      _EmptyBankState(onAddBank: _goAddBank)
                     else
                       SizedBox(
                         height: 196.h,
@@ -206,7 +241,7 @@ class _WithdrawPageState extends State<WithdrawPage> {
   }
 }
 
-String _fmtKip(int? n) => '${NumberFormat.decimalPattern().format(n ?? 0)} ກີບ';
+String _fmtKip(num? n) => '${NumberFormat.decimalPattern().format(n ?? 0)} ກີບ';
 
 // ── Balance info card ─────────────────────────────────────────────
 class _BalanceInfoCard extends StatelessWidget {
@@ -251,7 +286,7 @@ class _BalanceInfoCard extends StatelessWidget {
                 ),
                 SizedBox(height: 2.h),
                 Text(
-                  _fmtKip(wallet.withdrawableBalance as int?),
+                  _fmtKip(wallet.withdrawableBalance),
                   style: TextStyle(
                     fontSize: 16.sp,
                     fontWeight: FontWeight.w900,
@@ -445,26 +480,95 @@ class _QrPlaceholder extends StatelessWidget {
 
 // ── Empty bank state ──────────────────────────────────────────────
 class _EmptyBankState extends StatelessWidget {
+  final VoidCallback onAddBank;
+  const _EmptyBankState({required this.onAddBank});
+
   @override
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      padding: EdgeInsets.symmetric(vertical: 24.h),
+      padding: EdgeInsets.symmetric(vertical: 28.h, horizontal: 20.w),
       decoration: BoxDecoration(
-        color: AppColors.surfaceSecondary,
-        borderRadius: BorderRadius.circular(14.r),
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(18.r),
+        // border: Border.all(
+        //   color: AppColors.primary.withValues(alpha: 0.15),
+        //   width: 1,
+        // ),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.primary.withValues(alpha: 0.06),
+            blurRadius: 16,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
       child: Column(
         children: [
-          Icon(
-            Icons.account_balance_outlined,
-            size: 32.r,
-            color: AppColors.textDisabled,
+          Container(
+            width: 52.r,
+            height: 52.r,
+            decoration: BoxDecoration(
+              color: AppColors.primary.withValues(alpha: 0.08),
+              borderRadius: BorderRadius.circular(16.r),
+            ),
+            child: Icon(
+              Icons.account_balance_outlined,
+              size: 24.r,
+              color: AppColors.primary,
+            ),
           ),
-          SizedBox(height: 8.h),
+          SizedBox(height: 12.h),
           Text(
             'ຍັງບໍ່ມີບັນຊີທະນາຄານ',
-            style: TextStyle(fontSize: 13.sp, color: AppColors.textHint),
+            style: TextStyle(
+              fontSize: 14.sp,
+              fontWeight: FontWeight.w700,
+              color: AppColors.textPrimary,
+            ),
+          ),
+          SizedBox(height: 4.h),
+          Text(
+            'ກະລຸນາເພີ່ມບັນຊີກ່ອນທີ່ຈະຖອນເງິນ',
+            style: TextStyle(fontSize: 12.sp, color: AppColors.textHint),
+            textAlign: TextAlign.center,
+          ),
+          SizedBox(height: 16.h),
+          GestureDetector(
+            onTap: onAddBank,
+            child: Container(
+              padding: EdgeInsets.symmetric(horizontal: 22.w, vertical: 10.h),
+              decoration: BoxDecoration(
+                gradient: const LinearGradient(
+                  colors: AppColors.pinkGradient,
+                  begin: Alignment.centerLeft,
+                  end: Alignment.centerRight,
+                ),
+                borderRadius: BorderRadius.circular(20.r),
+                boxShadow: [
+                  BoxShadow(
+                    color: AppColors.primary.withValues(alpha: 0.28),
+                    blurRadius: 10,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(Icons.add_rounded, size: 15.r, color: Colors.white),
+                  SizedBox(width: 6.w),
+                  Text(
+                    'ເພີ່ມບັນຊີທະນາຄານ',
+                    style: TextStyle(
+                      fontSize: 13.sp,
+                      fontWeight: FontWeight.w700,
+                      color: Colors.white,
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ),
         ],
       ),

@@ -3,6 +3,7 @@
 //     final packageHourModel = packageHourModelFromJson(jsonString);
 
 import 'dart:convert';
+import 'package:xaosao/utils/api_date_parser.dart';
 
 PackageHourModel packageHourModelFromJson(String str) => PackageHourModel.fromJson(json.decode(str));
 
@@ -98,7 +99,7 @@ class Plan {
         features: json["features"] == null ? null : Features.fromJson(json["features"]),
         status: json["status"],
         isPopular: json["isPopular"],
-        createdAt: json["createdAt"] == null ? null : DateTime.parse(json["createdAt"]),
+        createdAt: json["createdAt"] == null ? null : parseApiDateTime(json["createdAt"]),
     );
 
     Map<String, dynamic> toJson() => {

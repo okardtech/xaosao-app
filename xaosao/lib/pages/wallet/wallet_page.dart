@@ -18,7 +18,7 @@ class WalletPage extends StatefulWidget {
 }
 
 class _WalletPageState extends State<WalletPage> {
-  bool _amountsVisible = true;
+  bool _amountsVisible = false;
   late final WalletLogic _logic;
   late final ScrollController _scrollCtrl;
 

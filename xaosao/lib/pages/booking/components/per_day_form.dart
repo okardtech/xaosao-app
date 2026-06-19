@@ -166,14 +166,14 @@ class _PerDayFormState extends State<PerDayForm> {
                             // ── Note ─────────────────────────────
                             Padding(
                               padding: EdgeInsets.fromLTRB(16.w, 0, 16.w, 8.h),
-                              child: BookingSectionLabel('ການເເຕ່ງກາຍ'),
+                              child: BookingSectionLabel('ການແຕ່ງກາຍທີ່ຕ້ອງການ'),
                             ),
                             Padding(
                               padding: EdgeInsets.symmetric(horizontal: 16.w),
                               child: AppTextField(
                                 controller: _noteCtrl,
                                 focusNode: _noteFocus,
-                                hint: 'ໃສ່ຄຳແນະນຳ (ທາງເລືອກ)',
+                                hint: 'ຕົວຢ່າງ: ແຕ່ງຕົວເຊັກຊີ(ທາງເລືອກ)',
                                 prefixIcon: Icons.notes_rounded,
                                 accent: AppColors.primary,
                                 action: TextInputAction.done,

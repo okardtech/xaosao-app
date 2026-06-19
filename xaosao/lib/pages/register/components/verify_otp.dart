@@ -82,6 +82,16 @@ class _OtpPageState extends State<OtpPage> {
     );
   }
 
+  // ── back navigation ───────────────────────────────────────
+  // Customer stack:   register → OTP         → pop ×1
+  // Companion stack:  register → services → OTP → pop ×2
+  void _goBack() {
+    Navigator.pop(context);
+    if (widget.model.role != RegisterRole.customer) {
+      Navigator.pop(context);
+    }
+  }
+
   // ── verify ────────────────────────────────────────────────
   Future<void> _verify() async {
     if (_otp.length < 6 || _loading) return;
@@ -102,7 +112,12 @@ class _OtpPageState extends State<OtpPage> {
   // ══════════════════════════════════════════════════════════
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    return PopScope(
+      canPop: widget.model.role == RegisterRole.customer,
+      onPopInvokedWithResult: (didPop, _) {
+        if (!didPop) _goBack();
+      },
+      child: GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       behavior: HitTestBehavior.opaque,
       child: Scaffold(
@@ -224,7 +239,7 @@ class _OtpPageState extends State<OtpPage> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           GestureDetector(
-                            onTap: () => Navigator.pop(context),
+                            onTap: _goBack,
                             child: Text(
                               'ປ່ຽນເບີໂທລະສັບ',
                               style: TextStyle(
@@ -250,7 +265,8 @@ class _OtpPageState extends State<OtpPage> {
           ],
         ),
       ),
-    );
+      ),  // GestureDetector
+    );  // PopScope
   }
 }
 

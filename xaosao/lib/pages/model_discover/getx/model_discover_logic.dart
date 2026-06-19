@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:flutter/scheduler.dart';
 import 'package:get/get.dart';
 import 'package:xaosao/repository/discover_repo.dart';
 import 'package:xaosao/repository/review_repo.dart';
@@ -25,8 +24,7 @@ class ModelDiscoverLogic extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    SchedulerBinding.instance
-        .addPostFrameCallback((_) => loadModels(refresh: true));
+    loadModels(refresh: true);
   }
 
   @override
@@ -54,7 +52,7 @@ class ModelDiscoverLogic extends GetxController {
 
     _loading = true;
     final isFirst = refresh;
-    final skip = isFirst ? 0 : state.skip + _limit;
+    final skip = isFirst ? 1 : state.skip + 1;
 
     _update(state.copyWith(
       status: isFirst ? DiscoverStatus.loading : DiscoverStatus.loadingMore,
@@ -63,7 +61,7 @@ class ModelDiscoverLogic extends GetxController {
 
     try {
       final res = await _repo.getModelDiscover(
-        skip: skip,
+        page: skip,
         limit: _limit,
         filter: state.filter,
         search: state.search,

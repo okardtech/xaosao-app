@@ -3,6 +3,7 @@
 //     final bookedSlotsModel = bookedSlotsModelFromJson(jsonString);
 
 import 'dart:convert';
+import 'package:xaosao/utils/api_date_parser.dart';
 
 List<BookedSlotsModel> bookedSlotsModelFromJson(String str) => List<BookedSlotsModel>.from(json.decode(str).map((x) => BookedSlotsModel.fromJson(x)));
 
@@ -31,8 +32,8 @@ class BookedSlotsModel {
 
     factory BookedSlotsModel.fromJson(Map<String, dynamic> json) => BookedSlotsModel(
         id: json["id"],
-        startDate: json["startDate"] == null ? null : DateTime.parse(json["startDate"]),
-        endDate: json["endDate"] == null ? null : DateTime.parse(json["endDate"]),
+        startDate: parseApiDateTime(json["startDate"]),
+        endDate: parseApiDateTime(json["endDate"]),
         hours: json["hours"],
         dayAmount: json["dayAmount"],
         minutes: json["minutes"],

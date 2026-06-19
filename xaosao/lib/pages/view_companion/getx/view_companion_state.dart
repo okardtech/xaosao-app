@@ -17,7 +17,7 @@ class ViewCompanionState {
     this.filter,
     this.search,
     this.hasMore = false,
-    this.skip = 0,
+    this.skip = 1,
     this.error,
   });
 }

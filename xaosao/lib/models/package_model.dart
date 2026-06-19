@@ -3,6 +3,7 @@
 //     final packageModel = packageModelFromJson(jsonString);
 
 import 'dart:convert';
+import 'package:xaosao/utils/api_date_parser.dart';
 
 PackageModel packageModelFromJson(String str) => PackageModel.fromJson(json.decode(str));
 
@@ -71,7 +72,7 @@ class CurrentSubscriptionPlan {
         id: json["id"],
         name: json["name"],
         status: json["status"],
-        endDate: json["endDate"] == null ? null : DateTime.parse(json["endDate"]),
+        endDate: json["endDate"] == null ? null : parseApiDateTime(json["endDate"]),
         daysRemaining: json["daysRemaining"],
     );
 
@@ -143,7 +144,7 @@ class PackageData {
         features: json["features"] == null ? null : Features.fromJson(json["features"]),
         status: json["status"],
         isPopular: json["isPopular"],
-        createdAt: json["createdAt"] == null ? null : DateTime.parse(json["createdAt"]),
+        createdAt: json["createdAt"] == null ? null : parseApiDateTime(json["createdAt"]),
         current: json["current"],
     );
 

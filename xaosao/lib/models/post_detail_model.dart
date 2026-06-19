@@ -3,6 +3,7 @@
 //     final postDetailModel = postDetailModelFromJson(jsonString);
 
 import 'dart:convert';
+import 'package:xaosao/utils/api_date_parser.dart';
 
 PostDetailModel postDetailModelFromJson(String str) => PostDetailModel.fromJson(json.decode(str));
 
@@ -185,14 +186,14 @@ class Author {
         id: json["id"],
         firstName: json["firstName"],
         lastName: json["lastName"],
-        dob: json["dob"] == null ? null : DateTime.parse(json["dob"]),
+        dob: parseApiDateTime(json["dob"]),
         gender: json["gender"],
         address: json["address"],
         availableStatus: json["available_status"],
         profile: json["profile"],
         latitude: json["latitude"]?.toDouble(),
         longitude: json["longitude"]?.toDouble(),
-        locationUpdatedAt: json["locationUpdatedAt"] == null ? null : DateTime.parse(json["locationUpdatedAt"]),
+        locationUpdatedAt: parseApiDateTime(json["locationUpdatedAt"]),
         isPhoneVerified: json["isPhoneVerified"],
         sendMailNoti: json["sendMailNoti"],
         sendSmsNoti: json["sendSMSNoti"],
@@ -204,8 +205,8 @@ class Author {
         totalReferredModels: json["totalReferredModels"],
         totalReferredCustomers: json["totalReferredCustomers"],
         status: json["status"],
-        createdAt: json["createdAt"] == null ? null : DateTime.parse(json["createdAt"]),
-        updatedAt: json["updatedAt"] == null ? null : DateTime.parse(json["updatedAt"]),
+        createdAt: parseApiDateTime(json["createdAt"]),
+        updatedAt: parseApiDateTime(json["updatedAt"]),
         approveById: json["approveById"],
         recommendationScore: json["recommendationScore"]?.toDouble(),
     );
@@ -278,7 +279,7 @@ class GiftedUser {
         id: json["id"],
         userType: json["userType"],
         amount: json["amount"],
-        createdAt: json["createdAt"] == null ? null : DateTime.parse(json["createdAt"]),
+        createdAt: parseApiDateTime(json["createdAt"]),
         gift: json["gift"] == null ? null : Gift.fromJson(json["gift"]),
         user: json["user"] == null ? null : User.fromJson(json["user"]),
     );
@@ -489,11 +490,11 @@ class Post {
         location: json["location"],
         hasTip: json["hasTip"],
         status: json["status"],
-        expiresAt: json["expiresAt"] == null ? null : DateTime.parse(json["expiresAt"]),
+        expiresAt: parseApiDateTime(json["expiresAt"]),
         interestedCount: json["interestedCount"],
         notifiedUserIds: json["notifiedUserIds"] == null ? [] : List<dynamic>.from(json["notifiedUserIds"]!.map((x) => x)),
-        createdAt: json["createdAt"] == null ? null : DateTime.parse(json["createdAt"]),
-        updatedAt: json["updatedAt"] == null ? null : DateTime.parse(json["updatedAt"]),
+        createdAt: parseApiDateTime(json["createdAt"]),
+        updatedAt: parseApiDateTime(json["updatedAt"]),
         modelId: json["modelId"],
         customerId: json["customerId"],
         serviceId: json["serviceId"],

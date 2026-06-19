@@ -3,6 +3,7 @@
 //     final topUpModel = topUpModelFromJson(jsonString);
 
 import 'dart:convert';
+import 'package:xaosao/utils/api_date_parser.dart';
 
 TopUpModel topUpModelFromJson(String str) => TopUpModel.fromJson(json.decode(str));
 
@@ -67,8 +68,8 @@ class TopUpModel {
         comission: json["comission"],
         fee: json["fee"],
         customerId: json["customerId"],
-        createdAt: json["createdAt"] == null ? null : DateTime.parse(json["createdAt"]),
-        updatedAt: json["updatedAt"] == null ? null : DateTime.parse(json["updatedAt"]),
+        createdAt: parseApiDateTime(json["createdAt"]),
+        updatedAt: parseApiDateTime(json["updatedAt"]),
     );
 
     Map<String, dynamic> toJson() => {

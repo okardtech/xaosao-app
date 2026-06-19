@@ -3,6 +3,7 @@
 //     final packageHistoryModel = packageHistoryModelFromJson(jsonString);
 
 import 'dart:convert';
+import 'package:xaosao/utils/api_date_parser.dart';
 
 List<PackageHistoryModel> packageHistoryModelFromJson(String str) => List<PackageHistoryModel>.from(json.decode(str).map((x) => PackageHistoryModel.fromJson(x)));
 
@@ -59,11 +60,11 @@ class PackageHistoryModel {
         planName: json["planName"],
         planPrice: json["planPrice"],
         durationDays: json["durationDays"],
-        startDate: json["startDate"] == null ? null : DateTime.parse(json["startDate"]),
-        endDate: json["endDate"] == null ? null : DateTime.parse(json["endDate"]),
+        startDate: parseApiDateTime(json["startDate"]),
+        endDate: parseApiDateTime(json["endDate"]),
         paymentMethod: json["paymentMethod"],
         status: json["status"],
-        createdAt: json["createdAt"] == null ? null : DateTime.parse(json["createdAt"]),
+        createdAt: parseApiDateTime(json["createdAt"]),
     );
 
     Map<String, dynamic> toJson() => {

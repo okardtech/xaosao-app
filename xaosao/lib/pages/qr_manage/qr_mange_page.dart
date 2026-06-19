@@ -125,7 +125,7 @@ class _QrManagementPageState extends State<QrManagementPage> {
 }
 
 // ═══════════════════════════════════════════════════════════════
-//  QrCard — single QR card
+//  QrCard — content-first redesign
 // ═══════════════════════════════════════════════════════════════
 class QrCard extends StatelessWidget {
   final BankAccountModel account;
@@ -143,77 +143,49 @@ class QrCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDefault = account.isDefault == true;
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(16.r),
+        borderRadius: BorderRadius.circular(18.r),
         border: Border.all(
-          color: AppColors.textDisabled.withAlpha(50),
-          width: 0.5,
+          color: isDefault
+              ? AppColors.primary.withValues(alpha: 0.20)
+              : Colors.black.withValues(alpha: 0.06),
+          width: isDefault ? 1.2 : 0.6,
         ),
         boxShadow: [
           BoxShadow(
-            color: AppColors.primary.withValues(alpha: 0.10),
-            blurRadius: 20,
-            offset: const Offset(0, 6),
-          ),
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 2),
+            color: isDefault
+                ? AppColors.primary.withValues(alpha: 0.10)
+                : Colors.black.withValues(alpha: 0.04),
+            blurRadius: 16,
+            offset: const Offset(0, 4),
           ),
         ],
       ),
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(16.r),
+        borderRadius: BorderRadius.circular(18.r),
         child: Column(
           children: [
-            _buildHeader(),
-            Container(height: 0.5, color: Colors.black.withValues(alpha: 0.05)),
-            Padding(
-              padding: EdgeInsets.all(14.r),
-              child: Column(
-                children: [
-                  _buildQrImage(),
-                  SizedBox(height: 10.h),
-                  Text(
-                    'ລູກຄ້າສະແກນ QR ນີ້ເພື່ອໂອນເງິນໃຫ້ທ່ານ',
-                    style: TextStyle(
-                      fontSize: 12.sp,
-                      color: AppColors.textHint,
-                    ),
-                  ),
-                  SizedBox(height: 12.h),
-                  Row(
-                    children: [
-                      if (onDelete != null) ...[
-                        Expanded(
-                          child: AppOutlineButton(
-                            label: 'ລຶບ',
-                            leadingIcon: Icons.delete_outline_rounded,
-                            borderColor: const Color(0xFFEF4444).withValues(alpha: 0.5),
-                            textColor: const Color(0xFFEF4444),
-                            height: 42,
-                            onTap: onDelete!,
-                          ),
-                        ),
-                        SizedBox(width: 10.w),
-                      ],
-                      Expanded(
-                        child: AppPrimaryButton(
-                          label: 'ແກ້ໄຂ QR',
-                          leadingIcon: Icons.edit_outlined,
-                          height: 42,
-                          onTap: onEdit,
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
+            // ── Gradient accent line (default only) ───────────
+            if (isDefault)
+              Container(
+                height: 3,
+                decoration: const BoxDecoration(
+                  gradient: LinearGradient(colors: AppColors.pinkGradient),
+                ),
               ),
-            ),
+            // ── Header: name + action icons ────────────────────
+            _buildHeader(isDefault),
+            // ── QR image hero ──────────────────────────────────
+            _buildQrContent(),
+            // ── Set-primary footer ─────────────────────────────
             if (onSetPrimary != null) ...[
-              Container(height: 0.5, color: Colors.black.withValues(alpha: 0.05)),
+              Container(
+                height: 0.5,
+                color: Colors.black.withValues(alpha: 0.05),
+              ),
               _SetPrimaryRow(onTap: onSetPrimary!),
             ],
           ],
@@ -222,83 +194,137 @@ class QrCard extends StatelessWidget {
     );
   }
 
-  Widget _buildHeader() {
+  Widget _buildHeader(bool isDefault) {
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 13.w, vertical: 11.h),
+      padding: EdgeInsets.fromLTRB(14.w, 14.h, 10.w, 14.h),
       child: Row(
         children: [
+          // Bank icon
           Container(
-            width: 36.r,
-            height: 36.r,
+            width: 38.r,
+            height: 38.r,
             decoration: BoxDecoration(
               color: AppColors.primary.withValues(alpha: 0.08),
-              borderRadius: BorderRadius.circular(10.r),
+              borderRadius: BorderRadius.circular(11.r),
             ),
             child: Icon(
               Icons.account_balance_outlined,
-              size: 16.r,
+              size: 17.r,
               color: AppColors.primary,
             ),
           ),
           SizedBox(width: 10.w),
+          // Bank name + default label
           Expanded(
-            child: Text(
-              account.bankAccountName ?? 'ທະນາຄານ',
-              style: TextStyle(
-                fontSize: 14.sp,
-                fontWeight: FontWeight.w700,
-                color: AppColors.textPrimary,
-              ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  account.bankAccountName ?? 'ທະນາຄານ',
+                  style: TextStyle(
+                    fontSize: 14.sp,
+                    fontWeight: FontWeight.w700,
+                    color: AppColors.textPrimary,
+                  ),
+                ),
+                if (isDefault) ...[
+                  SizedBox(height: 3.h),
+                  Row(
+                    children: [
+                      Icon(
+                        Icons.star_rounded,
+                        size: 10.r,
+                        color: AppColors.star,
+                      ),
+                      SizedBox(width: 3.w),
+                      Text(
+                        'ບັນຊີຫຼັກ',
+                        style: TextStyle(
+                          fontSize: 10.sp,
+                          fontWeight: FontWeight.w600,
+                          color: AppColors.star,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ],
             ),
           ),
-          if (account.isDefault == true)
-            Container(
-              padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 3.h),
-              decoration: BoxDecoration(
-                color: AppColors.star.withValues(alpha: 0.12),
-                borderRadius: BorderRadius.circular(20.r),
+          // ── Action icon buttons ──────────────────────────────
+          Row(
+            children: [
+              _ActionIconButton(
+                icon: Icons.edit_outlined,
+                iconColor: AppColors.primary,
+                bgColor: AppColors.primary.withValues(alpha: 0.08),
+                tooltip: 'ແກ້ໄຂ',
+                onTap: onEdit,
               ),
-              child: Text(
-                '★ ບັນຊີຫຼັກ',
-                style: TextStyle(
-                  fontSize: 12.sp,
-                  fontWeight: FontWeight.w400,
-                  color: AppColors.star,
+              if (onDelete != null) ...[
+                SizedBox(width: 6.w),
+                _ActionIconButton(
+                  icon: Icons.delete_outline_rounded,
+                  iconColor: const Color(0xFFEF4444),
+                  bgColor: const Color(0xFFFEF2F2),
+                  tooltip: 'ລຶບ',
+                  onTap: onDelete!,
                 ),
-              ),
-            ),
+              ],
+            ],
+          ),
         ],
       ),
     );
   }
 
-  Widget _buildQrImage() {
+  Widget _buildQrContent() {
     final url = account.qrCode;
-    final size = (account.isDefault == true) ? 160.w : 130.w;
-
-    return Container(
-        width: size,
-        height: size,
-        decoration: BoxDecoration(
-          color: AppColors.bg,
-          borderRadius: BorderRadius.circular(14.r),
-          border: Border.all(
-            color: Colors.black.withValues(alpha: 0.08),
-            width: 0.5,
-          ),
-        ),
-        child: url != null
-            ? ClipRRect(
-                borderRadius: BorderRadius.circular(14.r),
-                child: AppNetworkImage(
-                  imageUrl: url,
-                  width: size,
-                  height: size,
-                  fit: BoxFit.cover,
-                  errorWidget: _qrPlaceholder(size),
+    final isDefault = account.isDefault == true;
+    final imageSize = isDefault ? 200.w : 170.w;
+    return Padding(
+      padding: EdgeInsets.fromLTRB(20.w, 0, 20.w, 18.h),
+      child: Column(
+        children: [
+          Container(
+            width: imageSize,
+            height: imageSize,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(16.r),
+              border: Border.all(
+                color: Colors.black.withValues(alpha: 0.07),
+                width: 1,
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.05),
+                  blurRadius: 10,
+                  offset: const Offset(0, 3),
                 ),
-              )
-            : _qrPlaceholder(size),
+              ],
+            ),
+            child: url != null
+                ? ClipRRect(
+                    borderRadius: BorderRadius.circular(15.r),
+                    child: AppNetworkImage(
+                      imageUrl: url,
+                      width: imageSize,
+                      height: imageSize,
+                      fit: BoxFit.cover,
+                      errorWidget: _qrPlaceholder(imageSize),
+                    ),
+                  )
+                : _qrPlaceholder(imageSize),
+          ),
+          SizedBox(height: 10.h),
+          Text(
+            'ໃຫ້ລູກຄ້າສະແກນ QR ນີ້ເພື່ອໂອນເງິນ',
+            style: TextStyle(fontSize: 11.sp, color: AppColors.textHint),
+            textAlign: TextAlign.center,
+          ),
+        ],
+      ),
     );
   }
 
@@ -312,7 +338,7 @@ class QrCard extends StatelessWidget {
           Icon(Icons.qr_code_2_rounded, size: 48.r, color: AppColors.textDisabled),
           SizedBox(height: 8.h),
           Text(
-            'ກົດເພື່ອເພີ່ມ QR',
+            'ຍັງບໍ່ມີ QR Code',
             style: TextStyle(fontSize: 11.sp, color: AppColors.textHint),
           ),
         ],
@@ -321,8 +347,44 @@ class QrCard extends StatelessWidget {
   }
 }
 
+// ── Small icon-only action button ─────────────────────────────────
+class _ActionIconButton extends StatelessWidget {
+  final IconData icon;
+  final Color iconColor;
+  final Color bgColor;
+  final String tooltip;
+  final VoidCallback onTap;
+
+  const _ActionIconButton({
+    required this.icon,
+    required this.iconColor,
+    required this.bgColor,
+    required this.tooltip,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Tooltip(
+      message: tooltip,
+      child: GestureDetector(
+        onTap: onTap,
+        child: Container(
+          width: 34.r,
+          height: 34.r,
+          decoration: BoxDecoration(
+            color: bgColor,
+            borderRadius: BorderRadius.circular(10.r),
+          ),
+          child: Icon(icon, size: 16.r, color: iconColor),
+        ),
+      ),
+    );
+  }
+}
+
 // ═══════════════════════════════════════════════════════════════
-//  Set primary row
+//  Set primary row — subtle tap-to-promote strip
 // ═══════════════════════════════════════════════════════════════
 class _SetPrimaryRow extends StatelessWidget {
   final VoidCallback onTap;
@@ -332,19 +394,38 @@ class _SetPrimaryRow extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: onTap,
+      splashColor: AppColors.star.withValues(alpha: 0.08),
       child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 13.w, vertical: 10.h),
+        padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 11.h),
         child: Row(
           children: [
-            Icon(Icons.star_outline_rounded, size: 13.r, color: AppColors.textHint),
-            SizedBox(width: 6.w),
+            Container(
+              width: 22.r,
+              height: 22.r,
+              decoration: BoxDecoration(
+                color: AppColors.star.withValues(alpha: 0.10),
+                borderRadius: BorderRadius.circular(7.r),
+              ),
+              child: Icon(
+                Icons.star_outline_rounded,
+                size: 12.r,
+                color: AppColors.star,
+              ),
+            ),
+            SizedBox(width: 9.w),
             Text(
               'ຕັ້ງເປັນ QR ຫຼັກ',
               style: TextStyle(
                 fontSize: 12.sp,
                 fontWeight: FontWeight.w600,
-                color: AppColors.textHint,
+                color: AppColors.textSecondary,
               ),
+            ),
+            const Spacer(),
+            Icon(
+              Icons.chevron_right_rounded,
+              size: 16.r,
+              color: AppColors.textDisabled,
             ),
           ],
         ),
@@ -525,7 +606,7 @@ class _InfoBanner extends StatelessWidget {
 }
 
 // ═══════════════════════════════════════════════════════════════
-//  Add QR button
+//  Add QR button — subtle dashed-feel secondary action
 // ═══════════════════════════════════════════════════════════════
 class _AddQrButton extends StatelessWidget {
   final VoidCallback onTap;
@@ -536,45 +617,33 @@ class _AddQrButton extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        height: 48.h,
+        height: 50.h,
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: AppColors.primary.withValues(alpha: 0.04),
           borderRadius: BorderRadius.circular(14.r),
           border: Border.all(
-            color: AppColors.textDisabled.withAlpha(50),
-            width: 0.5,
+            color: AppColors.primary.withValues(alpha: 0.18),
+            width: 1,
           ),
-          boxShadow: [
-            BoxShadow(
-              color: AppColors.primary.withValues(alpha: 0.10),
-              blurRadius: 20,
-              offset: const Offset(0, 6),
-            ),
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.05),
-              blurRadius: 10,
-              offset: const Offset(0, 2),
-            ),
-          ],
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Container(
-              width: 30.r,
-              height: 30.r,
+              width: 26.r,
+              height: 26.r,
               decoration: BoxDecoration(
-                color: AppColors.socialBg,
-                borderRadius: BorderRadius.circular(9.r),
+                color: AppColors.primary.withValues(alpha: 0.10),
+                borderRadius: BorderRadius.circular(8.r),
               ),
-              child: Icon(Icons.add_rounded, size: 15.r, color: AppColors.primary),
+              child: Icon(Icons.add_rounded, size: 14.r, color: AppColors.primary),
             ),
-            SizedBox(width: 9.w),
+            SizedBox(width: 8.w),
             Text(
               'ເພີ່ມ QR ໃໝ່',
               style: TextStyle(
                 fontSize: 13.sp,
-                fontWeight: FontWeight.w700,
+                fontWeight: FontWeight.w600,
                 color: AppColors.primary,
               ),
             ),

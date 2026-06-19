@@ -57,6 +57,16 @@ class DashboardLogic extends GetxController {
       } catch (_) {}
     }
 
+    // Post push → sync counts for the specific post (foreground only)
+    if (type.startsWith('post_')) {
+      final postId = data['postId'] as String? ?? '';
+      if (postId.isNotEmpty) {
+        try {
+          Get.find<PostLogic>().syncPostCount(postId);
+        } catch (_) {}
+      }
+    }
+
     // Wallet/topup/withdraw push → refresh the wallet page data
     if (_walletTypes.contains(type)) {
       if (isCustomer) {

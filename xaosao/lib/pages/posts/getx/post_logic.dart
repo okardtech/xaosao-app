@@ -257,6 +257,54 @@ class PostLogic extends GetxController {
     _update(state.copyWith(feed: patched));
   }
 
+  // ── Sync counts from server (foreground push only) ──────────
+
+  Future<void> syncPostCount(String postId) async {
+    if (postId.isEmpty) return;
+    final fi = state.feed.indexWhere((p) => p.id == postId);
+    final mi = state.myPosts.indexWhere((p) => p.id == postId);
+    if (fi == -1 && mi == -1) return;
+
+    final res = await _repo.getPostCount(postId: postId);
+    if (!res.success || res.data == null) return;
+    final c = res.data!;
+
+    if (fi != -1) {
+      final patched = List<FeeModel>.of(state.feed);
+      final o = patched[fi];
+      patched[fi] = FeeModel(
+        id: o.id, authorType: o.authorType, content: o.content,
+        images: o.images, hasTip: o.hasTip, status: o.status,
+        expiresAt: o.expiresAt,
+        interestedCount: c.interests ?? o.interestedCount,
+        totalCommentCount: c.comments ?? o.totalCommentCount,
+        totalGiftCount: c.gifts ?? o.totalGiftCount,
+        isInterested: o.isInterested, createdAt: o.createdAt, updatedAt: o.updatedAt,
+        author: o.author, service: o.service,
+        location: o.location, targetGender: o.targetGender,
+      );
+      _update(state.copyWith(feed: patched));
+    }
+
+    if (mi != -1) {
+      final patched = List<MyPostModel>.of(state.myPosts);
+      final o = patched[mi];
+      patched[mi] = MyPostModel(
+        id: o.id, authorType: o.authorType, content: o.content,
+        images: o.images, hasTip: o.hasTip, status: o.status,
+        expiresAt: o.expiresAt,
+        interestedCount: c.interests ?? o.interestedCount,
+        createdAt: o.createdAt, updatedAt: o.updatedAt, location: o.location,
+        counts: Counts(
+          interests: c.interests,
+          comments: c.comments,
+          gifts: c.gifts,
+        ),
+      );
+      _update(state.copyWith(myPosts: patched));
+    }
+  }
+
   // ── Create post ─────────────────────────────────────────────
 
   Future<bool> createPost({

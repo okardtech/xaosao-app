@@ -255,6 +255,7 @@ class _ProfilePageState extends State<ProfilePage> {
     Get.delete<FeedbackLogic>(force: true);
     Get.delete<NotifSettingLogic>(force: true);
     Get.delete<PackageLogic>(force: true);
+    Get.delete<ModelWalletLogic>(force: true);
   }
 
   Future<void> _confirmDelete(BuildContext context) async {

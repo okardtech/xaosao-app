@@ -1,3 +1,5 @@
+import 'package:xaosao/utils/api_date_parser.dart';
+
 class CommentAuthor {
   final String id;
   final String? userType;
@@ -58,9 +60,7 @@ class CommentModel {
         userType: json['userType'] as String?,
         parentId: json['parentId'] as String?,
         content: json['content'] as String?,
-        createdAt: json['createdAt'] != null
-            ? DateTime.tryParse(json['createdAt'] as String)
-            : null,
+        createdAt: parseApiDateTime(json['createdAt']),
         author: json['author'] != null
             ? CommentAuthor.fromJson(json['author'] as Map<String, dynamic>)
             : null,

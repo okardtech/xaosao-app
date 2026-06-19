@@ -219,7 +219,12 @@ class _ServiceCard extends StatelessWidget {
       child: Column(
         children: [
           // ── Header ─────────────────────────────────────────
-          _CardHeader(service: service, owned: _owned),
+          _CardHeader(
+            service: service,
+            owned: _owned,
+            onEdit: _owned ? () => onUpdate(profileService!) : null,
+            onDelete: _owned ? () => onDelete(profileService!) : null,
+          ),
 
           // ── Body ───────────────────────────────────────────
           Padding(
@@ -230,14 +235,10 @@ class _ServiceCard extends StatelessWidget {
                     ? _MassageOwnedBody(
                         service: service,
                         profileService: profileService!,
-                        onUpdate: () => onUpdate(profileService!),
-                        onDelete: () => onDelete(profileService!),
                       )
                     : _OwnedBody(
                         service: service,
                         profileService: profileService!,
-                        onUpdate: () => onUpdate(profileService!),
-                        onDelete: () => onDelete(profileService!),
                       ))
                 : _UnownedBody(service: service, onAdd: onAdd),
           ),
@@ -251,8 +252,15 @@ class _ServiceCard extends StatelessWidget {
 class _CardHeader extends StatelessWidget {
   final ServiceModel service;
   final bool owned;
+  final VoidCallback? onEdit;
+  final VoidCallback? onDelete;
 
-  const _CardHeader({required this.service, required this.owned});
+  const _CardHeader({
+    required this.service,
+    required this.owned,
+    this.onEdit,
+    this.onDelete,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -264,7 +272,7 @@ class _CardHeader extends StatelessWidget {
       ),
       child: Row(
         children: [
-          // Icon
+          // Service icon
           Container(
             width: 44.r,
             height: 44.r,
@@ -282,27 +290,48 @@ class _CardHeader extends StatelessWidget {
           ),
           SizedBox(width: 12.w),
 
-          // Name + description
+          // Name + status chip
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  ServiceHelper.serviceOriginalName(service.name),
-                  style: TextStyle(
-                    fontSize: 14.sp,
-                    fontWeight: FontWeight.w800,
-                    color: AppColors.textPrimary,
-                  ),
+                Row(
+                  children: [
+                    Flexible(
+                      child: Text(
+                        ServiceHelper.serviceOriginalName(service.name),
+                        style: TextStyle(
+                          fontSize: 14.sp,
+                          fontWeight: FontWeight.w800,
+                          color: AppColors.textPrimary,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                    if (owned) ...[
+                      SizedBox(width: 6.w),
+                      Container(
+                        padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 2.h),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFF22C55E).withValues(alpha: 0.12),
+                          borderRadius: BorderRadius.circular(6.r),
+                        ),
+                        child: Text(
+                          'ເປີດໃຊ້',
+                          style: TextStyle(
+                            fontSize: 9.sp,
+                            fontWeight: FontWeight.w700,
+                            color: const Color(0xFF16A34A),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ],
                 ),
-                if (service.description != null &&
-                    service.description!.isNotEmpty)
+                if (service.description != null && service.description!.isNotEmpty)
                   Text(
                     service.description!,
-                    style: TextStyle(
-                      fontSize: 12.sp,
-                      color: AppColors.textHint,
-                    ),
+                    style: TextStyle(fontSize: 12.sp, color: AppColors.textHint),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -310,24 +339,62 @@ class _CardHeader extends StatelessWidget {
             ),
           ),
 
-          // Badge
-          if (owned)
-            Container(
-              padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
-              decoration: BoxDecoration(
-                color: AppColors.primary.withValues(alpha: 0.10),
-                borderRadius: BorderRadius.circular(20.r),
-              ),
-              child: Text(
-                'ສະໝັກເເລ້ວ',
-                style: TextStyle(
-                  fontSize: 10.sp,
-                  fontWeight: FontWeight.w700,
-                  color: AppColors.primary,
-                ),
-              ),
+          // Action icons (owned only)
+          if (owned && onEdit != null && onDelete != null) ...[
+            SizedBox(width: 8.w),
+            _SvcActionBtn(
+              icon: Icons.edit_outlined,
+              color: AppColors.primary,
+              bgColor: AppColors.primary.withValues(alpha: 0.10),
+              tooltip: 'ອັບເດດ',
+              onTap: onEdit!,
             ),
+            SizedBox(width: 6.w),
+            _SvcActionBtn(
+              icon: Icons.delete_outline_rounded,
+              color: const Color(0xFFEF4444),
+              bgColor: const Color(0xFFEF4444).withValues(alpha: 0.08),
+              tooltip: 'ລຶບ',
+              onTap: onDelete!,
+            ),
+          ],
         ],
+      ),
+    );
+  }
+}
+
+// ── Small icon-only action button ──────────────────────────────
+class _SvcActionBtn extends StatelessWidget {
+  final IconData icon;
+  final Color color;
+  final Color bgColor;
+  final String tooltip;
+  final VoidCallback onTap;
+
+  const _SvcActionBtn({
+    required this.icon,
+    required this.color,
+    required this.bgColor,
+    required this.tooltip,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Tooltip(
+      message: tooltip,
+      child: GestureDetector(
+        onTap: onTap,
+        child: Container(
+          width: 34.r,
+          height: 34.r,
+          decoration: BoxDecoration(
+            color: bgColor,
+            borderRadius: BorderRadius.circular(10.r),
+          ),
+          child: Icon(icon, size: 17.r, color: color),
+        ),
       ),
     );
   }
@@ -339,19 +406,15 @@ class _CardHeader extends StatelessWidget {
 class _OwnedBody extends StatelessWidget {
   final ServiceModel service;
   final ModelService profileService;
-  final VoidCallback onUpdate;
-  final VoidCallback onDelete;
 
   const _OwnedBody({
     required this.service,
     required this.profileService,
-    required this.onUpdate,
-    required this.onDelete,
   });
 
   @override
   Widget build(BuildContext context) {
-    final rate = profileService.customHourlyRate ?? 0;
+    final rate = profileService.effectiveRate ?? 0;
     final commission = service.commission ?? 0;
     final net = rate * (1 - commission / 100);
     final suffix = _billingLabel(service.billingType);
@@ -421,31 +484,6 @@ class _OwnedBody extends StatelessWidget {
         ),
 
         SizedBox(height: 14.h),
-
-        // Buttons
-        Row(
-          children: [
-            Expanded(
-              child: AppOutlineButton(
-                label: 'ລຶບ',
-                leadingIcon: Icons.delete_outline_rounded,
-                borderColor: const Color(0xFFEF4444).withValues(alpha: 0.5),
-                textColor: const Color(0xFFEF4444),
-                height: 42,
-                onTap: onDelete,
-              ),
-            ),
-            SizedBox(width: 10.w),
-            Expanded(
-              child: AppPrimaryButton(
-                label: 'ອັບເດດ',
-                leadingIcon: Icons.edit_outlined,
-                height: 42,
-                onTap: onUpdate,
-              ),
-            ),
-          ],
-        ),
       ],
     );
   }
@@ -457,14 +495,10 @@ class _OwnedBody extends StatelessWidget {
 class _MassageOwnedBody extends StatelessWidget {
   final ServiceModel service;
   final ModelService profileService;
-  final VoidCallback onUpdate;
-  final VoidCallback onDelete;
 
   const _MassageOwnedBody({
     required this.service,
     required this.profileService,
-    required this.onUpdate,
-    required this.onDelete,
   });
 
   @override
@@ -550,31 +584,6 @@ class _MassageOwnedBody extends StatelessWidget {
         ],
 
         SizedBox(height: 14.h),
-
-        // ── Buttons ───────────────────────────────────────
-        Row(
-          children: [
-            Expanded(
-              child: AppOutlineButton(
-                label: 'ລຶບ',
-                leadingIcon: Icons.delete_outline_rounded,
-                borderColor: const Color(0xFFEF4444).withValues(alpha: 0.5),
-                textColor: const Color(0xFFEF4444),
-                height: 42,
-                onTap: onDelete,
-              ),
-            ),
-            SizedBox(width: 10.w),
-            Expanded(
-              child: AppPrimaryButton(
-                label: 'ອັບເດດ',
-                leadingIcon: Icons.edit_outlined,
-                height: 42,
-                onTap: onUpdate,
-              ),
-            ),
-          ],
-        ),
       ],
     );
   }
@@ -1123,7 +1132,36 @@ class _UnownedBody extends StatelessWidget {
 
         SizedBox(height: 14.h),
 
-        AppPrimaryButton(label: '+ ເພີ່ມບໍລິການ', height: 42, onTap: onAdd),
+        GestureDetector(
+          onTap: onAdd,
+          child: Container(
+            width: double.infinity,
+            padding: EdgeInsets.symmetric(vertical: 11.h),
+            decoration: BoxDecoration(
+              color: AppColors.primary.withValues(alpha: 0.06),
+              borderRadius: BorderRadius.circular(12.r),
+              border: Border.all(
+                color: AppColors.primary.withValues(alpha: 0.18),
+                width: 1.0,
+              ),
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(Icons.add_circle_outline_rounded, size: 16.r, color: AppColors.primary),
+                SizedBox(width: 6.w),
+                Text(
+                  'ເພີ່ມບໍລິການນີ້',
+                  style: TextStyle(
+                    fontSize: 13.sp,
+                    fontWeight: FontWeight.w700,
+                    color: AppColors.primary,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
       ],
     );
   }
