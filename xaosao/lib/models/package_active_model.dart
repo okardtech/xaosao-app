@@ -11,28 +11,34 @@ String packageActiveModelToJson(PackageActiveModel data) => json.encode(data.toJ
 class PackageActiveModel {
     bool? hasActiveSubscription;
     bool? hasPendingSubscription;
+    bool? neverSubscribed;
 
     PackageActiveModel({
         this.hasActiveSubscription,
         this.hasPendingSubscription,
+        this.neverSubscribed,
     });
 
     PackageActiveModel copyWith({
         bool? hasActiveSubscription,
         bool? hasPendingSubscription,
+        bool? neverSubscribed,
     }) => 
         PackageActiveModel(
             hasActiveSubscription: hasActiveSubscription ?? this.hasActiveSubscription,
             hasPendingSubscription: hasPendingSubscription ?? this.hasPendingSubscription,
+            neverSubscribed: neverSubscribed ?? this.neverSubscribed,
         );
 
     factory PackageActiveModel.fromJson(Map<String, dynamic> json) => PackageActiveModel(
         hasActiveSubscription: json["hasActiveSubscription"],
         hasPendingSubscription: json["hasPendingSubscription"],
+        neverSubscribed: json["neverSubscribed"]
     );
 
     Map<String, dynamic> toJson() => {
         "hasActiveSubscription": hasActiveSubscription,
         "hasPendingSubscription": hasPendingSubscription,
+        "neverSubscribed":neverSubscribed
     };
 }

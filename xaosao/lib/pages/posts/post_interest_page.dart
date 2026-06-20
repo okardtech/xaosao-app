@@ -59,6 +59,14 @@ class _PostInterestPageState extends State<PostInterestPage> {
       final activeRes = await PackageRepo().packageActive();
       if (!mounted) return;
       final active = activeRes.data;
+      if (active?.neverSubscribed == true) {
+        final hourRes = await PackageRepo().packageHour();
+        if (hourRes.data == null) {
+          return;
+        }
+        showSubscriptionBanner(context, hourRes.data!);
+        return;
+      }
       if (active?.hasPendingSubscription == true) {
         showPendingSubscriptionBanner(context);
         return;

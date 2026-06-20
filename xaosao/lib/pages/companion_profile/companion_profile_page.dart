@@ -14,6 +14,7 @@ import 'package:xaosao/repository/package_repo.dart';
 import 'package:xaosao/repository/review_repo.dart';
 import 'package:xaosao/services/storage_service.dart';
 import 'package:xaosao/utils/currency_formatter.dart';
+import 'package:xaosao/utils/deep_link_share.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:xaosao/models/conversation_model.dart';
 import 'package:xaosao/pages/chat/getx/chat_logic.dart';
@@ -195,7 +196,20 @@ class _CompanionProfilePageState extends State<CompanionProfilePage> {
               );
             }),
             SizedBox(width: 6.w),
-            _AppBarIcon(icon: Icons.share_outlined, onTap: () {}),
+            Obx(() {
+              final profile = _logic.state.profile;
+              return _AppBarIcon(
+                icon: Icons.share_outlined,
+                onTap: () {
+                  final id = profile?.id;
+                  if (id == null || id.isEmpty) return;
+                  DeepLinkShare.shareCompanion(
+                    companionId: id,
+                    displayName: profile?.firstName,
+                  );
+                },
+              );
+            }),
             SizedBox(width: 12.w),
           ],
         ),
@@ -713,6 +727,15 @@ class _CompanionProfilePageState extends State<CompanionProfilePage> {
 
       final active = activeRes.data;
 
+      if (active?.neverSubscribed == true) {
+        final hourRes = await PackageRepo().packageHour();
+        if (hourRes.data == null) {
+          return;
+        }
+        showSubscriptionBanner(context, hourRes.data!);
+        return;
+      }
+
       if (active?.hasPendingSubscription == true) {
         showPendingSubscriptionBanner(context);
         return;
@@ -753,6 +776,15 @@ class _CompanionProfilePageState extends State<CompanionProfilePage> {
     if (!mounted) return;
 
     final active = activeRes.data;
+
+    if (active?.neverSubscribed == true) {
+      final hourRes = await PackageRepo().packageHour();
+      if (hourRes.data == null) {
+        return;
+      }
+      showSubscriptionBanner(context, hourRes.data!);
+      return;
+    }
 
     if (active?.hasPendingSubscription == true) {
       showPendingSubscriptionBanner(context);
@@ -830,16 +862,69 @@ class _PhotoSlider extends StatefulWidget {
   State<_PhotoSlider> createState() => _PhotoSliderState();
 }
 
-class _PhotoSliderState extends State<_PhotoSlider> {
+class _PhotoSliderState extends State<_PhotoSlider>
+    with TickerProviderStateMixin {
   final _pageCtrl = PageController();
   int _current = 0;
+
+  // One-time "tap to expand" hint
+  bool _showHint = true;
+
+  // Press-feedback scale for the tapped photo
+  late final AnimationController _pressCtrl;
+  late final Animation<double> _pressScale;
+
+  // Pulse animation for the expand affordance chip
+  late final AnimationController _pulseCtrl;
 
   int get _count => widget.photos.isEmpty ? 1 : widget.photos.length;
 
   @override
+  void initState() {
+    super.initState();
+    _pressCtrl = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 120),
+      reverseDuration: const Duration(milliseconds: 180),
+    );
+    _pressScale = Tween<double>(begin: 1.0, end: 0.97).animate(
+      CurvedAnimation(parent: _pressCtrl, curve: Curves.easeOut),
+    );
+    _pulseCtrl = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1400),
+    )..repeat(reverse: true);
+
+    // Auto-fade the hint after a few seconds.
+    Future.delayed(const Duration(milliseconds: 3200), () {
+      if (mounted) setState(() => _showHint = false);
+    });
+
+    // Warm the cache for neighboring photos so swipe-then-tap is instant.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted || widget.photos.isEmpty) return;
+      for (final i in [1, 2]) {
+        if (i >= widget.photos.length) break;
+        precacheImage(
+          NetworkImage(widget.photos[i]),
+          context,
+        );
+      }
+    });
+  }
+
+  @override
   void dispose() {
     _pageCtrl.dispose();
+    _pressCtrl.dispose();
+    _pulseCtrl.dispose();
     super.dispose();
+  }
+
+  void _openPreview(int i) {
+    if (widget.photos.isEmpty) return;
+    AppImagePreview.show(context, widget.photos, initialIndex: i);
+    if (_showHint) setState(() => _showHint = false);
   }
 
   @override
@@ -856,42 +941,48 @@ class _PhotoSliderState extends State<_PhotoSlider> {
             physics: const BouncingScrollPhysics(),
             onPageChanged: (i) => setState(() => _current = i),
             itemBuilder: (context, i) {
-              if (widget.photos.isNotEmpty) {
-                return GestureDetector(
-                  onTap: () => AppImagePreview.show(
-                    context,
-                    widget.photos,
-                    initialIndex: i,
+              if (widget.photos.isEmpty) return _gradientFallback();
+              return GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTapDown: (_) => _pressCtrl.forward(),
+                onTapCancel: () => _pressCtrl.reverse(),
+                onTapUp: (_) => _pressCtrl.reverse(),
+                onTap: () => _openPreview(i),
+                child: ScaleTransition(
+                  scale: _pressScale,
+                  child: Hero(
+                    tag: 'preview_${widget.photos[i]}_$i',
+                    child: AppNetworkImage(
+                      imageUrl: widget.photos[i],
+                      fit: BoxFit.cover,
+                      errorWidget: _gradientFallback(),
+                    ),
                   ),
-                  child: AppNetworkImage(
-                    imageUrl: widget.photos[i],
-                    fit: BoxFit.cover,
-                    errorWidget: _gradientFallback(),
-                  ),
-                );
-              }
-              return _gradientFallback();
+                ),
+              );
             },
           ),
 
-          // Bottom gradient
+          // Bottom gradient — wrap in IgnorePointer so taps reach the photo.
           Positioned(
             bottom: 0,
             left: 0,
             right: 0,
-            child: Container(
-              height: widget.height * 0.62,
-              decoration: const BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.bottomCenter,
-                  end: Alignment.topCenter,
-                  colors: [
-                    Color(0xFA050512),
-                    Color(0xB2050512),
-                    Color(0x1A050512),
-                    Colors.transparent,
-                  ],
-                  stops: [0.0, 0.45, 0.75, 1.0],
+            child: IgnorePointer(
+              child: Container(
+                height: widget.height * 0.62,
+                decoration: const BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.bottomCenter,
+                    end: Alignment.topCenter,
+                    colors: [
+                      Color(0xFA050512),
+                      Color(0xB2050512),
+                      Color(0x1A050512),
+                      Colors.transparent,
+                    ],
+                    stops: [0.0, 0.45, 0.75, 1.0],
+                  ),
                 ),
               ),
             ),
@@ -903,54 +994,72 @@ class _PhotoSliderState extends State<_PhotoSlider> {
               top: 14.h,
               left: 0,
               right: 0,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: List.generate(_count, (i) {
-                  final isOn = i == _current;
-                  return AnimatedContainer(
-                    duration: const Duration(milliseconds: 250),
-                    margin: EdgeInsets.symmetric(horizontal: 2.w),
-                    width: isOn ? 16.w : 5.r,
-                    height: 5.r,
-                    decoration: BoxDecoration(
-                      color: isOn
-                          ? Colors.white
-                          : Colors.white.withValues(alpha: 0.40),
-                      borderRadius: BorderRadius.circular(3.r),
-                    ),
-                  );
-                }),
+              child: IgnorePointer(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: List.generate(_count, (i) {
+                    final isOn = i == _current;
+                    return AnimatedContainer(
+                      duration: const Duration(milliseconds: 250),
+                      margin: EdgeInsets.symmetric(horizontal: 2.w),
+                      width: isOn ? 16.w : 5.r,
+                      height: 5.r,
+                      decoration: BoxDecoration(
+                        color: isOn
+                            ? Colors.white
+                            : Colors.white.withValues(alpha: 0.40),
+                        borderRadius: BorderRadius.circular(3.r),
+                      ),
+                    );
+                  }),
+                ),
               ),
             ),
 
-          // Counter chip
-          if (_count > 1)
+          // Expand affordance — combines counter + zoom hint, with pulse.
+          if (widget.photos.isNotEmpty)
             Positioned(
               bottom: 150.h,
               right: 14.w,
-              child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 3.h),
-                decoration: BoxDecoration(
-                  color: Colors.black.withValues(alpha: 0.35),
-                  borderRadius: BorderRadius.circular(20.r),
+              child: GestureDetector(
+                onTap: () => _openPreview(_current),
+                child: _ExpandAffordance(
+                  pulse: _pulseCtrl,
+                  label: _count > 1
+                      ? '${_current + 1} / $_count'
+                      : 'ເບິ່ງຮູບ',
                 ),
-                child: Text(
-                  '${_current + 1} / $_count',
-                  style: TextStyle(
-                    fontSize: 9.sp,
-                    fontWeight: FontWeight.w700,
-                    color: Colors.white.withValues(alpha: 0.80),
+              ),
+            ),
+
+          // One-time floating hint near the top.
+          if (widget.photos.isNotEmpty)
+            Positioned(
+              top: 70.h,
+              left: 0,
+              right: 0,
+              child: IgnorePointer(
+                child: AnimatedSlide(
+                  offset: _showHint ? Offset.zero : const Offset(0, -0.4),
+                  duration: const Duration(milliseconds: 320),
+                  curve: Curves.easeOutCubic,
+                  child: AnimatedOpacity(
+                    opacity: _showHint ? 1.0 : 0.0,
+                    duration: const Duration(milliseconds: 320),
+                    child: Center(child: _TapHintChip()),
                   ),
                 ),
               ),
             ),
 
-          // Info overlay
+          // Info overlay — wrap with IgnorePointer so the photo stays tappable.
           Positioned(
             bottom: 0,
             left: 0,
             right: 0,
-            child: _InfoOverlay(model: widget.model, age: widget.age),
+            child: IgnorePointer(
+              child: _InfoOverlay(model: widget.model, age: widget.age),
+            ),
           ),
         ],
       ),
@@ -966,6 +1075,101 @@ class _PhotoSliderState extends State<_PhotoSlider> {
       ),
     ),
   );
+}
+
+// ── Expand affordance chip ─────────────────────────────────────
+class _ExpandAffordance extends StatelessWidget {
+  final Animation<double> pulse;
+  final String label;
+  const _ExpandAffordance({required this.pulse, required this.label});
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: pulse,
+      builder: (_, child) {
+        final t = pulse.value;
+        return Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(20.r),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.white.withValues(alpha: 0.10 + 0.18 * t),
+                blurRadius: 10 + 6 * t,
+                spreadRadius: 0.4 * t,
+              ),
+            ],
+          ),
+          child: child,
+        );
+      },
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 5.h),
+        decoration: BoxDecoration(
+          color: Colors.black.withValues(alpha: 0.55),
+          borderRadius: BorderRadius.circular(20.r),
+          border: Border.all(
+            color: Colors.white.withValues(alpha: 0.18),
+            width: 0.8,
+          ),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              Icons.zoom_out_map_rounded,
+              size: 12.r,
+              color: Colors.white.withValues(alpha: 0.95),
+            ),
+            SizedBox(width: 5.w),
+            Text(
+              label,
+              style: TextStyle(
+                fontSize: 10.sp,
+                fontWeight: FontWeight.w700,
+                color: Colors.white,
+                letterSpacing: 0.2,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// ── One-time "tap to zoom" hint chip ───────────────────────────
+class _TapHintChip extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 7.h),
+      decoration: BoxDecoration(
+        color: Colors.black.withValues(alpha: 0.55),
+        borderRadius: BorderRadius.circular(22.r),
+        border: Border.all(
+          color: Colors.white.withValues(alpha: 0.18),
+          width: 0.8,
+        ),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(Icons.touch_app_rounded, size: 13.r, color: Colors.white),
+          SizedBox(width: 6.w),
+          Text(
+            'ກົດທີ່ຮູບເພື່ອຂະຫຍາຍ',
+            style: TextStyle(
+              fontSize: 11.sp,
+              fontWeight: FontWeight.w700,
+              color: Colors.white,
+              letterSpacing: 0.2,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 }
 
 // ═══════════════════════════════════════════════════════════════

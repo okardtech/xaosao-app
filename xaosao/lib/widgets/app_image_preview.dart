@@ -1,8 +1,10 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
+import 'package:shimmer/shimmer.dart';
 
 class AppImagePreview extends StatefulWidget {
   final List<String> images;
@@ -21,6 +23,15 @@ class AppImagePreview extends StatefulWidget {
     int initialIndex = 0,
   }) {
     if (images.isEmpty) return;
+
+    // Warm the cache for the tapped image and its neighbors so the
+    // gallery has bytes ready by the time the transition settles.
+    final clamped = initialIndex.clamp(0, images.length - 1);
+    for (final i in [clamped - 1, clamped, clamped + 1]) {
+      if (i < 0 || i >= images.length) continue;
+      precacheImage(CachedNetworkImageProvider(images[i]), context);
+    }
+
     Navigator.push(
       context,
       PageRouteBuilder(
@@ -30,9 +41,22 @@ class AppImagePreview extends StatefulWidget {
           images: images,
           initialIndex: initialIndex,
         ),
-        transitionsBuilder: (_, anim, __, child) =>
-            FadeTransition(opacity: anim, child: child),
-        transitionDuration: const Duration(milliseconds: 220),
+        transitionsBuilder: (_, anim, __, child) {
+          final curved = CurvedAnimation(
+            parent: anim,
+            curve: Curves.easeOutCubic,
+            reverseCurve: Curves.easeInCubic,
+          );
+          return FadeTransition(
+            opacity: curved,
+            child: ScaleTransition(
+              scale: Tween<double>(begin: 0.97, end: 1.0).animate(curved),
+              child: child,
+            ),
+          );
+        },
+        transitionDuration: const Duration(milliseconds: 280),
+        reverseTransitionDuration: const Duration(milliseconds: 220),
       ),
     );
   }
@@ -50,10 +74,25 @@ class _AppImagePreviewState extends State<AppImagePreview> {
     super.initState();
     _current = widget.initialIndex.clamp(0, widget.images.length - 1);
     _ctrl = PageController(initialPage: _current);
-    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-      statusBarColor: Colors.transparent,
-      statusBarIconBrightness: Brightness.light,
-    ));
+    SystemChrome.setSystemUIOverlayStyle(
+      const SystemUiOverlayStyle(
+        statusBarColor: Colors.transparent,
+        statusBarIconBrightness: Brightness.light,
+      ),
+    );
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _precacheNeighbors(_current);
+  }
+
+  void _precacheNeighbors(int index) {
+    for (final i in [index - 1, index + 1]) {
+      if (i < 0 || i >= widget.images.length) continue;
+      precacheImage(CachedNetworkImageProvider(widget.images[i]), context);
+    }
   }
 
   @override
@@ -112,11 +151,15 @@ class _AppImagePreviewState extends State<AppImagePreview> {
             itemCount: _count,
             scrollPhysics: const BouncingScrollPhysics(),
             backgroundDecoration: const BoxDecoration(color: Colors.black),
-            onPageChanged: (i) => setState(() => _current = i),
+            onPageChanged: (i) {
+              setState(() => _current = i);
+              _precacheNeighbors(i);
+            },
             builder: (_, i) => PhotoViewGalleryPageOptions(
-              imageProvider: NetworkImage(widget.images[i]),
+              imageProvider: CachedNetworkImageProvider(widget.images[i]),
               minScale: PhotoViewComputedScale.contained,
               maxScale: PhotoViewComputedScale.covered * 3.5,
+              initialScale: PhotoViewComputedScale.contained,
               heroAttributes: PhotoViewHeroAttributes(
                 tag: 'preview_${widget.images[i]}_$i',
               ),
@@ -141,16 +184,7 @@ class _AppImagePreviewState extends State<AppImagePreview> {
                 ),
               ),
             ),
-            loadingBuilder: (_, __) => Center(
-              child: SizedBox(
-                width: 24.r,
-                height: 24.r,
-                child: const CircularProgressIndicator(
-                  color: Colors.white54,
-                  strokeWidth: 2,
-                ),
-              ),
-            ),
+            loadingBuilder: (_, event) => _PreviewLoading(event: event),
           ),
 
           // ── Bottom dot indicators ──────────────────────────────────
@@ -180,6 +214,46 @@ class _AppImagePreviewState extends State<AppImagePreview> {
             ),
         ],
       ),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────
+// Loading state — shimmer + optional progress
+// ─────────────────────────────────────────────
+class _PreviewLoading extends StatelessWidget {
+  final ImageChunkEvent? event;
+  const _PreviewLoading({required this.event});
+
+  @override
+  Widget build(BuildContext context) {
+    final total = event?.expectedTotalBytes;
+    final loaded = event?.cumulativeBytesLoaded ?? 0;
+    final progress = (total != null && total > 0) ? loaded / total : null;
+
+    return Stack(
+      fit: StackFit.expand,
+      children: [
+        // Soft shimmer block so the screen never feels blank.
+        Shimmer.fromColors(
+          baseColor: const Color(0xFF1A1A1A),
+          highlightColor: const Color(0xFF2A2A2A),
+          period: const Duration(milliseconds: 1100),
+          child: Container(color: Colors.black),
+        ),
+        Center(
+          child: SizedBox(
+            width: 38.r,
+            height: 38.r,
+            child: CircularProgressIndicator(
+              value: progress,
+              strokeWidth: 2.4,
+              color: Colors.white.withValues(alpha: 0.85),
+              backgroundColor: Colors.white.withValues(alpha: 0.12),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

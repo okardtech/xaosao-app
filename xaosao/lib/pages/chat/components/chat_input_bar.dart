@@ -51,41 +51,48 @@ class _PendingImagePreview extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.only(bottom: 8.h),
-      child: Row(children: [
-        Stack(children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(10.r),
-            child: Image.file(
-              ctrl.pendingImage.value!,
-              width: 64.r,
-              height: 64.r,
-              fit: BoxFit.cover,
-            ),
-          ),
-          Positioned(
-            top: 2,
-            right: 2,
-            child: GestureDetector(
-              onTap: ctrl.removePendingImage,
-              child: Container(
-                width: 18.r,
-                height: 18.r,
-                decoration: BoxDecoration(
-                  color: Colors.black.withValues(alpha: 0.6),
-                  shape: BoxShape.circle,
+      child: Row(
+        children: [
+          Stack(
+            children: [
+              ClipRRect(
+                borderRadius: BorderRadius.circular(10.r),
+                child: Image.file(
+                  ctrl.pendingImage.value!,
+                  width: 64.r,
+                  height: 64.r,
+                  fit: BoxFit.cover,
                 ),
-                child:
-                    Icon(Icons.close_rounded, size: 11.r, color: Colors.white),
               ),
-            ),
+              Positioned(
+                top: 2,
+                right: 2,
+                child: GestureDetector(
+                  onTap: ctrl.removePendingImage,
+                  child: Container(
+                    width: 18.r,
+                    height: 18.r,
+                    decoration: BoxDecoration(
+                      color: Colors.black.withValues(alpha: 0.6),
+                      shape: BoxShape.circle,
+                    ),
+                    child: Icon(
+                      Icons.close_rounded,
+                      size: 11.r,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ),
-        ]),
-        SizedBox(width: 8.w),
-        Text(
-          'ຮູບພາບທີ່ເລືອກ',
-          style: TextStyle(fontSize: 11.sp, color: AppColors.textHint),
-        ),
-      ]),
+          SizedBox(width: 8.w),
+          Text(
+            'ຮູບພາບທີ່ເລືອກ',
+            style: TextStyle(fontSize: 11.sp, color: AppColors.textHint),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -99,18 +106,20 @@ class _EmojiButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: ctrl.toggleEmoji,
-      child: Obx(() => Padding(
-            padding: EdgeInsets.only(bottom: 8.h, right: 4.w),
-            child: Icon(
-              ctrl.showEmoji.value
-                  ? Icons.keyboard_rounded
-                  : Icons.emoji_emotions_outlined,
-              size: 24.r,
-              color: ctrl.showEmoji.value
-                  ? AppColors.primary
-                  : AppColors.textDisabled,
-            ),
-          )),
+      child: Obx(
+        () => Padding(
+          padding: EdgeInsets.only(bottom: 8.h, right: 4.w),
+          child: Icon(
+            ctrl.showEmoji.value
+                ? Icons.keyboard_rounded
+                : Icons.emoji_emotions_outlined,
+            size: 24.r,
+            color: ctrl.showEmoji.value
+                ? AppColors.primary
+                : AppColors.textDisabled,
+          ),
+        ),
+      ),
     );
   }
 }
@@ -124,16 +133,18 @@ class _ImagePickerButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: ctrl.isSending.value ? null : ctrl.pickImage,
-      child: Obx(() => Padding(
-            padding: EdgeInsets.only(bottom: 8.h, right: 6.w),
-            child: Icon(
-              Icons.image_outlined,
-              size: 24.r,
-              color: ctrl.pendingImage.value != null
-                  ? AppColors.primary
-                  : AppColors.textDisabled,
-            ),
-          )),
+      child: Obx(
+        () => Padding(
+          padding: EdgeInsets.only(bottom: 8.h, right: 6.w),
+          child: Icon(
+            Icons.image_outlined,
+            size: 24.r,
+            color: ctrl.pendingImage.value != null
+                ? AppColors.primary
+                : AppColors.textDisabled,
+          ),
+        ),
+      ),
     );
   }
 }
@@ -167,10 +178,14 @@ class _TextField extends StatelessWidget {
             isDense: true,
             border: InputBorder.none,
             hintText: 'ພິມຂໍ້ຄວາມ...',
-            hintStyle:
-                TextStyle(fontSize: 12.5.sp, color: AppColors.textDisabled),
-            contentPadding:
-                EdgeInsets.symmetric(horizontal: 13.w, vertical: 9.h),
+            hintStyle: TextStyle(
+              fontSize: 12.5.sp,
+              color: AppColors.textDisabled,
+            ),
+            contentPadding: EdgeInsets.symmetric(
+              horizontal: 13.w,
+              vertical: 9.h,
+            ),
           ),
         ),
       ),
@@ -189,6 +204,14 @@ class _SendButton extends StatelessWidget {
     if (role == 'customer') {
       final activeRes = await PackageRepo().packageActive();
       final active = activeRes.data;
+      if (active?.neverSubscribed == true) {
+        final hourRes = await PackageRepo().packageHour();
+        if (hourRes.data == null) {
+          return;
+        }
+        showSubscriptionBanner(context, hourRes.data!);
+        return;
+      }
       if (active?.hasPendingSubscription == true) {
         showPendingSubscriptionBanner(context);
         return;

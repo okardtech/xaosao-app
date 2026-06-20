@@ -18,6 +18,7 @@ import 'package:xaosao/pages/services_manage/getx/service_logic.dart';
 import 'package:xaosao/services/api_service.dart';
 import 'package:xaosao/services/appsflyer_service.dart';
 import 'package:xaosao/services/authe_service.dart';
+import 'package:xaosao/services/deep_link_service.dart';
 
 import '../pages/register/getx/register_logic.dart';
 import '../pages/view_companion/getx/view_companion_logic.dart';
@@ -31,6 +32,9 @@ class InitialBinding extends Bindings {
   void dependencies() {
     Get.putAsync<LocationManager>(() => LocationManager().init(), permanent: true);
     Get.putAsync<ApiService>(() => ApiService().init(), permanent: true);
+    // DeepLinkService must be registered BEFORE AppsFlyerService so the
+    // SDK's onDeepLinking callback can resolve it via Get.find().
+    Get.put<DeepLinkService>(DeepLinkService(), permanent: true);
     Get.putAsync<AppsFlyerService>(() => AppsFlyerService().init(), permanent: true);
     Get.putAsync<ChatSocketService>(() => ChatSocketService().init(), permanent: true);
     Get.lazyPut<AuthService>(() => AuthService(), fenix: true);

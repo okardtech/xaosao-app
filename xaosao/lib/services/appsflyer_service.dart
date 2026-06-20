@@ -31,6 +31,7 @@
 
 import 'package:appsflyer_sdk/appsflyer_sdk.dart';
 import 'package:get/get.dart';
+import 'deep_link_service.dart';
 import 'storage_service.dart';
 
 class AppsFlyerService extends GetxService {
@@ -52,12 +53,30 @@ class AppsFlyerService extends GetxService {
     _sdk = AppsflyerSdk(options);
 
     _sdk.onDeepLinking((DeepLinkResult res) {
-      if (res.status == Status.FOUND) {
-        final refCode = res.deepLink?.getStringValue('code');
-        if (refCode != null && refCode.isNotEmpty) {
-          incomingRefCode.value = refCode;
-          Get.find<StorageService>().write('pending_ref_code', refCode);
-        }
+      if (res.status != Status.FOUND) return;
+      final link = res.deepLink;
+      if (link == null) return;
+
+      // ── Legacy: referral code ─────────────────────────────────
+      final refCode = link.getStringValue('code');
+      if (refCode != null && refCode.isNotEmpty) {
+        incomingRefCode.value = refCode;
+        Get.find<StorageService>().write('pending_ref_code', refCode);
+      }
+
+      // ── Page deep link: type + id ─────────────────────────────
+      // Fall back to AppsFlyer's canonical OneLink keys when our own
+      // `type`/`id` params aren't present (so links built by either
+      // convention resolve correctly).
+      final rawType =
+          link.getStringValue('type') ?? link.getStringValue('deep_link_value');
+      final id =
+          link.getStringValue('id') ?? link.getStringValue('deep_link_sub1');
+      final parsedType = DeepLinkType.tryParse(rawType);
+      if (parsedType != null && id != null && id.isNotEmpty) {
+        Get.find<DeepLinkService>().handle(
+          DeepLinkPayload(type: parsedType, id: id),
+        );
       }
     });
 

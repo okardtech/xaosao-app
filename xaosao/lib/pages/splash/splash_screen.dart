@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:xaosao/constants/app_image.dart';
 import 'package:xaosao/constants/app_routes.dart';
 import 'package:xaosao/pages/login/getx/login_logic.dart';
+import 'package:xaosao/services/deep_link_service.dart';
 import 'package:xaosao/services/storage_service.dart';
 
 // ═══════════════════════════════════════════════════════════════
@@ -78,6 +79,13 @@ class _SplashPageState extends State<SplashPage> {
   void _goTo(String route) {
     if (!mounted) return;
     Navigator.pushNamedAndRemoveUntil(context, route, (_) => false);
+    // Once the user lands on the dashboard, any deep link that arrived
+    // during cold start is safe to dispatch.
+    if (route == AppRoutes.dashboard) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        Get.find<DeepLinkService>().markNavigatorReady();
+      });
+    }
   }
 
   @override

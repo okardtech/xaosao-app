@@ -8,6 +8,9 @@ import 'package:xaosao/pages/model_discover/model_detail_page.dart';
 import 'package:xaosao/pages/chat/getx/chat_logic.dart';
 import 'package:xaosao/pages/chat/getx/chat_state.dart';
 
+import '../../../constants/app_routes.dart';
+import '../../../services/storage_service.dart';
+
 class ChatDetailController extends GetxController {
   final String conversationId;
   final ConversationModel conv;
@@ -42,6 +45,8 @@ class ChatDetailController extends GetxController {
     return _gradients[idx].cast<Color>();
   }
 
+  bool get _isClient =>
+      Get.find<StorageService>().read<String>('role') == 'customer';
   // ── Partner info ──────────────────────────────────────────
   String get myRole => _chatLogic.myRole;
   ConversationParticipant? get partner => conv.otherParticipant(myRole);
@@ -57,10 +62,12 @@ class ChatDetailController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-      statusBarColor: Colors.transparent,
-      statusBarIconBrightness: Brightness.light,
-    ));
+    SystemChrome.setSystemUIOverlayStyle(
+      const SystemUiOverlayStyle(
+        statusBarColor: Colors.transparent,
+        statusBarIconBrightness: Brightness.light,
+      ),
+    );
     inputCtrl.addListener(_onInputChanged);
     focusNode.addListener(_onFocusChanged);
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -170,7 +177,11 @@ class ChatDetailController extends GetxController {
   void openPartnerProfile() {
     final p = partner;
     if (p == null || p.id.isEmpty) return;
-    Get.to(() => ModelDetailPage(customerId: p.id));
+    if (_isClient) {
+      Get.toNamed(AppRoutes.companionProfile, arguments: p.id);
+    } else {
+      Get.toNamed(AppRoutes.customerProfile, arguments: p.id);
+    }
   }
 
   // ── Typing indicator ──────────────────────────────────────

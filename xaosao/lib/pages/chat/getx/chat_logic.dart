@@ -11,6 +11,8 @@ import 'package:xaosao/services/chat_socket_service.dart';
 import 'package:xaosao/services/notification_service.dart';
 import 'package:xaosao/services/storage_service.dart';
 
+import '../../../utils/api_date_parser.dart';
+
 class ChatLogic extends GetxController {
   final _repo = ChatRepo();
   late final ChatSocketService _socket;
@@ -218,7 +220,7 @@ class ChatLogic extends GetxController {
 
     DateTime? sentAt;
     final rawSentAt = msgMap?['sendAt']?.toString() ?? msgMap?['createdAt']?.toString();
-    if (rawSentAt != null) sentAt = DateTime.tryParse(rawSentAt);
+    if (rawSentAt != null) sentAt = parseApiDateTime(rawSentAt);
 
     final idx = state.conversations.indexWhere((c) => c.id == convId);
     if (idx == -1) {
