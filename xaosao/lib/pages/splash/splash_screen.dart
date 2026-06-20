@@ -190,7 +190,7 @@ class _SplashPageState extends State<SplashPage> {
                 Text(
                   'ເພື່ອນຄູ່ໃຈ ທຸກທີ່ ທຸກເວລາ',
                   style: TextStyle(
-                    fontSize: 13.sp,
+                    fontSize: 14.sp,
                     color: Colors.white.withOpacity(0.55),
                     letterSpacing: 0.3,
                   ),
@@ -203,7 +203,7 @@ class _SplashPageState extends State<SplashPage> {
           Positioned(
             left: 0,
             right: 0,
-            bottom: 44.h,
+            bottom: 60.h,
             child: Column(
               children: [
                 const _LoadingDots(),
@@ -211,7 +211,7 @@ class _SplashPageState extends State<SplashPage> {
                 Text(
                   'v1.0.0',
                   style: TextStyle(
-                    fontSize: 11.sp,
+                    fontSize: 12.sp,
                     color: Colors.white.withOpacity(0.28),
                     fontWeight: FontWeight.w500,
                   ),

@@ -380,32 +380,53 @@ class BookingCard extends StatelessWidget {
     }
 
     // Hero value: time (if available) or date; secondary follows pattern
-    final String heroStr = hasTime ? DateTimeFormatter.laoTime(start) : DateTimeFormatter.laoDate(start);
+    final String heroStr = hasTime
+        ? DateTimeFormatter.laoTime(start)
+        : DateTimeFormatter.laoDate(start);
     final String? heroSecondary = hasTime
         ? endTimeStr
         : (!isSameDay && end != null ? DateTimeFormatter.laoDate(end) : null);
 
     // Color palette: strike → muted, confirmed → green, completed → teal, other → primary
-    final bgColor = isStrike ? const Color(0xFFF5F5F7)
-        : isConfirmed ? const Color(0xFFF5F5F7)
-        : isCompleted ? const Color(0xFFF5F5F7)
+    final bgColor = isStrike
+        ? const Color(0xFFF5F5F7)
+        : isConfirmed
+        ? const Color(0xFFF5F5F7)
+        : isCompleted
+        ? const Color(0xFFF5F5F7)
         : AppColors.primary.withValues(alpha: 0.04);
-    final iconBg = isStrike ? const Color(0xFFE8E8EF)
-        : isConfirmed ? const Color(0xFFE8E8EF)
-        : isCompleted ? const Color(0xFFE8E8EF)
+    final iconBg = isStrike
+        ? const Color(0xFFE8E8EF)
+        : isConfirmed
+        ? const Color(0xFFE8E8EF)
+        : isCompleted
+        ? const Color(0xFFE8E8EF)
         : AppColors.primary.withValues(alpha: 0.10);
-    final iconColor = isStrike ? const Color(0xFFD1D1E0)
-        : isConfirmed ? const Color(0xFFD1D1E0)
-        : isCompleted ? const Color(0xFFD1D1E0)
+    final iconColor = isStrike
+        ? const Color(0xFFD1D1E0)
+        : isConfirmed
+        ? const Color(0xFFD1D1E0)
+        : isCompleted
+        ? const Color(0xFFD1D1E0)
         : AppColors.primary;
-    final heroColor = isStrike ? const Color(0xFFD1D1E0)
-        : isConfirmed ? const Color(0xFF16A34A)
-        : isCompleted ? const Color(0xFF16A34A)
+    final heroColor = isStrike
+        ? const Color(0xFFD1D1E0)
+        : isConfirmed
+        ? const Color(0xFF16A34A)
+        : isCompleted
+        ? const Color(0xFF16A34A)
         : AppColors.primary;
-    final secondaryColor = isStrike ? const Color(0xFFD1D1E0)
-        : (hasTime ? const Color(0xFF9B9BAD) : AppColors.primary.withValues(alpha: 0.7));
-    final arrowColor = isStrike ? const Color(0xFFD1D1E0) : const Color(0xFF9B9BAD);
-    final dateLabelColor = isStrike ? const Color(0xFFD1D1E0) : const Color(0xFF9B9BAD);
+    final secondaryColor = isStrike
+        ? const Color(0xFFD1D1E0)
+        : (hasTime
+              ? const Color(0xFF9B9BAD)
+              : AppColors.primary.withValues(alpha: 0.7));
+    final arrowColor = isStrike
+        ? const Color(0xFFD1D1E0)
+        : const Color(0xFF9B9BAD);
+    final dateLabelColor = isStrike
+        ? const Color(0xFFD1D1E0)
+        : const Color(0xFF9B9BAD);
 
     return Container(
       margin: EdgeInsets.fromLTRB(12.w, 10.h, 12.w, 0),
@@ -422,10 +443,7 @@ class BookingCard extends StatelessWidget {
               color: iconBg,
               borderRadius: BorderRadius.circular(11.r),
             ),
-            child: AppSvgIcon(
-              assetName: AppIcons.calendar,
-              color: iconColor,
-            ),
+            child: AppSvgIcon(assetName: AppIcons.calendar, color: iconColor),
           ),
           SizedBox(width: 14.w),
           Expanded(
@@ -455,7 +473,9 @@ class BookingCard extends StatelessWidget {
                         fontWeight: FontWeight.w900,
                         color: heroColor,
                         letterSpacing: hasTime ? -0.5 : -0.3,
-                        decoration: isStrike ? TextDecoration.lineThrough : null,
+                        decoration: isStrike
+                            ? TextDecoration.lineThrough
+                            : null,
                         decorationColor: const Color(0xFFD1D1E0),
                         decorationThickness: 2,
                       ),
@@ -474,7 +494,9 @@ class BookingCard extends StatelessWidget {
                           fontSize: hasTime ? 15.sp : 14.sp,
                           fontWeight: FontWeight.w700,
                           color: secondaryColor,
-                          decoration: isStrike ? TextDecoration.lineThrough : null,
+                          decoration: isStrike
+                              ? TextDecoration.lineThrough
+                              : null,
                           decorationColor: const Color(0xFFD1D1E0),
                           decorationThickness: 2,
                         ),
@@ -561,7 +583,7 @@ class BookingCard extends StatelessWidget {
 
     final msgBtn = _Btn(
       label: 'ເເຊັດ',
-      icon: Icons.chat_bubble_outline_rounded,
+      icon: AppIcons.chatFill,
       style: _BtnStyle.outline,
       onTap: () => _openChat(b),
     );
@@ -582,7 +604,7 @@ class BookingCard extends StatelessWidget {
         title: 'ຍົກເລີກການຈອງ',
         message: 'ທ່ານຕ້ອງການຍົກເລີກການຈອງນີ້ແທ້ບໍ່?',
         confirmLabel: 'ຍົກເລີກການຈອງ',
-        icon: Icons.cancel_outlined,
+        icon: AppIcons.cancel,
         isDanger: true,
       );
       if (confirmed == true) _logic.cancelBooking(id);
@@ -599,11 +621,7 @@ class BookingCard extends StatelessWidget {
     if (isCustomer) {
       if (status == 'pending') {
         return [
-          _Btn(
-            label: 'ຍົກເລີກ',
-            style: _BtnStyle.ghost,
-            onTap: confirmCancel,
-          ),
+          _Btn(label: 'ຍົກເລີກ', style: _BtnStyle.ghost, onTap: confirmCancel),
           SizedBox(width: 6.w),
           msgBtn,
         ];
@@ -700,7 +718,7 @@ class BookingCard extends StatelessWidget {
       return [
         _Btn(
           label: 'ລຶບ',
-          icon: Icons.delete_outline_rounded,
+          icon: AppIcons.delete,
           style: _BtnStyle.red,
           onTap: () async {
             final confirmed = await ConfirmSheet.show(
@@ -708,7 +726,7 @@ class BookingCard extends StatelessWidget {
               title: 'ລຶບລາຍການ',
               message: 'ທ່ານຕ້ອງການລຶບລາຍການນີ້ແທ້ບໍ່?',
               confirmLabel: 'ລຶບ',
-              icon: Icons.delete_outline_rounded,
+              icon: AppIcons.delete,
               isDanger: true,
             );
             if (confirmed == true) _logic.deleteBooking(id);
@@ -900,7 +918,7 @@ enum _BtnStyle { ghost, dark, pink, green, red, amber, outline }
 
 class _Btn extends StatelessWidget {
   final String label;
-  final IconData? icon;
+  final String? icon;
   final _BtnStyle style;
   final VoidCallback? onTap;
   const _Btn({required this.label, this.icon, required this.style, this.onTap});
@@ -942,7 +960,13 @@ class _Btn extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             if (icon != null) ...[
-              Icon(icon, size: 12.r, color: fg),
+              // Icon(icon, size: 12.r, color: fg),
+              AppSvgIcon(
+                assetName: icon ?? "",
+                width: 14.w,
+                height: 14.h,
+                color: fg,
+              ),
               SizedBox(width: 4.w),
             ],
             Text(

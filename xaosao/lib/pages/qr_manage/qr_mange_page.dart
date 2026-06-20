@@ -8,6 +8,7 @@ import 'package:xaosao/widgets/app_network_image.dart';
 import 'package:xaosao/widgets/app_button.dart';
 import 'package:xaosao/widgets/confirm_sheet.dart';
 import 'package:xaosao/widgets/gradient_app_bar.dart';
+import '../../constants/app_icons.dart';
 import 'getx/qr_logic.dart';
 import 'getx/qr_state.dart';
 
@@ -48,7 +49,7 @@ class _QrManagementPageState extends State<QrManagementPage> {
       title: 'ລຶບ QR Code',
       message: 'ທ່ານແນ່ໃຈບໍ່ວ່າຕ້ອງການລຶບ QR Code ນີ້?',
       confirmLabel: 'ລຶບ',
-      icon: Icons.delete_outline_rounded,
+      icon: AppIcons.delete,
       isDanger: true,
     );
     if (confirmed == true) _logic.deleteAccount(id);

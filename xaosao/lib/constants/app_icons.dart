@@ -14,4 +14,16 @@ class AppIcons {
   static const String porfile = 'assets/icons/user-avatar.svg';
   static const String profileFill = 'assets/icons/user-avatar-fill.svg';
   static const String user = 'assets/icons/user.svg';
+  //
+  static const String cancel = 'assets/icons/cancel.svg';
+  static const String eyeHide = 'assets/icons/eye-hide.svg';
+  static const String logout = 'assets/icons/logout.svg';
+  static const String lockOpen = 'assets/icons/lock-open.svg';
+  static const String block = 'assets/icons/block.svg';
+  //
+  static const String userAdd = 'assets/icons/user-add.svg';
+  static const String userCheck = 'assets/icons/user-check.svg';
+  static const String userGroup = 'assets/icons/user-group.svg';
+  static const String location = 'assets/icons/location.svg';
+  static const String lock = 'assets/icons/lock.svg';
 }

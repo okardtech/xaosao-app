@@ -15,6 +15,7 @@ import 'package:xaosao/pages/services_manage/getx/service_logic.dart';
 import 'package:xaosao/services/storage_service.dart';
 import 'package:intl/intl.dart';
 import '../../../constants/app_color.dart';
+import '../../../constants/app_icons.dart';
 import '../../chat/getx/chat_logic.dart';
 import '../../package/getx/package_logic.dart';
 import '../../wallet/getx/wallet_logic.dart';
@@ -441,7 +442,7 @@ class _CustomerProfilePageState extends State<CustomerProfilePage> {
           'ທ່ານແນ່ໃຈບໍ່ທີ່ຕ້ອງການລຶບບັນຊີ?\n'
           'ຂໍ້ມູນທັງໝົດຈະຖືກລຶບຖາວອນ ແລະ ບໍ່ສາມາດຍ້ອນໄດ້.',
       confirmLabel: 'ລຶບ',
-      icon: Icons.delete_outline_rounded,
+      icon: AppIcons.delete,
       isDanger: true,
     );
     if (confirmed != true) return;
@@ -455,7 +456,7 @@ class _CustomerProfilePageState extends State<CustomerProfilePage> {
       title: 'ອອກຈາກລະບົບ',
       message: 'ທ່ານຕ້ອງການອອກຈາກລະບົບແທ້ບໍ່?',
       confirmLabel: 'ອອກ',
-      icon: Icons.logout_rounded,
+      icon: AppIcons.logout,
       isDanger: true,
     );
     if (confirmed != true || !mounted) return;

@@ -2,10 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:xaosao/constants/app_color.dart';
+import 'package:xaosao/constants/app_icons.dart';
 import 'package:xaosao/models/fee_model.dart';
 import 'package:xaosao/models/my_post_model.dart';
 import 'package:xaosao/utils/service_helper.dart';
 import 'package:xaosao/widgets/app_network_image.dart';
+import 'package:xaosao/widgets/app_svg_icon.dart';
+
+import '../../../widgets/app_image_preview.dart';
 
 // ─────────────────────────────────────────────────────────────
 //  Colors not in AppColors — named here so no bare hex in file
@@ -140,7 +144,7 @@ class PostCard extends StatelessWidget {
             children: [
               _buildHeader(authorName),
               _buildBody(),
-              if (imageUrl != null) _buildImage(imageUrl),
+              if (imageUrl != null) _buildImage(context, imageUrl),
               _buildFooter(),
             ],
           ),
@@ -303,13 +307,16 @@ class PostCard extends StatelessWidget {
   }
 
   // ── Image ──────────────────────────────────────────────────
-  Widget _buildImage(String url) {
+  Widget _buildImage(BuildContext context, String url) {
     return AspectRatio(
       aspectRatio: 4 / 3,
-      child: AppNetworkImage(
-        imageUrl: url,
-        fit: BoxFit.cover,
-        accentColor: AppColors.primary,
+      child: GestureDetector(
+        onTap: () => AppImagePreview.show(context, [url], initialIndex: 0),
+        child: AppNetworkImage(
+          imageUrl: url,
+          fit: BoxFit.cover,
+          accentColor: AppColors.primary,
+        ),
       ),
     );
   }
@@ -331,7 +338,7 @@ class PostCard extends StatelessWidget {
           _ActionBtn(
             icon: isOn ? Icons.favorite_rounded : Icons.favorite_border_rounded,
             count: _fmtCount(count),
-            color: isOn ? AppColors.primary : AppColors.textHint,
+            color: isOn ? AppColors.primary : AppColors.textPrimary,
             onTap: onInterest,
           ),
           SizedBox(width: 18.w),
@@ -340,6 +347,7 @@ class PostCard extends StatelessWidget {
             icon: Icons.chat_bubble_outline_rounded,
             count: _fmtCount(post.totalCommentCount ?? 0),
             color: AppColors.textHint,
+            iconName: AppIcons.comment,
             onTap: onMessage,
           ),
           if (isModelPost) ...[
@@ -348,6 +356,7 @@ class PostCard extends StatelessWidget {
             _ActionBtn(
               icon: Icons.card_giftcard_rounded,
               count: _fmtCount(post.totalGiftCount ?? 0),
+              iconName: AppIcons.gift,
               color: _amber,
               onTap: onGift,
             ),
@@ -518,10 +527,15 @@ class MyPostCard extends StatelessWidget {
               if (imageUrl != null)
                 AspectRatio(
                   aspectRatio: 16 / 9,
-                  child: AppNetworkImage(
-                    imageUrl: imageUrl,
-                    fit: BoxFit.cover,
-                    accentColor: AppColors.primary,
+                  child: GestureDetector(
+                    onTap: () => AppImagePreview.show(context, [
+                      imageUrl,
+                    ], initialIndex: 0),
+                    child: AppNetworkImage(
+                      imageUrl: imageUrl,
+                      fit: BoxFit.cover,
+                      accentColor: AppColors.primary,
+                    ),
                   ),
                 ),
 
@@ -539,7 +553,9 @@ class MyPostCard extends StatelessWidget {
                       onTap: onInterest,
                       behavior: HitTestBehavior.opaque,
                       child: _QuickStat(
-                        icon: Icons.favorite_rounded,
+                        icon: interests > 0
+                            ? Icons.favorite_rounded
+                            : Icons.favorite_border_rounded,
                         count: interests,
                         color: interests > 0
                             ? AppColors.primary
@@ -554,6 +570,7 @@ class MyPostCard extends StatelessWidget {
                         icon: Icons.chat_bubble_outline_rounded,
                         count: comments,
                         color: AppColors.textHint,
+                        iconName: AppIcons.comment,
                       ),
                     ),
                     SizedBox(width: 16.w),
@@ -565,18 +582,16 @@ class MyPostCard extends StatelessWidget {
                           icon: Icons.card_giftcard_rounded,
                           count: gifts,
                           color: _amber,
+                          iconName: AppIcons.gift,
                         ),
                       ),
                     const Spacer(),
                     if (post.status != 'expired') ...[
-                      _InlineBtn(
-                        icon: Icons.visibility_off_outlined,
-                        onTap: onHide,
-                      ),
+                      _InlineBtn(icon: AppIcons.eyeHide, onTap: onHide),
                       SizedBox(width: 6.w),
                     ],
                     _InlineBtn(
-                      icon: Icons.delete_outline_rounded,
+                      icon: AppIcons.delete,
                       isRed: true,
                       onTap: onDelete,
                     ),
@@ -868,11 +883,13 @@ class _ActionBtn extends StatefulWidget {
   final IconData icon;
   final String? count; // null = icon only
   final Color color;
+  final String? iconName;
   final VoidCallback? onTap;
 
   const _ActionBtn({
     required this.icon,
     required this.color,
+    this.iconName,
     this.count,
     this.onTap,
   });
@@ -920,8 +937,17 @@ class _ActionBtnState extends State<_ActionBtn>
         scale: _scale,
         child: Row(
           mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Icon(widget.icon, size: 18.r, color: widget.color),
+            if (widget.iconName != null) ...[
+              AppSvgIcon(
+                assetName: widget.iconName ?? "",
+                width: 18.w,
+                height: 18.h,
+                color: widget.color,
+              ),
+            ] else
+              Icon(widget.icon, size: 18.r, color: widget.color),
             if (widget.count != null) ...[
               SizedBox(width: 4.w),
               Text(
@@ -945,11 +971,13 @@ class _QuickStat extends StatelessWidget {
   final IconData icon;
   final int count;
   final Color color;
+  final String? iconName;
 
   const _QuickStat({
     required this.icon,
     required this.count,
     required this.color,
+    this.iconName,
   });
 
   @override
@@ -957,7 +985,15 @@ class _QuickStat extends StatelessWidget {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Icon(icon, size: 14.r, color: color),
+        if (iconName != null) ...[
+          AppSvgIcon(
+            assetName: iconName ?? "",
+            width: 14.w,
+            height: 14.h,
+            color: color,
+          ),
+        ] else
+          Icon(icon, size: 14.r, color: color),
         SizedBox(width: 5.w),
         Text(
           _fmtCount(count),
@@ -1037,9 +1073,10 @@ class _BookBtnState extends State<_BookBtn>
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(
-                Icons.calendar_month_rounded,
-                size: 11.r,
+              AppSvgIcon(
+                assetName: AppIcons.calendar,
+                width: 11.w,
+                height: 11.h,
                 color: AppColors.primary,
               ),
               SizedBox(width: 5.w),
@@ -1081,9 +1118,10 @@ class _ChatBtn extends StatelessWidget {
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(
-              Icons.chat_bubble_outline_rounded,
-              size: 11.r,
+            AppSvgIcon(
+              assetName: AppIcons.chatFill,
+              width: 11.w,
+              height: 11.h,
               color: AppColors.textHint,
             ),
             SizedBox(width: 5.w),
@@ -1104,7 +1142,7 @@ class _ChatBtn extends StatelessWidget {
 }
 
 class _InlineBtn extends StatelessWidget {
-  final IconData icon;
+  final String icon;
   final bool isRed;
   final VoidCallback? onTap;
 
@@ -1115,19 +1153,26 @@ class _InlineBtn extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        width: 30.r,
-        height: 30.r,
+        // width: 30.r,
+        // height: 30.r,
+        padding: EdgeInsets.all(6.r),
         decoration: BoxDecoration(
           color: isRed
               ? _dangerColor.withValues(alpha: 0.07)
               : Colors.black.withValues(alpha: 0.04),
           shape: BoxShape.circle,
         ),
-        child: Icon(
-          icon,
-          size: 13.r,
+        child: AppSvgIcon(
+          assetName: icon,
+          width: 14.w,
+          height: 14.h,
           color: isRed ? _dangerColor : AppColors.textHint,
         ),
+        // child: Icon(
+        //   icon,
+        //   size: 13.r,
+        //   color: isRed ? _dangerColor : AppColors.textHint,
+        // ),
       ),
     );
   }

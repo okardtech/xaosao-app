@@ -651,8 +651,9 @@ class _CompanionProfilePageState extends State<CompanionProfilePage> {
               onTap: (loading || profile == null) ? null : _logic.toggleFriend,
               child: AnimatedContainer(
                 duration: const Duration(milliseconds: 200),
-                width: 44.r,
-                height: 44.r,
+                height: 44.h,
+                width: 44.h,
+                padding: EdgeInsets.all(12.r),
                 decoration: BoxDecoration(
                   color: isFriend
                       ? AppColors.primary.withValues(alpha: 0.08)
@@ -676,15 +677,25 @@ class _CompanionProfilePageState extends State<CompanionProfilePage> {
                           ),
                         ),
                       )
-                    : Icon(
-                        isFriend
-                            ? Icons.person_rounded
-                            : Icons.person_add_alt_1_rounded,
-                        size: 18.r,
+                    : AppSvgIcon(
+                        assetName: isFriend
+                            ? AppIcons.userCheck
+                            : AppIcons.userAdd,
+                        width: 18.w,
+                        height: 18.h,
                         color: isFriend
                             ? AppColors.primary
                             : AppColors.textPrimary,
                       ),
+                // : Icon(
+                //     isFriend
+                //         ? Icons.person_rounded
+                //         : Icons.person_add_alt_1_rounded,
+                //     size: 18.r,
+                //     color: isFriend
+                //         ? AppColors.primary
+                //         : AppColors.textPrimary,
+                //   ),
               ),
             );
           }),
@@ -1211,7 +1222,12 @@ class _Section extends StatelessWidget {
   final String? subtitle;
   final Widget child;
 
-  const _Section({super.key, required this.title, required this.child, this.subtitle});
+  const _Section({
+    super.key,
+    required this.title,
+    required this.child,
+    this.subtitle,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -1686,9 +1702,15 @@ class _BookingBar extends StatelessWidget {
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(
-                    Icons.calendar_today_rounded,
-                    size: 14.r,
+                  // Icon(
+                  //   Icons.calendar_today_rounded,
+                  //   size: 14.r,
+                  //   color: hasService ? Colors.white : AppColors.textHint,
+                  // ),
+                  AppSvgIcon(
+                    assetName: AppIcons.calendar,
+                    width: 14.w,
+                    height: 14.h,
                     color: hasService ? Colors.white : AppColors.textHint,
                   ),
                   SizedBox(width: 7.w),

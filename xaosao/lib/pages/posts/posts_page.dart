@@ -19,11 +19,13 @@ import 'package:xaosao/repository/register_repo.dart';
 import 'package:xaosao/utils/image_picker_util.dart';
 import 'package:xaosao/utils/service_helper.dart';
 import 'package:xaosao/widgets/app_button.dart';
+import 'package:xaosao/widgets/app_svg_icon.dart';
 import 'package:xaosao/widgets/app_text_field.dart';
 import 'package:xaosao/widgets/confirm_sheet.dart';
 import 'package:xaosao/widgets/empty_state.dart';
 import 'package:xaosao/widgets/notif_badge.dart';
 
+import '../../constants/app_icons.dart';
 import '../topup/topup_amount.dart';
 import '../../widgets/gift_sheet.dart';
 
@@ -459,7 +461,7 @@ class _PostsPageState extends State<PostsPage> {
       title: 'ລຶບໂພສ',
       message: 'ທ່ານແນ່ໃຈທີ່ຈະລຶບໂພສນີ້ບໍ?\nການດຳເນີນການນີ້ບໍ່ສາມາດຍ້ອນຄືນໄດ້',
       confirmLabel: 'ລຶບ',
-      icon: Icons.delete_outline_rounded,
+      icon: AppIcons.delete,
       isDanger: true,
     );
     if (confirmed == true) _logic.deleteMyPost(postId);
@@ -472,7 +474,7 @@ class _PostsPageState extends State<PostsPage> {
       title: 'ປິດໂພສ',
       message: 'ທ່ານແນ່ໃຈທີ່ຈະປິດໂພສນີ້ບໍ?\nລູກຄ້າຈະບໍ່ສາມາດເຫັນໂພສນີ້ໄດ້',
       confirmLabel: 'ປິດໄພສ',
-      icon: Icons.visibility_off_outlined,
+      icon: AppIcons.eyeHide,
       isDanger: false,
     );
     if (confirmed == true) _logic.hideMyPost(postId);
@@ -1601,15 +1603,22 @@ class _GiftHistoryBanner extends StatelessWidget {
               Container(
                 width: 46.r,
                 height: 46.r,
+                padding:EdgeInsets.all(12.r),
                 decoration: BoxDecoration(
                   color: Colors.white.withValues(alpha: 0.20),
                   shape: BoxShape.circle,
                 ),
-                child: Icon(
-                  Icons.card_giftcard_rounded,
-                  size: 22.r,
+                child: AppSvgIcon(
+                  assetName: AppIcons.gift,
+                  width: 22.w,
+                  height: 22.w,
                   color: Colors.white,
                 ),
+                // child: Icon(
+                //   Icons.card_giftcard_rounded,
+                //   size: 22.r,
+                //   color: Colors.white,
+                // ),
               ),
               SizedBox(width: 14.w),
 

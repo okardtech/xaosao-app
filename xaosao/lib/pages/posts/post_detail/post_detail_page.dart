@@ -3,14 +3,18 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:xaosao/constants/app_color.dart';
+import 'package:xaosao/constants/app_icons.dart';
 import 'package:xaosao/models/post_detail_model.dart';
 import 'package:xaosao/pages/posts/components/comment_sheet.dart';
 import 'package:xaosao/pages/posts/post_detail/getx/post_detail_logic.dart';
 import 'package:xaosao/pages/posts/post_detail/getx/post_detail_state.dart';
 import 'package:xaosao/widgets/app_network_image.dart';
+import 'package:xaosao/widgets/app_svg_icon.dart';
 import 'package:xaosao/widgets/empty_state.dart';
 import 'package:xaosao/constants/app_routes.dart';
 import 'package:xaosao/widgets/gradient_app_bar.dart';
+
+import '../../../widgets/app_image_preview.dart';
 
 class PostDetailPage extends StatefulWidget {
   final String postId;
@@ -225,90 +229,89 @@ class _PostCardState extends State<_PostCard> {
                   }
                 },
                 child: Padding(
-                padding: EdgeInsets.all(16.r),
-                child: Row(
-                  children: [
-                    // Avatar
-                    Container(
-                      width: 50.r,
-                      height: 50.r,
-                      decoration: const BoxDecoration(
-                        shape: BoxShape.circle,
-                        gradient: LinearGradient(
-                          colors: [AppColors.secondary, AppColors.primary],
-                        ),
-                      ),
-                      child: hasProfile
-                          ? ClipOval(
-                              child: AppNetworkImage(
-                                imageUrl: author!.profile!,
-                                fit: BoxFit.cover,
-                                accentColor: AppColors.primary,
-                              ),
-                            )
-                          : Icon(
-                              Icons.person_rounded,
-                              size: 24.r,
-                              color: Colors.white,
-                            ),
-                    ),
-                    SizedBox(width: 12.w),
-
-                    // Name + role + time
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            name.isEmpty ? 'ຜູ້ໃຊ້' : name,
-                            style: TextStyle(
-                              fontSize: 15.sp,
-                              fontWeight: FontWeight.w700,
-                              color: AppColors.primaryVariant,
-                            ),
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                          SizedBox(height: 3.h),
-                          Text(
-                            _timeAgo(post?.createdAt),
-                            style: TextStyle(
-                              fontSize: 11.sp,
-                              color: AppColors.textHint,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-
-                    // Status chip
-                    if (post?.status != null) ...[
-                      SizedBox(width: 8.w),
+                  padding: EdgeInsets.all(16.r),
+                  child: Row(
+                    children: [
+                      // Avatar
                       Container(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: 12.w,
-                          vertical: 4.h,
-                        ),
-                        decoration: BoxDecoration(
-                          color: isActive
-                              ? Colors.green.withValues(alpha: 0.10)
-                              : Colors.grey.withValues(alpha: 0.10),
-                          borderRadius: BorderRadius.circular(20.r),
-                        ),
-                        child: Text(
-                          isActive ? 'ກຳລັງເປີດ' : 'ປິດເເລ້ວ',
-                          style: TextStyle(
-                            fontSize: 12.sp,
-                            fontWeight: FontWeight.w600,
-                            color: isActive ? Colors.green : Colors.grey,
+                        width: 50.r,
+                        height: 50.r,
+                        decoration: const BoxDecoration(
+                          shape: BoxShape.circle,
+                          gradient: LinearGradient(
+                            colors: [AppColors.secondary, AppColors.primary],
                           ),
                         ),
+                        child: hasProfile
+                            ? ClipOval(
+                                child: AppNetworkImage(
+                                  imageUrl: author!.profile!,
+                                  fit: BoxFit.cover,
+                                  accentColor: AppColors.primary,
+                                ),
+                              )
+                            : Icon(
+                                Icons.person_rounded,
+                                size: 24.r,
+                                color: Colors.white,
+                              ),
                       ),
-                    ],
-                  ],
-                ),
-              ),
-              ),  // GestureDetector
+                      SizedBox(width: 12.w),
 
+                      // Name + role + time
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              name.isEmpty ? 'ຜູ້ໃຊ້' : name,
+                              style: TextStyle(
+                                fontSize: 15.sp,
+                                fontWeight: FontWeight.w700,
+                                color: AppColors.primaryVariant,
+                              ),
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            SizedBox(height: 3.h),
+                            Text(
+                              _timeAgo(post?.createdAt),
+                              style: TextStyle(
+                                fontSize: 11.sp,
+                                color: AppColors.textHint,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+
+                      // Status chip
+                      if (post?.status != null) ...[
+                        SizedBox(width: 8.w),
+                        Container(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 12.w,
+                            vertical: 4.h,
+                          ),
+                          decoration: BoxDecoration(
+                            color: isActive
+                                ? Colors.green.withValues(alpha: 0.10)
+                                : Colors.grey.withValues(alpha: 0.10),
+                            borderRadius: BorderRadius.circular(20.r),
+                          ),
+                          child: Text(
+                            isActive ? 'ກຳລັງເປີດ' : 'ປິດເເລ້ວ',
+                            style: TextStyle(
+                              fontSize: 12.sp,
+                              fontWeight: FontWeight.w600,
+                              color: isActive ? Colors.green : Colors.grey,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ],
+                  ),
+                ),
+              ), // GestureDetector
               // ── Content section ───────────────────────────────────
               if (content.isNotEmpty || location.isNotEmpty || hasTip) ...[
                 Padding(
@@ -433,6 +436,7 @@ class _PostCardState extends State<_PostCard> {
                         color: const Color(0xFFFF9800),
                         count: widget.giftCount,
                         label: 'ຂອງຂວັນ',
+                        iconName: AppIcons.gift,
                       ),
                     ),
                     Container(
@@ -448,6 +452,7 @@ class _PostCardState extends State<_PostCard> {
                           icon: Icons.chat_bubble_rounded,
                           color: Colors.blue,
                           count: widget.commentCount,
+                          iconName: AppIcons.comment,
                           label: 'ຄຳເຫັນ',
                         ),
                       ),
@@ -468,11 +473,13 @@ class _StatItem extends StatelessWidget {
   final Color color;
   final int count;
   final String label;
+  final String? iconName;
   const _StatItem({
     required this.icon,
     required this.color,
     required this.count,
     required this.label,
+    this.iconName,
   });
 
   @override
@@ -482,15 +489,32 @@ class _StatItem extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Container(
-            width: 38.r,
-            height: 38.r,
-            decoration: BoxDecoration(
-              color: color.withValues(alpha: 0.12),
-              shape: BoxShape.circle,
+          if (iconName != null) ...[
+            Container(
+              width: 38.r,
+              height: 38.r,
+              padding: EdgeInsets.all(10.r),
+              decoration: BoxDecoration(
+                color: color.withValues(alpha: 0.12),
+                shape: BoxShape.circle,
+              ),
+              child: AppSvgIcon(
+                assetName: iconName ?? "",
+                width: 18.w,
+                height: 18.h,
+                color: color,
+              ),
             ),
-            child: Icon(icon, size: 18.r, color: color),
-          ),
+          ] else
+            Container(
+              width: 38.r,
+              height: 38.r,
+              decoration: BoxDecoration(
+                color: color.withValues(alpha: 0.12),
+                shape: BoxShape.circle,
+              ),
+              child: Icon(icon, size: 18.r, color: color),
+            ),
           SizedBox(height: 6.h),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -550,10 +574,14 @@ class _ImageCarouselState extends State<_ImageCarousel> {
           controller: _controller,
           onPageChanged: (i) => setState(() => _current = i),
           itemCount: widget.images.length,
-          itemBuilder: (_, i) => AppNetworkImage(
-            imageUrl: widget.images[i],
-            fit: BoxFit.cover,
-            accentColor: AppColors.primary,
+          itemBuilder: (_, i) => GestureDetector(
+            onTap: () =>
+                AppImagePreview.show(context, widget.images, initialIndex: i),
+            child: AppNetworkImage(
+              imageUrl: widget.images[i],
+              fit: BoxFit.cover,
+              accentColor: AppColors.primary,
+            ),
           ),
         ),
         if (widget.images.length > 1)

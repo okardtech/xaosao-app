@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:xaosao/constants/app_color.dart';
+import 'package:xaosao/constants/app_icons.dart';
 import 'package:xaosao/models/profile_model.dart';
 import 'package:xaosao/models/service_model.dart';
 import 'package:xaosao/pages/login/getx/login_logic.dart';
@@ -167,7 +168,7 @@ class ServiceManagementPage extends StatelessWidget {
       title: 'ລຶບ ${ServiceHelper.serviceOriginalName(svc.name)}',
       message: 'ທ່ານຕ້ອງການລຶບບໍລິການນີ້ອອກຈາກໂປຣໄຟຂອງທ່ານແທ້ບໍ່?',
       confirmLabel: 'ລຶບ',
-      icon: Icons.delete_outline_rounded,
+      icon: AppIcons.delete,
       isDanger: true,
     );
     if (confirmed != true) return;

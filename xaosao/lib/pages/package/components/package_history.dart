@@ -39,7 +39,7 @@ Color _accentColor(String? s) => switch (s) {
   'refunded' => const Color(0xFF8B5CF6),
   'expired' => AppColors.textHint,
   'upgraded' => const Color(0xFF3B82F6),
-  'superseded' => const Color(0xFF6366F1),
+  'superseded' => AppColors.textHint,
   _ => AppColors.textHint,
 };
 
@@ -67,7 +67,7 @@ Color _badgeFg(String? s) => switch (s) {
   'refunded' => const Color(0xFF6D28D9),
   'expired' => AppColors.textHint,
   'upgraded' => const Color(0xFF1D4ED8),
-  'superseded' => const Color(0xFF4338CA),
+  'superseded' => AppColors.textHint,
   _ => AppColors.textHint,
 };
 
@@ -347,34 +347,20 @@ class _HistoryCard extends StatelessWidget {
                           SizedBox(width: 8.w),
                           Container(
                             padding: EdgeInsets.symmetric(
-                              horizontal: 9.w,
+                              horizontal: 12.w,
                               vertical: 5.h,
                             ),
                             decoration: BoxDecoration(
                               color: _badgeBg(item.status),
                               borderRadius: BorderRadius.circular(20.r),
                             ),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Container(
-                                  width: 5.r,
-                                  height: 5.r,
-                                  decoration: BoxDecoration(
-                                    color: _badgeFg(item.status),
-                                    shape: BoxShape.circle,
-                                  ),
-                                ),
-                                SizedBox(width: 4.w),
-                                Text(
-                                  _statusLabel(item.status),
-                                  style: TextStyle(
-                                    fontSize: 12.sp,
-                                    fontWeight: FontWeight.w700,
-                                    color: _badgeFg(item.status),
-                                  ),
-                                ),
-                              ],
+                            child: Text(
+                              _statusLabel(item.status),
+                              style: TextStyle(
+                                fontSize: 12.sp,
+                                fontWeight: FontWeight.w700,
+                                color: _badgeFg(item.status),
+                              ),
                             ),
                           ),
                         ],

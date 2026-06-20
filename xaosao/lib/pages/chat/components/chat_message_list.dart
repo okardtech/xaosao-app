@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:xaosao/constants/app_icons.dart';
 import 'package:xaosao/pages/chat/components/chat_bubbles.dart';
 import 'package:xaosao/pages/chat/getx/chat_detail_controller.dart';
 import 'package:xaosao/pages/chat/getx/chat_state.dart';
@@ -69,7 +70,7 @@ class ChatMessageList extends StatelessWidget {
       message:
           'ຂໍ້ຄວາມຈະຖືກລຶບອອກຈາກຝ່າຍຂອງທ່ານເທົ່ານັ້ນ\nອີກຝ່າຍຍັງສາມາດເຫັນຂໍ້ຄວາມໄດ້',
       confirmLabel: 'ລຶບ',
-      icon: Icons.delete_outline_rounded,
+      icon: AppIcons.delete,
       isDanger: true,
     );
     if (confirmed == true) {

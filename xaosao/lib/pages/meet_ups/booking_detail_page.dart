@@ -924,7 +924,7 @@ class _BottomBar extends StatelessWidget {
       message:
           'ທ່ານຕ້ອງການຍົກເລີກການຈອງນີ້ແທ້ບໍ່?\nການຍົກເລີກນີ້ບໍ່ສາມາດຖືກຄືນໄດ້.',
       confirmLabel: 'ຍົກເລີກການຈອງ',
-      icon: Icons.cancel_outlined,
+      icon: AppIcons.cancel,
       isDanger: true,
     );
     if (confirmed == true) logic.cancelBooking(id);
@@ -974,7 +974,7 @@ class _BottomBar extends StatelessWidget {
 
     final msgBtn = _Btn(
       label: 'ເເຊັດ',
-      icon: Icons.chat_bubble_outline_rounded,
+      icon: AppIcons.chatFill,
       style: _BtnStyle.outline,
       onTap: _openChat,
     );
@@ -1008,7 +1008,6 @@ class _BottomBar extends StatelessWidget {
         final bookingStarted = start != null && now.isAfter(start);
         final inDisputeWindow =
             bookingStarted &&
-            start != null &&
             now.isBefore(start.add(const Duration(minutes: 30)));
 
         if (inDisputeWindow) {
@@ -1075,7 +1074,7 @@ class _BottomBar extends StatelessWidget {
       return [
         _Btn(
           label: 'ລຶບ',
-          icon: Icons.delete_outline_rounded,
+          icon: AppIcons.delete,
           style: _BtnStyle.red,
           onTap: () async {
             final confirmed = await ConfirmSheet.show(
@@ -1083,7 +1082,7 @@ class _BottomBar extends StatelessWidget {
               title: 'ລຶບລາຍການ',
               message: 'ທ່ານຕ້ອງການລຶບລາຍການນີ້ແທ້ບໍ່?',
               confirmLabel: 'ລຶບ',
-              icon: Icons.delete_outline_rounded,
+              icon: AppIcons.delete,
               isDanger: true,
             );
             if (confirmed == true) {
@@ -1290,7 +1289,7 @@ enum _BtnStyle { ghost, dark, pink, green, red, amber, outline }
 
 class _Btn extends StatelessWidget {
   final String label;
-  final IconData? icon;
+  final String? icon;
   final _BtnStyle style;
   final VoidCallback? onTap;
 
@@ -1333,7 +1332,13 @@ class _Btn extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             if (icon != null) ...[
-              Icon(icon, size: 14.r, color: fg),
+              // Icon(icon, size: 14.r, color: fg),
+              AppSvgIcon(
+                assetName: icon ?? "",
+                width: 17.w,
+                height: 17.h,
+                color: fg,
+              ),
               SizedBox(width: 5.w),
             ],
             Text(

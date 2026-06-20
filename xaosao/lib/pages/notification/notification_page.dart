@@ -433,64 +433,6 @@ class _NotifShimmer extends StatelessWidget {
   }
 }
 
-// ═══════════════════════════════════════════════════════════════
-//  Helpers
-// ═══════════════════════════════════════════════════════════════
-
-IconData _iconForType(String type) {
-  switch (type) {
-    case 'post_like':
-      return Icons.favorite_rounded;
-    case 'post_comment':
-    case 'post_comment_reply':
-      return Icons.chat_bubble_rounded;
-    case 'post_gift_received':
-    case 'gift_received':
-      return Icons.card_giftcard_rounded;
-    case 'booking_created':
-    case 'booking_accepted':
-    case 'booking_completed':
-      return Icons.event_available_rounded;
-    case 'booking_rejected':
-    case 'booking_cancelled':
-      return Icons.event_busy_rounded;
-    case 'booking_payout_released':
-      return Icons.payments_rounded;
-    case 'topup_created':
-    case 'topup_approved':
-    case 'topup_rejected':
-    case 'withdraw_approved':
-    case 'withdraw_rejected':
-      return Icons.account_balance_wallet_rounded;
-    case 'welcome':
-      return Icons.celebration_rounded;
-    case 'new_model_registered':
-      return Icons.person_add_rounded;
-    case 'profile_liked':
-      return Icons.favorite_border_rounded;
-    case 'profile_viewed':
-      return Icons.visibility_rounded;
-    case 'friend_added':
-      return Icons.people_rounded;
-    case 'account_approved':
-      return Icons.verified_rounded;
-    case 'account_role_changed':
-      return Icons.manage_accounts_rounded;
-    case 'account_reported':
-      return Icons.flag_rounded;
-    case 'account_rejected':
-    case 'account_banned':
-    case 'account_deleted':
-      return Icons.block_rounded;
-    case 'new_model_service':
-      return Icons.design_services_rounded;
-    case 'new_model_post':
-    case 'new_customer_post':
-      return Icons.article_rounded;
-    default:
-      return Icons.notifications_rounded;
-  }
-}
 
 Color _colorForType(String type) {
   switch (type) {

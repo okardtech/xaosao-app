@@ -307,8 +307,9 @@ class _ModelDetailPageState extends State<ModelDetailPage> {
               onTap: loading ? null : _logic.toggleFriend,
               child: AnimatedContainer(
                 duration: const Duration(milliseconds: 200),
-                width: 44.r,
-                height: 44.r,
+                height: 44.h,
+                width: 44.h,
+                padding: EdgeInsets.all(12.r),
                 decoration: BoxDecoration(
                   color: isFriend
                       ? AppColors.primary.withValues(alpha: 0.08)
@@ -332,11 +333,12 @@ class _ModelDetailPageState extends State<ModelDetailPage> {
                           ),
                         ),
                       )
-                    : Icon(
-                        isFriend
-                            ? Icons.person_rounded
-                            : Icons.person_add_alt_1_rounded,
-                        size: 18.r,
+                    : AppSvgIcon(
+                        assetName: isFriend
+                            ? AppIcons.userCheck
+                            : AppIcons.userAdd,
+                        width: 18.w,
+                        height: 18.h,
                         color: isFriend
                             ? AppColors.primary
                             : AppColors.textPrimary,

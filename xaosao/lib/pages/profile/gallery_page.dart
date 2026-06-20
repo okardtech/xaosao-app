@@ -8,6 +8,8 @@ import 'package:xaosao/widgets/app_image_preview.dart';
 import 'package:xaosao/widgets/confirm_sheet.dart';
 import 'package:xaosao/widgets/gradient_app_bar.dart';
 
+import '../../constants/app_icons.dart';
+
 class GalleryPage extends StatelessWidget {
   final bool isOwner;
   final int maxPhotos;
@@ -161,7 +163,7 @@ class GalleryPage extends StatelessWidget {
                         title: 'ລຶບຮູບ',
                         message: 'ທ່ານຕ້ອງການລຶບຮູບນີ້ແທ້ບໍ່?',
                         confirmLabel: 'ລຶບ',
-                        icon: Icons.delete_outline_rounded,
+                        icon: AppIcons.delete,
                         isDanger: true,
                       );
                       if (confirmed == true) logic.removePhoto(index);

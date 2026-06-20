@@ -11,6 +11,7 @@ import 'package:xaosao/widgets/app_button.dart';
 import 'package:xaosao/widgets/app_text_field.dart';
 import 'package:xaosao/widgets/confirm_sheet.dart';
 
+import '../../constants/app_icons.dart';
 import 'components/meet_ups_detail_model.dart';
 import 'getx/meet_ups_details_logic.dart';
 import 'getx/meet_ups_details_state.dart';
@@ -918,7 +919,7 @@ class _MeetUpsDetailsPageState extends State<MeetUpsDetailsPage> {
               title: 'ລຶບລາຍການ',
               message: 'ທ່ານຕ້ອງການລຶບລາຍການນີ້ແທ້ບໍ່?',
               confirmLabel: 'ລຶບ',
-              icon: Icons.delete_outline_rounded,
+              icon: AppIcons.delete,
               isDanger: true,
             );
             if (confirmed == true) {
