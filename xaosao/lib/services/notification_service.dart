@@ -8,6 +8,9 @@ import 'package:xaosao/constants/app_routes.dart';
 import 'package:xaosao/models/notification_item_model.dart';
 import 'package:xaosao/services/storage_service.dart';
 
+typedef ForegroundPushListener =
+    void Function(String type, Map<String, dynamic> data);
+
 /// Handles all push notification concerns for the app.
 ///
 /// ┌─────────────────────────────────────────────────────┐
@@ -41,8 +44,24 @@ class NotificationService {
   /// Fires when a foreground push arrives so NotifListLogic can refresh.
   static Function()? onNewNotification;
 
-  /// Fires with (type, data) so controllers can refresh type-specific data.
-  static Function(String type, Map<String, dynamic> data)? onForegroundNotification;
+  /// Foreground-push broadcaster.
+  ///
+  /// Any number of controllers can subscribe via [addForegroundListener]
+  /// to react to specific push types (booking, post, wallet, ...).
+  /// Each listener receives `(type, data)` where `data` is the FCM payload.
+  ///
+  /// Listeners MUST call [removeForegroundListener] in `onClose` to avoid
+  /// holding references to disposed controllers.
+  static final Set<ForegroundPushListener> _foregroundListeners =
+      <ForegroundPushListener>{};
+
+  static void addForegroundListener(ForegroundPushListener listener) {
+    _foregroundListeners.add(listener);
+  }
+
+  static void removeForegroundListener(ForegroundPushListener listener) {
+    _foregroundListeners.remove(listener);
+  }
 
   // ── Channel constants (must match AndroidManifest default_notification_channel_id) ──
   static const String _channelId = 'default_channel';
@@ -70,10 +89,10 @@ class NotificationService {
     // iOS: present notifications when app is in foreground
     await FirebaseMessaging.instance
         .setForegroundNotificationPresentationOptions(
-      alert: true,
-      badge: true,
-      sound: true,
-    );
+          alert: true,
+          badge: true,
+          sound: true,
+        );
 
     // Initialise flutter_local_notifications (foreground banners only)
     await _plugin.initialize(
@@ -93,15 +112,18 @@ class NotificationService {
     // in AndroidManifest.xml so background/terminated messages appear here too.
     await _plugin
         .resolvePlatformSpecificImplementation<
-            AndroidFlutterLocalNotificationsPlugin>()
-        ?.createNotificationChannel(const AndroidNotificationChannel(
-          _channelId,
-          _channelName,
-          description: _channelDesc,
-          importance: Importance.high,
-          playSound: true,
-          enableVibration: true,
-        ));
+          AndroidFlutterLocalNotificationsPlugin
+        >()
+        ?.createNotificationChannel(
+          const AndroidNotificationChannel(
+            _channelId,
+            _channelName,
+            description: _channelDesc,
+            importance: Importance.high,
+            playSound: true,
+            enableVibration: true,
+          ),
+        );
 
     // Foreground messages → show a local banner
     FirebaseMessaging.onMessage.listen(_onForegroundMessage);
@@ -138,7 +160,16 @@ class NotificationService {
     );
     onNewNotification?.call();
     final type = message.data['type'] as String? ?? '';
-    onForegroundNotification?.call(type, message.data);
+    final data = Map<String, dynamic>.from(message.data);
+    // Iterate over a snapshot so a listener that unsubscribes during dispatch
+    // doesn't mutate the iterator.
+    for (final listener in _foregroundListeners.toList()) {
+      try {
+        listener(type, data);
+      } catch (_) {
+        // Never let a buggy listener block the rest.
+      }
+    }
   }
 
   // ── Tap handlers ───────────────────────────────────────────────────────────
@@ -264,7 +295,9 @@ class NotificationService {
 
       // ── Profile interactions ──────────────────────────────────────
       case 'profile_viewed':
-        final viewId = _s('viewerId').isNotEmpty ? _s('viewerId') : _s('modelId');
+        final viewId = _s('viewerId').isNotEmpty
+            ? _s('viewerId')
+            : _s('modelId');
         if (viewId.isNotEmpty) {
           Get.toNamed(
             isCustomer ? AppRoutes.companionProfile : AppRoutes.customerProfile,
@@ -284,7 +317,9 @@ class NotificationService {
         return;
 
       case 'friend_added':
-        final friendId = _s('friendId').isNotEmpty ? _s('friendId') : _s('modelId');
+        final friendId = _s('friendId').isNotEmpty
+            ? _s('friendId')
+            : _s('modelId');
         if (friendId.isNotEmpty) {
           Get.toNamed(
             isCustomer ? AppRoutes.companionProfile : AppRoutes.customerProfile,
@@ -299,22 +334,25 @@ class NotificationService {
       case 'booking_rejected':
       case 'booking_cancelled':
       case 'booking_completed':
+      case 'booking_payout_released':
         final bookingId = _s('bookingId');
         if (bookingId.isNotEmpty) {
-          Get.toNamed(AppRoutes.bookingDetail, arguments: {
-            'bookingId': bookingId,
-            'isCustomer': isCustomer,
-          });
+          Get.toNamed(
+            AppRoutes.bookingDetail,
+            arguments: {'bookingId': bookingId, 'isCustomer': isCustomer},
+          );
         }
         return;
 
       // ── Wallet / finance ──────────────────────────────────────────
+      // Note: `booking_payout_released` is handled by the booking block above
+      // (taps go to the booking detail page). Wallet refresh on that push is
+      // driven by DashboardLogic listening on the foreground broadcaster.
       case 'topup_created':
       case 'topup_approved':
       case 'topup_rejected':
       case 'withdraw_approved':
       case 'withdraw_rejected':
-      case 'booking_payout_released':
         Get.toNamed(isCustomer ? AppRoutes.wallet : AppRoutes.modelWallet);
         return;
 

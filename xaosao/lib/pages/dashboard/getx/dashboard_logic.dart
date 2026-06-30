@@ -33,14 +33,12 @@ class DashboardLogic extends GetxController {
     _fetchUnreadCount();
     _fetchBadgeCounts();
     LocationService.push();
-    NotificationService.onForegroundNotification = _onForegroundPush;
+    NotificationService.addForegroundListener(_onForegroundPush);
   }
 
   @override
   void onClose() {
-    if (NotificationService.onForegroundNotification == _onForegroundPush) {
-      NotificationService.onForegroundNotification = null;
-    }
+    NotificationService.removeForegroundListener(_onForegroundPush);
     super.onClose();
   }
 
@@ -49,13 +47,8 @@ class DashboardLogic extends GetxController {
     _fetchUnreadCount();
     _fetchBadgeCounts();
 
-    // Booking push → refresh the bookings list with current filter
-    if (type.startsWith('booking_')) {
-      try {
-        final m = Get.find<MeetUpLogic>();
-        m.filterBy(m.state.selectedStatus);
-      } catch (_) {}
-    }
+    // Booking push → MeetUpLogic owns its own state update (subscribes directly
+    // to the foreground broadcaster), so nothing to do here for booking_*.
 
     // Post push → sync counts for the specific post (foreground only)
     if (type.startsWith('post_')) {

@@ -1,7 +1,9 @@
 import 'package:get/get.dart';
+import 'package:xaosao/models/my_booking_model.dart';
 import 'package:xaosao/pages/dashboard/getx/dashboard_logic.dart';
 import 'package:xaosao/pages/meet_ups/getx/meet_ups_state.dart';
 import 'package:xaosao/repository/booking_repo.dart';
+import 'package:xaosao/services/notification_service.dart';
 import 'package:xaosao/services/storage_service.dart';
 import 'package:xaosao/utils/app_snackbar.dart';
 import 'package:xaosao/widgets/show_loading_alert.dart';
@@ -17,6 +19,131 @@ class MeetUpLogic extends GetxController {
       Get.find<StorageService>().read<String>('role') == 'customer';
 
   static const _limit = 20;
+
+  // Push types this controller reacts to.
+  static const _bookingPushTypes = <String>{
+    'booking_created',
+    'booking_accepted',
+    'booking_rejected',
+    'booking_cancelled',
+    'booking_completed',
+    'booking_payout_released',
+  };
+
+  // ── Lifecycle ─────────────────────────────────────────────────
+
+  @override
+  void onInit() {
+    super.onInit();
+    NotificationService.addForegroundListener(_onForegroundPush);
+  }
+
+  @override
+  void onClose() {
+    NotificationService.removeForegroundListener(_onForegroundPush);
+    super.onClose();
+  }
+
+  // ── Foreground push handler ───────────────────────────────────
+  //
+  // Strategy: optimistic, then reconcile.
+  //   1. If the push carries a `status`, update the matching booking
+  //      in-place (list item + detail) so the UI flips instantly.
+  //   2. Always trigger a silent list refresh so newly-created bookings
+  //      (no prior list entry) appear, and so the server remains the
+  //      authoritative source of truth.
+  //   3. If the detail page is open on the affected booking, also
+  //      silent-refresh the detail to pick up sub-field changes
+  //      (paymentStatus, updatedAt, etc.).
+  void _onForegroundPush(String type, Map<String, dynamic> data) {
+    if (!_bookingPushTypes.contains(type)) return;
+
+    final bookingId = (data['bookingId'] as String?) ?? '';
+    if (bookingId.isEmpty) {
+      // Type matched but no id — still safe to refresh the list silently.
+      _silentRefreshList();
+      return;
+    }
+
+    final pushStatus = (data['status'] as String?) ?? '';
+    if (pushStatus.isNotEmpty) {
+      _applyStatusInPlace(bookingId: bookingId, newStatus: pushStatus);
+    }
+
+    _silentRefreshList();
+    if (state.bookingDetail?.id == bookingId) {
+      // Reconcile sub-fields on the open detail page.
+      loadBookingDetail(bookingId, silent: true);
+    }
+  }
+
+  // ── In-place status mutation (list + detail) ──────────────────
+  void _applyStatusInPlace({
+    required String bookingId,
+    required String newStatus,
+  }) {
+    final current = state;
+
+    // List: rebuild only the rows that change so Obx sees a new list
+    // reference (otherwise Rx would not emit).
+    var listChanged = false;
+    final List<MyBookingModel> newList = current.myBooking.map((b) {
+      if (b.id == bookingId && b.status != newStatus) {
+        listChanged = true;
+        return b.copyWith(status: newStatus);
+      }
+      return b;
+    }).toList(growable: false);
+
+    // Detail: copy with new status if it's the open booking.
+    MyBookingModel? newDetail = current.bookingDetail;
+    final detailChanged =
+        newDetail != null &&
+        newDetail.id == bookingId &&
+        newDetail.status != newStatus;
+    if (detailChanged) {
+      newDetail = newDetail.copyWith(status: newStatus);
+    }
+
+    if (!listChanged && !detailChanged) return;
+
+    _state.value = MeetUpState(
+      status: current.status,
+      myBooking: listChanged ? newList : current.myBooking,
+      error: current.error,
+      hasMore: current.hasMore,
+      page: current.page,
+      selectedStatus: current.selectedStatus,
+      bookingDetail: newDetail,
+      bookingDetailLoading: current.bookingDetailLoading,
+      bookingDetailError: current.bookingDetailError,
+    );
+  }
+
+  // ── Silent list refresh — no loading flicker ──────────────────
+  Future<void> _silentRefreshList() async {
+    try {
+      final result = await _repo.myBooking(
+        isClient: isClient,
+        limit: _limit,
+        page: 1,
+        status: state.selectedStatus,
+      );
+      if (result.data == null) return;
+      _state.value = MeetUpState(
+        status: MeetUpStatus.success,
+        myBooking: result.data!,
+        selectedStatus: state.selectedStatus,
+        hasMore: result.data!.length >= _limit,
+        page: 2,
+        bookingDetail: state.bookingDetail,
+        bookingDetailLoading: state.bookingDetailLoading,
+        bookingDetailError: state.bookingDetailError,
+      );
+    } catch (_) {
+      // Reconciliation failed — keep the optimistic state we already showed.
+    }
+  }
 
   // ── List loading ──────────────────────────────────────────────
 

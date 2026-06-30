@@ -322,6 +322,7 @@ class _FilterChipsDelegate extends SliverPersistentHeaderDelegate {
           return GestureDetector(
             onTap: () => onSelect(status),
             child: AnimatedContainer(
+              alignment: Alignment.center,
               duration: const Duration(milliseconds: 180),
               padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
               decoration: BoxDecoration(

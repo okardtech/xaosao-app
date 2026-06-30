@@ -152,12 +152,18 @@ class _GiftSheetContentState extends State<_GiftSheetContent> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return Padding(
+      padding: EdgeInsets.only(
+        bottom: MediaQuery.of(context).viewInsets.bottom,
+      ),
+      child: Container(
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.vertical(top: Radius.circular(22.r)),
       ),
-      child: Column(
+      child: SafeArea(
+        top: false,
+        child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           // ── Drag handle ─────────────────────────────────
@@ -353,7 +359,7 @@ class _GiftSheetContentState extends State<_GiftSheetContent> {
             padding: EdgeInsets.only(
               left: 16.w,
               right: 16.w,
-              bottom: MediaQuery.of(context).viewInsets.bottom + 16.h,
+              bottom: 16.h,
             ),
             child: _SendButton(
               selected: _selected,
@@ -362,6 +368,8 @@ class _GiftSheetContentState extends State<_GiftSheetContent> {
             ),
           ),
         ],
+        ),
+      ),
       ),
     );
   }

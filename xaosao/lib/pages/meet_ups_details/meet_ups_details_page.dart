@@ -1022,7 +1022,9 @@ class _ReasonSheetState extends State<_ReasonSheet> {
               BorderRadius.vertical(top: Radius.circular(24.r)),
         ),
         padding: EdgeInsets.fromLTRB(20.w, 20.h, 20.w, 28.h),
-        child: Column(
+        child: SafeArea(
+          top: false,
+          child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             Container(
@@ -1054,6 +1056,7 @@ class _ReasonSheetState extends State<_ReasonSheet> {
               onTap: _submit,
             ),
           ],
+          ),
         ),
       ),
     );

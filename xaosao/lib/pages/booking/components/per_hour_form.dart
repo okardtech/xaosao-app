@@ -381,7 +381,13 @@ class _PerHourFormState extends State<PerHourForm> {
       builder: (_) => Obx(() {
         final selectedId = _logic.state.selectedVariantId;
         return Padding(
-          padding: EdgeInsets.fromLTRB(0, 12.h, 0, 28.h + MediaQuery.of(context).viewInsets.bottom),
+          padding: EdgeInsets.only(
+            bottom: MediaQuery.of(context).viewInsets.bottom,
+          ),
+          child: SafeArea(
+            top: false,
+            child: Padding(
+            padding: EdgeInsets.fromLTRB(0, 12.h, 0, 28.h),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -555,6 +561,8 @@ class _PerHourFormState extends State<PerHourForm> {
                 ),
               ),
             ],
+          ),
+          ),
           ),
         );
       }),

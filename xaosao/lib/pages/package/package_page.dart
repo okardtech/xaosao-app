@@ -33,18 +33,30 @@ const _kAccents = <Color>[
 
 String _fmtKip(int? n) => '${NumberFormat.decimalPattern().format(n ?? 0)} ກີບ';
 
-List<String> _features(Features? f) {
-  if (f == null) return [];
-  return [
-    f.feature1,
-    f.feature2,
-    f.feature3,
-    f.feature4,
-    f.feature5,
-    f.feature6,
-    f.feature7,
-    f.feature8,
-  ].whereType<String>().where((s) => s.isNotEmpty).toList();
+// Shared feature list shown on every package card.
+const _kPackageFeatures = <String>[
+  'ເຂົ້າເຖິງທຸກຟີເຈີແບບໄຮ້ຂີດຈໍາກັດ',
+  'ສົ່ງຂໍ້ຄວາມແຊັດໄດ້ບໍ່ຈໍາກັດ',
+  'ນັດໝາຍນໍາຄົນທີ່ເຮົາມັກໄດ້ບໍ່ຈໍາກັດ',
+  'ເປີດສິດເຂົ້າເບິ່ງໂປຣໄຟລ໌ VIP ຂອງສາວໆ',
+  'ລະບົບຄົ້ນຫາ ແລະ ຄັດກອງແບບຂັ້ນສູງ',
+  'ໄດ້ຮັບບໍລິການຊ່ວຍເຫຼືອລະດັບພິເສດຕະຫຼອດ 24/7',
+  'ເພີ່ມການເບິ່ງເຫັນໂປຣໄຟລ໌',
+];
+
+// Per-card description overrides (Lao). Indexes outside this range fall
+// back to the API-provided pkg.description.
+const _kPackageDescriptions = <String>[
+  'ສຳຫຼວດທຸກຟີເຈີລະດັບພຣີມຽມ ແລະ ເລີ່ມເຊື່ອມຕໍ່ໄດ້ທັນທີ',
+  'ທົດລອງບໍລິການ 24 ຊົ່ວໂມງ ດ້ວຍແຊັດ ແລະ ການຈອງແບບບໍ່ຈຳກັດ',
+  'ດີລທີ່ຄຸ້ມຄ່າທີ່ສຸດ ສຳລັບການນັດໝາຍໄລຍະຍາວ ແລະ ການເຊື່ອມຕໍ່ທີ່ຈິງໃຈ',
+];
+
+String? _descriptionFor(int index, PackageData pkg) {
+  if (index >= 0 && index < _kPackageDescriptions.length) {
+    return _kPackageDescriptions[index];
+  }
+  return pkg.description;
 }
 
 class PackagePage extends StatefulWidget {
@@ -474,6 +486,7 @@ class _PackagePageState extends State<PackagePage> {
         final isCurrent = st.currentPlan?.id == pkg.id;
         return _PackageCard(
           pkg: pkg,
+          index: i,
           gradient: _kGradients[gradIdx],
           accent: _kAccents[gradIdx],
           isActive: i == _current,
@@ -578,6 +591,7 @@ class _PackagePageState extends State<PackagePage> {
 // ═══════════════════════════════════════════════════════════════
 class _PackageCard extends StatelessWidget {
   final PackageData pkg;
+  final int index;
   final List<Color> gradient;
   final Color accent;
   final bool isActive;
@@ -586,6 +600,7 @@ class _PackageCard extends StatelessWidget {
 
   const _PackageCard({
     required this.pkg,
+    required this.index,
     required this.gradient,
     required this.accent,
     required this.isActive,
@@ -695,15 +710,18 @@ class _PackageCard extends StatelessWidget {
                   ),
                 ),
                 SizedBox(height: 8.h),
-                if (pkg.description != null && pkg.description!.isNotEmpty)
-                  Text(
-                    pkg.description!,
+                Builder(builder: (_) {
+                  final desc = _descriptionFor(index, pkg);
+                  if (desc == null || desc.isEmpty) return const SizedBox.shrink();
+                  return Text(
+                    desc,
                     style: TextStyle(
                       fontSize: 14.sp,
                       color: Colors.white.withValues(alpha: 0.70),
                       height: 1.55,
                     ),
-                  ),
+                  );
+                }),
                 SizedBox(height: 14.h),
                 Text(
                   _fmtKip(pkg.price),
@@ -723,7 +741,7 @@ class _PackageCard extends StatelessWidget {
   }
 
   Widget _buildBody() {
-    final feats = _features(pkg.features);
+    const feats = _kPackageFeatures;
     return Padding(
       padding: EdgeInsets.fromLTRB(18.w, 14.h, 18.w, 16.h),
       child: Column(

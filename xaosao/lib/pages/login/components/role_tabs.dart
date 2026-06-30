@@ -142,6 +142,8 @@ class _RoleCard extends StatelessWidget {
                 // Sub
                 Text(
                   sub,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                   style: TextStyle(
                     fontSize: 12.sp,
                     color: _isOn
