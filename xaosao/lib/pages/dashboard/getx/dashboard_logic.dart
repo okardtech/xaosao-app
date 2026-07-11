@@ -6,7 +6,6 @@ import 'package:xaosao/pages/posts/getx/post_logic.dart';
 import 'package:xaosao/pages/wallet/getx/wallet_logic.dart';
 import 'package:xaosao/repository/chat_repo.dart';
 import 'package:xaosao/repository/notification_repo.dart';
-import 'package:xaosao/services/location_service.dart';
 import 'package:xaosao/services/notification_service.dart';
 import '../../package/getx/package_logic.dart';
 import 'dashboard_state.dart';
@@ -32,7 +31,9 @@ class DashboardLogic extends GetxController {
     super.onInit();
     _fetchUnreadCount();
     _fetchBadgeCounts();
-    LocationService.push();
+    // Note: GPS push is now driven by PermissionCoordinator on the
+    // dashboard page after the user grants location permission via the
+    // primer sheet — no longer prompted here.
     NotificationService.addForegroundListener(_onForegroundPush);
   }
 

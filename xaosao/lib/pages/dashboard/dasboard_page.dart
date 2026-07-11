@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:xaosao/constants/app_color.dart';
 import 'package:xaosao/constants/app_icons.dart';
 import 'package:xaosao/services/notification_service.dart';
+import 'package:xaosao/services/permission_coordinator.dart';
 import 'package:xaosao/services/storage_service.dart';
 import 'package:xaosao/widgets/app_svg_icon.dart';
 import '../login/getx/login_logic.dart';
@@ -71,14 +72,22 @@ class DashboardPage extends StatefulWidget {
   State<DashboardPage> createState() => _DashboardPageState();
 }
 
-class _DashboardPageState extends State<DashboardPage> {
+class _DashboardPageState extends State<DashboardPage>
+    with WidgetsBindingObserver {
   late final DashboardLogic _logic;
   late final bool _isCustomer;
   late final List<Widget> _pages;
 
+  // Tracks the last time the app went to background. Used to decide
+  // whether a resume should re-run PermissionCoordinator (catches
+  // grants made in Settings while the app was paused).
+  DateTime? _pausedAt;
+  static const _resumeRecheckThreshold = Duration(seconds: 10);
+
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     final role = Get.find<StorageService>().read<String>('role');
     _isCustomer = role == 'customer';
 
@@ -115,12 +124,42 @@ class _DashboardPageState extends State<DashboardPage> {
         if (isHidden) showHiddenProfileBanner(context);
       });
     }
+
+    // Runtime permissions — notifications then location, both with
+    // contextual primer sheets. Re-asks are throttled by a 7-day cooldown.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) PermissionCoordinator.checkAndPrime(context);
+    });
   }
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     Get.delete<DashboardLogic>();
     super.dispose();
+  }
+
+  // Re-check permissions when the app resumes from a long-enough
+  // background. Catches the case where the user enables a permission
+  // in OS Settings while we were paused. Short backgrounds (e.g. brief
+  // overlay) are ignored to avoid churn. Side effects inside the
+  // coordinator are themselves rate-limited (5 min), so this is safe
+  // even if `resumed` fires more often than expected.
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.paused ||
+        state == AppLifecycleState.inactive) {
+      _pausedAt ??= DateTime.now();
+      return;
+    }
+    if (state == AppLifecycleState.resumed) {
+      final paused = _pausedAt;
+      _pausedAt = null;
+      if (paused == null) return;
+      if (DateTime.now().difference(paused) < _resumeRecheckThreshold) return;
+      if (!mounted) return;
+      PermissionCoordinator.checkAndPrime(context);
+    }
   }
 
   @override

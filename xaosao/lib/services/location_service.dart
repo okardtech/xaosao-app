@@ -1,48 +1,31 @@
-import 'package:geolocator/geolocator.dart';
+import 'package:get/get.dart';
 import 'package:xaosao/repository/login_repo.dart';
+import 'package:xaosao/services/location_manager.dart';
 
 /// One-shot GPS → server push.
-/// Call [push] on app open. Fire-and-forget — never throws.
+///
+/// Permission and OS-level GPS-toggle handling live in
+/// [PermissionCoordinator]. Position acquisition is delegated to
+/// [LocationManager.getOrRefresh] so the GPS hardware is fixed AT MOST
+/// once per cache window (5 min) regardless of how many consumers ask.
+///
+/// Fire-and-forget — never throws, swallows all failures silently
+/// (no permission, GPS off, hardware timeout, network error).
 class LocationService {
   LocationService._();
 
   static final _repo = LoginRepo();
 
-  /// Resolves permission, fetches current position, then PATCHes the server.
-  /// Returns silently on any failure (permission denied, GPS timeout, network).
   static Future<void> push() async {
     try {
-      final position = await _resolvePosition();
+      final position = await Get.find<LocationManager>().getOrRefresh();
       if (position == null) return;
-
       await _repo.updateLocation(
         latitude: position.latitude,
         longitude: position.longitude,
       );
-    } catch (_) {}
-  }
-
-  // ── Internal ───────────────────────────────────────────────────
-
-  static Future<Position?> _resolvePosition() async {
-    if (!await Geolocator.isLocationServiceEnabled()) return null;
-
-    var permission = await Geolocator.checkPermission();
-
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
+    } catch (_) {
+      // LocationManager not registered yet, or any other failure — swallow.
     }
-
-    if (permission == LocationPermission.denied ||
-        permission == LocationPermission.deniedForever) {
-      return null;
-    }
-
-    return Geolocator.getCurrentPosition(
-      locationSettings: const LocationSettings(
-        accuracy: LocationAccuracy.high,
-        timeLimit: Duration(seconds: 10),
-      ),
-    );
   }
 }

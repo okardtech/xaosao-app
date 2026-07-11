@@ -79,14 +79,17 @@ class NotificationService {
   }
 
   // ── Main initialisation (call once from main()) ────────────────────────────
+  //
+  // NOTE: This intentionally does NOT call `requestPermission(...)`.
+  // The OS permission dialog is shown later by PermissionCoordinator,
+  // after a contextual primer sheet, so users understand WHY we're asking.
+  // The FCM token is only fetched once the user has granted permission
+  // (via `refreshToken()`); calling getToken() before grant on iOS would
+  // throw, and on Android it'd succeed but produce a token that can't
+  // deliver alerts until permission is granted.
   static Future<void> initialize() async {
-    await FirebaseMessaging.instance.requestPermission(
-      alert: true,
-      badge: true,
-      sound: true,
-    );
-
-    // iOS: present notifications when app is in foreground
+    // iOS: present notifications when app is in foreground (no permission
+    // ask here — just configures presentation if/when permission is granted).
     await FirebaseMessaging.instance
         .setForegroundNotificationPresentationOptions(
           alert: true,
@@ -141,11 +144,19 @@ class NotificationService {
       );
     }
 
-    // FCM token
+    // Subscribe to token rotation — the value will populate on the first
+    // grant via `refreshToken()`, or via Firebase's natural rotation later.
+    FirebaseMessaging.instance.onTokenRefresh.listen((t) => _fcmToken = t);
+  }
+
+  /// Fetch (or re-fetch) the FCM device token. Call after the user grants
+  /// notification permission via PermissionCoordinator — calling before
+  /// grant on iOS throws APNS errors; on Android it succeeds but yields
+  /// a token that can't deliver alerts.
+  static Future<void> refreshToken() async {
     try {
       _fcmToken = await FirebaseMessaging.instance.getToken();
     } catch (_) {}
-    FirebaseMessaging.instance.onTokenRefresh.listen((t) => _fcmToken = t);
   }
 
   // ── Foreground handler ─────────────────────────────────────────────────────
