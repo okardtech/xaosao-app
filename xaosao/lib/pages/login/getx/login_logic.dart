@@ -1,7 +1,9 @@
 import 'package:get/get.dart';
 import 'package:xaosao/constants/app_routes.dart';
 import 'package:xaosao/pages/login/getx/login_state.dart';
+import 'package:xaosao/pages/wallet/getx/wallet_logic.dart';
 import 'package:xaosao/repository/login_repo.dart';
+import 'package:xaosao/services/notification_service.dart';
 import 'package:xaosao/services/storage_service.dart';
 import 'package:xaosao/utils/app_snackbar.dart';
 import 'package:xaosao/widgets/show_loading_alert.dart';
@@ -16,6 +18,26 @@ class LoginLogic extends GetxController {
   void _updateState(LoginState newState) => _state.value = newState;
 
   void setRole(RegisterRole role) => _updateState(state.copyWith(role: role));
+
+  void onRoleChange(RegisterRole role) {
+    _updateState(state.copyWith(
+      role: role,
+      isCustomer: role == RegisterRole.customer,
+    ));
+    Get.find<StorageService>().write('last_role', role == RegisterRole.customer ? 'customer' : 'model');
+  }
+
+  void toggleObscure() => _updateState(state.copyWith(obscure: !state.obscure));
+
+  void updateModelProfileHidden(bool isHidden) {
+    if (state.modelProfile != null) {
+      _updateState(
+        state.copyWith(
+          modelProfile: state.modelProfile!.copyWith(isProfileHidden: isHidden),
+        ),
+      );
+    }
+  }
 
   void updateProfileUrl(String url, bool isClient) {
     if (isClient && state.customerProfile != null) {
@@ -48,10 +70,9 @@ class LoginLogic extends GetxController {
       if (!res.success || res.data == null) {
         _updateState(state.copyWith(status: LoginStatus.failure));
         hideLoadingDialog();
-        AppSnackbar.error(res.message ?? 'ເຂົ້າສູ່ລະບົບບໍ່ສຳເລັດ');
+        AppSnackbar.error(res.laMessage ?? 'ເຂົ້າສູ່ລະບົບບໍ່ສຳເລັດ');
         return;
       }
-
       final loginData = res.data!;
       final storage = Get.find<StorageService>();
       await storage.write('token', loginData.accessToken ?? '');
@@ -62,6 +83,11 @@ class LoginLogic extends GetxController {
 
       // Fetch profile while loading dialog is still visible
       await fetchProfile(isCustomer: isCustomer);
+
+      // Register FCM device token — fire-and-forget, non-critical
+      saveFcmToken();
+      // Note: GPS push is now driven by PermissionCoordinator on the
+      // dashboard page after the user grants location permission.
 
       hideLoadingDialog();
       Get.offAllNamed(AppRoutes.dashboard);
@@ -87,6 +113,9 @@ class LoginLogic extends GetxController {
               customerProfile: res.data,
             ),
           );
+          if (Get.isRegistered<WalletLogic>()) {
+            Get.find<WalletLogic>().fetchWallet();
+          }
         } else {
           _updateState(state.copyWith(profileStatus: LoginStatus.failure));
         }
@@ -109,10 +138,32 @@ class LoginLogic extends GetxController {
     }
   }
 
-  void clearState() => _updateState(LoginState());
+  // ── FCM token ─────────────────────────────────────────────────
+  /// Registers the device FCM token with the server.
+  /// Fire-and-forget — silently ignored on failure.
+  Future<void> saveFcmToken() async {
+    final token = NotificationService.fcmToken;
+    if (token == null || token.isEmpty) return;
+    try {
+      await _repo.fcmTokenSave(fcmToken: token);
+    } catch (_) {
+      // Non-critical — do not surface errors to the user
+    }
+  }
+
+  void clearState() {
+    final saved = Get.find<StorageService>().read<String>('last_role');
+    final role = saved == 'model' ? RegisterRole.companion : RegisterRole.customer;
+    _updateState(LoginState(role: role, isCustomer: role == RegisterRole.customer));
+  }
 
   @override
   void onInit() {
     super.onInit();
+    final saved = Get.find<StorageService>().read<String>('last_role');
+    if (saved != null) {
+      final role = saved == 'model' ? RegisterRole.companion : RegisterRole.customer;
+      _updateState(state.copyWith(role: role, isCustomer: role == RegisterRole.customer));
+    }
   }
 }

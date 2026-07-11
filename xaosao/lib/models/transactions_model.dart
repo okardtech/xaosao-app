@@ -3,6 +3,7 @@
 //     final transactionsModel = transactionsModelFromJson(jsonString);
 
 import 'dart:convert';
+import 'package:xaosao/utils/api_date_parser.dart';
 
 List<TransactionsModel> transactionsModelFromJson(String str) => List<TransactionsModel>.from(json.decode(str).map((x) => TransactionsModel.fromJson(x)));
 
@@ -77,8 +78,8 @@ class TransactionsModel {
         reason: json["reason"],
         customerId: json["customerId"],
         modelId: json["modelId"],
-        createdAt: json["createdAt"] == null ? null : DateTime.parse(json["createdAt"]),
-        updatedAt: json["updatedAt"] == null ? null : DateTime.parse(json["updatedAt"]),
+        createdAt: parseApiDateTime(json["createdAt"]),
+        updatedAt: parseApiDateTime(json["updatedAt"]),
     );
 
     Map<String, dynamic> toJson() => {

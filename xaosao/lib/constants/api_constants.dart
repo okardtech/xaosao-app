@@ -63,11 +63,16 @@ class ApiConstants {
   static const String discover = 'discover/list';
   // model to see customer
   static const String modelDiscover = '/model/discover/customers';
+  static const String modelDiscoverCustomer = '/model/discover/customer';
 
   // feedback
   static const String feedback = 'feedback';
   // notification
   static const String notification = 'notifications/settings';
+  static const String myNotificaiton = 'notifications';
+  static const String notificationRead = 'notifications/read';
+  static const String notificationReadAll = 'notifications/read-all';
+  static const String notificationUnreadCount = 'notifications/unread-count';
   // reivew
   static const String addReview = 'reviews';
   static const String reviewList = 'reviews/model';
@@ -75,6 +80,8 @@ class ApiConstants {
   // like api
   static const String modelLike = 'model/interactions/customers/';
   static const String clientLike = 'customer/interactions/models/';
+  static const String modelAddFriend = 'model/interactions/friends/';
+  static const String clientAddFriend = 'customer/interactions/friends/';
   // package
   static const String package = 'customer/subscriptions/packages';
   static const String packageHistory = 'customer/subscriptions/history';
@@ -95,10 +102,22 @@ class ApiConstants {
   static const String systemQR = 'system/payment-qr-code';
   // booking
   static const String booking = 'bookings';
+  static const String bookingSlots = 'bookings/booked-slots';
   // model booking
   static const String modelBooking = 'model/bookings';
   // my post
-  static const String myPost = '/posts';
+  static const String myPost = 'posts';
   // my gift
   static const String gift = 'gifts';
+  static const String giftPost = 'gifts/post';
+  // location
+  static const String meLocation = 'me/location';
+  // chat
+  static const String chatSocketUrl = 'https://api.xaosao.com/chat';
+  static const String chatConversations = 'chat/conversations';
+  static const String chatMessages = 'chat/messages';
+  static const String bages = 'me/badges';
+  // referral
+  static const String referral = 'model/referrals';
+  static const String referralValidate = 'referrals/validate';
 }

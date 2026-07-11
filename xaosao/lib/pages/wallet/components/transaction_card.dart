@@ -9,8 +9,20 @@ class TransactionCard extends StatelessWidget {
   final TransactionsModel tx;
   const TransactionCard({super.key, required this.tx});
 
-  String get _title =>
-      tx.identifier?.isNotEmpty == true ? tx.identifier! : 'ເຕີມເງິນ';
+  String get _title => switch (tx.identifier) {
+    'recharge' => 'ເຕີມເງິນ',
+    'subscription' => 'ຊື້ Package',
+    'gift' => 'ສົ່ງຂອງຂວັນ',
+    'booking_hold' => 'ຝາກຊຳລະການຈອງ',
+    'booking_refund' => 'ຄືນເງິນການຈອງ',
+    'gift_earning' => 'ຮັບຂອງຂວັນ',
+    'booking_earning' => 'ຮັບເງິນການຈອງ',
+    'withdrawal' => 'ຖອນເງິນ',
+    'referral' => 'ຄ່ານາຍໜ້າ',
+    'booking_referral' => 'ຄ່ານາຍໜ້າ (ການຈອງ)',
+    'subscription_referral' => 'ຄ່ານາຍໜ້າ (Package)',
+    _ => tx.identifier ?? 'ທຸລະກຳ',
+  };
 
   String get _amount =>
       '+${NumberFormat.decimalPattern().format(tx.amount ?? 0)} ກີບ';
@@ -40,6 +52,18 @@ class TransactionCard extends StatelessWidget {
             color: Colors.black.withValues(alpha: 0.07),
             width: 0.5,
           ),
+          boxShadow: [
+            BoxShadow(
+              color: AppColors.primary.withValues(alpha: 0.10),
+              blurRadius: 20,
+              offset: const Offset(0, 6),
+            ),
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.05),
+              blurRadius: 10,
+              offset: const Offset(0, 2),
+            ),
+          ],
         ),
         padding: EdgeInsets.symmetric(horizontal: 13.w, vertical: 12.h),
         child: Row(

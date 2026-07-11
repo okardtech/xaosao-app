@@ -28,7 +28,7 @@ class ForgotLogic extends GetxController {
       );
       hideLoadingDialog();
       if (!res.success || res.data == null) {
-        AppSnackbar.error(res.message ?? 'ເກີດຂໍ້ຜິດພາດ! ກະລຸນາລອງໃໝ່ອີກຄັ້ງ');
+        AppSnackbar.error(res.laMessage ?? 'ເກີດຂໍ້ຜິດພາດ! ກະລຸນາລອງໃໝ່ອີກຄັ້ງ');
         return;
       }
       _updateState(state.copyWith(forgotPhone: res.data, isCustomer: isCustomer));
@@ -52,7 +52,7 @@ class ForgotLogic extends GetxController {
       );
       hideLoadingDialog();
       if (!res.success || res.data == null) {
-        AppSnackbar.error(res.message ?? 'ເກີດຂໍ້ຜິດພາດ! ກະລຸນາລອງໃໝ່ອີກຄັ້ງ');
+        AppSnackbar.error(res.laMessage ?? 'ເກີດຂໍ້ຜິດພາດ! ກະລຸນາລອງໃໝ່ອີກຄັ້ງ');
         return;
       }
       _updateState(state.copyWith(forgotPhone: res.data));
@@ -77,7 +77,7 @@ class ForgotLogic extends GetxController {
       );
       hideLoadingDialog();
       if (!res.success) {
-        AppSnackbar.error(res.message ?? 'ເກີດຂໍ້ຜິດພາດ! ກະລຸນາລອງໃໝ່ອີກຄັ້ງ');
+        AppSnackbar.error(res.laMessage ?? 'ເກີດຂໍ້ຜິດພາດ! ກະລຸນາລອງໃໝ່ອີກຄັ້ງ');
         return false;
       }
       Get.toNamed(AppRoutes.forgotNewPassword, arguments: phone);
@@ -104,7 +104,7 @@ class ForgotLogic extends GetxController {
       );
       hideLoadingDialog();
       if (!res.success || res.data == null) {
-        AppSnackbar.error(res.message ?? 'ເກີດຂໍ້ຜິດພາດ! ກະລຸນາລອງໃໝ່ອີກຄັ້ງ');
+        AppSnackbar.error(res.laMessage ?? 'ເກີດຂໍ້ຜິດພາດ! ກະລຸນາລອງໃໝ່ອີກຄັ້ງ');
         return;
       }
       Get.offAllNamed(AppRoutes.login);

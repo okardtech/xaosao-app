@@ -1,10 +1,9 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:xaosao/constants/app_color.dart';
 import 'package:xaosao/pages/forgot_password/getx/forgot_logic.dart';
-import 'package:xaosao/pages/login/components/role_tabs.dart';
-import 'package:xaosao/pages/login/getx/login_state.dart';
+import 'package:xaosao/pages/login/getx/login_logic.dart';
 import 'package:xaosao/pages/register/components/register_app_bar.dart';
 import 'package:xaosao/widgets/app_button.dart';
 import 'package:xaosao/widgets/app_text_field.dart';
@@ -19,7 +18,6 @@ class ForgotPhonePage extends StatefulWidget {
 class _ForgotPhonePageState extends State<ForgotPhonePage> {
   final _phoneCtrl = TextEditingController();
   final _phoneFocus = FocusNode();
-  RegisterRole _role = RegisterRole.customer;
   bool _loading = false;
 
   bool get _canSubmit => _phoneCtrl.text.trim().length >= 8;
@@ -43,7 +41,7 @@ class _ForgotPhonePageState extends State<ForgotPhonePage> {
     await Get.find<ForgotLogic>().forgotPhone(
       context,
       phone: _phoneCtrl.text.trim(),
-      isCustomer: _role == RegisterRole.customer,
+      isCustomer: Get.find<LoginLogic>().state.isCustomer,
     );
     if (!mounted) return;
     setState(() => _loading = false);
@@ -55,7 +53,7 @@ class _ForgotPhonePageState extends State<ForgotPhonePage> {
       onTap: () => FocusScope.of(context).unfocus(),
       behavior: HitTestBehavior.opaque,
       child: Scaffold(
-        backgroundColor: AppColors.primary,
+        backgroundColor: const Color(0xFFF8F8FC),
         body: Column(
           children: [
             const _ForgotPhoneHero(),
@@ -73,19 +71,7 @@ class _ForgotPhonePageState extends State<ForgotPhonePage> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        'ທ່ານເຂົ້າໃນຖານະໃດ?',
-                        style: TextStyle(
-                          fontSize: 14.sp,
-                          color: AppColors.textHint,
-                        ),
-                      ),
-                      SizedBox(height: 10.h),
-                      RoleCards(
-                        selected: _role,
-                        onSelect: (r) => setState(() => _role = r),
-                      ),
-                      SizedBox(height: 20.h),
+                      SizedBox(height: 4.h),
                       const AppFieldLabel('ເບີໂທລະສັບ', required: true),
                       SizedBox(height: 6.h),
                       AppPhoneField(
@@ -180,6 +166,18 @@ class _ForgotPhoneHero extends StatelessWidget {
                     decoration: BoxDecoration(
                       color: Colors.white.withValues(alpha: 0.20),
                       borderRadius: BorderRadius.circular(18.r),
+                      boxShadow: [
+                        BoxShadow(
+                          color: AppColors.primary.withValues(alpha: 0.10),
+                          blurRadius: 20,
+                          offset: const Offset(0, 6),
+                        ),
+                        BoxShadow(
+                          color: Colors.black.withValues(alpha: 0.05),
+                          blurRadius: 10,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
                     ),
                     child: Icon(
                       Icons.lock_reset_rounded,

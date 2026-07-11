@@ -1,3 +1,6 @@
+import 'package:xaosao/models/service_model.dart';
+import 'package:xaosao/utils/api_date_parser.dart';
+
 // ─── Shared base fields ───────────────────────────────────────────────────────
 abstract class BaseProfileModel {
   String? id;
@@ -136,7 +139,7 @@ class CustomerProfileModel extends BaseProfileModel {
         lastName: json["lastName"],
         profile: json["profile"],
         gender: json["gender"],
-        dob: json["dob"] == null ? null : DateTime.parse(json["dob"]),
+        dob: parseApiDateTime(json["dob"]),
         whatsapp: json["whatsapp"] == null ? null : (json["whatsapp"]),
         latitude: json["latitude"] == null
             ? null
@@ -146,12 +149,8 @@ class CustomerProfileModel extends BaseProfileModel {
             : (json["longitude"] as num).toDouble(),
         isPhoneVerified: json["isPhoneVerified"],
         status: json["status"],
-        createdAt: json["createdAt"] == null
-            ? null
-            : DateTime.parse(json["createdAt"]),
-        updatedAt: json["updatedAt"] == null
-            ? null
-            : DateTime.parse(json["updatedAt"]),
+        createdAt: parseApiDateTime(json["createdAt"]),
+        updatedAt: parseApiDateTime(json["updatedAt"]),
         gallery: json["gallery"] == null
             ? []
             : List<GalleryItem>.from(
@@ -330,7 +329,7 @@ class ModelProfileModel extends BaseProfileModel {
         lastName: json["lastName"],
         profile: json["profile"],
         gender: json["gender"],
-        dob: json["dob"] == null ? null : DateTime.parse(json["dob"]),
+        dob: parseApiDateTime(json["dob"]),
         whatsapp: json["whatsapp"] == null ? null : (json["whatsapp"]),
         latitude: json["latitude"] == null
             ? null
@@ -340,12 +339,8 @@ class ModelProfileModel extends BaseProfileModel {
             : (json["longitude"] as num).toDouble(),
         isPhoneVerified: json["isPhoneVerified"],
         status: json["status"],
-        createdAt: json["createdAt"] == null
-            ? null
-            : DateTime.parse(json["createdAt"]),
-        updatedAt: json["updatedAt"] == null
-            ? null
-            : DateTime.parse(json["updatedAt"]),
+        createdAt: parseApiDateTime(json["createdAt"]),
+        updatedAt: parseApiDateTime(json["updatedAt"]),
         gallery: json["gallery"] == null
             ? []
             : List<GalleryItem>.from(
@@ -454,9 +449,7 @@ class GalleryItem {
     id: json["id"],
     url: json["url"],
     status: json["status"],
-    createdAt: json["createdAt"] == null
-        ? null
-        : DateTime.parse(json["createdAt"]),
+    createdAt: parseApiDateTime(json["createdAt"]),
   );
 
   Map<String, dynamic> toJson() => {
@@ -604,6 +597,7 @@ class ModelService {
   double? customMinuteRate;
   String? serviceLocation;
   bool? isAvailable;
+  List<MassageVariant>? variants;
 
   ModelService({
     this.modelServiceId,
@@ -617,6 +611,7 @@ class ModelService {
     this.customMinuteRate,
     this.serviceLocation,
     this.isAvailable,
+    this.variants,
   });
 
   ModelService copyWith({
@@ -631,6 +626,7 @@ class ModelService {
     double? customMinuteRate,
     String? serviceLocation,
     bool? isAvailable,
+    List<MassageVariant>? variants,
   }) => ModelService(
     modelServiceId: modelServiceId ?? this.modelServiceId,
     serviceId: serviceId ?? this.serviceId,
@@ -643,6 +639,7 @@ class ModelService {
     customMinuteRate: customMinuteRate ?? this.customMinuteRate,
     serviceLocation: serviceLocation ?? this.serviceLocation,
     isAvailable: isAvailable ?? this.isAvailable,
+    variants: variants ?? this.variants,
   );
 
   factory ModelService.fromJson(Map<String, dynamic> json) => ModelService(
@@ -667,6 +664,11 @@ class ModelService {
         : (json["customMinuteRate"] as num).toDouble(),
     serviceLocation: json["serviceLocation"],
     isAvailable: json["isAvailable"],
+    variants: json["variants"] == null
+        ? null
+        : List<MassageVariant>.from(
+            (json["variants"] as List).map((x) => MassageVariant.fromJson(x)),
+          ),
   );
 
   Map<String, dynamic> toJson() => {
@@ -681,6 +683,7 @@ class ModelService {
     "customMinuteRate": customMinuteRate,
     "serviceLocation": serviceLocation,
     "isAvailable": isAvailable,
+    "variants": variants?.map((v) => v.toJson()).toList(),
   };
 
   // ✅ effective display rate

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:xaosao/constants/app_color.dart';
@@ -8,6 +7,7 @@ import 'package:xaosao/pages/topup/components/topup_constant.dart';
 import 'package:xaosao/pages/topup/getx/topup_logic.dart';
 import 'package:xaosao/widgets/app_button.dart';
 import 'package:xaosao/widgets/app_text_field.dart';
+import 'package:xaosao/utils/currency_formatter.dart';
 import 'package:xaosao/widgets/gradient_app_bar.dart';
 
 class TopUpAmountPage extends StatefulWidget {
@@ -140,7 +140,7 @@ class _TopUpAmountPageState extends State<TopUpAmountPage> {
                       prefixIcon: Icons.attach_money_rounded,
                       suffixLabel: 'ກີບ',
                       keyboardType: TextInputType.number,
-                      formatters: [FilteringTextInputFormatter.digitsOnly],
+                      formatters: [ThousandsSeparatorFormatter()],
                       action: TextInputAction.done,
                       onChanged: (_) => setState(() {
                         _custom = true;

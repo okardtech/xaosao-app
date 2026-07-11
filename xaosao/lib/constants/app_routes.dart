@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:xaosao/models/conversation_model.dart';
 import 'package:xaosao/models/profile_model.dart';
-import 'package:xaosao/models/Recommended_model.dart';
+import 'package:xaosao/pages/chat/components/chat_detail_page.dart';
 import 'package:xaosao/pages/companion_profile/add_review_page.dart';
 import 'package:xaosao/pages/companion_profile/companion_profile_page.dart';
 import 'package:xaosao/pages/dashboard/dasboard_page.dart';
 import 'package:xaosao/pages/feedback/feedback_page.dart';
 import 'package:xaosao/pages/notification/components/notification_setting.dart';
+import 'package:xaosao/pages/notification/notification_page.dart';
+import 'package:xaosao/models/notification_item_model.dart';
+import 'package:xaosao/pages/notification/welcome_page.dart';
 import 'package:xaosao/pages/forgot_password/forgot_new_password_page.dart';
 import 'package:xaosao/pages/forgot_password/forgot_otp_page.dart';
 import 'package:xaosao/pages/forgot_password/forgot_phone_page.dart';
@@ -32,6 +36,17 @@ import '../pages/package/components/package_history.dart';
 import '../pages/package/subscription_checkout_page.dart';
 import '../pages/booking/booking_args.dart';
 import '../pages/booking/booking_page.dart';
+import '../pages/meet_ups/booking_detail_loader_page.dart';
+import '../pages/share_linked/share_linked_page.dart';
+import '../pages/referral_analytics/referral_analytics_page.dart';
+import '../pages/setting/companion_policy_privacy.dart';
+import '../pages/setting/customer_policy_privacy.dart';
+import '../pages/setting/center_helper_page.dart';
+import '../pages/posts/gift/gifted_posts_page.dart';
+import '../pages/posts/gift/gift_history_page.dart';
+import '../pages/posts/post_detail/post_detail_page.dart';
+import '../pages/posts/post_interest_page.dart';
+import '../pages/model_discover/model_detail_page.dart';
 
 class AppRoutes {
   static const String splash = '/';
@@ -48,6 +63,7 @@ class AppRoutes {
   static const String updateInfo = '/update-info';
   static const String changePassword = '/change-password';
   static const String feedback = '/feedback';
+  static const String notifications = '/notifications';
   static const String notificationSettings = '/notification-settings';
   static const String companionProfile = '/companion-profile';
   static const String addReview = '/add-review';
@@ -62,6 +78,19 @@ class AppRoutes {
   static const String packageHistory = '/package-history';
   static const String subscriptionCheckout = '/subscription-checkout';
   static const String booking = '/booking';
+  static const String bookingDetail = '/booking-detail';
+  static const String chatDetail = '/chat-detail';
+  static const String shareLink = '/share-link';
+  static const String referralAnalytics = '/referral-analytics';
+  static const String companionPolicyPrivacy = '/companion-policy-privacy';
+  static const String customerPolicyPrivacy = '/customer-policy-privacy';
+  static const String helperCenter = '/helper-center';
+  static const String myGifts = '/my-gifts';
+  static const String giftHistory = '/gift-history';
+  static const String postDetail = '/post-detail';
+  static const String postInterests = '/post-interests';
+  static const String welcomeNotification = '/welcome-notification';
+  static const String customerProfile = '/customer-profile';
 
   static Route<dynamic> onGenerateRoute(RouteSettings settings) {
     switch (settings.name) {
@@ -103,11 +132,13 @@ class AppRoutes {
         return _slideRight(const ChangePasswordPage());
       case feedback:
         return _slideRight(const FeedbackPage());
+      case notifications:
+        return _slideRight(const NotificationPage());
       case notificationSettings:
         return _slideRight(const NotificationSettingPage());
       case companionProfile:
-        final model = settings.arguments as RecommendedModel;
-        return _slideRight(CompanionProfilePage(model: model));
+        final modelId = settings.arguments as String;
+        return _slideRight(CompanionProfilePage(modelId: modelId));
       case addReview:
         final args = settings.arguments as Map<String, dynamic>;
         return _slideRight(AddReviewPage(
@@ -146,6 +177,48 @@ class AppRoutes {
       case booking:
         final bookingArgs = settings.arguments as BookingArgs;
         return _slideUp(BookingPage(args: bookingArgs));
+      case bookingDetail:
+        final args = settings.arguments as Map<String, dynamic>;
+        return _slideRight(BookingDetailLoaderPage(
+          bookingId: args['bookingId'] as String,
+          isCustomer: args['isCustomer'] as bool,
+        ));
+      case chatDetail:
+        final args = settings.arguments as Map<String, dynamic>;
+        return _slideRight(ChatDetailPage(
+          conversationId: args['conversationId'] as String,
+          conv: args['conv'] as ConversationModel,
+        ));
+      case shareLink:
+        final model = settings.arguments as ModelProfileModel;
+        return _slideRight(ShareLinkedPage(model: model));
+      case referralAnalytics:
+        return _slideRight(const ReferralAnalyticsPage());
+      case companionPolicyPrivacy:
+        return _slideRight(const CompanionPolicyPrivacy());
+      case customerPolicyPrivacy:
+        return _slideRight(const CustomerPolicyPrivacy());
+      case helperCenter:
+        return _slideRight(const CenterHelperPage());
+      case myGifts:
+        final postId = settings.arguments as String;
+        return _slideRight(GiftedPostsPage(postId: postId));
+      case giftHistory:
+        return _slideRight(const GiftHistoryPage());
+      case postDetail:
+        final detailPostId = settings.arguments as String;
+        return _slideRight(PostDetailPage(postId: detailPostId));
+      case postInterests:
+        final interestPostId = settings.arguments as String;
+        return _slideRight(PostInterestPage(postId: interestPostId));
+      case customerProfile:
+        final customerId = settings.arguments as String;
+        return _slideRight(ModelDetailPage(customerId: customerId));
+      case welcomeNotification:
+        final notif = settings.arguments is NotificationItemModel
+            ? settings.arguments as NotificationItemModel
+            : null;
+        return _fadeScale(WelcomeNotificationPage(notification: notif));
       default:
         return _fade(const SplashPage());
     }

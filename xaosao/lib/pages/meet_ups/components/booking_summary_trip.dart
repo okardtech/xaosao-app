@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:xaosao/constants/app_color.dart';
 import 'package:xaosao/models/my_booking_model.dart';
 
 // ═══════════════════════════════════════════════════════════════
@@ -105,9 +106,21 @@ class _SCard extends StatelessWidget {
             color: Colors.white,
             borderRadius: BorderRadius.circular(14.r),
             border: Border.all(
-              color: Colors.black.withOpacity(0.07),
+              color: Colors.black.withValues(alpha: 0.07),
               width: 0.5,
             ),
+            boxShadow: [
+              BoxShadow(
+                color: AppColors.primary.withValues(alpha: 0.10),
+                blurRadius: 20,
+                offset: const Offset(0, 6),
+              ),
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.05),
+                blurRadius: 10,
+                offset: const Offset(0, 2),
+              ),
+            ],
           ),
           child: ClipRRect(
             borderRadius: BorderRadius.circular(14.r),

@@ -58,6 +58,8 @@ class ProfileLogic extends GetxController {
     _updateState(state.copyWith(hidden: hidden, photos: photos));
   }
 
+  void syncHidden(bool value) => _updateState(state.copyWith(hidden: value));
+
   Future<void> toggleHidden() async {
     if (_isClient || _togglingHidden) return;
     _togglingHidden = true;
@@ -65,9 +67,11 @@ class ProfileLogic extends GetxController {
     _updateState(state.copyWith(hidden: newHidden));
     try {
       final res = await _galleryRepo.visibility(hidden: newHidden);
-      if (!res.success) {
+      if (res.success) {
+        Get.find<LoginLogic>().updateModelProfileHidden(newHidden);
+      } else {
         _updateState(state.copyWith(hidden: !newHidden));
-        AppSnackbar.error(res.message ?? 'ປ່ຽນສະຖານະບໍ່ສຳເລັດ');
+        AppSnackbar.error(res.laMessage ?? 'ປ່ຽນສະຖານະບໍ່ສຳເລັດ');
       }
     } catch (_) {
       _updateState(state.copyWith(hidden: !newHidden));
@@ -100,7 +104,7 @@ class ProfileLogic extends GetxController {
           _updateState(state.copyWith(photos: updated, uploadingIndex: -1));
         } else {
           _updateState(state.copyWith(uploadingIndex: -1));
-          AppSnackbar.error(res.message ?? 'ອັບໂຫຼດບໍ່ສຳເລັດ');
+          AppSnackbar.error(res.laMessage ?? 'ອັບໂຫຼດບໍ່ສຳເລັດ');
         }
       } else {
         final res = await _galleryRepo.addPhoto(
@@ -117,7 +121,7 @@ class ProfileLogic extends GetxController {
           _updateState(state.copyWith(photos: updated, uploadingIndex: -1));
         } else {
           _updateState(state.copyWith(uploadingIndex: -1));
-          AppSnackbar.error(res.message ?? 'ອັບໂຫຼດບໍ່ສຳເລັດ');
+          AppSnackbar.error(res.laMessage ?? 'ອັບໂຫຼດບໍ່ສຳເລັດ');
         }
       }
     } catch (_) {
@@ -140,7 +144,7 @@ class ProfileLogic extends GetxController {
       if (res.success && res.data?.url != null) {
         Get.find<LoginLogic>().updateProfileUrl(res.data!.url!, _isClient);
       } else {
-        AppSnackbar.error(res.message ?? 'ອັບໂຫຼດຮູບໂປຣໄຟບໍ່ສຳເລັດ');
+        AppSnackbar.error(res.laMessage ?? 'ອັບໂຫຼດຮູບໂປຣໄຟບໍ່ສຳເລັດ');
       }
     } catch (_) {
       AppSnackbar.error('ອັບໂຫຼດຮູບໂປຣໄຟບໍ່ສຳເລັດ');
@@ -170,7 +174,7 @@ class ProfileLogic extends GetxController {
         _updateState(state.copyWith(photos: updated, deletingIndex: -1));
       } else {
         _updateState(state.copyWith(deletingIndex: -1));
-        AppSnackbar.error(res.message ?? 'ລຶບບໍ່ສຳເລັດ');
+        AppSnackbar.error(res.laMessage ?? 'ລຶບບໍ່ສຳເລັດ');
       }
     } catch (_) {
       _updateState(state.copyWith(deletingIndex: -1));
@@ -195,7 +199,7 @@ class ProfileLogic extends GetxController {
       final res = await _registerRepo.deleteAccount(isCustomer: isCustomer);
       hideLoadingDialog();
       if (!res.success || res.data == null) {
-        AppSnackbar.error(res.message ?? 'ເກີດຂໍ້ຜິດພາດ! ກະລຸນາລອງໃໝ່ອີກຄັ້ງ');
+        AppSnackbar.error(res.laMessage ?? 'ເກີດຂໍ້ຜິດພາດ! ກະລຸນາລອງໃໝ່ອີກຄັ້ງ');
         return;
       }
       final storage = Get.find<StorageService>();

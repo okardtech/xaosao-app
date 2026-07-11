@@ -1,6 +1,8 @@
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:xaosao/pages/model_wallet/getx/model_wallet_logic.dart';
 import 'package:xaosao/repository/bank_repo.dart';
+import 'package:xaosao/utils/app_snackbar.dart';
 import 'package:xaosao/widgets/show_loading_alert.dart';
 import 'qr_state.dart';
 
@@ -35,12 +37,9 @@ class QrLogic extends GetxController {
     hideLoadingDialog();
     if (res.success) {
       await loadAccounts();
+      _syncWithdrawBanks();
     } else {
-      Get.snackbar(
-        'ຜິດພາດ',
-        res.message ?? 'ເພີ່ມ QR ບໍ່ສຳເລັດ',
-        snackPosition: SnackPosition.BOTTOM,
-      );
+      AppSnackbar.error(res.laMessage ?? 'ເພີ່ມ QR ບໍ່ສຳເລັດ');
     }
   }
 
@@ -50,12 +49,9 @@ class QrLogic extends GetxController {
     hideLoadingDialog();
     if (res.success) {
       await loadAccounts();
+      _syncWithdrawBanks();
     } else {
-      Get.snackbar(
-        'ຜິດພາດ',
-        res.message ?? 'ອັບເດດ QR ບໍ່ສຳເລັດ',
-        snackPosition: SnackPosition.BOTTOM,
-      );
+      AppSnackbar.error(res.laMessage ?? 'ອັບເດດ QR ບໍ່ສຳເລັດ');
     }
   }
 
@@ -65,33 +61,35 @@ class QrLogic extends GetxController {
     hideLoadingDialog();
     if (res.success) {
       await loadAccounts();
+      _syncWithdrawBanks();
     } else {
-      Get.snackbar(
-        'ຜິດພາດ',
-        res.message ?? 'ລຶບ QR ບໍ່ສຳເລັດ',
-        snackPosition: SnackPosition.BOTTOM,
-      );
+      AppSnackbar.error(res.laMessage ?? 'ລຶບ QR ບໍ່ສຳເລັດ');
     }
   }
 
   Future<void> setDefault(String id) async {
     HapticFeedback.lightImpact();
-    // optimistic update
     final updated = state.accounts
         .map((a) => a.copyWith(isDefault: a.id == id))
         .toList();
     _update(state.copyWith(accounts: updated));
 
     final res = await _repo.defaultBankAccount(id);
-    if (!res.success) {
+    if (res.success) {
+      _syncWithdrawBanks();
+    } else {
       await loadAccounts();
-      Get.snackbar(
-        'ຜິດພາດ',
-        res.message ?? 'ຕັ້ງ QR ຫຼັກບໍ່ສຳເລັດ',
-        snackPosition: SnackPosition.BOTTOM,
-      );
+      AppSnackbar.error(res.laMessage ?? 'ຕັ້ງ QR ຫຼັກບໍ່ສຳເລັດ');
     }
   }
 
   void _update(QrState s) => _state.value = s;
+
+  // Sync withdraw page bank list whenever a mutation succeeds.
+  // Guarded: ModelWalletLogic may not be registered if wallet was never opened.
+  void _syncWithdrawBanks() {
+    try {
+      Get.find<ModelWalletLogic>().fetchBankAccounts();
+    } catch (_) {}
+  }
 }

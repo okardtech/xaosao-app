@@ -3,6 +3,7 @@
 //     final feeModel = feeModelFromJson(jsonString);
 
 import 'dart:convert';
+import 'package:xaosao/utils/api_date_parser.dart';
 
 List<FeeModel> feeModelFromJson(String str) => List<FeeModel>.from(json.decode(str).map((x) => FeeModel.fromJson(x)));
 
@@ -17,8 +18,8 @@ class FeeModel {
     String? status;
     DateTime? expiresAt;
     int? interestedCount;
-    int? commentCount;
-    int? giftCount;
+    int? totalCommentCount;
+    int? totalGiftCount;
     bool? isInterested;
     DateTime? createdAt;
     DateTime? updatedAt;
@@ -36,8 +37,8 @@ class FeeModel {
         this.status,
         this.expiresAt,
         this.interestedCount,
-        this.commentCount,
-        this.giftCount,
+        this.totalCommentCount,
+        this.totalGiftCount,
         this.isInterested,
         this.createdAt,
         this.updatedAt,
@@ -54,13 +55,13 @@ class FeeModel {
         images: json["images"] == null ? [] : List<String>.from(json["images"]!.map((x) => x)),
         hasTip: json["hasTip"],
         status: json["status"],
-        expiresAt: json["expiresAt"] == null ? null : DateTime.parse(json["expiresAt"]),
+        expiresAt: json["expiresAt"] == null ? null : parseApiDateTime(json["expiresAt"]),
         interestedCount: json["interestedCount"],
-        commentCount: json["commentCount"],
-        giftCount: json["giftCount"],
+        totalCommentCount: json["totalCommentCount"],
+        totalGiftCount: json["totalGiftCount"],
         isInterested: json["isInterested"],
-        createdAt: json["createdAt"] == null ? null : DateTime.parse(json["createdAt"]),
-        updatedAt: json["updatedAt"] == null ? null : DateTime.parse(json["updatedAt"]),
+        createdAt: json["createdAt"] == null ? null : parseApiDateTime(json["createdAt"]),
+        updatedAt: json["updatedAt"] == null ? null : parseApiDateTime(json["updatedAt"]),
         author: json["author"] == null ? null : Author.fromJson(json["author"]),
         service: json["service"] == null ? null : Service.fromJson(json["service"]),
         location: json["location"],
@@ -76,8 +77,8 @@ class FeeModel {
         "status": status,
         "expiresAt": expiresAt?.toIso8601String(),
         "interestedCount": interestedCount,
-        "commentCount": commentCount,
-        "giftCount": giftCount,
+        "totalCommentCount": totalCommentCount,
+        "totalGiftCount": totalGiftCount,
         "isInterested": isInterested,
         "createdAt": createdAt?.toIso8601String(),
         "updatedAt": updatedAt?.toIso8601String(),

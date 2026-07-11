@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:xaosao/models/login_model.dart';
 import 'package:xaosao/utils/date_time_formatter.dart';
 import '../constants/api_constants.dart';
@@ -59,6 +61,34 @@ class LoginRepo extends BaseRepository {
       () => api.patch(
         isClient ? ApiConstants.clientProfile : ApiConstants.modelProfile,
         data: bodyRequest,
+      ),
+      fromJson: (json) => true,
+      authRequired: true,
+    );
+  }
+
+  Future<ApiResponse<bool>> updateLocation({
+    required double latitude,
+    required double longitude,
+  }) {
+    return safeCall(
+      () => api.patch(
+        ApiConstants.meLocation,
+        data: {'latitude': latitude, 'longitude': longitude},
+      ),
+      fromJson: (json){
+        print('Location update response: $json'); // Debug log
+        return true;
+      },
+    );
+  }
+
+  Future<ApiResponse<bool>> fcmTokenSave({required String fcmToken}) async {
+    String platform = Platform.isAndroid ? "android" : "ios";
+    return safeCall(
+      () => api.post(
+        '${ApiConstants.myNotificaiton}/register-device',
+        data: {"device_token": fcmToken, "platform": platform},
       ),
       fromJson: (json) => true,
       authRequired: true,

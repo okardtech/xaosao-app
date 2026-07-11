@@ -46,7 +46,7 @@ class TopupLogic extends GetxController {
         _state.value = state.copyWith(loadingQr: false, qrUrl: res.data);
       } else {
         _state.value = state.copyWith(loadingQr: false);
-        AppSnackbar.error(res.message ?? 'ບໍ່ສາມາດໂຫຼດ QR ໄດ້');
+        AppSnackbar.error(res.laMessage ?? 'ບໍ່ສາມາດໂຫຼດ QR ໄດ້');
       }
     } catch (e) {
       _state.value = state.copyWith(loadingQr: false);
@@ -67,7 +67,7 @@ class TopupLogic extends GetxController {
         );
         hideLoadingDialog();
         if (res.data == true) return true;
-        AppSnackbar.error(res.message ?? 'ການຊື້ Package ບໍ່ສຳເລັດ');
+        AppSnackbar.error(res.laMessage ?? 'ການຊື້ Package ບໍ່ສຳເລັດ');
         return false;
       }
 
@@ -80,7 +80,7 @@ class TopupLogic extends GetxController {
         if (Get.isRegistered<WalletLogic>()) Get.find<WalletLogic>().refresh();
         return true;
       }
-      AppSnackbar.error(res.message ?? 'ບໍ່ສາມາດສົ່ງໃບຈ່າຍໄດ້');
+      AppSnackbar.error(res.laMessage ?? 'ບໍ່ສາມາດສົ່ງໃບຈ່າຍໄດ້');
       return false;
     } catch (e) {
       hideLoadingDialog();

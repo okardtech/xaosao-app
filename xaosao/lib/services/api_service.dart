@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:get/get.dart' hide Response, FormData;
 import 'package:xaosao/services/app_expception.dart';
@@ -151,7 +152,10 @@ class ApiService extends GetxService {
         path,
         data: formData,
         onSendProgress: onSendProgress,
-        options: options ?? Options(contentType: 'multipart/form-data'),
+        options: options ?? Options(
+          contentType: 'multipart/form-data',
+          responseType: ResponseType.json,
+        ),
         cancelToken: cancelToken,
       );
     } on DioException catch (e) {
@@ -171,7 +175,10 @@ class ApiService extends GetxService {
         path,
         data: formData,
         onSendProgress: onSendProgress,
-        options: options ?? Options(contentType: 'multipart/form-data'),
+        options: options ?? Options(
+          contentType: 'multipart/form-data',
+          responseType: ResponseType.json,
+        ),
         cancelToken: cancelToken,
       );
     } on DioException catch (e) {
@@ -197,21 +204,33 @@ class ApiService extends GetxService {
     }
   }
 
-  AppException _handleStatusCode(Response? response) {
+  AppException _handleStatusCode(Response? response) { 
     final statusCode = response?.statusCode ?? 0;
-    final message = _extractMessage(response?.data);
+    final message = _extractField(response?.data, 'message')
+        ?? _extractField(response?.data, 'error');
+    final laMessage = _extractField(response?.data, 'la_message');
     final data = response?.data;
 
     switch (statusCode) {
       case 401:
-        return UnauthorizedException(message: message ?? 'Unauthorized.');
+        return UnauthorizedException(
+          message: message ?? 'Unauthorized.',
+          laMessage: laMessage,
+        );
       case 403:
-        return ForbiddenException(message: message ?? 'Forbidden.');
+        return ForbiddenException(
+          message: message ?? 'Forbidden.',
+          laMessage: laMessage,
+        );
       case 404:
-        return NotFoundException(message: message ?? 'Not found.');
+        return NotFoundException(
+          message: message ?? 'Not found.',
+          laMessage: laMessage,
+        );
       case 422:
         return ValidationException(
           message: message ?? 'Validation failed.',
+          laMessage: laMessage,
           errors: data is Map<String, dynamic> ? data['errors'] : null,
           data: data,
         );
@@ -220,21 +239,29 @@ class ApiService extends GetxService {
       case 503:
         return ServerException(
           message: message ?? 'Server error.',
+          laMessage: laMessage,
           statusCode: statusCode,
         );
       default:
         return ServerException(
           message: message ?? 'Unexpected error.',
+          laMessage: laMessage,
           statusCode: statusCode,
           data: data,
         );
     }
   }
 
-  String? _extractMessage(dynamic data) {
+  String? _extractField(dynamic data, String key) {
+    Map<String, dynamic>? map;
     if (data is Map<String, dynamic>) {
-      return data['message']?.toString() ?? data['error']?.toString();
+      map = data;
+    } else if (data is String) {
+      try {
+        final decoded = jsonDecode(data);
+        if (decoded is Map<String, dynamic>) map = decoded;
+      } catch (_) {}
     }
-    return null;
+    return map?[key]?.toString();
   }
 }

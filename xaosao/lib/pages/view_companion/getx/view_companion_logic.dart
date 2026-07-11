@@ -1,6 +1,8 @@
 import 'dart:async';
 
 import 'package:get/get.dart';
+import 'package:xaosao/constants/app_routes.dart';
+import 'package:xaosao/models/Recommended_model.dart';
 import 'package:xaosao/pages/view_companion/getx/view_companion_state.dart';
 import 'package:xaosao/repository/discover_repo.dart';
 import 'package:xaosao/repository/review_repo.dart';
@@ -11,7 +13,6 @@ class ViewCompanionLogic extends GetxController {
   final Rx<ViewCompanionState> _state = const ViewCompanionState().obs;
 
   ViewCompanionState get state => _state.value;
-
   Timer? _debounce;
   static const _limit = 20;
 
@@ -33,7 +34,7 @@ class ViewCompanionLogic extends GetxController {
       filter: filter,
       search: state.search,
     );
-    return _fetch(skip: 0, isRefresh: true);
+    return _fetch(skip: 1, isRefresh: true);
   }
 
   void onSearchChanged(String query) {
@@ -44,7 +45,7 @@ class ViewCompanionLogic extends GetxController {
         filter: state.filter,
         search: query.isEmpty ? null : query,
       );
-      _fetch(skip: 0, isRefresh: true);
+      _fetch(skip: 1, isRefresh: true);
     });
   }
 
@@ -64,6 +65,10 @@ class ViewCompanionLogic extends GetxController {
   }
 
   void retry() => _fetchFirst();
+
+  void openProfile(RecommendedModel preview) {
+    Get.toNamed(AppRoutes.companionProfile, arguments: preview.id ?? '');
+  }
 
   Future<bool> toggleLike(String modelId) async {
     final idx = state.companions.indexWhere((m) => m.id == modelId);
@@ -106,14 +111,14 @@ class ViewCompanionLogic extends GetxController {
       filter: state.filter ?? 'all',
       search: state.search,
     );
-    _fetch(skip: 0, isRefresh: true);
+    _fetch(skip: 1, isRefresh: true);
   }
 
   Future<void> _fetch({required int skip, required bool isRefresh}) async {
     final s = state;
     try {
       final result = await _repo.getdiscover(
-        skip: skip,
+        page: skip,
         limit: _limit,
         filter: s.filter,
         search: s.search,
@@ -128,7 +133,7 @@ class ViewCompanionLogic extends GetxController {
           filter: s.filter,
           search: s.search,
           hasMore: result.data!.length >= _limit,
-          skip: skip + result.data!.length,
+          skip: skip + 1,
         );
       } else {
         _state.value = ViewCompanionState(

@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:xaosao/constants/app_image.dart';
 import 'package:xaosao/constants/app_routes.dart';
 import 'package:xaosao/pages/login/getx/login_logic.dart';
+import 'package:xaosao/services/deep_link_service.dart';
 import 'package:xaosao/services/storage_service.dart';
 
 // ═══════════════════════════════════════════════════════════════
@@ -78,6 +79,13 @@ class _SplashPageState extends State<SplashPage> {
   void _goTo(String route) {
     if (!mounted) return;
     Navigator.pushNamedAndRemoveUntil(context, route, (_) => false);
+    // Once the user lands on the dashboard, any deep link that arrived
+    // during cold start is safe to dispatch.
+    if (route == AppRoutes.dashboard) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        Get.find<DeepLinkService>().markNavigatorReady();
+      });
+    }
   }
 
   @override
@@ -190,7 +198,7 @@ class _SplashPageState extends State<SplashPage> {
                 Text(
                   'ເພື່ອນຄູ່ໃຈ ທຸກທີ່ ທຸກເວລາ',
                   style: TextStyle(
-                    fontSize: 13.sp,
+                    fontSize: 14.sp,
                     color: Colors.white.withOpacity(0.55),
                     letterSpacing: 0.3,
                   ),
@@ -203,7 +211,7 @@ class _SplashPageState extends State<SplashPage> {
           Positioned(
             left: 0,
             right: 0,
-            bottom: 44.h,
+            bottom: 60.h,
             child: Column(
               children: [
                 const _LoadingDots(),
@@ -211,7 +219,7 @@ class _SplashPageState extends State<SplashPage> {
                 Text(
                   'v1.0.0',
                   style: TextStyle(
-                    fontSize: 11.sp,
+                    fontSize: 12.sp,
                     color: Colors.white.withOpacity(0.28),
                     fontWeight: FontWeight.w500,
                   ),

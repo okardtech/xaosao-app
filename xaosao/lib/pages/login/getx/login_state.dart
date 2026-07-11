@@ -10,6 +10,8 @@ class LoginState {
   final RegisterRole role;
   final CustomerProfileModel? customerProfile;
   final ModelProfileModel? modelProfile;
+  final bool obscure;
+  final bool isCustomer;
 
   const LoginState({
     this.status = LoginStatus.initial,
@@ -17,6 +19,8 @@ class LoginState {
     this.role = RegisterRole.customer,
     this.customerProfile,
     this.modelProfile,
+    this.obscure = true,
+    this.isCustomer = true,
   });
 
   LoginState copyWith({
@@ -25,6 +29,8 @@ class LoginState {
     RegisterRole? role,
     CustomerProfileModel? customerProfile,
     ModelProfileModel? modelProfile,
+    bool? obscure,
+    bool? isCustomer,
   }) {
     return LoginState(
       status: status ?? this.status,
@@ -32,6 +38,8 @@ class LoginState {
       role: role ?? this.role,
       customerProfile: customerProfile ?? this.customerProfile,
       modelProfile: modelProfile ?? this.modelProfile,
+      obscure: obscure ?? this.obscure,
+      isCustomer: isCustomer ?? this.isCustomer,
     );
   }
 

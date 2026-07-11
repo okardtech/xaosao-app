@@ -1,15 +1,16 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:xaosao/constants/app_color.dart';
 import 'package:xaosao/models/my_booking_model.dart';
-import 'package:xaosao/pages/meet_ups/booking_detail_page.dart';
+import 'package:xaosao/constants/app_routes.dart';
 import 'package:xaosao/pages/meet_ups/components/booking_card.dart';
 import 'package:xaosao/pages/meet_ups/components/cancellation_policy.dart';
 import 'package:xaosao/pages/meet_ups/getx/meet_ups_logic.dart';
 import 'package:xaosao/pages/meet_ups/getx/meet_ups_state.dart';
 import 'package:xaosao/widgets/empty_state.dart';
+import 'package:xaosao/widgets/notif_badge.dart';
 
 class MeetUpsPage extends StatefulWidget {
   const MeetUpsPage({super.key});
@@ -143,14 +144,12 @@ class _MeetUpsPageState extends State<MeetUpsPage> {
                     itemBuilder: (_, i) => BookingCard(
                       booking: all[i],
                       isCustomer: _logic.isClient,
-                      onTap: () => Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => BookingDetailPage(
-                            booking: all[i],
-                            isCustomer: _logic.isClient,
-                          ),
-                        ),
+                      onTap: () => Get.toNamed(
+                        AppRoutes.bookingDetail,
+                        arguments: {
+                          'bookingId': all[i].id ?? '',
+                          'isCustomer': _logic.isClient,
+                        },
                       ),
                     ),
                   ),
@@ -188,22 +187,62 @@ class _MeetUpsPageState extends State<MeetUpsPage> {
         ? 'ປະຫວັດການຈອງທັງໝົດ'
         : '$count ລາຍການ · ${_statusLabel(selectedStatus)}';
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+    return Row(
       children: [
-        Text(
-          'ນັດພົບ',
-          style: TextStyle(
-            fontSize: 24.sp,
-            fontWeight: FontWeight.w900,
-            color: const Color(0xFF1A1A2E),
-            letterSpacing: -0.5,
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'ນັດພົບ',
+                style: TextStyle(
+                  fontSize: 24.sp,
+                  fontWeight: FontWeight.w900,
+                  color: const Color(0xFF1A1A2E),
+                  letterSpacing: -0.5,
+                ),
+              ),
+              SizedBox(height: 2.h),
+              Text(
+                sub,
+                style: TextStyle(fontSize: 14.sp, color: const Color(0xFF9B9BAD)),
+              ),
+            ],
           ),
         ),
-        SizedBox(height: 2.h),
-        Text(
-          sub,
-          style: TextStyle(fontSize: 14.sp, color: const Color(0xFF9B9BAD)),
+        NotifBadge(
+          child: GestureDetector(
+            onTap: () => Get.toNamed(AppRoutes.notifications),
+            child: Container(
+              width: 40.r,
+              height: 40.r,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(12.r),
+                border: Border.all(
+                  color: Colors.black.withValues(alpha: 0.07),
+                  width: 0.5,
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: AppColors.primary.withValues(alpha: 0.10),
+                    blurRadius: 20,
+                    offset: const Offset(0, 6),
+                  ),
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.05),
+                    blurRadius: 10,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
+              ),
+              child: Icon(
+                Icons.notifications_outlined,
+                size: 18.r,
+                color: const Color(0xFF1A1A2E),
+              ),
+            ),
+          ),
         ),
       ],
     );
@@ -211,9 +250,9 @@ class _MeetUpsPageState extends State<MeetUpsPage> {
 
   static String _statusLabel(String? s) => switch (s) {
     'pending' => 'ລໍຖ້າ',
-    'confirmed' => 'ຢືນຢັນ',
+    'confirmed' => 'ຮັບເເລ້ວ',
     'in_progress' => 'ກຳລັງດຳເນີນ',
-    'awaiting_confirmation' => 'ລໍຢືນຢັນ',
+    'awaiting_confirmation' => 'ລໍຮັບຢືນຢັນ',
     'completed' => 'ສຳເລັດ',
     'cancelled' => 'ຍົກເລີກ',
     'rejected' => 'ຖືກປະຕິເສດ',
@@ -231,18 +270,6 @@ class _FilterChipsDelegate extends SliverPersistentHeaderDelegate {
   final int Function(String?) countFor;
   final ValueChanged<String?> onSelect;
   final double height;
-
-  static Color _accentFor(String? s) => switch (s) {
-    'pending' => const Color(0xFF3B82F6),
-    'confirmed' => const Color(0xFF8B5CF6),
-    'in_progress' => const Color(0xFFF59E0B),
-    'awaiting_confirmation' => const Color(0xFFF97316),
-    'completed' => const Color(0xFF22C55E),
-    'cancelled' => const Color(0xFF9B9BAD),
-    'rejected' => const Color(0xFFEF4444),
-    'disputed' => const Color(0xFFEC4899),
-    _ => const Color(0xFF1A1A2E),
-  };
 
   const _FilterChipsDelegate({
     required this.selectedStatus,
@@ -295,6 +322,7 @@ class _FilterChipsDelegate extends SliverPersistentHeaderDelegate {
           return GestureDetector(
             onTap: () => onSelect(status),
             child: AnimatedContainer(
+              alignment: Alignment.center,
               duration: const Duration(milliseconds: 180),
               padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
               decoration: BoxDecoration(
@@ -336,7 +364,19 @@ class _ShimmerCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(22.r),
-        border: Border.all(color: Colors.black.withOpacity(0.06), width: 0.5),
+        border: Border.all(color: Colors.black.withValues(alpha: 0.06), width: 0.5),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.primary.withValues(alpha: 0.10),
+            blurRadius: 20,
+            offset: const Offset(0, 6),
+          ),
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.05),
+            blurRadius: 10,
+            offset: const Offset(0, 2),
+          ),
+        ],
       ),
       child: Padding(
         padding: EdgeInsets.all(14.w),

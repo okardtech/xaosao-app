@@ -64,14 +64,18 @@ class _ServiceCardLargeState extends State<ServiceCardLarge>
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(20.r),
+            border: Border.all(
+              color: Colors.black.withValues(alpha: 0.07),
+              width: 0.5,
+            ),
             boxShadow: [
               BoxShadow(
-                color: widget.accentColor.withOpacity(0.10),
+                color: widget.accentColor.withValues(alpha: 0.10),
                 blurRadius: 20,
                 offset: const Offset(0, 6),
               ),
               BoxShadow(
-                color: Colors.black.withOpacity(0.05),
+                color: Colors.black.withValues(alpha: 0.05),
                 blurRadius: 10,
                 offset: const Offset(0, 2),
               ),
@@ -198,14 +202,18 @@ class _ServiceCardSmallState extends State<ServiceCardSmall>
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(20.r),
+            border: Border.all(
+              color: Colors.black.withValues(alpha: 0.07),
+              width: 0.5,
+            ),
             boxShadow: [
               BoxShadow(
-                color: widget.accentColor.withOpacity(0.10),
+                color: widget.accentColor.withValues(alpha: 0.10),
                 blurRadius: 18,
                 offset: const Offset(0, 5),
               ),
               BoxShadow(
-                color: Colors.black.withOpacity(0.04),
+                color: Colors.black.withValues(alpha: 0.04),
                 blurRadius: 8,
                 offset: const Offset(0, 2),
               ),

@@ -18,21 +18,37 @@ class WalletPage extends StatefulWidget {
 }
 
 class _WalletPageState extends State<WalletPage> {
-  bool _amountsVisible = true;
+  bool _amountsVisible = false;
   late final WalletLogic _logic;
+  late final ScrollController _scrollCtrl;
 
   static const _chips = <(String, String?)>[
     ('ທັງໝົດ', null),
-    ('ສຳເລັດ', 'completed'),
-    ('ລໍຖ້າ', 'pending'),
-    ('ດຳເນີນການ', 'processing'),
-    ('ຍົກເລີກ', 'rejected'),
+    ('ລໍຖ້າອະນຸມດ', 'pending'),
+    ('ສຳເລັດເເລ້ວ', 'approved'),
+    ('ຍົກເລີກເເລ້ວ', 'rejected'),
   ];
 
   @override
   void initState() {
     super.initState();
     _logic = Get.find<WalletLogic>();
+    _scrollCtrl = ScrollController()..addListener(_onScroll);
+  }
+
+  void _onScroll() {
+    if (_scrollCtrl.position.pixels >=
+        _scrollCtrl.position.maxScrollExtent - 300) {
+      _logic.loadMore();
+    }
+  }
+
+  @override
+  void dispose() {
+    _scrollCtrl
+      ..removeListener(_onScroll)
+      ..dispose();
+    super.dispose();
   }
 
   @override
@@ -46,6 +62,7 @@ class _WalletPageState extends State<WalletPage> {
           onRefresh: _logic.refresh,
           color: AppColors.primary,
           child: CustomScrollView(
+            controller: _scrollCtrl,
             physics: const BouncingScrollPhysics(),
             slivers: [
               // ── Wallet card / shimmer ─────────────────────
@@ -117,7 +134,6 @@ class _WalletPageState extends State<WalletPage> {
                     separatorBuilder: (_, __) => SizedBox(height: 8.h),
                     itemBuilder: (_, i) {
                       if (i == st.transactions.length) {
-                        _logic.loadMore();
                         return Padding(
                           padding: EdgeInsets.symmetric(vertical: 16.h),
                           child: Center(

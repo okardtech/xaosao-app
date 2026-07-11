@@ -1,12 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:xaosao/pages/chat/components/chat_detail_page.dart';
-import 'package:xaosao/pages/chat/components/chat_model.dart';
+import 'package:get/get.dart';
+import 'package:xaosao/constants/app_color.dart';
+import 'package:xaosao/constants/app_icons.dart';
+import 'package:xaosao/constants/app_routes.dart';
+import 'package:xaosao/models/conversation_model.dart';
+import 'package:xaosao/pages/chat/getx/chat_logic.dart';
+import 'package:xaosao/utils/date_time_formatter.dart';
+import 'package:xaosao/widgets/confirm_sheet.dart';
+import 'package:xaosao/widgets/notif_badge.dart';
 
 // ═══════════════════════════════════════════════════════════════
 //  ChatListPage — ໜ້າລາຍຊື່ chat
-//  Features: search · filter chips · unread badge · read status
 // ═══════════════════════════════════════════════════════════════
 class ChatListPage extends StatefulWidget {
   const ChatListPage({super.key});
@@ -16,25 +22,21 @@ class ChatListPage extends StatefulWidget {
 }
 
 class _ChatListPageState extends State<ChatListPage> {
+  final _logic = Get.find<ChatLogic>();
   final _searchCtrl = TextEditingController();
-  String _query      = '';
-  String _filter     = 'all'; // all | unread | booking | online
-
-  static const _filters = [
-    {'id': 'all',     'label': 'ທັງໝົດ'},
-    {'id': 'unread',  'label': 'ຍັງບໍ່ໄດ້ອ່ານ'},
-    {'id': 'booking', 'label': 'ຈອງ'},
-    {'id': 'online',  'label': 'ອອນລາຍ'},
-  ];
+  String _query = '';
+  String _filter = 'all'; // all | unread | online
 
   @override
   void initState() {
     super.initState();
     _searchCtrl.addListener(() => setState(() => _query = _searchCtrl.text));
-    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-      statusBarColor: Colors.transparent,
-      statusBarIconBrightness: Brightness.dark,
-    ));
+    SystemChrome.setSystemUIOverlayStyle(
+      const SystemUiOverlayStyle(
+        statusBarColor: Colors.transparent,
+        statusBarIconBrightness: Brightness.dark,
+      ),
+    );
   }
 
   @override
@@ -43,58 +45,104 @@ class _ChatListPageState extends State<ChatListPage> {
     super.dispose();
   }
 
-  List<ChatPreview> get _filtered {
-    var list = mockChatPreviews;
+  List<ConversationModel> _filtered(List<ConversationModel> convs) {
+    final role = _logic.myRole;
+    var list = convs;
     if (_query.isNotEmpty) {
-      list = list.where((c) =>
-          c.name.toLowerCase().contains(_query.toLowerCase()) ||
-          c.lastMessage.toLowerCase().contains(_query.toLowerCase())).toList();
+      list = list.where((c) {
+        final other = c.otherParticipant(role);
+        final name = other?.displayName.toLowerCase() ?? '';
+        final msg = (c.lastMessageText ?? '').toLowerCase();
+        final q = _query.toLowerCase();
+        return name.contains(q) || msg.contains(q);
+      }).toList();
     }
     switch (_filter) {
-      case 'unread':  list = list.where((c) => c.unreadCount > 0).toList();
-      case 'booking': list = list.where((c) => c.lastMessage.contains('📅')).toList();
-      case 'online':  list = list.where((c) => c.isOnline).toList();
+      case 'unread':
+        list = list.where((c) => c.unreadCountFor(role) > 0).toList();
+      case 'online':
+        list = list.where((c) {
+          return c.otherParticipant(role)?.isOnline ?? false;
+        }).toList();
     }
     return list;
   }
-
-  int get _totalUnread =>
-      mockChatPreviews.fold(0, (sum, c) => sum + c.unreadCount);
 
   // ══════════════════════════════════════════════════════════════
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF8F8FC),
+      backgroundColor: AppColors.bg,
       body: SafeArea(
-        child: Column(children: [
-          _buildHeader(),
-          _buildSearch(),
-          _buildFilterChips(),
-          Expanded(child: _buildList()),
-        ]),
+        child: Column(
+          children: [
+            _buildHeader(),
+            _buildSearch(),
+            Expanded(child: _buildList()),
+          ],
+        ),
       ),
     );
   }
 
   // ── Header ─────────────────────────────────────────────────
   Widget _buildHeader() {
-    return Padding(
-      padding: EdgeInsets.fromLTRB(18.w, 18.h, 18.w, 12.h),
-      child: Row(children: [
-        Expanded(
-          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Text('ສົນທະນາ', style: TextStyle(
-              fontSize: 24.sp, fontWeight: FontWeight.w900,
-              color: const Color(0xFF1A1A2E), letterSpacing: -0.5,
-            )),
-            if (_totalUnread > 0)
-              Text('$_totalUnread ຂໍ້ຄວາມໃໝ່', style: TextStyle(
-                fontSize: 11.sp, color: const Color(0xFF9B9BAD))),
-          ]),
+    return Obx(() {
+      final total = _logic.totalUnread;
+      return Padding(
+        padding: EdgeInsets.fromLTRB(18.w, 18.h, 18.w, 12.h),
+        child: Row(
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'ສົນທະນາ',
+                    style: TextStyle(
+                      fontSize: 24.sp,
+                      fontWeight: FontWeight.w900,
+                      color: AppColors.textPrimary,
+                      letterSpacing: -0.5,
+                    ),
+                  ),
+                  if (total > 0)
+                    Text(
+                      '$total ຂໍ້ຄວາມໃໝ່',
+                      style: TextStyle(
+                        fontSize: 11.sp,
+                        color: AppColors.textHint,
+                      ),
+                    ),
+                ],
+              ),
+            ),
+            NotifBadge(
+              child: GestureDetector(
+                onTap: () => Get.toNamed(AppRoutes.notifications),
+                child: Container(
+                  width: 40.r,
+                  height: 40.r,
+                  decoration: BoxDecoration(
+                    color: AppColors.surface,
+                    borderRadius: BorderRadius.circular(12.r),
+                    border: Border.all(
+                      color: Colors.black.withValues(alpha: 0.07),
+                      width: 0.5,
+                    ),
+                  ),
+                  child: Icon(
+                    Icons.notifications_outlined,
+                    size: 18.r,
+                    color: AppColors.textPrimary,
+                  ),
+                ),
+              ),
+            ),
+          ],
         ),
-      ]),
-    );
+      );
+    });
   }
 
   // ── Search bar ─────────────────────────────────────────────
@@ -104,255 +152,461 @@ class _ChatListPageState extends State<ChatListPage> {
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 10.h),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: AppColors.surface,
           borderRadius: BorderRadius.circular(14.r),
-          border: Border.all(color: Colors.black.withOpacity(0.08), width: 0.5),
-        ),
-        child: Row(children: [
-          Icon(Icons.search_rounded, size: 16.r, color: const Color(0xFFC4C4D0)),
-          SizedBox(width: 8.w),
-          Expanded(
-            child: TextField(
-              controller: _searchCtrl,
-              style: TextStyle(fontSize: 12.sp, color: const Color(0xFF1A1A2E)),
-              decoration: InputDecoration(
-                isDense: true, border: InputBorder.none,
-                hintText: 'ຄົ້ນຫາຊື່ ຫຼື ຂໍ້ຄວາມ...',
-                hintStyle: TextStyle(fontSize: 12.sp, color: const Color(0xFFC4C4D0)),
-                contentPadding: EdgeInsets.zero,
-              ),
-            ),
+          border: Border.all(
+            color: Colors.black.withValues(alpha: 0.08),
+            width: 0.5,
           ),
-          if (_query.isNotEmpty)
-            GestureDetector(
-              onTap: () => _searchCtrl.clear(),
-              child: Icon(Icons.close_rounded, size: 15.r, color: const Color(0xFFC4C4D0)),
+        ),
+        child: Row(
+          children: [
+            Icon(
+              Icons.search_rounded,
+              size: 16.r,
+              color: AppColors.textDisabled,
             ),
-        ]),
-      ),
-    );
-  }
-
-  // ── Filter chips ────────────────────────────────────────────
-  Widget _buildFilterChips() {
-    return SizedBox(
-      height: 36.h,
-      child: ListView(
-        scrollDirection: Axis.horizontal,
-        physics: const BouncingScrollPhysics(),
-        padding: EdgeInsets.fromLTRB(18.w, 10.h, 18.w, 0),
-        children: _filters.map((f) {
-          final isOn = _filter == f['id'];
-          return Padding(
-            padding: EdgeInsets.only(right: 6.w),
-            child: GestureDetector(
-              onTap: () => setState(() => _filter = f['id']!),
-              child: AnimatedContainer(
-                duration: const Duration(milliseconds: 180),
-                padding: EdgeInsets.symmetric(horizontal: 13.w, vertical: 6.h),
-                decoration: BoxDecoration(
-                  color: isOn ? const Color(0xFF1A1A2E) : Colors.white,
-                  borderRadius: BorderRadius.circular(20.r),
-                  border: Border.all(
-                    color: isOn
-                        ? const Color(0xFF1A1A2E)
-                        : Colors.black.withOpacity(0.09),
-                    width: 0.5,
+            SizedBox(width: 8.w),
+            Expanded(
+              child: TextField(
+                controller: _searchCtrl,
+                style: TextStyle(fontSize: 12.sp, color: AppColors.textPrimary),
+                decoration: InputDecoration(
+                  isDense: true,
+                  border: InputBorder.none,
+                  hintText: 'ຄົ້ນຫາ...',
+                  hintStyle: TextStyle(
+                    fontSize: 12.sp,
+                    color: AppColors.textDisabled,
                   ),
+                  contentPadding: EdgeInsets.zero,
                 ),
-                child: Text(f['label']!, style: TextStyle(
-                  fontSize: 11.sp, fontWeight: FontWeight.w700,
-                  color: isOn ? Colors.white : const Color(0xFF9B9BAD),
-                )),
               ),
             ),
-          );
-        }).toList(),
+            if (_query.isNotEmpty)
+              GestureDetector(
+                onTap: () => _searchCtrl.clear(),
+                child: Icon(
+                  Icons.close_rounded,
+                  size: 15.r,
+                  color: AppColors.textDisabled,
+                ),
+              ),
+          ],
+        ),
       ),
     );
   }
 
   // ── Chat list ───────────────────────────────────────────────
   Widget _buildList() {
-    final list = _filtered;
-    if (list.isEmpty) return _buildEmpty();
+    return Obx(() {
+      final s = _logic.state;
 
-    return ListView.separated(
-      physics: const BouncingScrollPhysics(),
-      padding: EdgeInsets.only(top: 10.h, bottom: 24.h),
-      itemCount: list.length,
-      separatorBuilder: (_, __) => Divider(
-        height: 0, thickness: 0.5,
-        indent: 18.w + 50.r + 12.w,
-        color: Colors.black.withOpacity(0.05),
-      ),
-      itemBuilder: (_, i) => _ChatRow(
-        chat: list[i],
-        onTap: () => Navigator.push(context, MaterialPageRoute(
-          builder: (_) => ChatDetailPage(chat: list[i]),
-        )),
-      ),
-    );
+      if (s.status.name == 'loading' && s.conversations.isEmpty) {
+        return const Center(child: CircularProgressIndicator(strokeWidth: 2));
+      }
+
+      if (s.status.name == 'failure' && s.conversations.isEmpty) {
+        return _buildError();
+      }
+
+      final list = _filtered(s.conversations);
+      if (list.isEmpty) return _buildEmpty();
+
+      return RefreshIndicator(
+        onRefresh: _logic.fetchConversations,
+        color: AppColors.primary,
+        child: ListView.separated(
+          physics: const BouncingScrollPhysics(),
+          padding: EdgeInsets.only(top: 10.h, bottom: 24.h),
+          itemCount: list.length,
+          separatorBuilder: (_, __) => Divider(
+            height: 0,
+            thickness: 0.5,
+            indent: 18.w + 50.r + 12.w,
+            color: Colors.black.withValues(alpha: 0.05),
+          ),
+          itemBuilder: (_, i) {
+            final conv = list[i];
+            final other = conv.otherParticipant(_logic.myRole);
+            final name = other?.displayName ?? 'ການສົນທະນານີ້';
+            return Dismissible(
+              key: ValueKey(conv.id),
+              direction: DismissDirection.endToStart,
+              background: Container(
+                alignment: Alignment.centerRight,
+                padding: EdgeInsets.only(right: 20.w),
+                color: const Color(0xFFDC2626),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      Icons.delete_outline_rounded,
+                      color: Colors.white,
+                      size: 22.r,
+                    ),
+                    SizedBox(height: 4.h),
+                    Text(
+                      'ລຶບ',
+                      style: TextStyle(
+                        fontSize: 10.sp,
+                        color: Colors.white,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              confirmDismiss: (_) => ConfirmSheet.show(
+                context,
+                title: 'ລຶບການສົນທະນາ',
+                message:
+                    'ລຶບການສົນທະນາກັບ $name?\nຂໍ້ຄວາມຍັງສາມາດເຫັນໄດ້ຈາກອີກຝ່າຍ',
+                confirmLabel: 'ລຶບ',
+                icon: AppIcons.delete,
+                isDanger: true,
+              ),
+              onDismissed: (_) => _logic.deleteConversation(conv.id),
+              child: _ChatRow(
+                conv: conv,
+                myRole: _logic.myRole,
+                onTap: () {
+                  if (conv.isBlocked) {
+                    Get.snackbar(
+                      'ບໍ່ສາມາດເຂົ້າໄດ້',
+                      conv.iBlockedThis(_logic.myRole)
+                          ? 'ທ່ານໄດ້ບລັອກການສົນທະນານີ້'
+                          : 'ການສົນທະນານີ້ຖືກບລັອກ',
+                      snackPosition: SnackPosition.TOP,
+                      duration: const Duration(seconds: 2),
+                      backgroundColor: const Color(0xFF1A1A2E),
+                      colorText: Colors.white,
+                      margin: EdgeInsets.all(14.r),
+                      borderRadius: 12.r,
+                    );
+                    return;
+                  }
+                  Get.toNamed(
+                    AppRoutes.chatDetail,
+                    arguments: {'conversationId': conv.id, 'conv': conv},
+                  );
+                },
+                onLongPress: () async {
+                  final iBlocked = conv.iBlockedThis(_logic.myRole);
+                  final confirmed = await ConfirmSheet.show(
+                    context,
+                    title: iBlocked ? 'ຍົກເລີກການບລັອກ $name' : 'ບລັອກ $name',
+                    message: iBlocked
+                        ? 'ຍົກເລີກການບລັອກ ແລະ ສືບຕໍ່ສົນທະນາ?'
+                        : 'ທ່ານ ແລະ $name ຈະບໍ່ສາມາດສົ່ງຂໍ້ຄວາມຫາກັນໄດ້',
+                    confirmLabel: iBlocked ? 'ຍົກເລີກການບລັອກ' : 'ບລັອກ',
+                    icon: iBlocked ? AppIcons.lockOpen : AppIcons.block,
+                    iconColor: const Color(0xFFF59E0B),
+                    isDanger: !iBlocked,
+                  );
+                  if (confirmed != true) return;
+                  if (iBlocked) {
+                    await _logic.unblockConversation(conv.id);
+                  } else {
+                    await _logic.blockConversation(conv.id);
+                  }
+                },
+              ),
+            );
+          },
+        ),
+      );
+    });
   }
 
   Widget _buildEmpty() {
     return Center(
-      child: Column(mainAxisSize: MainAxisSize.min, children: [
-        Icon(Icons.chat_bubble_outline_rounded,
-            size: 48.r, color: const Color(0xFFD1D1E0)),
-        SizedBox(height: 12.h),
-        Text('ບໍ່ພົບການສົນທະນາ', style: TextStyle(
-            fontSize: 14.sp, fontWeight: FontWeight.w700,
-            color: const Color(0xFF9B9BAD))),
-      ]),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            Icons.chat_bubble_outline_rounded,
+            size: 48.r,
+            color: AppColors.textDisabled,
+          ),
+          SizedBox(height: 12.h),
+          Text(
+            'ບໍ່ພົບການສົນທະນາ',
+            style: TextStyle(
+              fontSize: 14.sp,
+              fontWeight: FontWeight.w700,
+              color: AppColors.textHint,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildError() {
+    return Center(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            Icons.wifi_off_rounded,
+            size: 40.r,
+            color: AppColors.textDisabled,
+          ),
+          SizedBox(height: 12.h),
+          Text(
+            'ໂຫຼດບໍ່ສຳເລັດ',
+            style: TextStyle(
+              fontSize: 14.sp,
+              fontWeight: FontWeight.w700,
+              color: AppColors.textHint,
+            ),
+          ),
+          SizedBox(height: 8.h),
+          GestureDetector(
+            onTap: _logic.fetchConversations,
+            child: Text(
+              'ລອງໃໝ່',
+              style: TextStyle(
+                fontSize: 12.sp,
+                color: AppColors.primary,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
 
 // ═══════════════════════════════════════════════════════════════
-//  _ChatRow — single row in list
+//  _ChatRow — single conversation row
 // ═══════════════════════════════════════════════════════════════
 class _ChatRow extends StatelessWidget {
-  final ChatPreview chat;
+  final ConversationModel conv;
+  final String myRole;
   final VoidCallback onTap;
+  final VoidCallback? onLongPress;
 
-  const _ChatRow({required this.chat, required this.onTap});
+  const _ChatRow({
+    required this.conv,
+    required this.myRole,
+    required this.onTap,
+    this.onLongPress,
+  });
+
+  static const _gradients = [
+    [Color(0xFF5C6BC0), Color(0xFF1A1A2E)],
+    [Color(0xFFf093fb), Color(0xFFc2185b)],
+    [Color(0xFF43e97b), Color(0xFF1A5276)],
+    [Color(0xFFfa709a), Color(0xFF7B1FA2)],
+    [Color(0xFF4facfe), Color(0xFF1A237E)],
+  ];
+
+  List<Color> get _gradient {
+    final idx = conv.id.codeUnits.fold(0, (a, b) => a + b) % _gradients.length;
+    return _gradients[idx].cast<Color>();
+  }
 
   @override
   Widget build(BuildContext context) {
-    final hasUnread = chat.unreadCount > 0;
+    final other = conv.otherParticipant(myRole);
+    final name = other?.displayName ?? 'Unknown';
+    final imageUrl = other?.profileImage;
+    final isOnline = other?.isOnline ?? false;
+    final isBlocked = conv.isBlocked;
+    final hasUnread = !isBlocked && conv.unreadCountFor(myRole) > 0;
+    final lastMsg = conv.lastMessageText ?? '';
 
     return GestureDetector(
       onTap: onTap,
+      onLongPress: onLongPress,
       behavior: HitTestBehavior.opaque,
-      child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 18.w, vertical: 12.h),
-        child: Row(children: [
-          // Avatar + online dot
-          _ChatAvatar(chat: chat),
-          SizedBox(width: 12.w),
-
-          // Name + message
-          Expanded(
-            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Row(children: [
-                Expanded(
-                  child: Text(
-                    '${chat.name}, ${chat.age}',
-                    style: TextStyle(
-                      fontSize: 13.sp,
-                      fontWeight: FontWeight.w800,
-                      color: const Color(0xFF1A1A2E),
+      child: Opacity(
+        opacity: isBlocked ? 0.55 : 1.0,
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 18.w, vertical: 12.h),
+          child: Row(
+            children: [
+              // Avatar + online dot
+              _ConvAvatar(
+                name: name,
+                imageUrl: imageUrl,
+                gradient: _gradient,
+                isOnline: isOnline && !isBlocked,
+              ),
+              SizedBox(width: 12.w),
+              // Name + message
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Row(
+                            children: [
+                              Flexible(
+                                child: Text(
+                                  name,
+                                  style: TextStyle(
+                                    fontSize: 14.sp,
+                                    fontWeight: FontWeight.w800,
+                                    color: AppColors.textPrimary,
+                                  ),
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                              if (isBlocked) ...[
+                                SizedBox(width: 6.w),
+                                Icon(
+                                  Icons.block_rounded,
+                                  size: 12.r,
+                                  color: const Color(0xFFF59E0B),
+                                ),
+                              ],
+                            ],
+                          ),
+                        ),
+                        Text(
+                          DateTimeFormatter.chatTimeLabel(conv.lastMessageAt),
+                          style: TextStyle(
+                            fontSize: 12.sp,
+                            color: AppColors.textSecondary,
+                          ),
+                        ),
+                      ],
                     ),
-                  ),
+                    SizedBox(height: 3.h),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            isBlocked ? 'ການສົນທະນາຖືກບລັອກ' : lastMsg,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              fontSize: 12.sp,
+                              color: isBlocked
+                                  ? const Color(0xFFF59E0B)
+                                  : hasUnread
+                                  ? AppColors.textPrimary
+                                  : AppColors.textSecondary,
+                              fontWeight: hasUnread
+                                  ? FontWeight.w600
+                                  : FontWeight.w400,
+                            ),
+                          ),
+                        ),
+                        SizedBox(width: 6.w),
+                        if (hasUnread)
+                          Container(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 6.w,
+                              vertical: 2.h,
+                            ),
+                            decoration: BoxDecoration(
+                              color: AppColors.primary,
+                              borderRadius: BorderRadius.circular(20.r),
+                            ),
+                            child: Text(
+                              '${conv.unreadCountFor(myRole)}',
+                              style: TextStyle(
+                                fontSize: 12.sp,
+                                fontWeight: FontWeight.w800,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                      ],
+                    ),
+                  ],
                 ),
-                Text(chat.timeLabel, style: TextStyle(
-                    fontSize: 10.sp, color: const Color(0xFFC4C4D0))),
-              ]),
-              SizedBox(height: 3.h),
-              Row(children: [
-                Expanded(
-                  child: Text(
-                    chat.lastMessage,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                      fontSize: 12.sp,
-                      color: hasUnread
-                          ? const Color(0xFF1A1A2E)
-                          : const Color(0xFF9B9BAD),
-                      fontWeight: hasUnread
-                          ? FontWeight.w600
-                          : FontWeight.w400,
-                    ),
-                  ),
-                ),
-                SizedBox(width: 6.w),
-                // Trailing: unread count OR tick status
-                if (hasUnread)
-                  Container(
-                    padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 2.h),
-                    decoration: BoxDecoration(
-                      color: const Color(0xFFF06292),
-                      borderRadius: BorderRadius.circular(20.r),
-                    ),
-                    child: Text('${chat.unreadCount}', style: TextStyle(
-                        fontSize: 9.sp, fontWeight: FontWeight.w800,
-                        color: Colors.white)),
-                  )
-                else if (chat.lastIsMe)
-                  _TickIcon(status: chat.lastStatus),
-              ]),
-            ]),
+              ),
+            ],
           ),
-        ]),
+        ),
       ),
     );
   }
 }
 
 // ── Avatar ─────────────────────────────────────────────────────
-class _ChatAvatar extends StatelessWidget {
-  final ChatPreview chat;
-  const _ChatAvatar({required this.chat});
+class _ConvAvatar extends StatelessWidget {
+  final String name;
+  final String? imageUrl;
+  final List<Color> gradient;
+  final bool isOnline;
+
+  const _ConvAvatar({
+    required this.name,
+    this.imageUrl,
+    required this.gradient,
+    required this.isOnline,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Stack(children: [
-      Container(
-        width: 50.r, height: 50.r,
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: chat.gradient,
-          ),
-        ),
-        child: chat.imageUrl != null && chat.imageUrl!.isNotEmpty
-            ? ClipOval(child: Image.network(
-                chat.imageUrl!, fit: BoxFit.cover,
-                errorBuilder: (_, __, ___) => const SizedBox()))
-            : null,
-      ),
-      Positioned(
-        bottom: 1, right: 1,
-        child: Container(
-          width: 13.r, height: 13.r,
+    return Stack(
+      children: [
+        Container(
+          width: 50.r,
+          height: 50.r,
           decoration: BoxDecoration(
-            color: chat.isOnline
-                ? const Color(0xFF22C55E)
-                : const Color(0xFFD1D1E0),
             shape: BoxShape.circle,
-            border: Border.all(
-                color: const Color(0xFFF8F8FC), width: 2),
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: gradient,
+            ),
           ),
+          child: imageUrl != null && imageUrl!.isNotEmpty
+              ? ClipOval(
+                  child: Image.network(
+                    imageUrl!,
+                    fit: BoxFit.cover,
+                    errorBuilder: (_, __, ___) => _Initials(name: name),
+                  ),
+                )
+              : _Initials(name: name),
         ),
-      ),
-    ]);
+        if (isOnline)
+          Positioned(
+            bottom: 1,
+            right: 1,
+            child: Container(
+              width: 13.r,
+              height: 13.r,
+              decoration: BoxDecoration(
+                color: isOnline ? AppColors.online : AppColors.textDisabled,
+                shape: BoxShape.circle,
+                border: Border.all(color: AppColors.bg, width: 2),
+              ),
+            ),
+          ),
+      ],
+    );
   }
 }
 
-// ── Tick icon ──────────────────────────────────────────────────
-class _TickIcon extends StatelessWidget {
-  final MessageStatus status;
-  const _TickIcon({required this.status});
+class _Initials extends StatelessWidget {
+  final String name;
+  const _Initials({required this.name});
 
   @override
   Widget build(BuildContext context) {
-    if (status == MessageStatus.sending) {
-      return Icon(Icons.access_time_rounded,
-          size: 12.r, color: const Color(0xFFC4C4D0));
-    }
-    final isRead  = status == MessageStatus.read;
-    final color   = isRead ? const Color(0xFF42A5F5) : const Color(0xFFC4C4D0);
-    return Row(mainAxisSize: MainAxisSize.min, children: [
-      Icon(Icons.done_rounded, size: 13.r, color: color),
-      if (isRead)
-        Transform.translate(
-          offset: Offset(-5.w, 0),
-          child: Icon(Icons.done_rounded, size: 13.r, color: color),
+    final initial = name.isNotEmpty ? name[0].toUpperCase() : '?';
+    return Center(
+      child: Text(
+        initial,
+        style: TextStyle(
+          fontSize: 18.sp,
+          fontWeight: FontWeight.w800,
+          color: Colors.white,
         ),
-    ]);
+      ),
+    );
   }
 }

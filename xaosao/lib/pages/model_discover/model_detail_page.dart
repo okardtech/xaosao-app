@@ -1,59 +1,50 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:xaosao/constants/app_color.dart';
-import 'package:xaosao/models/Recommended_model.dart';
+import 'package:xaosao/models/customer_public_profile.dart';
 import 'package:xaosao/repository/review_repo.dart';
 import 'package:xaosao/services/storage_service.dart';
+import 'package:xaosao/utils/deep_link_share.dart';
+import 'package:xaosao/widgets/app_image_preview.dart';
 import 'package:xaosao/widgets/app_like_button.dart';
 import 'package:xaosao/widgets/app_network_image.dart';
-import 'package:xaosao/widgets/gift_sheet.dart';
-import '../topup/topup_amount.dart';
+import '../../constants/app_icons.dart';
+import '../../widgets/app_svg_icon.dart';
+import 'getx/customer_detail_logic.dart';
+import 'getx/customer_detail_state.dart';
 
 class ModelDetailPage extends StatefulWidget {
-  final RecommendedModel model;
-  const ModelDetailPage({super.key, required this.model});
+  final String customerId;
+  const ModelDetailPage({super.key, required this.customerId});
 
   @override
   State<ModelDetailPage> createState() => _ModelDetailPageState();
 }
 
 class _ModelDetailPageState extends State<ModelDetailPage> {
+  late final CustomerDetailLogic _logic;
   late final ScrollController _scrollCtrl;
-  bool _showTitle = false;
 
   static const double _photoHeight = 420;
   static const double _titleThreshold = 280;
 
-  int get _age {
-    final dob = widget.model.dob;
-    if (dob == null) return 0;
-    final now = DateTime.now();
-    int age = now.year - dob.year;
-    if (now.month < dob.month ||
-        (now.month == dob.month && now.day < dob.day)) {
-      age--;
-    }
-    return age;
-  }
-
-  List<String> get _photos {
-    final imgs = widget.model.images ?? [];
-    if (imgs.isNotEmpty) return imgs;
-    if (widget.model.profile != null) return [widget.model.profile!];
-    return [];
-  }
-
   @override
   void initState() {
     super.initState();
+    _logic = Get.put(
+      CustomerDetailLogic(customerId: widget.customerId),
+      tag: widget.customerId,
+    );
     _scrollCtrl = ScrollController()..addListener(_onScroll);
-    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-      statusBarColor: Colors.transparent,
-      statusBarIconBrightness: Brightness.light,
-    ));
+    SystemChrome.setSystemUIOverlayStyle(
+      const SystemUiOverlayStyle(
+        statusBarColor: Colors.transparent,
+        statusBarIconBrightness: Brightness.light,
+      ),
+    );
   }
 
   @override
@@ -61,89 +52,51 @@ class _ModelDetailPageState extends State<ModelDetailPage> {
     _scrollCtrl
       ..removeListener(_onScroll)
       ..dispose();
+    Get.delete<CustomerDetailLogic>(tag: widget.customerId);
     super.dispose();
   }
 
   void _onScroll() {
     final show = _scrollCtrl.offset > _titleThreshold;
-    if (show != _showTitle) setState(() => _showTitle = show);
+    if (show != _logic.showTitle.value) _logic.showTitle.value = show;
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF8F8FC),
-      body: CustomScrollView(
-        controller: _scrollCtrl,
-        physics: const BouncingScrollPhysics(),
-        slivers: [
-          SliverAppBar(
-            expandedHeight: _photoHeight,
-            pinned: true,
-            stretch: true,
-            backgroundColor: AppColors.primary,
-            elevation: 0,
-            automaticallyImplyLeading: false,
-            flexibleSpace: FlexibleSpaceBar(
-              collapseMode: CollapseMode.pin,
-              background: _PhotoSlider(
-                photos: _photos,
-                height: _photoHeight,
-                model: widget.model,
-                age: _age,
-              ),
-            ),
-            leading: _AppBarIcon(
-              icon: Icons.arrow_back_ios_new_rounded,
-              onTap: () => Navigator.pop(context),
-            ),
-            title: AnimatedOpacity(
-              opacity: _showTitle ? 1.0 : 0.0,
-              duration: const Duration(milliseconds: 200),
-              child: Text(
-                '${widget.model.firstName ?? ''}, $_age',
-                style: TextStyle(
-                  fontSize: 15.sp,
-                  fontWeight: FontWeight.w800,
-                  color: Colors.white,
-                ),
-              ),
-            ),
-            actions: [
-              AppLikeButton(
-                initialLiked: widget.model.isLiked,
-                size: 34,
-                iconSize: 16,
-                unlikedBg: Colors.black.withValues(alpha: 0.25),
-                border:
-                    Border.all(color: Colors.white.withValues(alpha: 0.15)),
-                margin: EdgeInsets.symmetric(vertical: 8.h),
-                onToggle: () async {
-                  final isClient =
-                      Get.find<StorageService>().read<String>('role') ==
-                          'customer';
-                  final res = await ReviewRepo()
-                      .addLike(isClient: isClient, id: widget.model.id ?? '');
-                  return res.success;
-                },
-              ),
-              SizedBox(width: 6.w),
-              _AppBarIcon(icon: Icons.share_outlined, onTap: () {}),
-              SizedBox(width: 12.w),
-            ],
-          ),
+      body: Obx(() {
+        final st = _logic.state;
+        if (st.status == CustomerDetailStatus.initial ||
+            st.status == CustomerDetailStatus.loading) {
+          return _buildLoading();
+        }
+        if (st.status == CustomerDetailStatus.failure || st.profile == null) {
+          return _buildError(st.error);
+        }
+        return _buildBody(st.profile!);
+      }),
+    );
+  }
 
-          SliverToBoxAdapter(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _buildActionRow(),
-                _Section(
-                  title: 'ຂໍ້ມູນສ່ວນຕົວ',
-                  child: _buildInfoGrid(),
-                ),
-                SizedBox(height: 32.h),
-              ],
+  // ── Loading ───────────────────────────────────────────────
+  Widget _buildLoading() {
+    return SafeArea(
+      child: Column(
+        children: [
+          Padding(
+            padding: EdgeInsets.all(8.r),
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: _AppBarIconDark(
+                icon: Icons.arrow_back_ios_new_rounded,
+                onTap: () => Navigator.pop(context),
+              ),
+            ),
+          ),
+          const Expanded(
+            child: Center(
+              child: CircularProgressIndicator(color: AppColors.primary),
             ),
           ),
         ],
@@ -151,25 +104,290 @@ class _ModelDetailPageState extends State<ModelDetailPage> {
     );
   }
 
-  Widget _buildInfoGrid() {
-    final age = _age;
-    final memberSince = widget.model.createdAt != null
-        ? DateFormat('MMM yyyy').format(widget.model.createdAt!)
+  // ── Error ─────────────────────────────────────────────────
+  Widget _buildError(String? msg) {
+    return SafeArea(
+      child: Column(
+        children: [
+          Padding(
+            padding: EdgeInsets.all(8.r),
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: _AppBarIconDark(
+                icon: Icons.arrow_back_ios_new_rounded,
+                onTap: () => Navigator.pop(context),
+              ),
+            ),
+          ),
+          Expanded(
+            child: Center(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(
+                    Icons.error_outline_rounded,
+                    size: 48.r,
+                    color: AppColors.textHint,
+                  ),
+                  SizedBox(height: 12.h),
+                  Text(
+                    msg ?? 'ໂຫຼດຂໍ້ມູນບໍ່ສຳເລັດ',
+                    style: TextStyle(
+                      fontSize: 14.sp,
+                      color: AppColors.textHint,
+                    ),
+                  ),
+                  SizedBox(height: 16.h),
+                  TextButton(
+                    onPressed: _logic.fetch,
+                    child: const Text('ລອງໃໝ່'),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // ── Main content ──────────────────────────────────────────
+  Widget _buildBody(CustomerPublicProfile profile) {
+    return CustomScrollView(
+      controller: _scrollCtrl,
+      physics: const BouncingScrollPhysics(),
+      slivers: [
+        SliverAppBar(
+          expandedHeight: _photoHeight,
+          pinned: true,
+          stretch: true,
+          backgroundColor: AppColors.primary,
+          elevation: 0,
+          automaticallyImplyLeading: false,
+          flexibleSpace: FlexibleSpaceBar(
+            collapseMode: CollapseMode.pin,
+            background: _PhotoSlider(
+              photos: profile.allPhotos,
+              height: _photoHeight,
+              profile: profile,
+            ),
+          ),
+          leading: _AppBarIcon(
+            icon: Icons.arrow_back_ios_new_rounded,
+            onTap: () => Navigator.pop(context),
+          ),
+          title: Obx(
+            () => AnimatedOpacity(
+              opacity: _logic.showTitle.value ? 1.0 : 0.0,
+              duration: const Duration(milliseconds: 200),
+              child: Text(
+                profile.age > 0
+                    ? '${profile.displayName}, ${profile.age}'
+                    : profile.displayName,
+                style: TextStyle(
+                  fontSize: 15.sp,
+                  fontWeight: FontWeight.w800,
+                  color: Colors.white,
+                ),
+              ),
+            ),
+          ),
+          actions: [
+            AppLikeButton(
+              initialLiked: false,
+              size: 34,
+              iconSize: 16,
+              unlikedBg: Colors.black.withValues(alpha: 0.25),
+              border: Border.all(color: Colors.white.withValues(alpha: 0.15)),
+              margin: EdgeInsets.symmetric(vertical: 8.h),
+              onToggle: () async {
+                final isClient =
+                    Get.find<StorageService>().read<String>('role') ==
+                    'customer';
+                final res = await ReviewRepo().addLike(
+                  isClient: isClient,
+                  id: profile.id,
+                );
+                return res.success;
+              },
+            ),
+            SizedBox(width: 6.w),
+            _AppBarIcon(
+              icon: Icons.share_outlined,
+              onTap: () => DeepLinkShare.shareModel(
+                modelId: profile.id,
+                displayName: profile.displayName,
+              ),
+            ),
+            SizedBox(width: 12.w),
+          ],
+        ),
+
+        SliverToBoxAdapter(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _buildActionRow(profile),
+              _Section(title: 'ຂໍ້ມູນສ່ວນຕົວ', child: _buildInfoGrid(profile)),
+              SizedBox(height: 32.h),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  // ── Action row: chat + friend ─────────────────────────────
+  Widget _buildActionRow(CustomerPublicProfile profile) {
+    return Padding(
+      padding: EdgeInsets.fromLTRB(16.w, 14.h, 16.w, 0),
+      child: Row(
+        children: [
+          // Chat button
+          Expanded(
+            child: Obx(() {
+              final loading = _logic.chatLoading.value;
+              return GestureDetector(
+                onTap: loading ? null : () => _logic.startChat(profile),
+                child: Container(
+                  height: 44.h,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(13.r),
+                    border: Border.all(
+                      color: Colors.black.withValues(alpha: 0.08),
+                      width: 0.5,
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: AppColors.primary.withValues(alpha: 0.10),
+                        blurRadius: 20,
+                        offset: const Offset(0, 6),
+                      ),
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: 0.05),
+                        blurRadius: 10,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
+                  ),
+                  child: loading
+                      ? Center(
+                          child: SizedBox(
+                            width: 16.r,
+                            height: 16.r,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              color: AppColors.textPrimary,
+                            ),
+                          ),
+                        )
+                      : Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            AppSvgIcon(
+                              assetName: AppIcons.chatFill,
+                              width: 12.w,
+                              height: 12.h,
+                            ),
+                            SizedBox(width: 6.w),
+                            Text(
+                              'ເເຊັດ',
+                              style: TextStyle(
+                                fontSize: 12.sp,
+                                fontWeight: FontWeight.w700,
+                                color: AppColors.textPrimary,
+                              ),
+                            ),
+                          ],
+                        ),
+                ),
+              );
+            }),
+          ),
+          SizedBox(width: 8.w),
+          // Friend toggle button
+          Obx(() {
+            final loading = _logic.friendLoading.value;
+            final isFriend = _logic.isFriend.value;
+            return GestureDetector(
+              onTap: loading ? null : _logic.toggleFriend,
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 200),
+                height: 44.h,
+                width: 44.h,
+                padding: EdgeInsets.all(12.r),
+                decoration: BoxDecoration(
+                  color: isFriend
+                      ? AppColors.primary.withValues(alpha: 0.08)
+                      : Colors.white,
+                  borderRadius: BorderRadius.circular(13.r),
+                  border: Border.all(
+                    color: isFriend
+                        ? AppColors.primary.withValues(alpha: 0.30)
+                        : Colors.black.withValues(alpha: 0.08),
+                    width: isFriend ? 1.0 : 0.5,
+                  ),
+                ),
+                child: loading
+                    ? Center(
+                        child: SizedBox(
+                          width: 16.r,
+                          height: 16.r,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            color: AppColors.primary,
+                          ),
+                        ),
+                      )
+                    : AppSvgIcon(
+                        assetName: isFriend
+                            ? AppIcons.userCheck
+                            : AppIcons.userAdd,
+                        width: 18.w,
+                        height: 18.h,
+                        color: isFriend
+                            ? AppColors.primary
+                            : AppColors.textPrimary,
+                      ),
+              ),
+            );
+          }),
+        ],
+      ),
+    );
+  }
+
+  // ── Info grid ─────────────────────────────────────────────
+  Widget _buildInfoGrid(CustomerPublicProfile profile) {
+    final age = profile.age;
+    final memberSince = profile.createdAt != null
+        ? DateFormat('MMM yyyy').format(profile.createdAt!)
         : '—';
-    final isAvailable = widget.model.status == 'active';
-    final statusLabel = isAvailable ? 'ໃຊ້ງານຢູ່' : 'ບໍ່ໄດ້ໃຊ້ງານ';
-    final statusColor = isAvailable ? AppColors.online : AppColors.primary;
-    final address =
-        widget.model.address != null ? '${widget.model.address}' : '—';
+    final tier = profile.tier ?? '—';
+    final tierColor = profile.isVip ? AppColors.vipGold : AppColors.textPrimary;
+    final location = profile.country != null ? '${profile.country}' : '—';
 
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16.r),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.primary.withValues(alpha: 0.10),
+            blurRadius: 20,
+            offset: const Offset(0, 6),
+          ),
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.05),
+            blurRadius: 10,
+            offset: const Offset(0, 2),
+          ),
+        ],
       ),
       child: Column(
         children: [
-          // ── 3-stat strip ────────────────────────────────────────
+          // ── 3-stat strip ──────────────────────────────────
           IntrinsicHeight(
             child: Row(
               children: [
@@ -177,15 +395,11 @@ class _ModelDetailPageState extends State<ModelDetailPage> {
                 _StatStripDivider(),
                 _StatStrip(label: 'ສະມາຊິກຕັ້ງແຕ່', value: memberSince),
                 _StatStripDivider(),
-                _StatStrip(
-                  label: 'ສະຖານະ',
-                  value: statusLabel,
-                  valueColor: statusColor,
-                ),
+                _StatStrip(label: 'ລະດັບ', value: tier, valueColor: tierColor),
               ],
             ),
           ),
-          // ── address ─────────────────────────────────────────────
+          // ── Location row ──────────────────────────────────
           Divider(
             height: 1,
             thickness: 0.5,
@@ -216,7 +430,7 @@ class _ModelDetailPageState extends State<ModelDetailPage> {
                       ),
                       SizedBox(height: 2.h),
                       Text(
-                        address,
+                        location,
                         style: TextStyle(
                           fontSize: 12.sp,
                           fontWeight: FontWeight.w600,
@@ -236,72 +450,6 @@ class _ModelDetailPageState extends State<ModelDetailPage> {
       ),
     );
   }
-
-  Widget _buildActionRow() {
-    return Padding(
-      padding: EdgeInsets.fromLTRB(16.w, 14.h, 16.w, 0),
-      child: Row(
-        children: [
-          Expanded(
-            child: GestureDetector(
-              onTap: () {},
-              child: Container(
-                height: 44.h,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(13.r),
-                  border: Border.all(
-                    color: Colors.black.withValues(alpha: 0.08),
-                    width: 0.5,
-                  ),
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      Icons.chat_bubble_outline_rounded,
-                      size: 15.r,
-                      color: AppColors.textPrimary,
-                    ),
-                    SizedBox(width: 6.w),
-                    Text(
-                      'ສົ່ງຂໍ້ຄວາມ',
-                      style: TextStyle(
-                        fontSize: 12.sp,
-                        fontWeight: FontWeight.w700,
-                        color: AppColors.textPrimary,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-          SizedBox(width: 8.w),
-          // _ActionBtn(
-          //   icon: Icons.card_giftcard_rounded,
-          //   color: const Color(0xFFD97706),
-          //   onTap: () => GiftSheet.show(
-          //     context,
-          //     companionName: widget.model.firstName ?? 'ຄູ່ຮ່ວມທາງ',
-          //     balanceKip: 125000,
-          //     onSent: (gift) => GiftSentSnackbar.show(context, gift: gift),
-          //     onTopUp: () => Navigator.push(
-          //       context,
-          //       MaterialPageRoute(builder: (_) => const TopUpAmountPage()),
-          //     ),
-          //   ),
-          // ),
-          SizedBox(width: 8.w),
-          _ActionBtn(
-            icon: Icons.person_add_alt_1_rounded,
-            color: AppColors.textPrimary,
-            onTap: () {},
-          ),
-        ],
-      ),
-    );
-  }
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -310,30 +458,77 @@ class _ModelDetailPageState extends State<ModelDetailPage> {
 class _PhotoSlider extends StatefulWidget {
   final List<String> photos;
   final double height;
-  final RecommendedModel model;
-  final int age;
+  final CustomerPublicProfile profile;
 
   const _PhotoSlider({
     required this.photos,
     required this.height,
-    required this.model,
-    required this.age,
+    required this.profile,
   });
 
   @override
   State<_PhotoSlider> createState() => _PhotoSliderState();
 }
 
-class _PhotoSliderState extends State<_PhotoSlider> {
+class _PhotoSliderState extends State<_PhotoSlider>
+    with TickerProviderStateMixin {
   final _pageCtrl = PageController();
   int _current = 0;
+
+  // One-time "tap to expand" hint
+  bool _showHint = true;
+
+  // Press-feedback scale for the tapped photo
+  late final AnimationController _pressCtrl;
+  late final Animation<double> _pressScale;
+
+  // Pulse animation for the expand affordance chip
+  late final AnimationController _pulseCtrl;
 
   int get _count => widget.photos.isEmpty ? 1 : widget.photos.length;
 
   @override
+  void initState() {
+    super.initState();
+    _pressCtrl = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 120),
+      reverseDuration: const Duration(milliseconds: 180),
+    );
+    _pressScale = Tween<double>(begin: 1.0, end: 0.97).animate(
+      CurvedAnimation(parent: _pressCtrl, curve: Curves.easeOut),
+    );
+    _pulseCtrl = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1400),
+    )..repeat(reverse: true);
+
+    Future.delayed(const Duration(milliseconds: 3200), () {
+      if (mounted) setState(() => _showHint = false);
+    });
+
+    // Warm the cache for neighboring photos so swipe-then-tap is instant.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted || widget.photos.isEmpty) return;
+      for (final i in [1, 2]) {
+        if (i >= widget.photos.length) break;
+        precacheImage(NetworkImage(widget.photos[i]), context);
+      }
+    });
+  }
+
+  @override
   void dispose() {
     _pageCtrl.dispose();
+    _pressCtrl.dispose();
+    _pulseCtrl.dispose();
     super.dispose();
+  }
+
+  void _openPreview(int i) {
+    if (widget.photos.isEmpty) return;
+    AppImagePreview.show(context, widget.photos, initialIndex: i);
+    if (_showHint) setState(() => _showHint = false);
   }
 
   @override
@@ -348,91 +543,126 @@ class _PhotoSliderState extends State<_PhotoSlider> {
             itemCount: _count,
             physics: const BouncingScrollPhysics(),
             onPageChanged: (i) => setState(() => _current = i),
-            itemBuilder: (_, i) {
-              if (widget.photos.isNotEmpty) {
-                return AppNetworkImage(
-                  imageUrl: widget.photos[i],
-                  fit: BoxFit.cover,
-                  errorWidget: _gradientFallback(),
-                );
-              }
-              return _gradientFallback();
+            itemBuilder: (context, i) {
+              if (widget.photos.isEmpty) return _gradientFallback();
+              return GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTapDown: (_) => _pressCtrl.forward(),
+                onTapCancel: () => _pressCtrl.reverse(),
+                onTapUp: (_) => _pressCtrl.reverse(),
+                onTap: () => _openPreview(i),
+                child: ScaleTransition(
+                  scale: _pressScale,
+                  child: Hero(
+                    tag: 'preview_${widget.photos[i]}_$i',
+                    child: AppNetworkImage(
+                      imageUrl: widget.photos[i],
+                      fit: BoxFit.cover,
+                      errorWidget: _gradientFallback(),
+                    ),
+                  ),
+                ),
+              );
             },
           ),
 
+          // Gradient overlay — IgnorePointer so taps reach the photo.
           Positioned(
             bottom: 0,
             left: 0,
             right: 0,
-            child: Container(
-              height: widget.height * 0.62,
-              decoration: const BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.bottomCenter,
-                  end: Alignment.topCenter,
-                  colors: [
-                    Color(0xFA050512),
-                    Color(0xB2050512),
-                    Color(0x1A050512),
-                    Colors.transparent,
-                  ],
-                  stops: [0.0, 0.45, 0.75, 1.0],
+            child: IgnorePointer(
+              child: Container(
+                height: widget.height * 0.62,
+                decoration: const BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.bottomCenter,
+                    end: Alignment.topCenter,
+                    colors: [
+                      Color(0xFA050512),
+                      Color(0xB2050512),
+                      Color(0x1A050512),
+                      Colors.transparent,
+                    ],
+                    stops: [0.0, 0.45, 0.75, 1.0],
+                  ),
                 ),
               ),
             ),
           ),
 
+          // Page indicator dots
           if (_count > 1)
             Positioned(
               top: 14.h,
               left: 0,
               right: 0,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: List.generate(_count, (i) {
-                  final isOn = i == _current;
-                  return AnimatedContainer(
-                    duration: const Duration(milliseconds: 250),
-                    margin: EdgeInsets.symmetric(horizontal: 2.w),
-                    width: isOn ? 16.w : 5.r,
-                    height: 5.r,
-                    decoration: BoxDecoration(
-                      color: isOn
-                          ? Colors.white
-                          : Colors.white.withValues(alpha: 0.40),
-                      borderRadius: BorderRadius.circular(3.r),
-                    ),
-                  );
-                }),
+              child: IgnorePointer(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: List.generate(_count, (i) {
+                    final isOn = i == _current;
+                    return AnimatedContainer(
+                      duration: const Duration(milliseconds: 250),
+                      margin: EdgeInsets.symmetric(horizontal: 2.w),
+                      width: isOn ? 16.w : 5.r,
+                      height: 5.r,
+                      decoration: BoxDecoration(
+                        color: isOn
+                            ? Colors.white
+                            : Colors.white.withValues(alpha: 0.40),
+                        borderRadius: BorderRadius.circular(3.r),
+                      ),
+                    );
+                  }),
+                ),
               ),
             ),
 
-          if (_count > 1)
+          // Expand affordance — combines counter + zoom hint, with pulse.
+          if (widget.photos.isNotEmpty)
             Positioned(
               bottom: 150.h,
               right: 14.w,
-              child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 3.h),
-                decoration: BoxDecoration(
-                  color: Colors.black.withValues(alpha: 0.35),
-                  borderRadius: BorderRadius.circular(20.r),
+              child: GestureDetector(
+                onTap: () => _openPreview(_current),
+                child: _ExpandAffordance(
+                  pulse: _pulseCtrl,
+                  label: _count > 1
+                      ? '${_current + 1} / $_count'
+                      : 'ດູຮູບ',
                 ),
-                child: Text(
-                  '${_current + 1} / $_count',
-                  style: TextStyle(
-                    fontSize: 9.sp,
-                    fontWeight: FontWeight.w700,
-                    color: Colors.white.withValues(alpha: 0.80),
+              ),
+            ),
+
+          // One-time floating hint near the top.
+          if (widget.photos.isNotEmpty)
+            Positioned(
+              top: 70.h,
+              left: 0,
+              right: 0,
+              child: IgnorePointer(
+                child: AnimatedSlide(
+                  offset: _showHint ? Offset.zero : const Offset(0, -0.4),
+                  duration: const Duration(milliseconds: 320),
+                  curve: Curves.easeOutCubic,
+                  child: AnimatedOpacity(
+                    opacity: _showHint ? 1.0 : 0.0,
+                    duration: const Duration(milliseconds: 320),
+                    child: Center(child: _TapHintChip()),
                   ),
                 ),
               ),
             ),
 
+          // Name / stats overlay at bottom — IgnorePointer so taps reach the photo.
           Positioned(
             bottom: 0,
             left: 0,
             right: 0,
-            child: _InfoOverlay(model: widget.model, age: widget.age),
+            child: IgnorePointer(
+              child: _InfoOverlay(profile: widget.profile),
+            ),
           ),
         ],
       ),
@@ -440,57 +670,143 @@ class _PhotoSliderState extends State<_PhotoSlider> {
   }
 
   Widget _gradientFallback() => Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: AppColors.pinkGradient,
-          ),
-        ),
-      );
+    decoration: const BoxDecoration(
+      gradient: LinearGradient(
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
+        colors: AppColors.pinkGradient,
+      ),
+    ),
+  );
 }
 
-// ═══════════════════════════════════════════════════════════════
-//  _InfoOverlay — name, age, address, badges, stats
-// ═══════════════════════════════════════════════════════════════
-class _InfoOverlay extends StatelessWidget {
-  final RecommendedModel model;
-  final int age;
-  const _InfoOverlay({required this.model, required this.age});
+// ── Expand affordance chip ─────────────────────────────────────
+class _ExpandAffordance extends StatelessWidget {
+  final Animation<double> pulse;
+  final String label;
+  const _ExpandAffordance({required this.pulse, required this.label});
 
   @override
   Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: pulse,
+      builder: (_, child) {
+        final t = pulse.value;
+        return Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(20.r),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.white.withValues(alpha: 0.10 + 0.18 * t),
+                blurRadius: 10 + 6 * t,
+                spreadRadius: 0.4 * t,
+              ),
+            ],
+          ),
+          child: child,
+        );
+      },
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 5.h),
+        decoration: BoxDecoration(
+          color: Colors.black.withValues(alpha: 0.55),
+          borderRadius: BorderRadius.circular(20.r),
+          border: Border.all(
+            color: Colors.white.withValues(alpha: 0.18),
+            width: 0.8,
+          ),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              Icons.zoom_out_map_rounded,
+              size: 12.r,
+              color: Colors.white.withValues(alpha: 0.95),
+            ),
+            SizedBox(width: 5.w),
+            Text(
+              label,
+              style: TextStyle(
+                fontSize: 10.sp,
+                fontWeight: FontWeight.w700,
+                color: Colors.white,
+                letterSpacing: 0.2,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// ── One-time "tap to zoom" hint chip ───────────────────────────
+class _TapHintChip extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 7.h),
+      decoration: BoxDecoration(
+        color: Colors.black.withValues(alpha: 0.55),
+        borderRadius: BorderRadius.circular(22.r),
+        border: Border.all(
+          color: Colors.white.withValues(alpha: 0.18),
+          width: 0.8,
+        ),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(Icons.touch_app_rounded, size: 13.r, color: Colors.white),
+          SizedBox(width: 6.w),
+          Text(
+            'ກົດທີ່ຮູບເພື່ອຂະຫຍາຍ',
+            style: TextStyle(
+              fontSize: 11.sp,
+              fontWeight: FontWeight.w700,
+              color: Colors.white,
+              letterSpacing: 0.2,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  _InfoOverlay — name, age, location, bio, stats
+// ═══════════════════════════════════════════════════════════════
+class _InfoOverlay extends StatelessWidget {
+  final CustomerPublicProfile profile;
+  const _InfoOverlay({required this.profile});
+
+  @override
+  Widget build(BuildContext context) {
+    final age = profile.age;
+    final distanceText = profile.distanceKm != null
+        ? '${profile.distanceKm!.toStringAsFixed(1)} km'
+        : profile.country ?? '—';
+
     return Padding(
       padding: EdgeInsets.fromLTRB(16.w, 0, 16.w, 16.h),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
-          Row(
-            children: [
-              if (model.online)
-                _Badge(
-                  label: 'ອອນລາຍ',
-                  bg: const Color(0xE022C55E),
-                  fg: Colors.white,
-                  dot: true,
-                ),
-              if (model.online) SizedBox(width: 6.w),
-              if (model.isVip)
-                _Badge(
-                  label: '★ VIP',
-                  bg: const Color(0xBF1A1A2E),
-                  fg: AppColors.vipGold,
-                  border: AppColors.vipGold.withValues(alpha: 0.30),
-                ),
-            ],
-          ),
+          if (profile.isVip)
+            _Badge(
+              label: '★ VIP',
+              bg: const Color(0xBF1A1A2E),
+              fg: AppColors.vipGold,
+              border: AppColors.vipGold.withValues(alpha: 0.30),
+            ),
           SizedBox(height: 8.h),
 
           // Name + age
           Text(
-            '${model.firstName ?? ''} ${model.lastName ?? ''}'.trim() +
-                (age > 0 ? ', $age' : ''),
+            profile.displayName + (age > 0 ? ', $age' : ''),
             style: TextStyle(
               fontSize: 24.sp,
               fontWeight: FontWeight.w900,
@@ -500,7 +816,7 @@ class _InfoOverlay extends StatelessWidget {
             ),
           ),
 
-          // Address below name
+          // Distance / country
           SizedBox(height: 5.h),
           Row(
             children: [
@@ -511,19 +827,17 @@ class _InfoOverlay extends StatelessWidget {
               ),
               SizedBox(width: 3.w),
               Text(
-                'ໃກ້ທ່ານ',
-                style: TextStyle(
-                  fontSize: 11.sp,
-                  color: Colors.white60,
-                ),
+                distanceText,
+                style: TextStyle(fontSize: 11.sp, color: Colors.white60),
               ),
             ],
           ),
 
-          if (model.bio != null && model.bio!.isNotEmpty) ...[
+          // Bio
+          if (profile.bio != null && profile.bio!.isNotEmpty) ...[
             SizedBox(height: 6.h),
             Text(
-              model.bio!,
+              profile.bio!,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
               style: TextStyle(
@@ -534,26 +848,26 @@ class _InfoOverlay extends StatelessWidget {
           ],
           SizedBox(height: 12.h),
 
-          _StatsStrip(model: model),
+          _StatsStrip(profile: profile),
         ],
       ),
     );
   }
 }
 
+// ═══════════════════════════════════════════════════════════════
+//  _Badge
+// ═══════════════════════════════════════════════════════════════
 class _Badge extends StatelessWidget {
   final String label;
   final Color bg;
   final Color fg;
   final Color? border;
-  final bool dot;
-
   const _Badge({
     required this.label,
     required this.bg,
     required this.fg,
     this.border,
-    this.dot = false,
   });
 
   @override
@@ -565,82 +879,75 @@ class _Badge extends StatelessWidget {
         borderRadius: BorderRadius.circular(20.r),
         border: border != null ? Border.all(color: border!) : null,
       ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          if (dot) ...[
-            Container(
-              width: 4.r,
-              height: 4.r,
-              decoration: const BoxDecoration(
-                color: Colors.white,
-                shape: BoxShape.circle,
-              ),
-            ),
-            SizedBox(width: 3.w),
-          ],
-          Text(
-            label,
-            style: TextStyle(
-              fontSize: 8.sp,
-              fontWeight: FontWeight.w800,
-              color: fg,
-            ),
-          ),
-        ],
+      child: Text(
+        label,
+        style: TextStyle(
+          fontSize: 8.sp,
+          fontWeight: FontWeight.w800,
+          color: fg,
+        ),
       ),
     );
   }
 }
 
+// ═══════════════════════════════════════════════════════════════
+//  _StatsStrip — 4-cell stat bar on the photo overlay
+// ═══════════════════════════════════════════════════════════════
 class _StatsStrip extends StatelessWidget {
-  final RecommendedModel model;
-  const _StatsStrip({required this.model});
+  final CustomerPublicProfile profile;
+  const _StatsStrip({required this.profile});
 
-  String _fmt(int n) =>
-      n >= 1000 ? '${(n / 1000).toStringAsFixed(1)}k' : '$n';
+  String _fmt(int n) => n >= 1000 ? '${(n / 1000).toStringAsFixed(1)}k' : '$n';
 
   @override
   Widget build(BuildContext context) {
-    final rating = model.rating ?? 0.0;
-    final likes = model.likeCount ?? 0;
-    final friends = model.friendsCount ?? 0;
-    final reviews = model.totalReview ?? 0;
-
     return Container(
       decoration: BoxDecoration(
         color: Colors.white.withValues(alpha: 0.07),
         borderRadius: BorderRadius.circular(14.r),
         border: Border.all(color: Colors.white.withValues(alpha: 0.08)),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.primary.withValues(alpha: 0.10),
+            blurRadius: 20,
+            offset: const Offset(0, 6),
+          ),
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.05),
+            blurRadius: 10,
+            offset: const Offset(0, 2),
+          ),
+        ],
       ),
       child: Row(
         children: [
           _StatCell(
-            icon: Icons.star_rounded,
+            icon: Icons.calendar_today_rounded,
             iconColor: AppColors.vipGold,
-            value: rating.toStringAsFixed(1),
-            label: 'ຄະແນນ',
+            value: _fmt(profile.bookingCount),
+            label: 'ຄະເເນນ',
           ),
           _vDivider(),
           _StatCell(
-            icon: Icons.rate_review_outlined,
+            icon: Icons.grid_view_rounded,
             iconColor: Colors.white.withValues(alpha: 0.70),
-            value: _fmt(reviews),
-            label: 'ລີວິວ',
+            value: _fmt(profile.postCount),
+            label: 'ໂພສ',
           ),
           _vDivider(),
           _StatCell(
-            icon: Icons.favorite_rounded,
+            icon: Icons.card_giftcard_rounded,
             iconColor: AppColors.primary,
-            value: _fmt(likes),
-            label: 'ຖືກໃຈ',
+            value: _fmt(profile.giftCount),
+            label: 'ຂອງຂວັນ',
           ),
           _vDivider(),
           _StatCell(
-            icon: Icons.people_outline_rounded,
+            icon: Icons.monetization_on_rounded,
             iconColor: Colors.white.withValues(alpha: 0.70),
-            value: _fmt(friends),
-            label: 'ຕິດຕາມ',
+            value: _fmt(profile.giftAmount),
+            label: 'ຈໍານວນ',
           ),
         ],
       ),
@@ -648,12 +955,15 @@ class _StatsStrip extends StatelessWidget {
   }
 
   Widget _vDivider() => Container(
-        width: 0.5,
-        height: 44.h,
-        color: Colors.white.withValues(alpha: 0.08),
-      );
+    width: 0.5,
+    height: 44.h,
+    color: Colors.white.withValues(alpha: 0.08),
+  );
 }
 
+// ═══════════════════════════════════════════════════════════════
+//  _StatCell
+// ═══════════════════════════════════════════════════════════════
 class _StatCell extends StatelessWidget {
   final IconData icon;
   final Color iconColor;
@@ -703,7 +1013,7 @@ class _StatCell extends StatelessWidget {
 }
 
 // ═══════════════════════════════════════════════════════════════
-//  _Section — titled content wrapper
+//  _Section
 // ═══════════════════════════════════════════════════════════════
 class _Section extends StatelessWidget {
   final String title;
@@ -735,7 +1045,7 @@ class _Section extends StatelessWidget {
 }
 
 // ═══════════════════════════════════════════════════════════════
-//  _AppBarIcon
+//  _AppBarIcon — frosted circle on photo
 // ═══════════════════════════════════════════════════════════════
 class _AppBarIcon extends StatelessWidget {
   final IconData icon;
@@ -756,6 +1066,40 @@ class _AppBarIcon extends StatelessWidget {
           border: Border.all(color: Colors.white.withValues(alpha: 0.15)),
         ),
         child: Icon(icon, size: 15.r, color: Colors.white),
+      ),
+    );
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  _AppBarIconDark — white circle for loading/error screens
+// ═══════════════════════════════════════════════════════════════
+class _AppBarIconDark extends StatelessWidget {
+  final IconData icon;
+  final VoidCallback onTap;
+  const _AppBarIconDark({required this.icon, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        margin: EdgeInsets.all(8.r),
+        width: 34.r,
+        height: 34.r,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          shape: BoxShape.circle,
+          border: Border.all(color: Colors.black.withValues(alpha: 0.08)),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.05),
+              blurRadius: 8,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
+        child: Icon(icon, size: 15.r, color: AppColors.textPrimary),
       ),
     );
   }
@@ -816,41 +1160,6 @@ class _StatStripDivider extends StatelessWidget {
       width: 0.5,
       margin: EdgeInsets.symmetric(vertical: 10.h),
       color: Colors.black.withValues(alpha: 0.07),
-    );
-  }
-}
-
-// ═══════════════════════════════════════════════════════════════
-//  _ActionBtn
-// ═══════════════════════════════════════════════════════════════
-class _ActionBtn extends StatelessWidget {
-  final IconData icon;
-  final Color color;
-  final VoidCallback onTap;
-
-  const _ActionBtn({
-    required this.icon,
-    required this.color,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        width: 44.r,
-        height: 44.r,
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(13.r),
-          border: Border.all(
-            color: Colors.black.withValues(alpha: 0.08),
-            width: 0.5,
-          ),
-        ),
-        child: Icon(icon, size: 18.r, color: color),
-      ),
     );
   }
 }

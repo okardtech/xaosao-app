@@ -3,6 +3,7 @@
 //     final bookingSuccessModel = bookingSuccessModelFromJson(jsonString);
 
 import 'dart:convert';
+import 'package:xaosao/utils/api_date_parser.dart';
 
 BookingSuccessModel bookingSuccessModelFromJson(String str) => BookingSuccessModel.fromJson(json.decode(str));
 
@@ -89,14 +90,14 @@ class BookingSuccessModel {
         modelServiceId: json["modelServiceId"],
         status: json["status"],
         paymentStatus: json["paymentStatus"],
-        startDate: json["startDate"] == null ? null : DateTime.parse(json["startDate"]),
+        startDate: parseApiDateTime(json["startDate"]),
         endDate: json["endDate"],
         price: json["price"],
         hours: json["hours"],
         location: json["location"],
         preferredAttire: json["preferredAttire"],
         hasTip: json["hasTip"],
-        createdAt: json["createdAt"] == null ? null : DateTime.parse(json["createdAt"]),
+        createdAt: parseApiDateTime(json["createdAt"]),
         model: json["model"] == null ? null : Model.fromJson(json["model"]),
         modelService: json["modelService"] == null ? null : ModelService.fromJson(json["modelService"]),
     );

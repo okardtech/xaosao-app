@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../models/booking_slots_model.dart';
 import '../../../models/booking_success_model.dart';
 
 class BookingState {
@@ -13,6 +14,11 @@ class BookingState {
   final bool hasTip;
   final bool submitting;
   final BookingSuccessModel? booking;
+  final String? selectedVariantId;
+  final String? selectedVariantName;
+  final double? selectedVariantPrice;
+  final List<BookedSlotsModel> bookedSlots;
+  final bool slotsLoading;
 
   const BookingState({
     this.date,
@@ -25,11 +31,17 @@ class BookingState {
     this.hasTip = false,
     this.submitting = false,
     this.booking,
+    this.selectedVariantId,
+    this.selectedVariantName,
+    this.selectedVariantPrice,
+    this.bookedSlots = const [],
+    this.slotsLoading = false,
   });
 
   BookingState copyWith({
     DateTime? date,
     TimeOfDay? time,
+    bool clearTime = false,
     int? hours,
     DateTime? startDate,
     DateTime? endDate,
@@ -39,9 +51,14 @@ class BookingState {
     bool? hasTip,
     bool? submitting,
     BookingSuccessModel? booking,
+    String? selectedVariantId,
+    String? selectedVariantName,
+    double? selectedVariantPrice,
+    List<BookedSlotsModel>? bookedSlots,
+    bool? slotsLoading,
   }) => BookingState(
     date: date ?? this.date,
-    time: time ?? this.time,
+    time: clearTime ? null : (time ?? this.time),
     hours: hours ?? this.hours,
     startDate: startDate ?? this.startDate,
     endDate: clearEnd ? null : (endDate ?? this.endDate),
@@ -50,5 +67,10 @@ class BookingState {
     hasTip: hasTip ?? this.hasTip,
     submitting: submitting ?? this.submitting,
     booking: booking ?? this.booking,
+    selectedVariantId: selectedVariantId ?? this.selectedVariantId,
+    selectedVariantName: selectedVariantName ?? this.selectedVariantName,
+    selectedVariantPrice: selectedVariantPrice ?? this.selectedVariantPrice,
+    bookedSlots: bookedSlots ?? this.bookedSlots,
+    slotsLoading: slotsLoading ?? this.slotsLoading,
   );
 }

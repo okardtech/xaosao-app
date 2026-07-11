@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:xaosao/models/gift_model.dart';
+import 'package:xaosao/pages/wallet/getx/wallet_logic.dart';
 import 'package:xaosao/repository/gift_repo.dart';
 import 'package:xaosao/utils/app_snackbar.dart';
 import 'package:xaosao/widgets/app_network_image.dart';
@@ -45,7 +47,6 @@ class GiftSheet {
     BuildContext context, {
     required String postId,
     required String companionName,
-    required int balanceKip,
     void Function(GiftModel)? onSent,
     VoidCallback? onTopUp,
   }) {
@@ -58,7 +59,6 @@ class GiftSheet {
       builder: (_) => _GiftSheetContent(
         postId: postId,
         companionName: companionName,
-        balanceKip: balanceKip,
         onSent: onSent,
         onTopUp: onTopUp,
       ),
@@ -72,14 +72,12 @@ class GiftSheet {
 class _GiftSheetContent extends StatefulWidget {
   final String postId;
   final String companionName;
-  final int balanceKip;
   final void Function(GiftModel)? onSent;
   final VoidCallback? onTopUp;
 
   const _GiftSheetContent({
     required this.postId,
     required this.companionName,
-    required this.balanceKip,
     this.onSent,
     this.onTopUp,
   });
@@ -95,6 +93,9 @@ class _GiftSheetContentState extends State<_GiftSheetContent> {
   bool _loadingGifts = true;
   GiftModel? _selected;
   bool _sending = false;
+
+  int get _balance =>
+      Get.find<WalletLogic>().state.wallet?.availableBalance ?? 0;
 
   @override
   void initState() {
@@ -136,6 +137,7 @@ class _GiftSheetContentState extends State<_GiftSheetContent> {
       );
       if (!mounted) return;
       if (res.success) {
+        Get.find<WalletLogic>().fetchWallet();
         Navigator.pop(context);
         widget.onSent?.call(gift);
       } else {
@@ -150,12 +152,18 @@ class _GiftSheetContentState extends State<_GiftSheetContent> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return Padding(
+      padding: EdgeInsets.only(
+        bottom: MediaQuery.of(context).viewInsets.bottom,
+      ),
+      child: Container(
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.vertical(top: Radius.circular(22.r)),
       ),
-      child: Column(
+      child: SafeArea(
+        top: false,
+        child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           // ── Drag handle ─────────────────────────────────
@@ -275,7 +283,7 @@ class _GiftSheetContentState extends State<_GiftSheetContent> {
                         ),
                       ),
                       Text(
-                        _fmt(widget.balanceKip),
+                        _fmt(_balance),
                         style: TextStyle(
                           fontSize: 12.sp,
                           fontWeight: FontWeight.w700,
@@ -340,6 +348,7 @@ class _GiftSheetContentState extends State<_GiftSheetContent> {
                     : _GiftGrid(
                         gifts: _gifts,
                         selected: _selected,
+                        balanceKip: _balance,
                         onSelect: (g) => setState(() => _selected = g),
                       ),
           ),
@@ -350,7 +359,7 @@ class _GiftSheetContentState extends State<_GiftSheetContent> {
             padding: EdgeInsets.only(
               left: 16.w,
               right: 16.w,
-              bottom: MediaQuery.of(context).viewInsets.bottom + 16.h,
+              bottom: 16.h,
             ),
             child: _SendButton(
               selected: _selected,
@@ -359,6 +368,8 @@ class _GiftSheetContentState extends State<_GiftSheetContent> {
             ),
           ),
         ],
+        ),
+      ),
       ),
     );
   }
@@ -370,11 +381,13 @@ class _GiftSheetContentState extends State<_GiftSheetContent> {
 class _GiftGrid extends StatelessWidget {
   final List<GiftModel> gifts;
   final GiftModel? selected;
+  final int balanceKip;
   final void Function(GiftModel) onSelect;
 
   const _GiftGrid({
     required this.gifts,
     required this.selected,
+    required this.balanceKip,
     required this.onSelect,
   });
 
@@ -395,13 +408,18 @@ class _GiftGrid extends StatelessWidget {
         final isSelected = selected?.id == gift.id;
         final isRight = i % 3 != 2;
         final isBottom = i < gifts.length - 3;
+        final canAfford = (gift.price?.toInt() ?? 0) <= balanceKip;
 
         return GestureDetector(
-          onTap: () {
-            HapticFeedback.lightImpact();
-            onSelect(gift);
-          },
-          child: AnimatedContainer(
+          onTap: canAfford
+              ? () {
+                  HapticFeedback.lightImpact();
+                  onSelect(gift);
+                }
+              : null,
+          child: Opacity(
+            opacity: canAfford ? 1.0 : 0.35,
+            child: AnimatedContainer(
             duration: const Duration(milliseconds: 180),
             decoration: BoxDecoration(
               color: isSelected ? const Color(0xFFFFF0F6) : Colors.white,
@@ -490,6 +508,7 @@ class _GiftGrid extends StatelessWidget {
                   ),
               ],
             ),
+          ),
           ),
         );
       },
@@ -628,69 +647,11 @@ class _SendButton extends StatelessWidget {
 class GiftSentSnackbar {
   GiftSentSnackbar._();
 
-  static void show(BuildContext context, {required GiftModel gift}) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        behavior: SnackBarBehavior.floating,
-        backgroundColor: const Color(0xFF1A1A2E),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-        ),
-        margin: EdgeInsets.fromLTRB(16.w, 0, 16.w, 16.h),
-        duration: const Duration(seconds: 3),
-        content: Row(
-          children: [
-            // Gift image thumbnail
-            ClipRRect(
-              borderRadius: BorderRadius.circular(8.r),
-              child: AppNetworkImage(
-                imageUrl: gift.image ?? '',
-                width: 36.r,
-                height: 36.r,
-                fit: BoxFit.cover,
-                accentColor: const Color(0xFFF06292),
-              ),
-            ),
-            SizedBox(width: 10.w),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    'ສ່ງຂອງຂວັນສຳເລັດ!',
-                    style: TextStyle(
-                      fontSize: 12.sp,
-                      fontWeight: FontWeight.w700,
-                      color: Colors.white,
-                    ),
-                  ),
-                  Text(
-                    '${gift.name ?? ''} · ${_fmtKip(gift.price)}',
-                    style: TextStyle(
-                      fontSize: 10.sp,
-                      color: Colors.white.withValues(alpha: 0.60),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Container(
-              width: 20.r,
-              height: 20.r,
-              decoration: const BoxDecoration(
-                color: Color(0xFF22C55E),
-                shape: BoxShape.circle,
-              ),
-              child: Icon(
-                Icons.check_rounded,
-                size: 12.r,
-                color: Colors.white,
-              ),
-            ),
-          ],
-        ),
-      ),
+  static void show({required GiftModel gift}) {
+    AppSnackbar.success(
+      '${gift.name ?? ''} · ${_fmtKip(gift.price)}',
+      title: 'ສ່ງຂອງຂວັນສຳເລັດ!',
     );
   }
+
 }

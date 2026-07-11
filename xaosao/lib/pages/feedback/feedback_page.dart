@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:xaosao/constants/app_color.dart';
 import 'package:xaosao/models/my_feedback_model.dart';
 import 'package:xaosao/widgets/app_button.dart';
+import 'package:xaosao/widgets/app_dropdown.dart';
 import 'package:xaosao/widgets/app_text_field.dart';
 import 'package:xaosao/widgets/gradient_app_bar.dart';
 import 'getx/feedback_logic.dart';
@@ -23,6 +24,17 @@ class _FeedbackPageState extends State<FeedbackPage> {
   final _descCtrl = TextEditingController();
   final _subjectFocus = FocusNode();
   final _descFocus = FocusNode();
+  String? _selectedType;
+  String? _descError;
+
+  static const _feedbackTypes = [
+    AppDropdownItem(value: 'bug', label: 'ຂໍ້ຜິດພາດ (Bug)', icon: Icons.bug_report_outlined),
+    AppDropdownItem(value: 'feature_request', label: 'ຂໍ້ສະເໜີ (Feature)', icon: Icons.lightbulb_outline_rounded),
+    AppDropdownItem(value: 'general', label: 'ທົ່ວໄປ (General)', icon: Icons.chat_bubble_outline_rounded),
+    AppDropdownItem(value: 'payment_issue', label: 'ບັນຫາການຊຳລະ (Payment)', icon: Icons.payment_outlined),
+    AppDropdownItem(value: 'performance', label: 'ປະສິດທິພາບ (Performance)', icon: Icons.speed_outlined),
+    AppDropdownItem(value: 'other', label: 'ອື່ນໆ (Other)', icon: Icons.more_horiz_rounded),
+  ];
 
   @override
   void initState() {
@@ -40,13 +52,22 @@ class _FeedbackPageState extends State<FeedbackPage> {
   }
 
   Future<void> _submit() async {
+    final type = _selectedType;
     final subject = _subjectCtrl.text.trim();
     final desc = _descCtrl.text.trim();
-    if (subject.isEmpty || desc.isEmpty) return;
-    final ok = await _logic.submitFeedback(subject: subject, desc: desc);
+    if (type == null || subject.isEmpty) return;
+    if (desc.length < 10) {
+      setState(() => _descError = 'ກະລຸນາໃສ່ລາຍລະອຽດຢ່າງໜ້ອຍ 10 ຕົວອັກສອນ');
+      return;
+    }
+    final ok = await _logic.submitFeedback(type: type, subject: subject, desc: desc);
     if (ok && mounted) {
       _subjectCtrl.clear();
       _descCtrl.clear();
+      setState(() {
+        _selectedType = null;
+        _descError = null;
+      });
       FocusScope.of(context).unfocus();
     }
   }
@@ -79,6 +100,13 @@ class _FeedbackPageState extends State<FeedbackPage> {
                     descCtrl: _descCtrl,
                     subjectFocus: _subjectFocus,
                     descFocus: _descFocus,
+                    feedbackTypes: _feedbackTypes,
+                    selectedType: _selectedType,
+                    onTypeChanged: (v) => setState(() => _selectedType = v),
+                    descError: _descError,
+                    onDescChanged: (_) {
+                      if (_descError != null) setState(() => _descError = null);
+                    },
                     onSubmit: _submit,
                   ),
                   SizedBox(height: 24.h),
@@ -93,8 +121,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
           ),
           Obx(() {
             final st = _logic.state;
-            if (st.status == FeedbackStatus.loading &&
-                st.feedbacks.isEmpty) {
+            if (st.status == FeedbackStatus.loading && st.feedbacks.isEmpty) {
               return SliverToBoxAdapter(child: _LoadingPlaceholder());
             }
             if (st.feedbacks.isEmpty) {
@@ -158,6 +185,11 @@ class _InputCard extends StatelessWidget {
   final TextEditingController descCtrl;
   final FocusNode subjectFocus;
   final FocusNode descFocus;
+  final List<AppDropdownItem<String>> feedbackTypes;
+  final String? selectedType;
+  final ValueChanged<String?> onTypeChanged;
+  final String? descError;
+  final ValueChanged<String>? onDescChanged;
   final VoidCallback onSubmit;
 
   const _InputCard({
@@ -165,7 +197,12 @@ class _InputCard extends StatelessWidget {
     required this.descCtrl,
     required this.subjectFocus,
     required this.descFocus,
+    required this.feedbackTypes,
+    required this.onTypeChanged,
     required this.onSubmit,
+    this.selectedType,
+    this.descError,
+    this.onDescChanged,
   });
 
   @override
@@ -174,11 +211,20 @@ class _InputCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16.r),
+        border: Border.all(
+          color: AppColors.textDisabled.withAlpha(50),
+          width: 0.5,
+        ),
         boxShadow: [
           BoxShadow(
+            color: AppColors.primary.withValues(alpha: 0.10),
+            blurRadius: 20,
+            offset: const Offset(0, 6),
+          ),
+          BoxShadow(
             color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 12,
-            offset: const Offset(0, 4),
+            blurRadius: 10,
+            offset: const Offset(0, 2),
           ),
         ],
       ),
@@ -186,6 +232,16 @@ class _InputCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          AppFieldLabel('ປະເພດ', required: false),
+          SizedBox(height: 6.h),
+          AppDropdown<String>(
+            value: selectedType,
+            items: feedbackTypes,
+            onChanged: onTypeChanged,
+            hint: 'ເລືອກປະເພດຄຳຕິຊົມ',
+            prefixIcon: Icons.label_outline_rounded,
+          ),
+          SizedBox(height: 14.h),
           AppFieldLabel('ຫົວຂໍ້', required: false),
           SizedBox(height: 6.h),
           AppTextField(
@@ -209,8 +265,23 @@ class _InputCard extends StatelessWidget {
             keyboardType: TextInputType.multiline,
             action: TextInputAction.newline,
             maxLines: 5,
+            onChanged: onDescChanged,
           ),
-          SizedBox(height: 16.h),
+          SizedBox(height: 4.h),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              if (descError != null)
+                Text(
+                  descError!,
+                  style: TextStyle(
+                    fontSize: 11.sp,
+                    color: const Color(0xFFEF4444),
+                  ),
+                ),
+            ],
+          ),
+          SizedBox(height: 12.h),
           AppPrimaryButton(
             label: 'ສົ່ງຄຳຕິຊົມ',
             leadingIcon: Icons.send_rounded,
@@ -253,7 +324,7 @@ class _FeedbackCard extends StatelessWidget {
                 child: Text(
                   item.subject ?? '—',
                   style: TextStyle(
-                    fontSize: 13.sp,
+                    fontSize: 14.sp,
                     fontWeight: FontWeight.w700,
                     color: AppColors.textPrimary,
                   ),
@@ -261,8 +332,8 @@ class _FeedbackCard extends StatelessWidget {
                   overflow: TextOverflow.ellipsis,
                 ),
               ),
-              SizedBox(width: 8.w),
-              _StatusBadge(label: chip.label, fg: chip.fg, bg: chip.bg),
+              // SizedBox(width: 8.w),
+              // _StatusBadge(label: chip.label, fg: chip.fg, bg: chip.bg),
             ],
           ),
           SizedBox(height: 8.h),
@@ -285,17 +356,17 @@ class _FeedbackCard extends StatelessWidget {
           SizedBox(height: 10.h),
           Row(
             children: [
-              Icon(Icons.access_time_rounded,
-                  size: 11.r, color: AppColors.textHint),
+              Icon(
+                Icons.access_time_rounded,
+                size: 11.r,
+                color: AppColors.textHint,
+              ),
               SizedBox(width: 4.w),
               Text(
                 item.createdAt != null
                     ? DateFormat('dd MMM yyyy, HH:mm').format(item.createdAt!)
                     : '—',
-                style: TextStyle(
-                  fontSize: 10.sp,
-                  color: AppColors.textHint,
-                ),
+                style: TextStyle(fontSize: 12.sp, color: AppColors.textHint),
               ),
             ],
           ),
@@ -366,7 +437,11 @@ class _StatusChipData {
   final String label;
   final Color fg;
   final Color bg;
-  const _StatusChipData({required this.label, required this.fg, required this.bg});
+  const _StatusChipData({
+    required this.label,
+    required this.fg,
+    required this.bg,
+  });
 }
 
 // ── Empty / Loading states ─────────────────────────────────────
@@ -428,6 +503,18 @@ class _LoadingPlaceholder extends StatelessWidget {
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(16.r),
                 border: Border.all(color: AppColors.border, width: 0.5),
+                boxShadow: [
+                  BoxShadow(
+                    color: AppColors.primary.withValues(alpha: 0.10),
+                    blurRadius: 20,
+                    offset: const Offset(0, 6),
+                  ),
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.05),
+                    blurRadius: 10,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
               ),
             ),
           ),

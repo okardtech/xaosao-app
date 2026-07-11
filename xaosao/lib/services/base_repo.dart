@@ -36,6 +36,7 @@ abstract class BaseRepository {
       return ApiResponse<T>(
         success: false,
         message: e.message,
+        laMessage: e.laMessage,
         statusCode: e.statusCode,
       );
     } catch (e) {
@@ -75,6 +76,7 @@ abstract class BaseRepository {
       return ApiResponse<PaginatedResponse<T>>(
         success: false,
         message: e.message,
+        laMessage: e.laMessage,
         statusCode: e.statusCode,
       );
     } catch (e) {

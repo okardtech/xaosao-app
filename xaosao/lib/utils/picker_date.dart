@@ -8,12 +8,14 @@ Future<DateTime?> pickDate(
   DateTime? firstDate,
   DateTime? lastDate,
   Color headerColor = AppColors.primary,
+  bool Function(DateTime)? selectableDayPredicate,
 }) async {
   final DateTime? date = await showDatePicker(
     context: context,
     initialDate: initialDate ?? DateTime.now(),
     firstDate: firstDate ?? DateTime(1950),
     lastDate: lastDate ?? DateTime(2100),
+    selectableDayPredicate: selectableDayPredicate,
     builder: (context, child) {
       return Theme(
         data: ThemeData(

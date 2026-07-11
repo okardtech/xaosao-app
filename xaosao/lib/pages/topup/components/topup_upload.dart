@@ -1,4 +1,4 @@
-import 'dart:io';
+﻿import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -7,6 +7,7 @@ import 'package:xaosao/constants/app_color.dart';
 import 'package:xaosao/constants/app_routes.dart';
 import 'package:xaosao/pages/topup/components/topup_constant.dart';
 import 'package:xaosao/pages/topup/getx/topup_logic.dart';
+import 'package:xaosao/constants/app_image.dart';
 import 'package:xaosao/widgets/app_button.dart';
 import 'package:xaosao/widgets/gradient_app_bar.dart';
 
@@ -66,13 +67,30 @@ class _UploadState extends State<TopUpUploadSlipPage> {
                     maxSlips: _maxSlips,
                   ),
                 ),
-                SizedBox(height: 8.h),
-
+                SizedBox(height: 12.h),
+                Row(
+                  children: [
+                    Icon(
+                      Icons.info_outline_rounded,
+                      size: 13.r,
+                      color: AppColors.textHint,
+                    ),
+                    SizedBox(width: 6.w),
+                    Text(
+                      'ຮອງຮັບຮູບແບບ: JPG, PNG, PDF (ຂຸງສຸດ 10MB)',
+                      style: TextStyle(
+                        fontSize: 12.sp,
+                        color: AppColors.textHint,
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 12.h),
                 // ── Thumbnails ───────────────────────────────────
                 if (st.slips.isNotEmpty) ...[
                   SizedBox(height: 4.h),
                   SizedBox(
-                    height: 70.h,
+                    height: 160.h,
                     child: ListView.separated(
                       scrollDirection: Axis.horizontal,
                       itemCount: st.slips.length,
@@ -84,26 +102,9 @@ class _UploadState extends State<TopUpUploadSlipPage> {
                     ),
                   ),
                   SizedBox(height: 4.h),
-                ],
-
-                SizedBox(height: 8.h),
-                Row(
-                  children: [
-                    Icon(
-                      Icons.info_outline_rounded,
-                      size: 13.r,
-                      color: AppColors.textHint,
-                    ),
-                    SizedBox(width: 6.w),
-                    Text(
-                      'ຮອງຮັບຮູບແບບ: JPG, PNG, PDF (ຂຸງສຸດ 10MB)',
-                      style: TextStyle(fontSize: 12.sp, color: AppColors.textHint),
-                    ),
-                  ],
-                ),
+                ] else
+                  _SlipExample(),
                 SizedBox(height: 12.h),
-                // _GuideCard(),
-                // SizedBox(height: 12.h),
                 _AmberNote(),
                 SizedBox(height: 20.h),
 
@@ -145,7 +146,7 @@ class _UploadZone extends StatelessWidget {
           color: _hasSlips
               ? AppColors.online
               : Colors.black.withValues(alpha: 0.12),
-          width: _hasSlips ? 1.2 :0,
+          width: _hasSlips ? 1.2 : 0,
           strokeAlign: BorderSide.strokeAlignInside,
         ),
       ),
@@ -168,7 +169,7 @@ class _UploadZone extends StatelessWidget {
           ),
           SizedBox(height: 10.h),
           Text(
-            'ອັບໂຫຼດໃບຍືນຢັນທາງດ່ວນ',
+            'ອັບໂຫຼດໃບບິນການຊຳລະ',
             style: TextStyle(
               fontSize: 14.sp,
               fontWeight: FontWeight.w700,
@@ -246,7 +247,7 @@ class _Thumbnail extends StatelessWidget {
       children: [
         ClipRRect(
           borderRadius: BorderRadius.circular(10.r),
-          child: Image.file(file, width: 70.r, height: 70.r, fit: BoxFit.cover),
+          child: Image.file(file, height: 160.r),
         ),
         Positioned(
           top: 3,
@@ -269,69 +270,32 @@ class _Thumbnail extends StatelessWidget {
   }
 }
 
-// ── Guide card ─────────────────────────────────────────────────
-class _GuideCard extends StatelessWidget {
+// ── Slip example ───────────────────────────────────────────────
+class _SlipExample extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(13.r),
-        border: Border.all(color: AppColors.borderMedium, width: 0.5),
-      ),
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          borderRadius: BorderRadius.circular(13.r),
-          onTap: () {},
-          child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 13.w, vertical: 11.h),
-            child: Row(
-              children: [
-                Container(
-                  width: 32.r,
-                  height: 32.r,
-                  decoration: BoxDecoration(
-                    color: AppColors.socialBg,
-                    borderRadius: BorderRadius.circular(9.r),
-                  ),
-                  child: Icon(
-                    Icons.monitor_outlined,
-                    size: 15.r,
-                    color: AppColors.primary,
-                  ),
-                ),
-                SizedBox(width: 11.w),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'ຕົວຢ່າງໃບຮັບເງິນທາງດ່ວນ',
-                        style: TextStyle(
-                          fontSize: 12.sp,
-                          fontWeight: FontWeight.w700,
-                          color: AppColors.textPrimary,
-                        ),
-                      ),
-                      SizedBox(height: 1.h),
-                      Text(
-                        'ກົດເພື່ອເບິ່ງຕົວຢ່າງ',
-                        style: TextStyle(fontSize: 10.sp, color: AppColors.textHint),
-                      ),
-                    ],
-                  ),
-                ),
-                Icon(
-                  Icons.chevron_right_rounded,
-                  size: 18.r,
-                  color: Colors.black.withValues(alpha: 0.2),
-                ),
-              ],
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: EdgeInsets.fromLTRB(13.w, 0.h, 13.w, 8.h),
+          child: Text(
+            'ຕົວຢ່າງໃບບິນການຊຳລະ',
+            style: TextStyle(
+              fontSize: 12.sp,
+              fontWeight: FontWeight.w400,
+              color: AppColors.primary,
             ),
           ),
         ),
-      ),
+        Padding(
+          padding: EdgeInsets.fromLTRB(10.w, 0, 10.w, 10.h),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(9.r),
+            child: Image.asset(AppImage.slip, height: 160.h),
+          ),
+        ),
+      ],
     );
   }
 }
@@ -369,7 +333,7 @@ class _AmberNote extends StatelessWidget {
           SizedBox(width: 10.w),
           Expanded(
             child: Text(
-              'ຂອບໃຈສຳລັບຄວາມໄວ້ວາງໃຈ: ທີມງານຈະກວດສອບ ແລະ ເຕີມເງິນໃຫ້ທ່ານ ພາຍໃນ 1–2 ຊ.ມ. ຫຼັງຈາກໄດ້ຮັບໃບຍືນຢັນແລ້ວ.',
+              'ຂອບໃຈສຳລັບຄວາມໄວ້ວາງໃຈ: ທີມງານຈະກວດສອບ ແລະ ດຳເນີນການ ພາຍໃນ 1–2 ຊົ່ວໂມງ. ຫຼັງຈາກໄດ້ຮັບໃບຍືນຢັນແລ້ວ.',
               style: TextStyle(
                 fontSize: 12.sp,
                 color: const Color(0xFF78350F),
@@ -382,4 +346,3 @@ class _AmberNote extends StatelessWidget {
     );
   }
 }
-

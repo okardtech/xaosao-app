@@ -20,7 +20,7 @@ class PackageRepo extends BaseRepository {
     required String page,
     String? status, // active, expired, pending, canceled, upgraded, completed
   }) {
-    String url = '${ApiConstants.packageHistory}?skip=$page&limit=$limit';
+    String url = '${ApiConstants.packageHistory}?page=$page&limit=$limit';
     if (status != null) url += '&status=$status';
     return safeCall(
       () => api.get(url),

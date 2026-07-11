@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:shimmer/shimmer.dart';
@@ -6,6 +6,7 @@ import 'package:xaosao/constants/app_color.dart';
 import 'package:xaosao/constants/app_routes.dart';
 import 'package:xaosao/pages/topup/components/topup_constant.dart';
 import 'package:xaosao/pages/topup/getx/topup_logic.dart';
+import 'package:xaosao/utils/qr_saver.dart';
 import 'package:xaosao/widgets/app_button.dart';
 import 'package:xaosao/widgets/gradient_app_bar.dart';
 
@@ -125,6 +126,18 @@ class _QrCardShimmer extends StatelessWidget {
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(28.r),
+          boxShadow: [
+            BoxShadow(
+              color: AppColors.primary.withValues(alpha: 0.10),
+              blurRadius: 20,
+              offset: const Offset(0, 6),
+            ),
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.05),
+              blurRadius: 10,
+              offset: const Offset(0, 2),
+            ),
+          ],
         ),
       ),
     );
@@ -132,13 +145,29 @@ class _QrCardShimmer extends StatelessWidget {
 }
 
 // ── QR white card ───────────────────────────────────────────────
-class _QrCard extends StatelessWidget {
+class _QrCard extends StatefulWidget {
   final int amountKip;
   final String? qrUrl;
   const _QrCard({required this.amountKip, required this.qrUrl});
 
   @override
+  State<_QrCard> createState() => _QrCardState();
+}
+
+class _QrCardState extends State<_QrCard> {
+  bool _saving = false;
+
+  Future<void> _download() async {
+    if (_saving || widget.qrUrl == null) return;
+    setState(() => _saving = true);
+    await QrSaver.saveFromUrl(widget.qrUrl!);
+    if (mounted) setState(() => _saving = false);
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final amountKip = widget.amountKip;
+    final qrUrl = widget.qrUrl;
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
@@ -314,37 +343,64 @@ class _QrCard extends StatelessWidget {
                     ),
                   ),
                   SizedBox(height: 10.h),
-                  // Powered badge
-                  Container(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 12.w,
-                      vertical: 5.h,
-                    ),
-                    decoration: BoxDecoration(
-                      color: AppColors.socialBg,
-                      borderRadius: BorderRadius.circular(20.r),
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Container(
-                          width: 7.r,
-                          height: 7.r,
-                          decoration: const BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: AppColors.primary,
+                  // Download button
+                  GestureDetector(
+                    onTap: _download,
+                    child: AnimatedContainer(
+                      duration: const Duration(milliseconds: 150),
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 20.w,
+                        vertical: 9.h,
+                      ),
+                      decoration: BoxDecoration(
+                        gradient: _saving
+                            ? null
+                            : const LinearGradient(
+                                colors: AppColors.pinkGradient,
+                                begin: Alignment.centerLeft,
+                                end: Alignment.centerRight,
+                              ),
+                        color: _saving ? AppColors.socialBg : null,
+                        borderRadius: BorderRadius.circular(20.r),
+                        boxShadow: _saving
+                            ? []
+                            : [
+                                BoxShadow(
+                                  color: AppColors.primary.withValues(alpha: 0.30),
+                                  blurRadius: 10,
+                                  offset: const Offset(0, 4),
+                                ),
+                              ],
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          if (_saving)
+                            SizedBox(
+                              width: 13.r,
+                              height: 13.r,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 1.5,
+                                color: AppColors.primary,
+                              ),
+                            )
+                          else
+                            Icon(
+                              Icons.download_rounded,
+                              size: 14.r,
+                              color: Colors.white,
+                            ),
+                          SizedBox(width: 6.w),
+                          Text(
+                            _saving ? 'ກຳລັງບັນທຶກ...' : 'ດາວໂຫຼດ QR',
+                            style: TextStyle(
+                              fontSize: 11.sp,
+                              fontWeight: FontWeight.w700,
+                              color: _saving ? AppColors.textHint : Colors.white,
+                            ),
                           ),
-                        ),
-                        SizedBox(width: 6.w),
-                        Text(
-                          'Powered by XAOSAO',
-                          style: TextStyle(
-                            fontSize: 10.sp,
-                            fontWeight: FontWeight.w700,
-                            color: AppColors.primary,
-                          ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 ],

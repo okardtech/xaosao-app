@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:xaosao/utils/currency_formatter.dart';
+import 'package:xaosao/utils/location_utils.dart';
 import 'package:xaosao/widgets/app_like_button.dart';
 import 'package:xaosao/widgets/app_network_image.dart';
 
@@ -89,7 +90,7 @@ class CompanionModel {
   final int age;
   final String imageUrl;
   final String district;
-  final double distanceKm;
+  final double? distanceKm;
   final double rating;
   final int reviewCount;
   final int likeCount;
@@ -101,13 +102,17 @@ class CompanionModel {
   final List<Color> gradientColors; // placeholder gradient
   final bool isLiked;
 
+  /// Returns a human-readable distance string, or '—' when unknown.
+  String get distanceText =>
+      distanceKm != null ? formatDistanceKm(distanceKm!) : '—';
+
   const CompanionModel({
     required this.id,
     required this.name,
     required this.age,
     this.imageUrl = '',
     required this.district,
-    required this.distanceKm,
+    this.distanceKm,
     required this.rating,
     this.reviewCount = 0,
     this.likeCount = 0,
@@ -289,7 +294,7 @@ class _CompanionCardLargeState extends State<CompanionCardLarge>
                           SizedBox(width: 3.w),
                           Expanded(
                             child: Text(
-                              '${c.distanceKm}km · ${c.district}',
+                              [c.distanceText, if (c.district.isNotEmpty) c.district].join(' · '),
                               style: TextStyle(
                                 fontSize: 11.sp,
                                 color: Colors.white70,
@@ -588,7 +593,7 @@ class _CompanionCardSmallState extends State<CompanionCardSmall>
                         ),
                         SizedBox(width: 2.w),
                         Text(
-                          '${c.distanceKm}km',
+                          c.distanceText,
                           style: TextStyle(
                             fontSize: 10.sp,
                             color: Colors.white60,

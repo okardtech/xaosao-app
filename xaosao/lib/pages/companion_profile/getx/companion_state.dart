@@ -1,5 +1,5 @@
+import 'package:xaosao/models/Recommended_model.dart';
 import 'package:xaosao/models/review_model.dart';
-import 'package:xaosao/models/service_model.dart';
 
 import '../../../models/model_available.dart';
 
@@ -8,6 +8,8 @@ enum CompanionLoadStatus { initial, loading, success, failure }
 enum ReviewLoadStatus { initial, loading, success, failure, loadingMore }
 
 class CompanionState {
+  final RecommendedModel? profile;
+  final CompanionLoadStatus profileStatus;
   final List<ModelAvailable> services;
   final String? selectedServiceId;
   final List<ReviewModel> reviews;
@@ -17,6 +19,8 @@ class CompanionState {
   final ReviewLoadStatus reviewStatus;
 
   const CompanionState({
+    this.profile,
+    this.profileStatus = CompanionLoadStatus.initial,
     this.services = const [],
     this.selectedServiceId,
     this.reviews = const [],
@@ -27,6 +31,8 @@ class CompanionState {
   });
 
   CompanionState copyWith({
+    RecommendedModel? profile,
+    CompanionLoadStatus? profileStatus,
     List<ModelAvailable>? services,
     String? selectedServiceId,
     bool clearSelectedService = false,
@@ -37,6 +43,8 @@ class CompanionState {
     ReviewLoadStatus? reviewStatus,
   }) =>
       CompanionState(
+        profile: profile ?? this.profile,
+        profileStatus: profileStatus ?? this.profileStatus,
         services: services ?? this.services,
         selectedServiceId: clearSelectedService
             ? null

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:xaosao/constants/app_color.dart';
 import 'package:xaosao/widgets/app_button.dart';
+import 'package:xaosao/widgets/app_svg_icon.dart';
 
 class ConfirmSheet {
   ConfirmSheet._();
@@ -11,7 +12,7 @@ class ConfirmSheet {
     required String title,
     required String message,
     required String confirmLabel,
-    IconData icon = Icons.help_outline_rounded,
+    required String icon,
     Color? iconColor,
     bool isDanger = false,
     String cancelLabel = 'ຍົກເລີກ',
@@ -40,7 +41,7 @@ class _ConfirmSheetContent extends StatelessWidget {
   final String title;
   final String message;
   final String confirmLabel;
-  final IconData icon;
+  final String icon;
   final Color iconColor;
   final bool isDanger;
   final String cancelLabel;
@@ -81,13 +82,20 @@ class _ConfirmSheetContent extends StatelessWidget {
             ),
             SizedBox(height: 24.h),
             Container(
-              width: 64.r,
-              height: 64.r,
+              // width: 64.r,
+              // height: 64.r,
+              padding: EdgeInsets.all(10.r),
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 color: iconColor.withValues(alpha: 0.10),
               ),
-              child: Icon(icon, size: 30.r, color: iconColor),
+              // child: Icon(icon, size: 30.r, color: iconColor),
+              child: AppSvgIcon(
+                assetName: icon,
+                width: 40.w,
+                height: 40.h,
+                color: iconColor,
+              ),
             ),
             SizedBox(height: 16.h),
             Text(

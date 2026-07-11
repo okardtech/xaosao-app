@@ -8,7 +8,11 @@ class MeetUpState {
   final String? error;
   final bool hasMore;
   final int page;
-  final String? selectedStatus; // null=all, 'pending', 'completed', 'cancelled', etc.
+  final String? selectedStatus;
+
+  final MyBookingModel? bookingDetail;
+  final bool bookingDetailLoading;
+  final String? bookingDetailError;
 
   const MeetUpState({
     this.status = MeetUpStatus.initial,
@@ -17,8 +21,12 @@ class MeetUpState {
     this.hasMore = true,
     this.page = 1,
     this.selectedStatus,
+    this.bookingDetail,
+    this.bookingDetailLoading = false,
+    this.bookingDetailError,
   });
 
+  // Updates list fields only — detail fields always carried through unchanged.
   MeetUpState copyWith({
     MeetUpStatus? status,
     List<MyBookingModel>? myBooking,
@@ -32,7 +40,29 @@ class MeetUpState {
       error: error,
       hasMore: hasMore ?? this.hasMore,
       page: page ?? this.page,
-      selectedStatus: selectedStatus, // always preserved via filterBy
+      selectedStatus: selectedStatus,
+      bookingDetail: bookingDetail,
+      bookingDetailLoading: bookingDetailLoading,
+      bookingDetailError: bookingDetailError,
+    );
+  }
+
+  // Updates detail fields only — list fields always carried through unchanged.
+  MeetUpState withDetail({
+    MyBookingModel? bookingDetail,
+    bool bookingDetailLoading = false,
+    String? bookingDetailError,
+  }) {
+    return MeetUpState(
+      status: status,
+      myBooking: myBooking,
+      error: error,
+      hasMore: hasMore,
+      page: page,
+      selectedStatus: selectedStatus,
+      bookingDetail: bookingDetail,
+      bookingDetailLoading: bookingDetailLoading,
+      bookingDetailError: bookingDetailError,
     );
   }
 }

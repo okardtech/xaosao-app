@@ -8,6 +8,7 @@ class GradientAppBar extends StatelessWidget implements PreferredSizeWidget {
   const GradientAppBar({
     super.key,
     required this.title,
+    this.titleWidget,
     this.subtitle,
     this.onBack,
     this.actions = const [],
@@ -17,6 +18,10 @@ class GradientAppBar extends StatelessWidget implements PreferredSizeWidget {
   });
 
   final String title;
+
+  /// When provided, replaces the default title + subtitle column entirely.
+  final Widget? titleWidget;
+
   final String? subtitle;
   final VoidCallback? onBack;
 
@@ -110,36 +115,41 @@ class GradientAppBar extends StatelessWidget implements PreferredSizeWidget {
                   SizedBox(width: 12.w),
                 ],
 
-                // ── Title + Subtitle ────────────────────────────────────
+                // ── Title area — custom widget or default title+subtitle ─
                 Expanded(
-                  child: Column(
-                    crossAxisAlignment: centerTitle
-                        ? CrossAxisAlignment.center
-                        : CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
-                        title,
-                        textAlign: centerTitle ? TextAlign.center : TextAlign.start,
-                        style: TextStyle(
-                          fontSize: 18.sp,
-                          fontWeight: FontWeight.w700,
-                          color: Colors.white,
-                          height: 1.2,
-                        ),
-                      ),
-                      if (subtitle != null) ...[
-                        Text(
-                          subtitle!,
-                          textAlign: centerTitle ? TextAlign.center : TextAlign.start,
-                          style: TextStyle(
-                            fontSize: 12.sp,
-                            color: Colors.white.withValues(alpha: 0.85),
+                  child: titleWidget ??
+                      Column(
+                        crossAxisAlignment: centerTitle
+                            ? CrossAxisAlignment.center
+                            : CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            title,
+                            textAlign: centerTitle
+                                ? TextAlign.center
+                                : TextAlign.start,
+                            style: TextStyle(
+                              fontSize: 18.sp,
+                              fontWeight: FontWeight.w700,
+                              color: Colors.white,
+                              height: 1.2,
+                            ),
                           ),
-                        ),
-                      ],
-                    ],
-                  ),
+                          if (subtitle != null) ...[
+                            Text(
+                              subtitle!,
+                              textAlign: centerTitle
+                                  ? TextAlign.center
+                                  : TextAlign.start,
+                              style: TextStyle(
+                                fontSize: 12.sp,
+                                color: Colors.white.withValues(alpha: 0.85),
+                              ),
+                            ),
+                          ],
+                        ],
+                      ),
                 ),
 
                 // ── Actions (optional) ──────────────────────────────────

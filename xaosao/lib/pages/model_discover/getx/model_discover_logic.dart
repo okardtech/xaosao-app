@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:flutter/scheduler.dart';
 import 'package:get/get.dart';
 import 'package:xaosao/repository/discover_repo.dart';
 import 'package:xaosao/repository/review_repo.dart';
@@ -25,8 +24,7 @@ class ModelDiscoverLogic extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    SchedulerBinding.instance
-        .addPostFrameCallback((_) => loadModels(refresh: true));
+    loadModels(refresh: true);
   }
 
   @override
@@ -54,7 +52,7 @@ class ModelDiscoverLogic extends GetxController {
 
     _loading = true;
     final isFirst = refresh;
-    final skip = isFirst ? 0 : state.skip + _limit;
+    final skip = isFirst ? 1 : state.skip + 1;
 
     _update(state.copyWith(
       status: isFirst ? DiscoverStatus.loading : DiscoverStatus.loadingMore,
@@ -63,7 +61,7 @@ class ModelDiscoverLogic extends GetxController {
 
     try {
       final res = await _repo.getModelDiscover(
-        skip: skip,
+        page: skip,
         limit: _limit,
         filter: state.filter,
         search: state.search,
@@ -89,10 +87,19 @@ class ModelDiscoverLogic extends GetxController {
 
   void _applyFilter(String? filter) {
     if (state.filter == filter) return;
+    _loading = false;
     if (filter == null) {
-      _update(state.copyWith(clearFilter: true));
+      _update(state.copyWith(
+        clearFilter: true,
+        models: [],
+        status: DiscoverStatus.loading,
+      ));
     } else {
-      _update(state.copyWith(filter: filter));
+      _update(state.copyWith(
+        filter: filter,
+        models: [],
+        status: DiscoverStatus.loading,
+      ));
     }
     loadModels(refresh: true);
   }
@@ -129,6 +136,17 @@ class ModelDiscoverLogic extends GetxController {
       reverted[idx] = m;
       _update(state.copyWith(models: reverted));
     }
+  }
+
+  /// Flip the like state in the grid without making an API call.
+  /// Call this after a successful like toggle from a detail page.
+  void syncLike(String modelId) {
+    final idx = state.models.indexWhere((m) => m.id == modelId);
+    if (idx == -1) return;
+    final m = state.models[idx];
+    final updated = [...state.models];
+    updated[idx] = m.copyWith(isLikedByMe: !m.isLiked);
+    _update(state.copyWith(models: updated));
   }
 
   void _update(ModelDiscoverState s) => _state.value = s;

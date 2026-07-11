@@ -2,6 +2,7 @@ import 'package:get/get.dart';
 import 'package:xaosao/constants/app_routes.dart';
 import 'package:xaosao/pages/login/getx/login_logic.dart';
 import 'package:xaosao/pages/register/getx/register_state.dart';
+import 'package:xaosao/repository/referral_repo.dart';
 import 'package:xaosao/repository/register_repo.dart';
 import 'package:xaosao/utils/app_snackbar.dart';
 import 'package:xaosao/utils/image_picker_util.dart';
@@ -11,6 +12,7 @@ import '../../login/getx/login_state.dart';
 
 class RegisterLogic extends GetxController {
   final _repo = RegisterRepo();
+  final _referralRepo = ReferralRepo();
 
   final Rx<RegisterState> _state = RegisterState().obs;
   RegisterState get state => _state.value;
@@ -24,9 +26,31 @@ class RegisterLogic extends GetxController {
   String _pendingAddress = '';
   String _pendingFilePath = '';
 
+  // Saved service selections so they survive back-navigation within the registration flow
+  List<Map<String, dynamic>> savedServiceSelections = [];
+
   void _updateState(RegisterState newState) => _state.value = newState;
 
-  void setRole(RegisterRole role) => _updateState(state.copyWith(role: role));
+  void setRole(RegisterRole role) {
+    _updateState(state.copyWith(role: role));
+    savedServiceSelections = []; // fresh registration start — clear any prior selections
+    if (role == RegisterRole.companion) _loadAndValidateReferral();
+  }
+
+  void saveServiceSelections(List<Map<String, dynamic>> data) {
+    savedServiceSelections = data;
+  }
+
+  Future<void> _loadAndValidateReferral() async {
+    final code = Get.find<StorageService>().read<String>('pending_ref_code');
+    if (code == null || code.isEmpty) return;
+    try {
+      final res = await _referralRepo.referralValidate(code: code);
+      if (res.success && res.data != null && res.data!.valid == true) {
+        _updateState(state.copyWith(referralInfo: res.data));
+      }
+    } catch (_) {}
+  }
 
   void setGender(Map<String, dynamic> gender) =>
       _updateState(state.copyWith(gender: gender));
@@ -69,6 +93,10 @@ class RegisterLogic extends GetxController {
     required String password,
     String? address,
   }) async {
+    if (state.avatarFile == null) {
+      AppSnackbar.error('ກະລຸນາເລືອກຮູບໂປຮໄຟລ໌');
+      return;
+    }
     _updateState(state.copyWith(status: RegisterStatus.loading));
     showLoadingDialog();
     try {
@@ -141,6 +169,7 @@ class RegisterLogic extends GetxController {
         gender: state.gender['value'] ?? 'male',
         password: _pendingPassword,
         services: selectedServices,
+        modelId: state.referralInfo?.referrer?.id,
       );
       _updateState(
         state.copyWith(
@@ -201,9 +230,15 @@ class RegisterLogic extends GetxController {
           'role',
           isCustomer ? 'customer' : 'model',
         );
-        await Get.find<LoginLogic>().fetchProfile(isCustomer: isCustomer);
+        final loginLogic = Get.find<LoginLogic>();
+        await loginLogic.fetchProfile(isCustomer: isCustomer);
+
+        // Register FCM device token — fire-and-forget, non-critical
+        loginLogic.saveFcmToken();
+
         Get.offAllNamed(AppRoutes.dashboard);
       } else {
+        await Get.find<StorageService>().remove('pending_ref_code');
         AppSnackbar.success(res.laMessage ?? 'ການລົງທະບຽນສຳເລັດເເລ້ວ');
         Get.offAllNamed(AppRoutes.login);
       }
@@ -244,11 +279,13 @@ class RegisterLogic extends GetxController {
 
   void clearState() {
     _updateState(RegisterState());
+    savedServiceSelections = [];
     _pendingFirstName = '';
     _pendingLastName = '';
     _pendingPhone = null;
     _pendingPassword = '';
     _pendingAddress = '';
     _pendingFilePath = '';
+    Get.find<StorageService>().remove('pending_ref_code');
   }
 }

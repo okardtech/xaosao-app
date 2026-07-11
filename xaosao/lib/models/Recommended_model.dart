@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:xaosao/utils/api_date_parser.dart';
 
 List<RecommendedModel> recommendedModelFromJson(String str) =>
     List<RecommendedModel>.from(
@@ -29,6 +30,7 @@ class RecommendedModel {
   int? friendsCount;
   int? likeCount;
   bool? isLikedByMe;
+  bool? isFriend;
   bool? isOnline;
   DateTime? lastOnlineAt;
   double? distanceKm;
@@ -54,6 +56,7 @@ class RecommendedModel {
     this.friendsCount,
     this.likeCount,
     this.isLikedByMe,
+    this.isFriend,
     this.isOnline,
     this.lastOnlineAt,
     this.distanceKm,
@@ -80,6 +83,7 @@ class RecommendedModel {
     int? friendsCount,
     int? likeCount,
     bool? isLikedByMe,
+    bool? isFriend,
     bool? isOnline,
     DateTime? lastOnlineAt,
     double? distanceKm,
@@ -104,6 +108,7 @@ class RecommendedModel {
     friendsCount: friendsCount ?? this.friendsCount,
     likeCount: likeCount ?? this.likeCount,
     isLikedByMe: isLikedByMe ?? this.isLikedByMe,
+    isFriend: isFriend ?? this.isFriend,
     isOnline: isOnline ?? this.isOnline,
     lastOnlineAt: lastOnlineAt ?? this.lastOnlineAt,
     distanceKm: distanceKm ?? this.distanceKm,
@@ -114,7 +119,7 @@ class RecommendedModel {
         id: json["id"],
         firstName: json["firstName"],
         lastName: json["lastName"],
-        dob: json["dob"] == null ? null : DateTime.parse(json["dob"]),
+        dob: parseApiDateTime(json["dob"]),
         gender: json["gender"],
         bio: json["bio"],
         address: json["address"],
@@ -134,17 +139,14 @@ class RecommendedModel {
         totalReview: json["total_review"],
         status: json["status"],
         availableStatus: json["available_status"],
-        createdAt: json["createdAt"] == null
-            ? null
-            : DateTime.parse(json["createdAt"]),
+        createdAt: parseApiDateTime(json["createdAt"]),
         vip: json["vip"],
         friendsCount: json["friendsCount"],
         likeCount: json["likeCount"],
         isLikedByMe: json["isLikedByMe"],
+        isFriend: json["isFriend"],
         isOnline: json["isOnline"],
-        lastOnlineAt: json["lastOnlineAt"] == null
-            ? null
-            : DateTime.parse(json["lastOnlineAt"]),
+        lastOnlineAt: parseApiDateTime(json["lastOnlineAt"]),
         distanceKm: json["distanceKm"] == null
             ? null
             : (json["distanceKm"] as num).toDouble(),
@@ -170,6 +172,7 @@ class RecommendedModel {
     "friendsCount": friendsCount,
     "likeCount": likeCount,
     "isLikedByMe": isLikedByMe,
+    "isFriend": isFriend,
     "isOnline": isOnline,
     "lastOnlineAt": lastOnlineAt?.toIso8601String(),
     "distanceKm": distanceKm,

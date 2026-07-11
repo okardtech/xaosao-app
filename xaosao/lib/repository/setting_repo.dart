@@ -18,11 +18,17 @@ class SettingRepo extends BaseRepository {
   Future<ApiResponse<AddServiceModel>> addService({
     required String serviceId,
     required double customHourlyRate,
+    String? serviceLocation,
   }) {
     return safeCall(
       () => api.post(
         '${ApiConstants.modelService}/apply',
-        data: {"serviceId": serviceId, "customHourlyRate": customHourlyRate},
+        data: {
+          "serviceId": serviceId,
+          "customHourlyRate": customHourlyRate,
+          if (serviceLocation != null && serviceLocation.isNotEmpty)
+            "serviceLocation": serviceLocation,
+        },
       ),
       fromJson: (json) => AddServiceModel.fromJson(json),
     );
@@ -31,11 +37,53 @@ class SettingRepo extends BaseRepository {
   Future<ApiResponse<AddServiceModel>> updateService({
     required String serviceId,
     required double customHourlyRate,
+    String? serviceLocation,
   }) {
     return safeCall(
       () => api.patch(
         '${ApiConstants.modelService}/$serviceId',
-        data: {"customHourlyRate": customHourlyRate},
+        data: {
+          "customHourlyRate": customHourlyRate,
+          if (serviceLocation != null && serviceLocation.isNotEmpty)
+            "serviceLocation": serviceLocation,
+        },
+      ),
+      fromJson: (json) => AddServiceModel.fromJson(json),
+    );
+  }
+
+  Future<ApiResponse<AddServiceModel>> addMassageService({
+    required String serviceId,
+    required List<Map<String, dynamic>> massageVariants,
+    String? serviceLocation,
+  }) {
+    return safeCall(
+      () => api.post(
+        '${ApiConstants.modelService}/apply',
+        data: {
+          "serviceId": serviceId,
+          "massageVariants": massageVariants,
+          if (serviceLocation != null && serviceLocation.isNotEmpty)
+            "serviceLocation": serviceLocation,
+        },
+      ),
+      fromJson: (json) => AddServiceModel.fromJson(json),
+    );
+  }
+
+  Future<ApiResponse<AddServiceModel>> updateMassageService({
+    required String modelServiceId,
+    required List<Map<String, dynamic>> massageVariants,
+    String? serviceLocation,
+  }) {
+    return safeCall(
+      () => api.patch(
+        '${ApiConstants.modelService}/$modelServiceId',
+        data: {
+          "massageVariants": massageVariants,
+          if (serviceLocation != null && serviceLocation.isNotEmpty)
+            "serviceLocation": serviceLocation,
+        },
       ),
       fromJson: (json) => AddServiceModel.fromJson(json),
     );

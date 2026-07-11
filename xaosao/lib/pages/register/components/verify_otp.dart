@@ -1,4 +1,4 @@
-import 'dart:async';
+﻿import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -82,6 +82,16 @@ class _OtpPageState extends State<OtpPage> {
     );
   }
 
+  // ── back navigation ───────────────────────────────────────
+  // Customer stack:   register → OTP         → pop ×1
+  // Companion stack:  register → services → OTP → pop ×2
+  void _goBack() {
+    Navigator.pop(context);
+    if (widget.model.role != RegisterRole.customer) {
+      Navigator.pop(context);
+    }
+  }
+
   // ── verify ────────────────────────────────────────────────
   Future<void> _verify() async {
     if (_otp.length < 6 || _loading) return;
@@ -102,11 +112,16 @@ class _OtpPageState extends State<OtpPage> {
   // ══════════════════════════════════════════════════════════
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    return PopScope(
+      canPop: widget.model.role == RegisterRole.customer,
+      onPopInvokedWithResult: (didPop, _) {
+        if (!didPop) _goBack();
+      },
+      child: GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       behavior: HitTestBehavior.opaque,
       child: Scaffold(
-        backgroundColor: AppColors.primary,
+        backgroundColor: const Color(0xFFF8F8FC),
         body: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -224,7 +239,7 @@ class _OtpPageState extends State<OtpPage> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           GestureDetector(
-                            onTap: () => Navigator.pop(context),
+                            onTap: _goBack,
                             child: Text(
                               'ປ່ຽນເບີໂທລະສັບ',
                               style: TextStyle(
@@ -250,7 +265,8 @@ class _OtpPageState extends State<OtpPage> {
           ],
         ),
       ),
-    );
+      ),  // GestureDetector
+    );  // PopScope
   }
 }
 
@@ -312,6 +328,18 @@ class _OtpHero extends StatelessWidget {
                     decoration: BoxDecoration(
                       color: Colors.white.withOpacity(0.20),
                       borderRadius: BorderRadius.circular(18.r),
+                      boxShadow: [
+                        BoxShadow(
+                          color: AppColors.primary.withValues(alpha: 0.10),
+                          blurRadius: 20,
+                          offset: const Offset(0, 6),
+                        ),
+                        BoxShadow(
+                          color: Colors.black.withValues(alpha: 0.05),
+                          blurRadius: 10,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
                     ),
                     child: Icon(Icons.phone, size: 26.r, color: Colors.white),
                   ),
@@ -342,23 +370,23 @@ class _OtpHero extends StatelessWidget {
                       color: Colors.white,
                     ),
                   ),
-                  SizedBox(height: 12.h),
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 20.w),
-                    child: StepIndicatorRow(
-                      currentStep: model.role == RegisterRole.customer ? 2 : 3,
-                      steps: model.role == RegisterRole.customer
-                          ? const [
-                              StepItem(label: 'ຂໍ້ມູນ'),
-                              StepItem(label: 'OTP'),
-                            ]
-                          : const [
-                              StepItem(label: 'ຂໍ້ມູນ'),
-                              StepItem(label: 'ບໍລິການ'),
-                              StepItem(label: 'OTP'),
-                            ],
-                    ),
-                  ),
+                  // SizedBox(height: 12.h),
+                  // Padding(
+                  //   padding: EdgeInsets.symmetric(horizontal: 20.w),
+                  //   child: StepIndicatorRow(
+                  //     currentStep: model.role == RegisterRole.customer ? 2 : 3,
+                  //     steps: model.role == RegisterRole.customer
+                  //         ? const [
+                  //             StepItem(label: 'ຂໍ້ມູນ'),
+                  //             StepItem(label: 'OTP'),
+                  //           ]
+                  //         : const [
+                  //             StepItem(label: 'ຂໍ້ມູນ'),
+                  //             StepItem(label: 'ບໍລິການ'),
+                  //             StepItem(label: 'OTP'),
+                  //           ],
+                  //   ),
+                  // ),
                 ],
               ),
             ),

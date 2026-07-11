@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -231,6 +231,7 @@ class _PhoneFieldState extends State<PhoneField> {
 
   @override
   Widget build(BuildContext context) {
+    print('values: ${widget.ctrl.text}: ${widget.focus.hasFocus}');
     return AnimatedContainer(
       duration: const Duration(milliseconds: 180),
       height: 48.h,
@@ -285,7 +286,6 @@ class _PhoneFieldState extends State<PhoneField> {
             child: TextField(
               controller: widget.ctrl,
               focusNode: widget.focus,
-
               keyboardType: TextInputType.phone,
               inputFormatters: [FilteringTextInputFormatter.digitsOnly],
               textInputAction: TextInputAction.next,
@@ -329,7 +329,6 @@ class PasswordField extends StatefulWidget {
   final Color accent;
   final bool obscure;
   final VoidCallback onToggle;
-  final VoidCallback onSubmit;
 
   const PasswordField({
     super.key,
@@ -338,7 +337,6 @@ class PasswordField extends StatefulWidget {
     required this.accent,
     required this.obscure,
     required this.onToggle,
-    required this.onSubmit,
   });
 
   @override
@@ -395,7 +393,6 @@ class _PasswordFieldState extends State<PasswordField> {
               focusNode: widget.focus,
               obscureText: widget.obscure,
               textInputAction: TextInputAction.done,
-              onSubmitted: (_) => widget.onSubmit(),
               decoration: InputDecoration(
                 hintText: 'ລະຫັດຜ່ານ',
                 hintStyle: TextStyle(

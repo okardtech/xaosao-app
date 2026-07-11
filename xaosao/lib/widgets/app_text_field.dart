@@ -77,11 +77,6 @@ class Shell extends StatelessWidget {
         color: focused ? accent : AppFieldStyle.border,
         width: focused ? 1.5 : 0.8,
       ),
-      boxShadow: focused
-          ? [BoxShadow(
-              color: accent.withOpacity(0.08),
-              blurRadius: 0, spreadRadius: 3)]
-          : null,
     ),
     child: child,
   );

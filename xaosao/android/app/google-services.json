@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "753942525790",
+    "project_id": "xaosao-b7dd4",
+    "storage_bucket": "xaosao-b7dd4.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:753942525790:android:c693a8fae4945734a6c1cf",
+        "android_client_info": {
+          "package_name": "com.xaosao.mobile"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDDfHN6CwR8oRZklAytVCieBRcUQzkLK8E"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
