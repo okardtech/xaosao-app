@@ -57,7 +57,7 @@ class ModelWalletLogic extends GetxController {
       refresh();
       return true;
     }
-    AppSnackbar.error(res.message ?? 'ບໍ່ສາມາດຖອນເງິນໄດ້');
+    AppSnackbar.error(res.laMessage ?? 'ບໍ່ສາມາດຖອນເງິນໄດ້');
     return false;
   }
 

@@ -45,7 +45,7 @@ class ServiceLogic extends GetxController {
         ));
       } else {
         _updateState(state.copyWith(status: ServiceStatus.failure));
-        AppSnackbar.error(res.message ?? 'ໂຫຼດຂໍ້ມູນບໍ່ສຳເລັດ');
+        AppSnackbar.error(res.laMessage ?? 'ໂຫຼດຂໍ້ມູນບໍ່ສຳເລັດ');
       }
     } catch (_) {
       _updateState(state.copyWith(status: ServiceStatus.failure));
@@ -56,6 +56,7 @@ class ServiceLogic extends GetxController {
   Future<bool> addService({
     required String serviceId,
     required double customHourlyRate,
+    String? serviceLocation,
   }) async {
     if (_busy) return false;
     _busy = true;
@@ -64,13 +65,14 @@ class ServiceLogic extends GetxController {
       final res = await _repo.addService(
         serviceId: serviceId,
         customHourlyRate: customHourlyRate,
+        serviceLocation: serviceLocation,
       );
       hideLoadingDialog();
       if (res.success) {
         await _refreshProfile();
         return true;
       }
-      AppSnackbar.error(res.message ?? 'ເພີ່ມບໍ່ສຳເລັດ');
+      AppSnackbar.error(res.laMessage ?? 'ເພີ່ມບໍ່ສຳເລັດ');
       return false;
     } catch (_) {
       hideLoadingDialog();
@@ -84,6 +86,7 @@ class ServiceLogic extends GetxController {
   Future<bool> updateService({
     required String modelServiceId,
     required double customHourlyRate,
+    String? serviceLocation,
   }) async {
     if (_busy) return false;
     _busy = true;
@@ -92,13 +95,74 @@ class ServiceLogic extends GetxController {
       final res = await _repo.updateService(
         serviceId: modelServiceId,
         customHourlyRate: customHourlyRate,
+        serviceLocation: serviceLocation,
       );
       hideLoadingDialog();
       if (res.success) {
         await _refreshProfile();
         return true;
       }
-      AppSnackbar.error(res.message ?? 'ອັບເດດບໍ່ສຳເລັດ');
+      AppSnackbar.error(res.laMessage ?? 'ອັບເດດບໍ່ສຳເລັດ');
+      return false;
+    } catch (_) {
+      hideLoadingDialog();
+      AppSnackbar.error('ອັບເດດບໍ່ສຳເລັດ');
+      return false;
+    } finally {
+      _busy = false;
+    }
+  }
+
+  Future<bool> addMassageService({
+    required String serviceId,
+    required List<Map<String, dynamic>> massageVariants,
+    String? serviceLocation,
+  }) async {
+    if (_busy) return false;
+    _busy = true;
+    showLoadingDialog();
+    try {
+      final res = await _repo.addMassageService(
+        serviceId: serviceId,
+        massageVariants: massageVariants,
+        serviceLocation: serviceLocation,
+      );
+      hideLoadingDialog();
+      if (res.success) {
+        await _refreshProfile();
+        return true;
+      }
+      AppSnackbar.error(res.laMessage ?? 'ເພີ່ມບໍ່ສຳເລັດ');
+      return false;
+    } catch (_) {
+      hideLoadingDialog();
+      AppSnackbar.error('ເພີ່ມບໍ່ສຳເລັດ');
+      return false;
+    } finally {
+      _busy = false;
+    }
+  }
+
+  Future<bool> updateMassageService({
+    required String modelServiceId,
+    required List<Map<String, dynamic>> massageVariants,
+    String? serviceLocation,
+  }) async {
+    if (_busy) return false;
+    _busy = true;
+    showLoadingDialog();
+    try {
+      final res = await _repo.updateMassageService(
+        modelServiceId: modelServiceId,
+        massageVariants: massageVariants,
+        serviceLocation: serviceLocation,
+      );
+      hideLoadingDialog();
+      if (res.success) {
+        await _refreshProfile();
+        return true;
+      }
+      AppSnackbar.error(res.laMessage ?? 'ອັບເດດບໍ່ສຳເລັດ');
       return false;
     } catch (_) {
       hideLoadingDialog();
@@ -120,7 +184,7 @@ class ServiceLogic extends GetxController {
         await _refreshProfile();
         return true;
       }
-      AppSnackbar.error(res.message ?? 'ລຶບບໍ່ສຳເລັດ');
+      AppSnackbar.error(res.laMessage ?? 'ລຶບບໍ່ສຳເລັດ');
       return false;
     } catch (_) {
       hideLoadingDialog();

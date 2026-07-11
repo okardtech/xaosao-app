@@ -1,9 +1,13 @@
 import '../constants/api_constants.dart';
 import '../models/api_response.dart';
+import '../models/booking_slots_model.dart';
 import '../models/booking_success_model.dart';
 import '../models/my_booking_action_model.dart';
 import '../models/my_booking_model.dart';
 import '../services/base_repo.dart';
+
+// on booking page please check and change to new logic and support with massage , please check if name == massage please add dropdown to user choose price ,
+// because massage we using price from the variants, not using customRate or customHourlyRate , please redesiging the best UI to me with user experience , your can design with Row on ຈຳນວນຊົ່ວໂມງ or your can design with Column belong ຈຳນວນຊົ່ວໂມງ, please check and design the best to me , and check my logic on the booking_logic.dart
 
 class BookingRepo extends BaseRepository {
   Future<ApiResponse<BookingSuccessModel>> bookingPerDay({
@@ -33,6 +37,7 @@ class BookingRepo extends BaseRepository {
 
   Future<ApiResponse<BookingSuccessModel>> bookingPerHour({
     required String modelServiceId,
+    String? modelServiceVariantId,
     required String startDate,
     required int hours,
     required String location,
@@ -44,6 +49,8 @@ class BookingRepo extends BaseRepository {
         ApiConstants.booking,
         data: {
           'modelServiceId': modelServiceId,
+          if (modelServiceVariantId != null && modelServiceVariantId.isNotEmpty)
+            'modelServiceVariantId': modelServiceVariantId,
           'startDate': startDate,
           'hours': hours,
           'location': location,
@@ -53,6 +60,22 @@ class BookingRepo extends BaseRepository {
         },
       ),
       fromJson: (json) => BookingSuccessModel.fromJson(json),
+    );
+  }
+
+  Future<ApiResponse<List<BookedSlotsModel>>> bookedSlots({
+    required String modelId,
+    String? date,
+  }) {
+    String url = '${ApiConstants.booking}/model/$modelId/booked-slots';
+    if (date != null) url += '?date=$date';
+    return safeCall(
+      () => api.get(url),
+      fromJson: (json) => (json as List)
+          .map(
+            (item) => BookedSlotsModel.fromJson(item as Map<String, dynamic>),
+          )
+          .toList(),
     );
   }
 
@@ -72,6 +95,18 @@ class BookingRepo extends BaseRepository {
       fromJson: (json) => (json as List)
           .map((item) => MyBookingModel.fromJson(item as Map<String, dynamic>))
           .toList(),
+    );
+  }
+
+  Future<ApiResponse<MyBookingModel>> myBookingById({
+    required bool isClient,
+    required String bookingId,
+  }) {
+    String url =
+        '${isClient ? ApiConstants.booking : ApiConstants.modelBooking}/$bookingId';
+    return safeCall(
+      () => api.get(url),
+      fromJson: (json) => MyBookingModel.fromJson(json as Map<String, dynamic>),
     );
   }
 

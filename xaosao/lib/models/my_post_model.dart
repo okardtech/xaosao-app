@@ -3,6 +3,7 @@
 //     final myPostModel = myPostModelFromJson(jsonString);
 
 import 'dart:convert';
+import 'package:xaosao/utils/api_date_parser.dart';
 
 List<MyPostModel> myPostModelFromJson(String str) => List<MyPostModel>.from(json.decode(str).map((x) => MyPostModel.fromJson(x)));
 
@@ -43,10 +44,10 @@ class MyPostModel {
         images: json["images"] == null ? [] : List<dynamic>.from(json["images"]!.map((x) => x)),
         hasTip: json["hasTip"],
         status: json["status"],
-        expiresAt: json["expiresAt"] == null ? null : DateTime.parse(json["expiresAt"]),
+        expiresAt: parseApiDateTime(json["expiresAt"]),
         interestedCount: json["interestedCount"],
-        createdAt: json["createdAt"] == null ? null : DateTime.parse(json["createdAt"]),
-        updatedAt: json["updatedAt"] == null ? null : DateTime.parse(json["updatedAt"]),
+        createdAt: parseApiDateTime(json["createdAt"]),
+        updatedAt: parseApiDateTime(json["updatedAt"]),
         id: json["id"],
         counts: json["counts"] == null ? null : Counts.fromJson(json["counts"]),
         location: json["location"],

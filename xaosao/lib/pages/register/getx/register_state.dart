@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:xaosao/models/service_model.dart';
 import 'package:xaosao/models/sign_up_model.dart';
+import '../../../models/refferal_validate_model.dart';
 import '../../login/getx/login_state.dart';
 
 enum RegisterStatus { initial, loading, success, failure }
@@ -20,6 +21,7 @@ class RegisterState {
   final File? avatarFile;
   final List<ServiceModel> services;
   final SignUpModel? signUpModel;
+  final ReferralValidateModel? referralInfo;
 
   const RegisterState({
     this.status = RegisterStatus.initial,
@@ -30,6 +32,7 @@ class RegisterState {
     this.avatarFile,
     this.services = const [],
     this.signUpModel,
+    this.referralInfo,
   });
 
   RegisterState copyWith({
@@ -41,6 +44,7 @@ class RegisterState {
     File? avatarFile,
     List<ServiceModel>? services,
     SignUpModel? signUpModel,
+    ReferralValidateModel? referralInfo,
   }) {
     return RegisterState(
       status: status ?? this.status,
@@ -51,6 +55,7 @@ class RegisterState {
       avatarFile: avatarFile ?? this.avatarFile,
       services: services ?? this.services,
       signUpModel: signUpModel ?? this.signUpModel,
+      referralInfo: referralInfo ?? this.referralInfo,
     );
   }
 }

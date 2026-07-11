@@ -73,6 +73,10 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
       currentPass: _currentPass,
       newPass: _newPass,
     );
+    if (!mounted) return;
+    if (_logic.status.value == ChangePasswordStatus.success) {
+      Navigator.pop(context);
+    }
   }
 
   @override

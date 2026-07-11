@@ -103,7 +103,7 @@ class AvatarPicker extends StatelessWidget {
             hasImage ? 'ກົດເພື່ອປ່ຽນຮູບ' : 'ກົດເພື່ອເລືອກຮູບ',
             style: TextStyle(
               fontSize: 12.sp,
-              color: const Color(0xFF9B9BAD),
+              color: AppColors.textPrimary,
               fontWeight: FontWeight.w500,
             ),
           ),

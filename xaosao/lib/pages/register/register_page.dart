@@ -3,8 +3,10 @@ import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:xaosao/constants/app_color.dart';
-import 'package:xaosao/pages/register/components/register_app_bar.dart';
+import 'package:xaosao/models/refferal_validate_model.dart';
 import 'package:xaosao/pages/register/components/register_widget.dart';
+import 'package:xaosao/widgets/app_network_image.dart';
+import 'package:xaosao/widgets/gradient_app_bar.dart';
 import '../login/getx/login_state.dart';
 import 'components/avatar_picker.dart';
 import 'getx/register_logic.dart';
@@ -100,10 +102,8 @@ class _RegisterPageState extends State<RegisterPage> {
       behavior: HitTestBehavior.opaque,
       child: Scaffold(
         backgroundColor: AppColors.bg,
-        appBar: RegisterAppBar(
-          role: widget.role,
-          currentStep: 1,
-          title: "ສ້າງບັນຊີ ສຳລັບລູກຄ້າ",
+        appBar: GradientAppBar(
+          title: _isCompanion ? 'ສ້າງບັນຊີ ສຳລັບຜູ້ໃຫ້ບໍລິການ' : 'ສ້າງບັນຊີ ສຳລັບລູກຄ້າ',
           subtitle: 'ກະລຸນາຕື່ມຂໍ້ມູນໃຫ້ຄົບ',
         ),
         body: SafeArea(
@@ -118,6 +118,18 @@ class _RegisterPageState extends State<RegisterPage> {
                     children: [
                       _AvatarSection(logic: logic, accent: AppColors.primary),
                       SizedBox(height: 12.h),
+
+                      // ── Referral banner (Companion only) ──────
+                      if (_isCompanion)
+                        Obx(() {
+                          final referrer = logic.state.referralInfo?.referrer;
+                          if (referrer == null) return const SizedBox.shrink();
+                          return Padding(
+                            padding: EdgeInsets.only(bottom: 12.h),
+                            child: _ReferralBanner(referrer: referrer),
+                          );
+                        }),
+
                       Row(
                         children: [
                           Expanded(
@@ -180,7 +192,12 @@ class _RegisterPageState extends State<RegisterPage> {
                           child: DatePickerField(
                             value: dateTime,
                             role: widget.role,
-                            onPick: (d) => logic.setDob(d),
+                            onPick: (d) {
+                              logic.setDob(d);
+                              WidgetsBinding.instance.addPostFrameCallback((_) {
+                                _paFocus.requestFocus();
+                              });
+                            },
                           ),
                         );
                       }),
@@ -205,7 +222,7 @@ class _RegisterPageState extends State<RegisterPage> {
                         RegField(
                           ctrl: _address,
                           focus: _adFocus,
-                          hint: 'ເຊັ່ນ: ໂຊນ 1, ວຽງຈັນ',
+                          hint: 'ນາທົ່ມ,ໜອງວຽງຄຳ,ວຽງຈັນ...',
                           icon: Icons.location_on_outlined,
                           role: widget.role,
                           action: TextInputAction.done,
@@ -268,6 +285,72 @@ class _AvatarSection extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       child: AvatarPicker(logic: logic, accent: accent),
+    );
+  }
+}
+
+class _ReferralBanner extends StatelessWidget {
+  final Referrer referrer;
+  const _ReferralBanner({required this.referrer});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 10.h),
+      decoration: BoxDecoration(
+        color: AppColors.primary.withValues(alpha: 0.08),
+        borderRadius: BorderRadius.circular(12.r),
+        border: Border.all(color: AppColors.primary.withValues(alpha: 0.25)),
+      ),
+      child: Row(
+        children: [
+          if (referrer.profile != null && referrer.profile!.isNotEmpty)
+            AppNetworkImage(
+              imageUrl: referrer.profile!,
+              width: 40.r,
+              height: 40.r,
+              borderRadius: BorderRadius.circular(20.r),
+            )
+          else
+            CircleAvatar(
+              radius: 20.r,
+              backgroundColor: AppColors.primary.withValues(alpha: 0.2),
+              child: Icon(
+                Icons.person_rounded,
+                size: 20.r,
+                color: AppColors.primary,
+              ),
+            ),
+          SizedBox(width: 12.w),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'ທ່ານໄດ້ຮັບການແນະນຳຈາກ',
+                  style: TextStyle(
+                    fontSize: 11.sp,
+                    color: Colors.grey.shade600,
+                  ),
+                ),
+                Text(
+                  referrer.firstName ?? '',
+                  style: TextStyle(
+                    fontSize: 13.sp,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.primary,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Icon(
+            Icons.card_giftcard_rounded,
+            color: AppColors.primary,
+            size: 20.r,
+          ),
+        ],
+      ),
     );
   }
 }

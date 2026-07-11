@@ -2,31 +2,66 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:xaosao/constants/app_color.dart';
+import 'package:xaosao/models/conversation_model.dart';
 import 'package:xaosao/models/my_booking_model.dart';
+import 'package:xaosao/pages/chat/getx/chat_logic.dart';
 import 'package:xaosao/pages/meet_ups/getx/meet_ups_logic.dart';
 import 'package:xaosao/utils/app_snackbar.dart';
-import 'package:xaosao/widgets/confirm_sheet.dart';
 import 'package:xaosao/utils/currency_formatter.dart';
 import 'package:xaosao/utils/date_time_formatter.dart';
+import 'package:xaosao/utils/service_helper.dart';
 import 'package:xaosao/widgets/app_button.dart';
 import 'package:xaosao/widgets/app_network_image.dart';
 import 'package:xaosao/widgets/app_text_field.dart';
+import 'package:xaosao/widgets/confirm_sheet.dart';
+
+import '../../../constants/app_icons.dart';
+import '../../../widgets/app_svg_icon.dart';
 
 class BookingCard extends StatelessWidget {
   final MyBookingModel booking;
   final bool isCustomer;
-  final VoidCallback? onMessage;
   final VoidCallback? onTap;
 
   const BookingCard({
     super.key,
     required this.booking,
     required this.isCustomer,
-    this.onMessage,
     this.onTap,
   });
 
   MeetUpLogic get _logic => Get.find<MeetUpLogic>();
+
+  void _openChat(MyBookingModel b) {
+    final chatLogic = Get.find<ChatLogic>();
+    if (isCustomer) {
+      final model = b.model;
+      final id = model?.id;
+      if (id == null || id.isEmpty) return;
+      chatLogic.startConversation(
+        id,
+        partnerHint: ConversationParticipant(
+          id: id,
+          firstName: model?.firstName,
+          lastName: model?.lastName,
+          profileImage: model?.profile,
+        ),
+      );
+    } else {
+      final customer = b.customer;
+      final id = customer?.id;
+      if (id == null || id.isEmpty) return;
+      chatLogic.startConversation(
+        id,
+        partnerHint: ConversationParticipant(
+          id: id,
+          firstName: customer?.firstName,
+          lastName: customer?.lastName,
+          profileImage: customer?.profile,
+        ),
+      );
+    }
+  }
 
   // ── Status helpers ─────────────────────────────────────────────
   static bool _isCancelled(String? s) => s == 'cancelled';
@@ -67,7 +102,7 @@ class BookingCard extends StatelessWidget {
       'awaiting_confirmation',
     };
     if (active.contains(s)) return const Color(0xFF1D4ED8);
-    if (_isCompleted(s)) return const Color(0xFF15803D);
+    if (_isCompleted(s)) return const Color(0xFF16A34A);
     if (_isRejected(s)) return const Color(0xFF92400E);
     return const Color(0xFF9B9BAD);
   }
@@ -77,28 +112,22 @@ class BookingCard extends StatelessWidget {
     'confirmed' => 'ຢືນຢັນ',
     'in_progress' => 'ກຳລັງດຳເນີນ',
     'awaiting_confirmation' => 'ລໍຢືນຢັນ',
-    'completed' => 'ສຳເລັດ',
-    'cancelled' => 'ຍົກເລີກ',
+    'completed' => 'ສຳເລັດເເລ້ວ',
+    'cancelled' => 'ຍົກເລີກເເລ້ວ',
     'rejected' => 'ຖືກປະຕິເສດ',
     'disputed' => 'ຂໍ້ຂັດແຍ້ງ',
     _ => '-',
   };
 
-  static String _serviceTypeName(MyBookingModel b) {
-    final svc = b.modelService;
-    if (svc != null) {
-      if (svc.customRate != null) return 'ບໍລິການລາຍວັນ';
-      if (svc.customHourlyRate != null) return 'ບໍລິການລາຍຊົ່ວໂມງ';
-      if (svc.customOneTimePrice != null) return 'ບໍລິການຄັ້ງດຽວ';
-      if (svc.customOneNightPrice != null) return 'ບໍລິການຄືນດຽວ';
-      if (svc.customMinuteRate != null) return 'ບໍລິການລາຍນາທີ';
-    }
-    if (b.dayAmount != null) return 'ບໍລິການລາຍວັນ';
-    if (b.hours != null) return 'ບໍລິການລາຍຊົ່ວໂມງ';
-    return 'ບໍລິການ';
+  static String _serviceTypeName(MyBookingModel b) =>
+      ServiceHelper.serviceOriginalName(b.modelService?.service?.name);
+
+  static String? _durationLabel(MyBookingModel b) {
+    if (b.dayAmount != null) return '${b.dayAmount} ວັນ';
+    if (b.hours != null) return '${b.hours} ຊົ່ວໂມງ';
+    return null;
   }
 
-  static const _divider = Color(0x0F000000);
   static const _dark = Color(0xFF1A1A2E);
 
   // ── Build ──────────────────────────────────────────────────────
@@ -107,10 +136,25 @@ class BookingCard extends StatelessWidget {
     final b = booking;
     final accent = _accentColor(b.status);
 
-    return Opacity(
-      opacity: _isCancelled(b.status) ? 1.0 : 1.0,
-      child: GestureDetector(
-        onTap: onTap,
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(20.r),
+          boxShadow: [
+            BoxShadow(
+              color: AppColors.primary.withValues(alpha: 0.08),
+              blurRadius: 18,
+              offset: const Offset(0, 5),
+            ),
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.04),
+              blurRadius: 8,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
         child: ClipRRect(
           borderRadius: BorderRadius.circular(20.r),
           child: Stack(
@@ -119,15 +163,19 @@ class BookingCard extends StatelessWidget {
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(20.r),
-                  border: Border.all(color: _divider, width: 0.5),
+                  border: Border.all(
+                    color: const Color(0x0F000000),
+                    width: 0.5,
+                  ),
                 ),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    _buildTop(b, accent),
-                    _buildDateRow(b),
-                    _buildLocation(b),
-                    _buildBottom(context, b),
+                    _buildHeader(b),
+                    _buildProfile(b, accent),
+                    _buildAppointment(b),
+                    _buildInfoSection(b),
+                    _buildFooter(context, b),
                   ],
                 ),
               ),
@@ -144,153 +192,319 @@ class BookingCard extends StatelessWidget {
     );
   }
 
-  // ── Top ────────────────────────────────────────────────────────
-  Widget _buildTop(MyBookingModel b, Color accent) {
-    final model = b.model;
-    final name = [
-      model?.firstName,
-      model?.lastName,
-    ].where((s) => s != null && s.isNotEmpty).join(' ');
-    final displayName = name.isEmpty ? 'ບໍ່ມີຊື່' : name;
-    final age = model?.age;
+  // ── Header: service type + duration chip + status badge ────────
+  Widget _buildHeader(MyBookingModel b) {
+    final dur = _durationLabel(b);
+    return Padding(
+      padding: EdgeInsets.fromLTRB(16.w, 14.h, 14.w, 0),
+      child: Row(
+        children: [
+          Expanded(
+            child: Row(
+              children: [
+                Flexible(
+                  child: Text(
+                    _serviceTypeName(b),
+                    style: TextStyle(
+                      fontSize: 14.sp,
+                      fontWeight: FontWeight.w900,
+                      color: _dark,
+                      letterSpacing: -0.4,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+                if (dur != null) ...[
+                  SizedBox(width: 6.w),
+                  Container(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 7.w,
+                      vertical: 3.h,
+                    ),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFF3F4F6),
+                      borderRadius: BorderRadius.circular(20.r),
+                    ),
+                    child: Text(
+                      dur,
+                      style: TextStyle(
+                        fontSize: 11.sp,
+                        fontWeight: FontWeight.w600,
+                        color: const Color(0xFF6B7280),
+                      ),
+                    ),
+                  ),
+                ],
+              ],
+            ),
+          ),
+          SizedBox(width: 10.w),
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 5.h),
+            decoration: BoxDecoration(
+              color: _badgeBg(b.status),
+              borderRadius: BorderRadius.circular(20.r),
+            ),
+            child: Text(
+              _statusLabel(b.status),
+              style: TextStyle(
+                fontSize: 11.sp,
+                fontWeight: FontWeight.w800,
+                color: _badgeFg(b.status),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // ── Profile: avatar + name/age + tip badge ─────────────────────
+  Widget _buildProfile(MyBookingModel b, Color accent) {
+    final String profileUrl;
+    final String displayName;
+    final int? age;
+
+    if (isCustomer) {
+      final m = b.model;
+      final name = [
+        m?.firstName,
+        m?.lastName,
+      ].where((s) => s != null && s.isNotEmpty).join(' ');
+      profileUrl = m?.profile ?? '';
+      displayName = name.isEmpty ? 'ບໍ່ມີຊື່' : name;
+      age = m?.age;
+    } else {
+      final c = b.customer;
+      final name = [
+        c?.firstName,
+        c?.lastName,
+      ].where((s) => s != null && s.isNotEmpty).join(' ');
+      final fallback = c?.name ?? '';
+      profileUrl = c?.profile ?? '';
+      displayName = name.isNotEmpty
+          ? name
+          : (fallback.isNotEmpty ? fallback : 'ບໍ່ມີຊື່');
+      age = c?.age;
+    }
+
+    return Padding(
+      padding: EdgeInsets.fromLTRB(16.w, 10.h, 14.w, 0),
+      child: Row(
+        children: [
+          ClipOval(
+            child: AppNetworkImage(
+              imageUrl: profileUrl,
+              width: 34.r,
+              height: 34.r,
+              accentColor: accent == const Color(0xFFE0E0E0)
+                  ? AppColors.primary
+                  : accent,
+            ),
+          ),
+          SizedBox(width: 9.w),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  age != null ? '$displayName · $age ປີ' : displayName,
+                  style: TextStyle(
+                    fontSize: 13.sp,
+                    fontWeight: FontWeight.w700,
+                    color: _dark,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                if (b.hasTip == true)
+                  Container(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 8.w,
+                      vertical: 3.h,
+                    ),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFFFF7ED),
+                      borderRadius: BorderRadius.circular(20.r),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          Icons.volunteer_activism_outlined,
+                          size: 10.r,
+                          color: const Color(0xFFF59E0B),
+                        ),
+                        SizedBox(width: 3.w),
+                        Text(
+                          'ມີທິບໃຫ້ພ້ອມ',
+                          style: TextStyle(
+                            fontSize: 10.sp,
+                            fontWeight: FontWeight.w600,
+                            color: const Color(0xFFF59E0B),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // ── Appointment: matches _AppointmentHero style ───────────────
+  Widget _buildAppointment(MyBookingModel b) {
+    final start = b.startDate;
+    final end = b.endDate;
+
+    if (start == null) return const SizedBox.shrink();
+
+    final isStrike = _isCancelled(b.status) || _isRejected(b.status);
+    final isConfirmed = b.status == 'confirmed';
+    final isCompleted = b.status == 'completed';
+
+    final isSameDay =
+        end != null &&
+        end.year == start.year &&
+        end.month == start.month &&
+        end.day == start.day;
+
+    final hasTime = start.hour != 0 || start.minute != 0;
+    String? endTimeStr;
+    if (isSameDay && (end.hour != 0 || end.minute != 0)) {
+      endTimeStr = DateTimeFormatter.laoTime(end);
+    }
+
+    // Hero value: time (if available) or date; secondary follows pattern
+    final String heroStr = hasTime
+        ? DateTimeFormatter.laoTime(start)
+        : DateTimeFormatter.laoDate(start);
+    final String? heroSecondary = hasTime
+        ? endTimeStr
+        : (!isSameDay && end != null ? DateTimeFormatter.laoDate(end) : null);
+
+    // Color palette: strike → muted, confirmed → green, completed → teal, other → primary
+    final bgColor = isStrike
+        ? const Color(0xFFF5F5F7)
+        : isConfirmed
+        ? const Color(0xFFF5F5F7)
+        : isCompleted
+        ? const Color(0xFFF5F5F7)
+        : AppColors.primary.withValues(alpha: 0.04);
+    final iconBg = isStrike
+        ? const Color(0xFFE8E8EF)
+        : isConfirmed
+        ? const Color(0xFFE8E8EF)
+        : isCompleted
+        ? const Color(0xFFE8E8EF)
+        : AppColors.primary.withValues(alpha: 0.10);
+    final iconColor = isStrike
+        ? const Color(0xFFD1D1E0)
+        : isConfirmed
+        ? const Color(0xFFD1D1E0)
+        : isCompleted
+        ? const Color(0xFFD1D1E0)
+        : AppColors.primary;
+    final heroColor = isStrike
+        ? const Color(0xFFD1D1E0)
+        : isConfirmed
+        ? const Color(0xFF16A34A)
+        : isCompleted
+        ? const Color(0xFF16A34A)
+        : AppColors.primary;
+    final secondaryColor = isStrike
+        ? const Color(0xFFD1D1E0)
+        : (hasTime
+              ? const Color(0xFF9B9BAD)
+              : AppColors.primary.withValues(alpha: 0.7));
+    final arrowColor = isStrike
+        ? const Color(0xFFD1D1E0)
+        : const Color(0xFF9B9BAD);
+    final dateLabelColor = isStrike
+        ? const Color(0xFFD1D1E0)
+        : const Color(0xFF9B9BAD);
 
     return Container(
-      padding: EdgeInsets.fromLTRB(16.w, 14.h, 14.w, 4.h),
-      // decoration: BoxDecoration(color: accent.withOpacity(0.04)),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      margin: EdgeInsets.fromLTRB(12.w, 10.h, 12.w, 0),
+      padding: EdgeInsets.all(14.r),
+      decoration: BoxDecoration(
+        color: bgColor,
+        borderRadius: BorderRadius.circular(14.r),
+      ),
+      child: Row(
         children: [
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(
-                child: Text(
-                  _serviceTypeName(b),
-                  style: TextStyle(
-                    fontSize: 17.sp,
-                    fontWeight: FontWeight.w900,
-                    color: _dark,
-                    letterSpacing: -0.4,
-                  ),
-                ),
-              ),
-              SizedBox(width: 10.w),
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 5.h),
-                decoration: BoxDecoration(
-                  color: _badgeBg(b.status),
-                  borderRadius: BorderRadius.circular(20.r),
-                ),
-                child: Text(
-                  _statusLabel(b.status),
-                  style: TextStyle(
-                    fontSize: 12.sp,
-                    fontWeight: FontWeight.w800,
-                    color: _badgeFg(b.status),
-                  ),
-                ),
-              ),
-            ],
+          Container(
+            padding: EdgeInsets.all(9.r),
+            decoration: BoxDecoration(
+              color: iconBg,
+              borderRadius: BorderRadius.circular(11.r),
+            ),
+            child: AppSvgIcon(assetName: AppIcons.calendar, color: iconColor),
           ),
-          SizedBox(height: 10.h),
-          Row(
-            children: [
-              ClipOval(
-                child: AppNetworkImage(
-                  imageUrl: model?.profile ?? '',
-                  width: 32.r,
-                  height: 32.r,
-                  accentColor: accent == const Color(0xFFE0E0E0)
-                      ? AppColors.primary
-                      : accent,
-                ),
-              ),
-              SizedBox(width: 9.w),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+          SizedBox(width: 14.w),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                if (hasTime) ...[
+                  Text(
+                    DateTimeFormatter.laoDate(start),
+                    style: TextStyle(
+                      fontSize: 12.sp,
+                      fontWeight: FontWeight.w500,
+                      color: dateLabelColor,
+                    ),
+                  ),
+                  SizedBox(height: 3.h),
+                ],
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.baseline,
+                  textBaseline: TextBaseline.alphabetic,
                   children: [
                     Text(
-                      age != null ? '$displayName · $age ປີ' : displayName,
+                      heroStr,
                       style: TextStyle(
-                        fontSize: 14.sp,
-                        fontWeight: FontWeight.w700,
-                        color: _dark,
+                        fontSize: hasTime ? 22.sp : 14.sp,
+                        fontWeight: FontWeight.w900,
+                        color: heroColor,
+                        letterSpacing: hasTime ? -0.5 : -0.3,
+                        decoration: isStrike
+                            ? TextDecoration.lineThrough
+                            : null,
+                        decorationColor: const Color(0xFFD1D1E0),
+                        decorationThickness: 2,
                       ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
                     ),
-                    if (b.hasTip == true) ...[
-                      Container(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: 8.w,
-                          vertical: 3.h,
-                        ),
-                        decoration: BoxDecoration(
-                          color: const Color(0xFFFFF7ED),
-                          borderRadius: BorderRadius.circular(20.r),
-                        ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Icon(
-                              Icons.volunteer_activism_outlined,
-                              size: 10.r,
-                              color: const Color(0xFFF59E0B),
-                            ),
-                            SizedBox(width: 3.w),
-                            Text(
-                              'ມີທິບໃຫ້ພ້ອມ',
-                              style: TextStyle(
-                                fontSize: 10.sp,
-                                fontWeight: FontWeight.w400,
-                                color: const Color(0xFFF59E0B),
-                              ),
-                            ),
-                          ],
+                    if (heroSecondary != null) ...[
+                      SizedBox(width: 6.w),
+                      Icon(
+                        Icons.arrow_forward_rounded,
+                        size: 14.r,
+                        color: arrowColor,
+                      ),
+                      SizedBox(width: 4.w),
+                      Text(
+                        heroSecondary,
+                        style: TextStyle(
+                          fontSize: hasTime ? 15.sp : 14.sp,
+                          fontWeight: FontWeight.w700,
+                          color: secondaryColor,
+                          decoration: isStrike
+                              ? TextDecoration.lineThrough
+                              : null,
+                          decorationColor: const Color(0xFFD1D1E0),
+                          decorationThickness: 2,
                         ),
                       ),
                     ],
                   ],
                 ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  // ── Date row ───────────────────────────────────────────────────
-  Widget _buildDateRow(MyBookingModel b) {
-    final start = DateTimeFormatter.dateFormatter(b.startDate) ?? '-';
-    final end = DateTimeFormatter.dateFormatter(b.endDate);
-    final dateStr = (end != null && end != start) ? '$start → $end' : start;
-
-    return Container(
-      padding: EdgeInsets.fromLTRB(14.w, 10.h, 14.w, 0.h),
-      // decoration: const BoxDecoration(
-      //   border: Border(top: BorderSide(color: _divider, width: 0.5)),
-      // ),
-      child: Row(
-        children: [
-          Icon(
-            Icons.calendar_month_outlined,
-            size: 14.r,
-            color: const Color(0xFF3B82F6),
-          ),
-          SizedBox(width: 7.w),
-          Expanded(
-            child: Text(
-              dateStr,
-              style: TextStyle(
-                fontSize: 14.sp,
-                fontWeight: FontWeight.w400,
-                color: _dark,
-                height: 1.4,
-              ),
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
+              ],
             ),
           ),
         ],
@@ -298,50 +512,46 @@ class BookingCard extends StatelessWidget {
     );
   }
 
-  // ── Location ───────────────────────────────────────────────────
-  Widget _buildLocation(MyBookingModel b) {
+  // ── Info section: location + attire + created at ───────────────
+  Widget _buildInfoSection(MyBookingModel b) {
+    final items = <Widget>[];
+
+    if (b.location != null && b.location!.isNotEmpty) {
+      items.add(
+        _InfoRow(
+          icon: Icons.location_on_outlined,
+          iconColor: AppColors.textPrimary,
+          text: b.location!,
+        ),
+      );
+    }
+
+    final attire = b.preferredAttire?.toString();
+    if (attire != null && attire.isNotEmpty) {
+      items.add(_AttireChip(attire: attire));
+    }
+    if (items.isEmpty) return const SizedBox.shrink();
     return Padding(
-      padding: EdgeInsets.fromLTRB(14.w, 6.h, 14.w, 6.h),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      padding: EdgeInsets.fromLTRB(14.w, 8.h, 14.w, 0),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
         children: [
-          Padding(
-            padding: EdgeInsets.only(top: 1.h),
-            child: Icon(
-              Icons.location_on_outlined,
-              size: 14.r,
-              color: AppColors.primary,
-            ),
-          ),
-          SizedBox(width: 7.w),
-          Expanded(
-            child: Text(
-              b.location ?? '-',
-              style: TextStyle(
-                fontSize: 14.sp,
-                fontWeight: FontWeight.w400,
-                color: _dark,
-                height: 1.4,
-              ),
-              maxLines: 3,
-              overflow: TextOverflow.ellipsis,
-            ),
-          ),
+          for (int i = 0; i < items.length; i++) ...[
+            items[i],
+            if (i < items.length - 1) SizedBox(height: 5.h),
+          ],
         ],
       ),
     );
   }
 
-  // ── Bottom: price + actions ────────────────────────────────────
-  Widget _buildBottom(BuildContext context, MyBookingModel b) {
+  // ── Footer: price + action buttons ────────────────────────────
+  Widget _buildFooter(BuildContext context, MyBookingModel b) {
     final actions = _buildActions(context, b);
     final isStrike = _isCancelled(b.status) || _isRejected(b.status);
 
     return Container(
       padding: EdgeInsets.fromLTRB(14.w, 10.h, 14.w, 12.h),
-      // decoration: const BoxDecoration(
-      //   border: Border(top: BorderSide(color: _divider, width: 0.5)),
-      // ),
       child: Row(
         children: [
           Text(
@@ -365,17 +575,17 @@ class BookingCard extends StatelessWidget {
 
   // ── Action buttons ─────────────────────────────────────────────
   List<Widget> _buildActions(BuildContext context, MyBookingModel b) {
-    
     final now = DateTime.now();
     final start = b.startDate;
     final end = b.endDate;
     final status = b.status;
     final id = b.id ?? '';
+
     final msgBtn = _Btn(
-      label: 'ຂໍ້ຄວາມ',
-      icon: Icons.chat_bubble_outline_rounded,
+      label: 'ເເຊັດ',
+      icon: AppIcons.chatFill,
       style: _BtnStyle.outline,
-      onTap: onMessage,
+      onTap: () => _openChat(b),
     );
 
     void showReason(String title, Future<bool> Function(String) onSubmit) {
@@ -387,44 +597,55 @@ class BookingCard extends StatelessWidget {
       );
     }
 
-    final callBtn = _Btn(
-      label: 'ໂທ',
-      icon: Icons.phone_outlined,
-      style: _BtnStyle.dark,
-      onTap: onMessage,
-    );
+    // Reusable cancel confirm sheet
+    Future<void> confirmCancel() async {
+      final confirmed = await ConfirmSheet.show(
+        context,
+        title: 'ຍົກເລີກການຈອງ',
+        message: 'ທ່ານຕ້ອງການຍົກເລີກການຈອງນີ້ແທ້ບໍ່?',
+        confirmLabel: 'ຍົກເລີກການຈອງ',
+        icon: AppIcons.cancel,
+        isDanger: true,
+      );
+      if (confirmed == true) _logic.cancelBooking(id);
+    }
 
-    // ── Confirmed + booking not yet ended — both roles ────────────
+    // Confirmed + booking not yet ended → model sees only message
     if (status == 'confirmed') {
       final bookingEnded = end != null && now.isAfter(end);
-      if (!bookingEnded) {
-        return [callBtn, SizedBox(width: 6.w), msgBtn];
+      if (!bookingEnded && !isCustomer) {
+        return [msgBtn];
       }
     }
 
     if (isCustomer) {
-      // ── CUSTOMER ──────────────────────────────────────────────
       if (status == 'pending') {
         return [
-          _Btn(
-            label: 'ຍົກເລີກ',
-            style: _BtnStyle.ghost,
-            onTap: () => _logic.cancelBooking(id),
-          ),
+          _Btn(label: 'ຍົກເລີກ', style: _BtnStyle.ghost, onTap: confirmCancel),
           SizedBox(width: 6.w),
           msgBtn,
         ];
       }
 
       if (status == 'confirmed') {
-        final inDisputeWindow =
-            start != null &&
-            now.isAfter(start) &&
-            now.isBefore(start.add(const Duration(minutes: 30)));
+        final bookingEnded = end != null && now.isAfter(end);
 
-        final canCancel =
-            start != null &&
-            now.isBefore(start.subtract(const Duration(minutes: 30)));
+        if (bookingEnded) {
+          return [
+            _Btn(
+              label: 'ປ່ອຍເງີນ',
+              style: _BtnStyle.green,
+              onTap: () => _logic.releasePayment(id),
+            ),
+            SizedBox(width: 6.w),
+            msgBtn,
+          ];
+        }
+
+        final bookingStarted = start != null && now.isAfter(start);
+        final inDisputeWindow =
+            bookingStarted &&
+            now.isBefore(start.add(const Duration(minutes: 30)));
 
         if (inDisputeWindow) {
           return [
@@ -441,31 +662,25 @@ class BookingCard extends StatelessWidget {
           ];
         }
 
+        final canCancel =
+            start != null &&
+            now.isBefore(start.subtract(const Duration(minutes: 30)));
+
         if (canCancel) {
           return [
             _Btn(
               label: 'ຍົກເລີກ',
               style: _BtnStyle.ghost,
-              onTap: () => _logic.cancelBooking(id),
+              onTap: confirmCancel,
             ),
             SizedBox(width: 6.w),
             msgBtn,
           ];
         }
 
-        return [
-          _Btn(
-            label: 'ປ່ອຍເງີນ',
-            style: _BtnStyle.green,
-            onTap: () => _logic.releasePayment(id),
-          ),
-          SizedBox(width: 6.w),
-          msgBtn,
-        ];
+        return [msgBtn];
       }
     } else {
-      
-      // ── MODEL ──────────────────────────────────────────────────
       if (status == 'pending') {
         return [
           _Btn(
@@ -499,12 +714,11 @@ class BookingCard extends StatelessWidget {
       }
     }
 
-    // ── DELETE — completed / cancelled / rejected ────────────────
     if (_isCompleted(status) || _isCancelled(status) || _isRejected(status)) {
       return [
         _Btn(
           label: 'ລຶບ',
-          icon: Icons.delete_outline_rounded,
+          icon: AppIcons.delete,
           style: _BtnStyle.red,
           onTap: () async {
             final confirmed = await ConfirmSheet.show(
@@ -512,7 +726,7 @@ class BookingCard extends StatelessWidget {
               title: 'ລຶບລາຍການ',
               message: 'ທ່ານຕ້ອງການລຶບລາຍການນີ້ແທ້ບໍ່?',
               confirmLabel: 'ລຶບ',
-              icon: Icons.delete_outline_rounded,
+              icon: AppIcons.delete,
               isDanger: true,
             );
             if (confirmed == true) _logic.deleteBooking(id);
@@ -522,6 +736,84 @@ class BookingCard extends StatelessWidget {
     }
 
     return [];
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  _InfoRow — icon + text row for location / created-at
+// ═══════════════════════════════════════════════════════════════
+class _InfoRow extends StatelessWidget {
+  final IconData icon;
+  final Color iconColor;
+  final String text;
+  final bool muted;
+
+  const _InfoRow({
+    required this.icon,
+    required this.iconColor,
+    required this.text,
+    this.muted = false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: EdgeInsets.only(top: 1.5.h),
+          child: Icon(icon, size: 13.r, color: iconColor),
+        ),
+        SizedBox(width: 7.w),
+        Expanded(
+          child: Text(
+            text,
+            style: TextStyle(
+              fontSize: 12.sp,
+              fontWeight: FontWeight.w400,
+              color: muted ? const Color(0xFF9B9BAD) : const Color(0xFF1A1A2E),
+              height: 1.4,
+            ),
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  _AttireChip — indigo badge for preferred attire
+// ═══════════════════════════════════════════════════════════════
+class _AttireChip extends StatelessWidget {
+  final String attire;
+  const _AttireChip({required this.attire});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Icon(
+          Icons.checkroom_outlined,
+          size: 13.r,
+          color: AppColors.textPrimary,
+        ),
+        SizedBox(width: 7.w),
+        Flexible(
+          child: Text(
+            attire,
+            style: TextStyle(
+              fontSize: 12.sp,
+              fontWeight: FontWeight.w600,
+              color: const Color(0xFF1A1A2E),
+            ),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ),
+      ],
+    );
   }
 }
 
@@ -577,7 +869,9 @@ class _ReasonSheetState extends State<_ReasonSheet> {
           borderRadius: BorderRadius.vertical(top: Radius.circular(24.r)),
         ),
         padding: EdgeInsets.fromLTRB(20.w, 20.h, 20.w, 28.h),
-        child: Column(
+        child: SafeArea(
+          top: false,
+          child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             Container(
@@ -613,6 +907,7 @@ class _ReasonSheetState extends State<_ReasonSheet> {
               onTap: _submit,
             ),
           ],
+          ),
         ),
       ),
     );
@@ -626,7 +921,7 @@ enum _BtnStyle { ghost, dark, pink, green, red, amber, outline }
 
 class _Btn extends StatelessWidget {
   final String label;
-  final IconData? icon;
+  final String? icon;
   final _BtnStyle style;
   final VoidCallback? onTap;
   const _Btn({required this.label, this.icon, required this.style, this.onTap});
@@ -668,7 +963,13 @@ class _Btn extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             if (icon != null) ...[
-              Icon(icon, size: 12.r, color: fg),
+              // Icon(icon, size: 12.r, color: fg),
+              AppSvgIcon(
+                assetName: icon ?? "",
+                width: 14.w,
+                height: 14.h,
+                color: fg,
+              ),
               SizedBox(width: 4.w),
             ],
             Text(

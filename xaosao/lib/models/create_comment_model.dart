@@ -3,6 +3,7 @@
 //     final createCommentModel = createCommentModelFromJson(jsonString);
 
 import 'dart:convert';
+import 'package:xaosao/utils/api_date_parser.dart';
 
 CreateCommentModel createCommentModelFromJson(String str) => CreateCommentModel.fromJson(json.decode(str));
 
@@ -28,7 +29,7 @@ class CreateCommentModel {
         postId: json["postId"],
         userType: json["userType"],
         content: json["content"],
-        createdAt: json["createdAt"] == null ? null : DateTime.parse(json["createdAt"]),
+        createdAt: json["createdAt"] == null ? null : parseApiDateTime(json["createdAt"]),
     );
 
     Map<String, dynamic> toJson() => {

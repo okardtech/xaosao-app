@@ -2,7 +2,6 @@ import '../constants/api_constants.dart';
 import '../models/api_response.dart';
 import '../models/model_available.dart';
 import '../models/review_model.dart';
-import '../models/service_model.dart';
 import '../services/base_repo.dart';
 
 class ReviewRepo extends BaseRepository {
@@ -61,6 +60,30 @@ class ReviewRepo extends BaseRepository {
       () => api.post(
         '${isClient ? ApiConstants.clientLike : ApiConstants.modelLike}$id',
         data: {"action": "LIKE"},
+      ),
+      fromJson: (json) => true,
+    );
+  }
+
+  Future<ApiResponse<bool>> addFriend({
+    required bool isClient,
+    required String id, // customerId when !isClient, modelId when isClient
+  }) {
+    return safeCall(
+      () => api.post(
+        '${isClient ? ApiConstants.clientAddFriend : ApiConstants.modelAddFriend}$id',
+      ),
+      fromJson: (json) => true,
+    );
+  }
+
+  Future<ApiResponse<bool>> unFriend({
+    required bool isClient,
+    required String id, // customerId when !isClient, modelId when isClient
+  }) {
+    return safeCall(
+      () => api.delete(
+        '${isClient ? ApiConstants.clientAddFriend : ApiConstants.modelAddFriend}$id',
       ),
       fromJson: (json) => true,
     );

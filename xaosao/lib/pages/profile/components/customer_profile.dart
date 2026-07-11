@@ -1,11 +1,11 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:xaosao/constants/app_routes.dart';
 import 'package:xaosao/pages/login/getx/login_logic.dart';
 import 'package:xaosao/pages/profile/components/amberwarning.dart';
 import 'package:xaosao/widgets/confirm_sheet.dart';
-import 'package:xaosao/pages/profile/components/photo_grid.dart';
+import 'package:xaosao/pages/profile/components/gallery_preview.dart';
 import 'package:xaosao/pages/profile/components/profile_constant.dart';
 import 'package:xaosao/pages/feedback/getx/feedback_logic.dart';
 import 'package:xaosao/pages/home/getx/home_logic.dart';
@@ -15,7 +15,8 @@ import 'package:xaosao/pages/services_manage/getx/service_logic.dart';
 import 'package:xaosao/services/storage_service.dart';
 import 'package:intl/intl.dart';
 import '../../../constants/app_color.dart';
-import '../../../widgets/gradient_app_bar.dart';
+import '../../../constants/app_icons.dart';
+import '../../chat/getx/chat_logic.dart';
 import '../../package/getx/package_logic.dart';
 import '../../wallet/getx/wallet_logic.dart';
 
@@ -27,7 +28,7 @@ class CustomerProfilePage extends StatefulWidget {
 
 class _CustomerProfilePageState extends State<CustomerProfilePage> {
   static const _maxPhotos = 6;
-  bool _showAmt = true;
+  bool _showAmt = false;
   late final ProfileLogic _profileLogic;
 
   @override
@@ -40,210 +41,221 @@ class _CustomerProfilePageState extends State<CustomerProfilePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.bg,
-      appBar: GradientAppBar(
-        title: 'ໂປຣໄຟລ໌',
-        subtitle: 'ຈັດການໂປຣໄຟລ໌',
-        showBack: false,
-        centerTitle: false,
-      ),
-      body: CustomScrollView(
-        physics: const BouncingScrollPhysics(),
-        slivers: [
-          // ── Hero ─────────────────────────────────────────
-          SliverToBoxAdapter(child: _buildHero()),
+      // appBar: GradientAppBar(
+      //   title: 'ໂປຣໄຟລ໌',
+      //   subtitle: 'ຈັດການໂປຣໄຟລ໌',
+      //   showBack: false,
+      //   centerTitle: false,
+      // ),
+      body: SafeArea(
+        child: CustomScrollView(
+          physics: const BouncingScrollPhysics(),
+          slivers: [
+            // ── Hero ─────────────────────────────────────────
+            SliverToBoxAdapter(child: _buildHero()),
 
-          // ── Body ─────────────────────────────────────────
-          SliverPadding(
-            padding: EdgeInsets.fromLTRB(16.w, 14.h, 16.w, 40.h),
-            sliver: SliverList(
-              delegate: SliverChildListDelegate([
-                // ── ຮູບພາບ section ──────────────────────────
-                Obx(() {
-                  final st = _profileLogic.state;
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+            // ── Body ─────────────────────────────────────────
+            SliverPadding(
+              padding: EdgeInsets.fromLTRB(16.w, 14.h, 16.w, 40.h),
+              sliver: SliverList(
+                delegate: SliverChildListDelegate([
+                  // ── ຮູບພາບ section ──────────────────────────
+                  Obx(() {
+                    final st = _profileLogic.state;
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Text(
+                              'ຮູບພາບ (${st.photos.length}/$_maxPhotos)',
+                              style: TextStyle(
+                                fontSize: 14.sp,
+                                fontWeight: FontWeight.w700,
+                                color: AppColors.textPrimary,
+                                letterSpacing: 0.8,
+                              ),
+                            ),
+                            if (st.photos.length < _maxPhotos)
+                              AmberWarning(
+                                text:
+                                    'ຕ້ອງເພີ່ມຄົບ $_maxPhotos ຮູບ '
+                                    '— ຍັງຂາດ ${_maxPhotos - st.photos.length} ຮູບ',
+                              ),
+                          ],
+                        ),
+                        SizedBox(height: 8.h),
+                        GalleryPreview(
+                          photos: st.photos,
+                          isOwner: true,
+                          maxPhotos: _maxPhotos,
+                          uploadingIndex: st.uploadingIndex,
+                        ),
+                        SizedBox(height: 14.h),
+                      ],
+                    );
+                  }),
+
+                  // ──────────────────────────────────────────
+                  const ProfileSectionLabel('ຂໍ້ມູນ'),
+                  ProfileGroup(
                     children: [
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Text(
-                            'ຮູບພາບ (${st.photos.length}/$_maxPhotos)',
-                            style: TextStyle(
-                              fontSize: 14.sp,
-                              fontWeight: FontWeight.w700,
-                              color: AppColors.textPrimary,
-                              letterSpacing: 0.8,
-                            ),
-                          ),
-                          if (st.photos.length < _maxPhotos)
-                            AmberWarning(
-                              text:
-                                  'ຕ້ອງເພີ່ມຄົບ $_maxPhotos ຮູບ '
-                                  '— ຍັງຂາດ ${_maxPhotos - st.photos.length} ຮູບ',
-                            ),
-                        ],
+                      ProfileMenuRow(
+                        iconBg: AppColors.bg,
+                        iconColor: AppColors.primaryVariant,
+                        icon: Icons.person_outline_rounded,
+                        label: 'ຂໍ້ມູນສ່ວນຕົວ',
+                        sub: 'ຊື່, ນາມສະກຸນ, ວັນເດືອນປີ',
+                        onTap: () => Get.toNamed(
+                          AppRoutes.profileDetail,
+                          arguments: true,
+                        ),
                       ),
-                      SizedBox(height: 8.h),
-                      PhotoGrid(
-                        photos: st.photos,
-                        maxPhotos: _maxPhotos,
-                        onAdd: _profileLogic.pickAndUpload,
-                        onRemove: _profileLogic.removePhoto,
-                        uploadingIndex: st.uploadingIndex,
-                        deletingIndex: st.deletingIndex,
+                      ProfileMenuRow(
+                        iconBg: const Color(0xFFFFF0F6),
+                        iconColor: AppColors.primary,
+                        icon: Icons.monitor_outlined,
+                        label: 'ການຊື້ແພັກເກດ',
+                        sub: 'ຊ່ວງໂມງ, ຊ່ວງວັນ ແລະ ຊ່ວງເດືອນ',
+                        onTap: () => Get.toNamed(AppRoutes.package),
                       ),
-                      SizedBox(height: 14.h),
+                      ProfileMenuRow(
+                        iconBg: AppColors.bg,
+                        iconColor: AppColors.primaryVariant,
+                        icon: Icons.credit_card_outlined,
+                        label: 'ປະຫວັດເຕີມເງິນ',
+                        onTap: () => Get.toNamed(AppRoutes.wallet),
+                      ),
                     ],
-                  );
-                }),
+                  ),
+                  SizedBox(height: 12.h),
 
-                // ──────────────────────────────────────────
-                const ProfileSectionLabel('ຂໍ້ມູນ'),
-                ProfileGroup(
-                  children: [
-                    ProfileMenuRow(
-                      iconBg: AppColors.bg,
-                      iconColor: AppColors.primaryVariant,
-                      icon: Icons.person_outline_rounded,
-                      label: 'ຂໍ້ມູນສ່ວນຕົວ',
-                      sub: 'ຊື່, ນາມສະກຸນ, ວັນເດືອນປີ',
-                      onTap: () =>
-                          Get.toNamed(AppRoutes.profileDetail, arguments: true),
-                    ),
-                    ProfileMenuRow(
-                      iconBg: const Color(0xFFFFF0F6),
-                      iconColor: AppColors.primary,
-                      icon: Icons.monitor_outlined,
-                      label: 'ການຊື້ແພັກເກດ',
-                      sub: 'ຊ່ວງໂມງ, ຊ່ວງວັນ ແລະ ຊ່ວງເດືອນ',
-                      onTap: () => Get.toNamed(AppRoutes.package),
-                    ),
-                    ProfileMenuRow(
-                      iconBg: AppColors.bg,
-                      iconColor: AppColors.primaryVariant,
-                      icon: Icons.credit_card_outlined,
-                      label: 'ປະຫວັດເຕີມເງິນ',
-                      onTap: () => Get.toNamed(AppRoutes.wallet),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 12.h),
+                  // ──────────────────────────────────────────
+                  const ProfileSectionLabel('ຄວາມປອດໄພ'),
+                  Obx(() {
+                    final customer =
+                        Get.find<LoginLogic>().state.customerProfile;
+                    return ProfileGroup(
+                      children: [
+                        ProfileMenuRow(
+                          iconBg: const Color(0xFFEDFAF3),
+                          iconColor: AppColors.online,
+                          icon: Icons.lock_outline_rounded,
+                          label: 'ປ່ຽນລະຫັດຜ່ານ',
+                          onTap: () => Get.toNamed(AppRoutes.changePassword),
+                        ),
+                        ProfileMenuRow(
+                          iconBg: const Color(0xFFEFF6FF),
+                          iconColor: const Color(0xFF3B82F6),
+                          icon: Icons.phone_outlined,
+                          label: 'ຢືນຢັນເບີໂທ',
+                          sub: customer?.whatsapp != null
+                              ? '+856 ${customer!.whatsapp}'
+                              : null,
+                          trailing: customer?.isPhoneVerified == true
+                              ? const PBadge(
+                                  '✓',
+                                  fg: Color(0xFF15803D),
+                                  bg: Color(0xFFEDFAF3),
+                                )
+                              : null,
+                          onTap: () {},
+                        ),
+                      ],
+                    );
+                  }),
+                  SizedBox(height: 12.h),
 
-                // ──────────────────────────────────────────
-                const ProfileSectionLabel('ຄວາມປອດໄພ'),
-                Obx(() {
-                  final customer = Get.find<LoginLogic>().state.customerProfile;
-                  return ProfileGroup(
+                  // ──────────────────────────────────────────
+                  const ProfileSectionLabel('ຕັ້ງຄ່າ'),
+                  ProfileGroup(
                     children: [
                       ProfileMenuRow(
-                        iconBg: const Color(0xFFEDFAF3),
-                        iconColor: AppColors.online,
-                        icon: Icons.lock_outline_rounded,
-                        label: 'ປ່ຽນລະຫັດຜ່ານ',
-                        onTap: () => Get.toNamed(AppRoutes.changePassword),
+                        iconBg: AppColors.bg,
+                        iconColor: AppColors.primaryVariant,
+                        icon: Icons.notifications_none_rounded,
+                        label: 'ການແຈ້ງເຕືອນ',
+                        sub: 'Push, ອີເມລ, SMS, WhatsApp',
+                        onTap: () =>
+                            Get.toNamed(AppRoutes.notificationSettings),
                       ),
                       ProfileMenuRow(
-                        iconBg: const Color(0xFFEFF6FF),
-                        iconColor: const Color(0xFF3B82F6),
-                        icon: Icons.phone_outlined,
-                        label: 'ຢືນຢັນເບີໂທ',
-                        sub: customer?.whatsapp != null
-                            ? '+856 ${customer!.whatsapp}'
-                            : null,
-                        trailing: customer?.isPhoneVerified == true
-                            ? const PBadge(
-                                '✓',
-                                fg: Color(0xFF15803D),
-                                bg: Color(0xFFEDFAF3),
-                              )
-                            : null,
+                        iconBg: AppColors.bg,
+                        iconColor: AppColors.primary,
+                        icon: Icons.language_rounded,
+                        label: 'ພາສາ',
+                        sub: 'ລາວ (ພາສາຫຼັກ)',
                         onTap: () {},
                       ),
                     ],
-                  );
-                }),
-                SizedBox(height: 12.h),
+                  ),
+                  SizedBox(height: 12.h),
 
-                // ──────────────────────────────────────────
-                const ProfileSectionLabel('ຕັ້ງຄ່າ'),
-                ProfileGroup(
-                  children: [
-                    ProfileMenuRow(
-                      iconBg: AppColors.bg,
-                      iconColor: AppColors.primaryVariant,
-                      icon: Icons.notifications_none_rounded,
-                      label: 'ການແຈ້ງເຕືອນ',
-                      sub: 'Push, ອີເມລ, SMS, WhatsApp',
-                      onTap: () => Get.toNamed(AppRoutes.notificationSettings),
-                    ),
-                    ProfileMenuRow(
-                      iconBg: AppColors.bg,
-                      iconColor: AppColors.primary,
-                      icon: Icons.language_rounded,
-                      label: 'ພາສາ',
-                      sub: 'ລາວ (ພາສາຫຼັກ)',
-                      onTap: () {},
-                    ),
-                  ],
-                ),
-                SizedBox(height: 12.h),
+                  // ──────────────────────────────────────────
+                  const ProfileSectionLabel('ຊ່ວຍເຫຼືອ'),
+                  ProfileGroup(
+                    children: [
+                      ProfileMenuRow(
+                        iconBg: AppColors.bg,
+                        iconColor: AppColors.primaryVariant,
+                        icon: Icons.help_outline_rounded,
+                        label: 'ຊ່ວຍເຫຼືອ / FAQ',
+                        onTap: () => Get.toNamed(AppRoutes.helperCenter),
+                      ),
+                      ProfileMenuRow(
+                        iconBg: const Color(0xFFFFF0F6),
+                        iconColor: AppColors.primary,
+                        icon: Icons.forum_outlined,
+                        label: 'ຄຳຕິຊົມ',
+                        sub: 'ລາຍງານບັນຫາ ຫຼື ສົ່ງຄຳຄິດເຫັນ',
+                        onTap: () => Get.toNamed(AppRoutes.feedback),
+                      ),
+                      ProfileMenuRow(
+                        iconBg: AppColors.bg,
+                        iconColor: AppColors.primaryVariant,
+                        icon: Icons.description_outlined,
+                        label: 'ຂໍ້ກຳນົດ ແລະ ນະໂຍບາຍ',
+                        onTap: () => Get.toNamed(AppRoutes.customerPolicyPrivacy),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 12.h),
 
-                // ──────────────────────────────────────────
-                const ProfileSectionLabel('ຊ່ວຍເຫຼືອ'),
-                ProfileGroup(
-                  children: [
-                    ProfileMenuRow(
-                      iconBg: AppColors.bg,
-                      iconColor: AppColors.primaryVariant,
-                      icon: Icons.help_outline_rounded,
-                      label: 'ຊ່ວຍເຫຼືອ / FAQ',
-                      onTap: () {},
-                    ),
-                    ProfileMenuRow(
-                      iconBg: const Color(0xFFFFF0F6),
-                      iconColor: AppColors.primary,
-                      icon: Icons.forum_outlined,
-                      label: 'ຄຳຕິຊົມ',
-                      sub: 'ລາຍງານບັນຫາ ຫຼື ສົ່ງຄຳຄິດເຫັນ',
-                      onTap: () => Get.toNamed(AppRoutes.feedback),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 12.h),
+                  // ──────────────────────────────────────────
+                  ProfileGroup(
+                    children: [
+                      ProfileMenuRow(
+                        iconBg: const Color(0xFFFEF2F2),
+                        iconColor: AppColors.primary,
+                        icon: Icons.delete_outline_rounded,
+                        label: 'ລຶບບັນຊີ',
+                        sub: 'ບໍ່ສາມາດຍ້ອນໄດ້',
+                        isDanger: true,
+                        onTap: () => _confirmDelete(context),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 20.h),
 
-                // ──────────────────────────────────────────
-                ProfileGroup(
-                  children: [
-                    ProfileMenuRow(
-                      iconBg: const Color(0xFFFEF2F2),
-                      iconColor: AppColors.primary,
-                      icon: Icons.delete_outline_rounded,
-                      label: 'ລຶບບັນຊີ',
-                      sub: 'ບໍ່ສາມາດຍ້ອນໄດ້',
-                      isDanger: true,
-                      onTap: () => _confirmDelete(context),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 20.h),
+                  LogoutButton(onTap: () => _logout(context)),
+                  SizedBox(height: 12.h),
 
-                LogoutButton(onTap: () => _logout(context)),
-                SizedBox(height: 12.h),
-
-                const Center(
-                  child: Text(
-                    'XAOSAO v1.0.0',
-                    style: TextStyle(
-                      fontSize: 10,
-                      color: Color(0xFFC4C4D0),
-                      fontWeight: FontWeight.w600,
+                  const Center(
+                    child: Text(
+                      'XAOSAO v1.0.0',
+                      style: TextStyle(
+                        fontSize: 10,
+                        color: Color(0xFFC4C4D0),
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                   ),
-                ),
-              ]),
+                ]),
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -255,14 +267,24 @@ class _CustomerProfilePageState extends State<CustomerProfilePage> {
       final uploading = _profileLogic.state.profileImageUploading;
       return Container(
         padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
-        margin: EdgeInsets.only(right: 16.w, left: 16.w, top: 16.h),
+        margin: EdgeInsets.only(right: 16.w, left: 16.w, top: 40.h),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(20.r),
           color: Colors.white,
+          boxShadow: [
+            BoxShadow(
+              color: AppColors.primary.withOpacity(0.10),
+              blurRadius: 20,
+              offset: const Offset(0, 6),
+            ),
+            BoxShadow(
+              color: Colors.black.withOpacity(0.05),
+              blurRadius: 10,
+              offset: const Offset(0, 2),
+            ),
+          ],
         ),
-        child: SafeArea(
-          bottom: false,
-          child: Column(
+        child: Column(
             children: [
               Row(
                 children: [
@@ -402,11 +424,11 @@ class _CustomerProfilePageState extends State<CustomerProfilePage> {
               _WalletCard(
                 showAmounts: _showAmt,
                 onToggle: () => setState(() => _showAmt = !_showAmt),
-                onTopUp: () => Get.toNamed(AppRoutes.wallet),
+                onTopUp: () => Get.toNamed(AppRoutes.topupAmount),
+                onHistory: () => Get.toNamed(AppRoutes.wallet),
               ),
             ],
           ),
-        ),
       );
     });
   }
@@ -420,7 +442,7 @@ class _CustomerProfilePageState extends State<CustomerProfilePage> {
           'ທ່ານແນ່ໃຈບໍ່ທີ່ຕ້ອງການລຶບບັນຊີ?\n'
           'ຂໍ້ມູນທັງໝົດຈະຖືກລຶບຖາວອນ ແລະ ບໍ່ສາມາດຍ້ອນໄດ້.',
       confirmLabel: 'ລຶບ',
-      icon: Icons.delete_outline_rounded,
+      icon: AppIcons.delete,
       isDanger: true,
     );
     if (confirmed != true) return;
@@ -434,13 +456,16 @@ class _CustomerProfilePageState extends State<CustomerProfilePage> {
       title: 'ອອກຈາກລະບົບ',
       message: 'ທ່ານຕ້ອງການອອກຈາກລະບົບແທ້ບໍ່?',
       confirmLabel: 'ອອກ',
-      icon: Icons.logout_rounded,
+      icon: AppIcons.logout,
       isDanger: true,
     );
     if (confirmed != true || !mounted) return;
     Get.find<LoginLogic>().clearState();
     _deleteUserControllers();
-    await Get.find<StorageService>().clear();
+    final storage = Get.find<StorageService>();
+    final lastRole = storage.read<String>('last_role');
+    await storage.clear();
+    if (lastRole != null) await storage.write('last_role', lastRole);
     if (!mounted) return;
     Navigator.pushNamedAndRemoveUntil(context, AppRoutes.login, (_) => false);
   }
@@ -453,6 +478,7 @@ class _CustomerProfilePageState extends State<CustomerProfilePage> {
     Get.delete<NotifSettingLogic>(force: true);
     Get.delete<WalletLogic>(force: true);
     Get.delete<PackageLogic>(force: true);
+    Get.delete<ChatLogic>(force: true);
   }
 }
 
@@ -463,11 +489,13 @@ class _WalletCard extends StatelessWidget {
   final bool showAmounts;
   final VoidCallback onToggle;
   final VoidCallback onTopUp;
+  final VoidCallback onHistory;
 
   const _WalletCard({
     required this.showAmounts,
     required this.onToggle,
     required this.onTopUp,
+    required this.onHistory,
   });
 
   String _mask(String v) => '••••••';
@@ -484,140 +512,134 @@ class _WalletCard extends StatelessWidget {
   }
 
   Widget _buildCard(String bal) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(20.r),
-      ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(18.r),
-        child: Stack(
-          children: [
-            Positioned(
-              top: -20,
-              right: -10,
-              child: Container(
-                width: 80,
-                height: 80,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: AppColors.bg.withAlpha(100),
-                ),
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(18.r),
+      child: Stack(
+        children: [
+          Positioned(
+            top: -20,
+            right: -10,
+            child: Container(
+              width: 80,
+              height: 80,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: AppColors.bg.withAlpha(100),
               ),
             ),
-            Positioned(
-              bottom: -28,
-              left: -10,
-              child: Container(
-                width: 90,
-                height: 90,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: AppColors.bg.withAlpha(100),
-                ),
+          ),
+          Positioned(
+            bottom: -28,
+            left: -10,
+            child: Container(
+              width: 90,
+              height: 90,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: AppColors.bg.withAlpha(100),
               ),
             ),
-            Padding(
-              padding: EdgeInsets.only(left: 14.w, right: 14.w, top: 6.h),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Text(
-                        'ກະເປົ໋າເງິນ ຍອດຄົງເຫຼືອ',
-                        style: TextStyle(
-                          fontSize: 12.sp,
-                          color: AppColors.textHint,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                      const Spacer(),
-                      GestureDetector(
-                        onTap: onToggle,
-                        child: Container(
-                          width: 26.r,
-                          height: 26.r,
-                          decoration: BoxDecoration(
-                            color: AppColors.border,
-                            borderRadius: BorderRadius.circular(7.r),
-                          ),
-                          child: Icon(
-                            showAmounts
-                                ? Icons.visibility_outlined
-                                : Icons.visibility_off_outlined,
-                            size: 16.r,
-                            color: AppColors.textSecondary,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 6.h),
-                  AnimatedSwitcher(
-                    duration: const Duration(milliseconds: 200),
-                    child: Text(
-                      showAmounts ? bal : _mask(bal),
-                      key: ValueKey(showAmounts),
+          ),
+          Padding(
+            padding: EdgeInsets.only(left: 14.w, right: 14.w, top: 6.h),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Text(
+                      'ກະເປົ໋າເງິນ ຍອດຄົງເຫຼືອ',
                       style: TextStyle(
-                        fontSize: 24.sp,
-                        fontWeight: FontWeight.w900,
-                        color: AppColors.primary,
-                        letterSpacing: -0.6,
+                        fontSize: 12.sp,
+                        color: AppColors.textSecondary,
+                        fontWeight: FontWeight.w600,
                       ),
                     ),
+                    const Spacer(),
+                    GestureDetector(
+                      onTap: onToggle,
+                      child: Container(
+                        width: 26.r,
+                        height: 26.r,
+                        decoration: BoxDecoration(
+                          color: AppColors.border,
+                          borderRadius: BorderRadius.circular(7.r),
+                        ),
+                        child: Icon(
+                          showAmounts
+                              ? Icons.visibility_outlined
+                              : Icons.visibility_off_outlined,
+                          size: 16.r,
+                          color: AppColors.textSecondary,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 6.h),
+                AnimatedSwitcher(
+                  duration: const Duration(milliseconds: 200),
+                  child: Text(
+                    showAmounts ? bal : _mask(bal),
+                    key: ValueKey(showAmounts),
+                    style: TextStyle(
+                      fontSize: 24.sp,
+                      fontWeight: FontWeight.w900,
+                      color: AppColors.primary,
+                      letterSpacing: -0.6,
+                    ),
                   ),
-                  SizedBox(height: 6.h),
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 16.w),
-                    child: Row(
-                      spacing: 12.w,
-                      children: List.generate(2, (index) {
-                        return Expanded(
-                          child: GestureDetector(
-                            onTap: onTopUp,
-                            child: Container(
-                              padding: EdgeInsets.symmetric(vertical: 12.h),
-                              decoration: BoxDecoration(
-                                color: AppColors.bg,
-                                borderRadius: BorderRadius.circular(10.r),
-                                border: Border.all(
-                                  color: Colors.white.withValues(alpha: 0.18),
-                                  width: 0.5,
-                                ),
-                              ),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Icon(
-                                    index == 0
-                                        ? Icons.arrow_outward_rounded
-                                        : Icons.trending_up_rounded,
-                                    size: 14.r,
-                                    color: AppColors.primary,
-                                  ),
-                                  SizedBox(width: 5.w),
-                                  Text(
-                                    index == 0 ? 'ເຕີມເງິນ' : 'ປະຫວັດ',
-                                    style: TextStyle(
-                                      fontSize: 12.sp,
-                                      fontWeight: FontWeight.w400,
-                                      color: AppColors.textPrimary,
-                                    ),
-                                  ),
-                                ],
+                ),
+                SizedBox(height: 6.h),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 16.w),
+                  child: Row(
+                    spacing: 12.w,
+                    children: List.generate(2, (index) {
+                      return Expanded(
+                        child: GestureDetector(
+                          onTap: index == 0 ? onTopUp : onHistory,
+                          child: Container(
+                            padding: EdgeInsets.symmetric(vertical: 12.h),
+                            decoration: BoxDecoration(
+                              color: AppColors.bg,
+                              borderRadius: BorderRadius.circular(10.r),
+                              border: Border.all(
+                                color: Colors.white.withValues(alpha: 0.18),
+                                width: 0.5,
                               ),
                             ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  index == 0
+                                      ? Icons.arrow_outward_rounded
+                                      : Icons.trending_up_rounded,
+                                  size: 14.r,
+                                  color: AppColors.primary,
+                                ),
+                                SizedBox(width: 5.w),
+                                Text(
+                                  index == 0 ? 'ເຕີມເງິນ' : 'ປະຫວັດ',
+                                  style: TextStyle(
+                                    fontSize: 12.sp,
+                                    fontWeight: FontWeight.w400,
+                                    color: AppColors.textPrimary,
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
-                        );
-                      }),
-                    ),
+                        ),
+                      );
+                    }),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

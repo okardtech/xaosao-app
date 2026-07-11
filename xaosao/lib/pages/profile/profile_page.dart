@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -11,12 +11,13 @@ import 'package:xaosao/pages/package/getx/package_logic.dart';
 import 'package:xaosao/pages/services_manage/getx/service_logic.dart';
 import 'package:xaosao/pages/profile/components/amberwarning.dart';
 import 'package:xaosao/widgets/confirm_sheet.dart';
-import 'package:xaosao/pages/profile/components/photo_grid.dart';
+import 'package:xaosao/pages/profile/components/gallery_preview.dart';
 import 'package:xaosao/pages/profile/components/qr_row.dart';
 import 'package:xaosao/pages/profile/components/services_section.dart';
 import 'package:xaosao/pages/profile/components/state_cell.dart';
 import 'package:xaosao/pages/profile/getx/profile_logic.dart';
 import '../../constants/app_color.dart';
+import '../../constants/app_icons.dart';
 import '../../constants/app_routes.dart';
 import '../../models/profile_model.dart';
 import '../../services/storage_service.dart';
@@ -161,7 +162,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           icon: Icons.help_outline_rounded,
                           iconColor: AppColors.textPrimary,
                           label: 'ຊ່ວຍເຫຼືອ / FAQ',
-                          onTap: () {},
+                          onTap: () => Get.toNamed(AppRoutes.helperCenter),
                         ),
                         _MenuItem(
                           iconBg: AppColors.primary.withValues(alpha: 0.10),
@@ -176,7 +177,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           icon: Icons.description_outlined,
                           iconColor: AppColors.textPrimary,
                           label: 'ຂໍ້ກຳນົດ ແລະ ນະໂຍບາຍ',
-                          onTap: () {},
+                          onTap: () => Get.toNamed(AppRoutes.companionPolicyPrivacy),
                         ),
                       ],
                     ),
@@ -234,13 +235,16 @@ class _ProfilePageState extends State<ProfilePage> {
       title: 'ອອກຈາກລະບົບ',
       message: 'ທ່ານຕ້ອງການອອກຈາກລະບົບແທ້ບໍ່?',
       confirmLabel: 'ອອກ',
-      icon: Icons.logout_rounded,
+      icon: AppIcons.logout,
       isDanger: true,
     );
     if (confirmed != true || !mounted) return;
     Get.find<LoginLogic>().clearState();
     _deleteUserControllers();
-    await Get.find<StorageService>().clear();
+    final storage = Get.find<StorageService>();
+    final lastRole = storage.read<String>('last_role');
+    await storage.clear();
+    if (lastRole != null) await storage.write('last_role', lastRole);
     if (!mounted) return;
     Navigator.pushNamedAndRemoveUntil(context, AppRoutes.login, (_) => false);
   }
@@ -252,6 +256,7 @@ class _ProfilePageState extends State<ProfilePage> {
     Get.delete<FeedbackLogic>(force: true);
     Get.delete<NotifSettingLogic>(force: true);
     Get.delete<PackageLogic>(force: true);
+    Get.delete<ModelWalletLogic>(force: true);
   }
 
   Future<void> _confirmDelete(BuildContext context) async {
@@ -261,7 +266,7 @@ class _ProfilePageState extends State<ProfilePage> {
       message:
           'ທ່ານແນ່ໃຈບໍ່ທີ່ຕ້ອງການລຶບບັນຊີ?\nຂໍ້ມູນທັງໝົດຈະຖືກລຶບຖາວອນ ແລະ ບໍ່ສາມາດຍ້ອນໄດ້.',
       confirmLabel: 'ລຶບ',
-      icon: Icons.delete_outline_rounded,
+      icon: AppIcons.delete,
       isDanger: true,
     );
     if (confirmed != true) return;
@@ -278,11 +283,24 @@ class _ProfilePageState extends State<ProfilePage> {
           Obx(() {
             final uploading = _profileLogic.state.profileImageUploading;
             return Container(
+              margin: EdgeInsets.only(top: 20.h),
               padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(20.r),
                 border: Border.all(color: AppColors.border, width: 0.5),
+                boxShadow: [
+                  BoxShadow(
+                    color: AppColors.primary.withOpacity(0.10),
+                    blurRadius: 20,
+                    offset: const Offset(0, 6),
+                  ),
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.05),
+                    blurRadius: 10,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
               ),
               child: Column(
                 children: [
@@ -445,20 +463,20 @@ class _ProfilePageState extends State<ProfilePage> {
                   Row(
                     children: [
                       StatCell(
-                        value: '${model?.counts?.totalLikes}',
+                        value: '${model?.counts?.totalLikes ?? 0}',
                         label: 'ຖືກໃຈ',
                         isBorder: false,
                       ),
                       StatCell(
-                        value: '${model?.counts?.totalFriends}',
+                        value: '${model?.counts?.totalFriends ?? 0}',
                         label: 'ໝູ່',
                       ),
                       StatCell(
-                        value: '${model?.totalReferredCustomers}★',
+                        value: '${model?.totalReferredCustomers  ?? 0}★',
                         label: 'ຄໍາລິຊົມ',
                       ),
                       StatCell(
-                        value: '${model?.counts?.totalBookings}',
+                        value: '${model?.counts?.totalBookings ?? 0}',
                         label: 'ຈອງ',
                       ),
                     ],
@@ -475,11 +493,22 @@ class _ProfilePageState extends State<ProfilePage> {
               children: [
                 ShareEnableCard(
                   enabled: st.hidden,
-                  onShareTap: () {},
+                  onShareTap: () {
+                    final model =
+                        Get.find<LoginLogic>().state.modelProfile;
+                    if (model != null) {
+                      Get.toNamed(
+                        AppRoutes.shareLink,
+                        arguments: model,
+                      );
+                    }
+                  },
                   onToggle: _profileLogic.toggleHidden,
-                  enableDesc:
-                      'ເຊື່ອງໂປຣໄຟຂອງທ່ານບໍ່ໃຫ້ລູກຄ້າເຫັນ. '
-                      'ທ່ານສາມາດເປີດ-ປີດໄດ້ຕະຫຼອດເວລາ.',
+                  enableDesc: st.hidden
+                      ? 'ໂປຣໄຟຂອງທ່ານຖືກຊ່ອນຢູ່ — ລູກຄ້າບໍ່ສາມາດເຫັນທ່ານໄດ້'
+                      : 'ເຊື່ອງໂປຣໄຟຂອງທ່ານບໍ່ໃຫ້ລູກຄ້າເຫັນ. ທ່ານສາມາດເປີດ-ປີດໄດ້ຕະຫຼອດເວລາ.',
+                  enableDescColor:
+                      st.hidden ? const Color(0xFFE65100) : null,
                 ),
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -502,13 +531,12 @@ class _ProfilePageState extends State<ProfilePage> {
                     ],
                   ],
                 ),
-                PhotoGrid(
+                SizedBox(height: 8.h),
+                GalleryPreview(
                   photos: st.photos,
+                  isOwner: true,
                   maxPhotos: _maxPhotos,
-                  onAdd: _profileLogic.pickAndUpload,
-                  onRemove: _profileLogic.removePhoto,
                   uploadingIndex: st.uploadingIndex,
-                  deletingIndex: st.deletingIndex,
                 ),
               ],
             );
@@ -604,6 +632,18 @@ class _MenuSection extends StatelessWidget {
             color: Colors.white,
             borderRadius: BorderRadius.circular(15.r),
             border: Border.all(color: AppColors.border, width: 0.5),
+            boxShadow: [
+              BoxShadow(
+                color: AppColors.primary.withValues(alpha: 0.10),
+                blurRadius: 20,
+                offset: const Offset(0, 6),
+              ),
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.05),
+                blurRadius: 10,
+                offset: const Offset(0, 2),
+              ),
+            ],
           ),
           child: ClipRRect(
             borderRadius: BorderRadius.circular(15.r),
@@ -757,6 +797,18 @@ class _LogoutButton extends StatelessWidget {
           color: Colors.white,
           borderRadius: BorderRadius.circular(15.r),
           border: Border.all(color: AppColors.border, width: 0.5),
+          boxShadow: [
+            BoxShadow(
+              color: AppColors.primary.withValues(alpha: 0.10),
+              blurRadius: 20,
+              offset: const Offset(0, 6),
+            ),
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.05),
+              blurRadius: 10,
+              offset: const Offset(0, 2),
+            ),
+          ],
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,

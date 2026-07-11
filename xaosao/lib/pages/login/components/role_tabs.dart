@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:xaosao/constants/app_icons.dart';
+import 'package:xaosao/widgets/app_svg_icon.dart';
 
 import '../../../constants/app_color.dart';
 import '../getx/login_state.dart';
@@ -20,7 +22,7 @@ class RoleCards extends StatelessWidget {
             selected: selected,
             label: 'ຜູ້ຈອງ',
             sub: 'ຄົ້ນຫາ ແລະ ຈອງບໍລິການ',
-            icon: Icons.person_outline_rounded,
+            icon: AppIcons.user,
             activeGrad: AppColors.pinkGradient,
             activeBg: const Color(0xFFFFF5F6),
             activeBd: AppColors.primary,
@@ -35,7 +37,7 @@ class RoleCards extends StatelessWidget {
             selected: selected,
             label: 'ຜູ້ໃຫ້ບໍລິການ',
             sub: 'ໂພສບໍລິການ ແລະ ຮັບການຈອງ',
-            icon: Icons.people_outline_rounded,
+            icon: AppIcons.userGroup,
             activeGrad: const [Color(0xFF2A2A4E), Color(0xFF1A1A2E)],
             activeBg: const Color(0xFFF2F2F8),
             activeBd: const Color(0xFF1A1A2E),
@@ -53,7 +55,7 @@ class _RoleCard extends StatelessWidget {
   final RegisterRole selected;
   final String label;
   final String sub;
-  final IconData icon;
+  final String icon;
   final List<Color> activeGrad;
   final Color activeBg;
   final Color activeBd;
@@ -101,6 +103,7 @@ class _RoleCard extends StatelessWidget {
                     Container(
                       width: 36.r,
                       height: 36.r,
+                      padding: EdgeInsets.all(8.r),
                       decoration: BoxDecoration(
                         gradient: _isOn
                             ? LinearGradient(
@@ -112,11 +115,17 @@ class _RoleCard extends StatelessWidget {
                         color: _isOn ? null : const Color(0xFFE8E8F0),
                         borderRadius: BorderRadius.circular(11.r),
                       ),
-                      child: Icon(
-                        icon,
-                        size: 17.r,
+                      child: AppSvgIcon(
+                        assetName: icon,
+                        width: 17.w,
+                        height: 17.h,
                         color: _isOn ? Colors.white : const Color(0xFFBBBBCC),
                       ),
+                      // child: Icon(
+                      //   icon,
+                      //   size: 17.r,
+                      //   color: _isOn ? Colors.white : const Color(0xFFBBBBCC),
+                      // ),
                     ),
                     SizedBox(width: 10.w),
                     Text(
@@ -133,6 +142,8 @@ class _RoleCard extends StatelessWidget {
                 // Sub
                 Text(
                   sub,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                   style: TextStyle(
                     fontSize: 12.sp,
                     color: _isOn

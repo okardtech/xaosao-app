@@ -63,6 +63,18 @@ class _CompanionDiscoverCardState extends State<CompanionDiscoverCard>
               color: Colors.black.withValues(alpha: 0.05),
               width: 0.5,
             ),
+            boxShadow: [
+              BoxShadow(
+                color: AppColors.primary.withValues(alpha: 0.10),
+                blurRadius: 20,
+                offset: const Offset(0, 6),
+              ),
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.05),
+                blurRadius: 10,
+                offset: const Offset(0, 2),
+              ),
+            ],
           ),
           child: ClipRRect(
             borderRadius: BorderRadius.circular(20.r),

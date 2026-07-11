@@ -35,7 +35,6 @@ class RegisterRepo extends BaseRepository {
         onSendProgress: onProgress,
       ),
       fromJson: (j) {
-        developer.log('$j', name: 'Register');
         return SignUpModel.fromJson(j);
       },
     );
@@ -50,6 +49,7 @@ class RegisterRepo extends BaseRepository {
     required DateTime dob,
     required String gender,
     required String password,
+    String? modelId,
     required List<Map<String, dynamic>> services,
     void Function(int sent, int total)? onProgress,
   }) async {
@@ -63,6 +63,7 @@ class RegisterRepo extends BaseRepository {
       'password': password,
       'address': address,
       'services': services,
+      if (modelId != null) 'referredById': modelId,
     });
     return safeCall(
       () => api.upload(

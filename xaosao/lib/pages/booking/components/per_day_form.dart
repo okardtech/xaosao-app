@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:xaosao/constants/app_color.dart';
 import 'package:xaosao/pages/booking/booking_page.dart';
+import 'package:xaosao/utils/service_helper.dart';
 import 'package:xaosao/pages/booking/getx/booking_logic.dart';
 import 'package:xaosao/utils/currency_formatter.dart';
 import 'package:xaosao/widgets/app_text_field.dart';
@@ -93,8 +94,8 @@ class _PerDayFormState extends State<PerDayForm> {
                                         Text(
                                           'ວັນທີອອກເດີນທາງ',
                                           style: TextStyle(
-                                            fontSize: 12.sp,
-                                            fontWeight: FontWeight.w600,
+                                            fontSize: 14.sp,
+                                            fontWeight: FontWeight.w400,
                                             color: AppColors.textSecondary,
                                           ),
                                         ),
@@ -121,8 +122,8 @@ class _PerDayFormState extends State<PerDayForm> {
                                         Text(
                                           'ວັນທີກັບມາ',
                                           style: TextStyle(
-                                            fontSize: 12.sp,
-                                            fontWeight: FontWeight.w600,
+                                            fontSize: 14.sp,
+                                            fontWeight: FontWeight.w400,
                                             color: AppColors.textSecondary,
                                           ),
                                         ),
@@ -165,14 +166,14 @@ class _PerDayFormState extends State<PerDayForm> {
                             // ── Note ─────────────────────────────
                             Padding(
                               padding: EdgeInsets.fromLTRB(16.w, 0, 16.w, 8.h),
-                              child: BookingSectionLabel('ການເເຕ່ງກາຍ'),
+                              child: BookingSectionLabel('ການແຕ່ງກາຍທີ່ຕ້ອງການ'),
                             ),
                             Padding(
                               padding: EdgeInsets.symmetric(horizontal: 16.w),
                               child: AppTextField(
                                 controller: _noteCtrl,
                                 focusNode: _noteFocus,
-                                hint: 'ໃສ່ຄຳແນະນຳ (ທາງເລືອກ)',
+                                hint: 'ຕົວຢ່າງ: ແຕ່ງຕົວເຊັກຊີ(ທາງເລືອກ)',
                                 prefixIcon: Icons.notes_rounded,
                                 accent: AppColors.primary,
                                 action: TextInputAction.done,
@@ -254,7 +255,7 @@ class _PerDayFormState extends State<PerDayForm> {
                               ),
                               child: BookingSummary(
                                 rateLabel:
-                                    _logic.args.service.name ?? "noservice",
+                                    ServiceHelper.serviceOriginalName(_logic.args.service.name),
                                 rateValue:
                                     '${CurrFormatter.format(_logic.rate)} ກີບ / $unit',
                                 countLabel: 'ຈຳນວນ$unit',

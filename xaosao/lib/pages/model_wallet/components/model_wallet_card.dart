@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 import 'package:xaosao/constants/app_color.dart';
@@ -18,15 +18,15 @@ class ModelWalletCard extends StatelessWidget {
     required this.onWithdraw,
   });
 
-  String _fmt(int? n) =>
+  String _fmt(num? n) =>
       '${NumberFormat.decimalPattern().format(n ?? 0)} ກີບ';
 
   static const String _masked = '••••••';
 
   @override
   Widget build(BuildContext context) {
-    final balance = _fmt(wallet.totalBalance);
-    final pending = _fmt(wallet.totalPending);
+    final balance = _fmt(wallet.withdrawableBalance);
+    final pending = _fmt(wallet.pendingWithdrawals);
     final withdrawn = _fmt(wallet.totalWithdraw);
     final income = _fmt(wallet.totalIncome);
 
@@ -83,7 +83,7 @@ class ModelWalletCard extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      'ຍອດເງິນທັງໝົດ',
+                      'ຍອດເງິນສາມາດຖອນໄດ້',
                       style: TextStyle(
                         fontSize: 14.sp,
                         fontWeight: FontWeight.w600,
@@ -104,6 +104,18 @@ class ModelWalletCard extends StatelessWidget {
                             color: Colors.white.withValues(alpha: 0.22),
                             width: 0.5,
                           ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: AppColors.primary.withValues(alpha: 0.10),
+                              blurRadius: 20,
+                              offset: const Offset(0, 6),
+                            ),
+                            BoxShadow(
+                              color: Colors.black.withValues(alpha: 0.05),
+                              blurRadius: 10,
+                              offset: const Offset(0, 2),
+                            ),
+                          ],
                         ),
                         child: Icon(
                           amountsVisible
@@ -126,7 +138,7 @@ class ModelWalletCard extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 28.sp,
                       fontWeight: FontWeight.w900,
-                      color: Colors.white,
+                      color: amountsVisible ? AppColors.online : Colors.white,
                       letterSpacing: -0.8,
                       height: 1,
                     ),
@@ -140,6 +152,7 @@ class ModelWalletCard extends StatelessWidget {
                       child: _StatPill(
                         label: 'ລໍຖ້າ',
                         value: amountsVisible ? pending : _masked,
+                        valueColor: amountsVisible ? AppColors.star : null,
                       ),
                     ),
                     SizedBox(width: 6.w),
@@ -152,7 +165,7 @@ class ModelWalletCard extends StatelessWidget {
                     SizedBox(width: 6.w),
                     Expanded(
                       child: _StatPill(
-                        label: 'ລາຍຮັບ',
+                        label: 'ລາຍຮັບທັງໝົດ',
                         value: amountsVisible ? income : _masked,
                       ),
                     ),
@@ -172,6 +185,18 @@ class ModelWalletCard extends StatelessWidget {
                         color: Colors.white.withValues(alpha: 0.22),
                         width: 0.5,
                       ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: AppColors.primary.withValues(alpha: 0.10),
+                          blurRadius: 20,
+                          offset: const Offset(0, 6),
+                        ),
+                        BoxShadow(
+                          color: Colors.black.withValues(alpha: 0.05),
+                          blurRadius: 10,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
                     ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -206,7 +231,8 @@ class ModelWalletCard extends StatelessWidget {
 class _StatPill extends StatelessWidget {
   final String label;
   final String value;
-  const _StatPill({required this.label, required this.value});
+  final Color? valueColor;
+  const _StatPill({required this.label, required this.value, this.valueColor});
 
   @override
   Widget build(BuildContext context) {
@@ -230,7 +256,7 @@ class _StatPill extends StatelessWidget {
             style: TextStyle(
               fontSize: 12.sp,
               fontWeight: FontWeight.w800,
-              color: Colors.white,
+              color: valueColor ?? Colors.white,
               letterSpacing: -0.2,
             ),
           ),

@@ -31,6 +31,7 @@ class FeedbackLogic extends GetxController {
   }
 
   Future<bool> submitFeedback({
+    required String type,
     required String subject,
     required String desc,
   }) async {
@@ -38,13 +39,13 @@ class FeedbackLogic extends GetxController {
     _busy = true;
     showLoadingDialog();
     try {
-      final res = await _repo.addFeedback(subject: subject, desc: desc);
+      final res = await _repo.addFeedback(type: type, subject: subject, desc: desc);
       hideLoadingDialog();
       if (res.success) {
         await loadFeedbacks();
         return true;
       }
-      AppSnackbar.error(res.message ?? 'ສົ່ງຄຳຕິຊົມບໍ່ສຳເລັດ');
+      AppSnackbar.error(res.laMessage ?? 'ສົ່ງຄຳຕິຊົມບໍ່ສຳເລັດ');
       return false;
     } catch (_) {
       hideLoadingDialog();

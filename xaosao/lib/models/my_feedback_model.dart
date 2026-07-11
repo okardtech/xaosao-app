@@ -3,6 +3,7 @@
 //     final myFeedbackModel = myFeedbackModelFromJson(jsonString);
 
 import 'dart:convert';
+import 'package:xaosao/utils/api_date_parser.dart';
 
 List<MyFeedbackModel> myFeedbackModelFromJson(String str) => List<MyFeedbackModel>.from(json.decode(str).map((x) => MyFeedbackModel.fromJson(x)));
 
@@ -43,7 +44,7 @@ class MyFeedbackModel {
         subject: json["subject"],
         description: json["description"],
         status: json["status"],
-        createdAt: json["createdAt"] == null ? null : DateTime.parse(json["createdAt"]),
+        createdAt: parseApiDateTime(json["createdAt"]),
     );
 
     Map<String, dynamic> toJson() => {

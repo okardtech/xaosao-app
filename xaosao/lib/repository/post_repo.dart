@@ -4,7 +4,10 @@ import '../constants/api_constants.dart';
 import '../models/api_response.dart';
 import '../models/comment_model.dart';
 import '../models/fee_model.dart';
+import '../models/interest_model.dart';
 import '../models/my_post_model.dart';
+import '../models/post_count_model.dart';
+import '../models/post_detail_model.dart';
 import '../services/base_repo.dart';
 
 class MyPost extends BaseRepository {
@@ -33,6 +36,14 @@ class MyPost extends BaseRepository {
       fromJson: (json) => (json['data'] as List)
           .map((item) => FeeModel.fromJson(item as Map<String, dynamic>))
           .toList(),
+    );
+  }
+
+  Future<ApiResponse<PostDetailModel>> getPostDetail({required String postId}) {
+    return safeCall(
+      () => api.get('${ApiConstants.myPost}/$postId'),
+      fromJson: (json) =>
+          PostDetailModel.fromJson(json as Map<String, dynamic>),
     );
   }
 
@@ -135,6 +146,50 @@ class MyPost extends BaseRepository {
     return safeCall(
       () => api.delete('${ApiConstants.myPost}/$postId'),
       fromJson: (json) => true,
+    );
+  }
+
+  Future<ApiResponse<bool>> hidePost({required String postId}) {
+    return safeCall(
+      () => api.post('${ApiConstants.myPost}/$postId/fulfill'),
+      fromJson: (json) => true,
+    );
+  }
+
+  // ── Interest toggle ──────────────────────────────────────────
+  Future<ApiResponse<({bool isInterested, int interestedCount})>>
+  toggleInterest({required String postId}) {
+    return safeCall(
+      () => api.post('${ApiConstants.myPost}/$postId/interest'),
+      fromJson: (json) {
+        final data = json as Map<String, dynamic>;
+        return (
+          isInterested: data['isInterested'] as bool? ?? false,
+          interestedCount: data['interestedCount'] as int? ?? 0,
+        );
+      },
+    );
+  }
+
+  Future<ApiResponse<List<InterestModel>>> getInterests({
+    required String postId,
+    required int limit,
+    required int page,
+  }) {
+    return safeCall(
+      () => api.get(
+        '${ApiConstants.myPost}/$postId/interest?page=$page&limit=$limit',
+      ),
+      fromJson: (json) => (json['data'] as List)
+          .map((e) => InterestModel.fromJson(e as Map<String, dynamic>))
+          .toList(),
+    );
+  }
+
+  Future<ApiResponse<PostCountModel>> getPostCount({required String postId}) {
+    return safeCall(
+      () => api.get('${ApiConstants.myPost}/$postId/counts'),
+      fromJson: (json) => PostCountModel.fromJson(json),
     );
   }
 }

@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:xaosao/models/service_model.dart';
+
 List<ModelAvailable> modelAvailableFromJson(String str) =>
     List<ModelAvailable>.from(
       json.decode(str).map((x) => ModelAvailable.fromJson(x)),
@@ -12,12 +14,13 @@ class ModelAvailable {
   String? id;
   String? name;
   String? billingType;
-  double? customRate;           // ✅ double
-  double? customHourlyRate;     // ✅ double
-  double? customMinuteRate;     // ✅ double
-  double? customOneTimePrice;   // ✅ double
-  double? customOneNightPrice;  // ✅ double
+  double? customRate; // ✅ double
+  double? customHourlyRate; // ✅ double
+  double? customMinuteRate; // ✅ double
+  double? customOneTimePrice; // ✅ double
+  double? customOneNightPrice; // ✅ double
   String? serviceLocation;
+  List<MassageVariant>? variants;
 
   ModelAvailable({
     this.id,
@@ -29,6 +32,7 @@ class ModelAvailable {
     this.customOneTimePrice,
     this.customOneNightPrice,
     this.serviceLocation,
+    this.variants,
   });
 
   ModelAvailable copyWith({
@@ -41,6 +45,7 @@ class ModelAvailable {
     double? customOneTimePrice,
     double? customOneNightPrice,
     String? serviceLocation,
+    List<MassageVariant>? variants,
   }) => ModelAvailable(
     id: id ?? this.id,
     name: name ?? this.name,
@@ -51,6 +56,7 @@ class ModelAvailable {
     customOneTimePrice: customOneTimePrice ?? this.customOneTimePrice,
     customOneNightPrice: customOneNightPrice ?? this.customOneNightPrice,
     serviceLocation: serviceLocation ?? this.serviceLocation,
+    variants: variants ?? this.variants,
   );
 
   factory ModelAvailable.fromJson(Map<String, dynamic> json) => ModelAvailable(
@@ -73,6 +79,11 @@ class ModelAvailable {
         ? null
         : (json["customOneNightPrice"] as num).toDouble(),
     serviceLocation: json["serviceLocation"],
+    variants: json["variants"] == null
+        ? null
+        : List<MassageVariant>.from(
+            (json["variants"] as List).map((x) => MassageVariant.fromJson(x)),
+          ),
   );
 
   Map<String, dynamic> toJson() => {
@@ -85,17 +96,26 @@ class ModelAvailable {
     "customOneTimePrice": customOneTimePrice,
     "customOneNightPrice": customOneNightPrice,
     "serviceLocation": serviceLocation,
+    "variants": variants == null
+        ? null
+        : List<dynamic>.from(variants!.map((x) => x.toJson())),
   };
 
   // ✅ effective rate based on billingType
   double? get effectiveRate {
     switch (billingType) {
-      case "per_hour":   return customHourlyRate ?? customRate;
-      case "per_day":    return customRate;
-      case "per_night":  return customOneNightPrice ?? customRate;
-      case "one_time":   return customOneTimePrice ?? customRate;
-      case "per_minute": return customMinuteRate ?? customRate;
-      default:           return customRate;
+      case "per_hour":
+        return customHourlyRate ?? customRate;
+      case "per_day":
+        return customRate;
+      case "per_night":
+        return customOneNightPrice ?? customRate;
+      case "one_time":
+        return customOneTimePrice ?? customRate;
+      case "per_minute":
+        return customMinuteRate ?? customRate;
+      default:
+        return customRate;
     }
   }
 }

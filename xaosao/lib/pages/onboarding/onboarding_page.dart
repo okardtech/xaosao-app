@@ -3,13 +3,13 @@ import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:xaosao/constants/app_color.dart';
+import 'package:xaosao/constants/app_icons.dart';
 import 'package:xaosao/pages/login/login_page.dart';
 import 'package:xaosao/pages/onboarding/components/companion_widget.dart';
 import 'package:xaosao/widgets/app_network_image.dart';
 import 'package:xaosao/pages/onboarding/components/service_card_large.dart';
 import 'package:xaosao/pages/onboarding/getx/onboarding_logic.dart';
-import 'package:xaosao/widgets/show_loading_alert.dart';
-
+import 'package:xaosao/widgets/app_svg_icon.dart';
 import '../../models/models_hot.dart';
 import '../../utils/age_formatter.dart';
 import 'getx/onboarding_state.dart';
@@ -37,7 +37,6 @@ class _XaosaoHomePageState extends State<XaosaoHomePage>
   static const _kSections = 4;
   late final List<Animation<double>> _secFade;
   late final List<Animation<Offset>> _secSlide;
-
 
   @override
   void initState() {
@@ -159,24 +158,32 @@ class _XaosaoHomePageState extends State<XaosaoHomePage>
                 padding: EdgeInsets.only(right: 20.w),
                 child: Stack(
                   children: [
-                    Container(
-                      width: 40.r,
-                      height: 40.r,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        shape: BoxShape.circle,
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.07),
-                            blurRadius: 10,
-                            offset: const Offset(0, 2),
-                          ),
-                        ],
-                      ),
-                      child: Icon(
-                        Icons.notifications_outlined,
-                        size: 20.r,
-                        color: const Color(0xFF1A1A2E),
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => LoginPage()),
+                        );
+                      },
+                      child: Container(
+                        width: 40.r,
+                        height: 40.r,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          shape: BoxShape.circle,
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.07),
+                              blurRadius: 10,
+                              offset: const Offset(0, 2),
+                            ),
+                          ],
+                        ),
+                        child: Icon(
+                          Icons.notifications_outlined,
+                          size: 20.r,
+                          color: const Color(0xFF1A1A2E),
+                        ),
                       ),
                     ),
                     Positioned(
@@ -314,9 +321,12 @@ class _XaosaoHomePageState extends State<XaosaoHomePage>
           SizedBox(height: 16.h),
 
           // ── Login prompt banner ───────────────────────────────
-          GestureDetector(
+          InkWell(
             onTap: () {
-              // TODO: navigate to login page
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => LoginPage()),
+              );
             },
             child: Container(
               padding: EdgeInsets.symmetric(horizontal: 18.w, vertical: 16.h),
@@ -334,15 +344,22 @@ class _XaosaoHomePageState extends State<XaosaoHomePage>
                   Container(
                     width: 44.r,
                     height: 44.r,
+                    padding: EdgeInsets.all(10.r),
                     decoration: BoxDecoration(
                       color: AppColors.primary.withOpacity(0.18),
                       shape: BoxShape.circle,
                     ),
-                    child: Icon(
-                      Icons.person_outline_rounded,
+                    child: AppSvgIcon(
+                      assetName: AppIcons.user,
+                      width: 22.h,
+                      height: 22.h,
                       color: AppColors.primary,
-                      size: 22.r,
                     ),
+                    // child: Icon(
+                    //   Icons.person_outline_rounded,
+                    //   color: AppColors.primary,
+                    //   size: 22.r,
+                    // ),
                   ),
                   SizedBox(width: 6.w),
                   // Text
@@ -375,50 +392,42 @@ class _XaosaoHomePageState extends State<XaosaoHomePage>
                   SizedBox(width: 10.w),
 
                   // Arrow button
-                  InkWell(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => LoginPage()),
-                      );
-                    },
-                    child: Container(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 14.w,
-                        vertical: 9.h,
+                  Container(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 14.w,
+                      vertical: 9.h,
+                    ),
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [AppColors.secondary, AppColors.primary],
                       ),
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          colors: [AppColors.secondary, AppColors.primary],
+                      borderRadius: BorderRadius.circular(12.r),
+                      boxShadow: [
+                        BoxShadow(
+                          color: AppColors.primary.withOpacity(0.40),
+                          blurRadius: 12,
+                          offset: const Offset(0, 4),
                         ),
-                        borderRadius: BorderRadius.circular(12.r),
-                        boxShadow: [
-                          BoxShadow(
-                            color: AppColors.primary.withOpacity(0.40),
-                            blurRadius: 12,
-                            offset: const Offset(0, 4),
-                          ),
-                        ],
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text(
-                            'ເຂົ້າສູ່ລະບົບ',
-                            style: TextStyle(
-                              fontSize: 12.sp,
-                              fontWeight: FontWeight.w800,
-                              color: Colors.white,
-                            ),
-                          ),
-                          SizedBox(width: 4.w),
-                          Icon(
-                            Icons.arrow_forward_rounded,
+                      ],
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          'ເຂົ້າສູ່ລະບົບ',
+                          style: TextStyle(
+                            fontSize: 12.sp,
+                            fontWeight: FontWeight.w800,
                             color: Colors.white,
-                            size: 14.r,
                           ),
-                        ],
-                      ),
+                        ),
+                        SizedBox(width: 4.w),
+                        Icon(
+                          Icons.arrow_forward_rounded,
+                          color: Colors.white,
+                          size: 14.r,
+                        ),
+                      ],
                     ),
                   ),
                 ],
@@ -526,13 +535,15 @@ class _XaosaoHomePageState extends State<XaosaoHomePage>
               final item = hostList[i];
               return Padding(
                 padding: EdgeInsets.only(right: 14.w),
-                child: CompanionCard(
-                  name: '${item.firstName} ${item.lastName ?? ""}',
-                  imageUrl: item.profile,
-                  rating: (item.rating).toDouble(),
-                  badgeColor: AppColors.socialBd,
-                  reviewCount: item.totalReview,
-                  age: AgeFormatter.ageFormatter(item.dob),
+                child: GestureDetector(
+                  child: CompanionCard(
+                    name: '${item.firstName} ${item.lastName ?? ""}',
+                    imageUrl: item.profile,
+                    rating: (item.rating).toDouble(),
+                    badgeColor: AppColors.socialBd,
+                    reviewCount: item.totalReview,
+                    age: AgeFormatter.ageFormatter(item.dob),
+                  ),
                 ),
               );
             },
@@ -575,7 +586,7 @@ class _XaosaoHomePageState extends State<XaosaoHomePage>
                       fontSize: 9.sp,
                       fontWeight: FontWeight.w700,
                       color: const Color(0xFF9B9BAD),
-                      letterSpacing: 1.8,
+                      letterSpacing: 0.7,
                     ),
                   ),
                   SizedBox(height: 8.h),
@@ -620,7 +631,7 @@ class _XaosaoHomePageState extends State<XaosaoHomePage>
                               fontSize: 9.sp,
                               fontWeight: FontWeight.w800,
                               color: AppColors.primary,
-                              letterSpacing: 1.0,
+                              letterSpacing: 0.5,
                             ),
                           ),
                         ),
@@ -735,7 +746,10 @@ class _XaosaoHomePageState extends State<XaosaoHomePage>
                   SizedBox(width: 14.w),
                   GestureDetector(
                     onTap: () {
-                      // TODO: navigate to partner signup
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => LoginPage()),
+                      );
                     },
                     child: Container(
                       padding: EdgeInsets.symmetric(
@@ -813,7 +827,7 @@ class _XaosaoHomePageState extends State<XaosaoHomePage>
           Text(
             name,
             style: TextStyle(
-              fontSize: 11.sp,
+              fontSize: 12.sp,
               fontWeight: FontWeight.w800,
               color: const Color(0xFF1A1A2E),
             ),
@@ -834,7 +848,7 @@ class _XaosaoHomePageState extends State<XaosaoHomePage>
                 TextSpan(
                   text: earnValue,
                   style: TextStyle(
-                    fontSize: 13.sp,
+                    fontSize: 12.sp,
                     fontWeight: FontWeight.w900,
                     color: const Color(0xFF1A1A2E),
                     letterSpacing: -0.3,
@@ -843,9 +857,9 @@ class _XaosaoHomePageState extends State<XaosaoHomePage>
                 TextSpan(
                   text: earnUnit,
                   style: TextStyle(
-                    fontSize: 9.sp,
+                    fontSize: 12.sp,
                     fontWeight: FontWeight.w600,
-                    color: const Color(0xFF9B9BAD),
+                    color: AppColors.textSecondary,
                   ),
                 ),
               ],
@@ -855,8 +869,8 @@ class _XaosaoHomePageState extends State<XaosaoHomePage>
           Text(
             earnSub,
             style: TextStyle(
-              fontSize: 8.5.sp,
-              color: const Color(0xFF9B9BAD),
+              fontSize: 10.sp,
+              color: AppColors.textSecondary,
               height: 1.4,
             ),
           ),

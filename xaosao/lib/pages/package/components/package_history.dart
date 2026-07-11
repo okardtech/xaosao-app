@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -33,48 +33,63 @@ String _fmtKip(int? n) => '${NumberFormat.decimalPattern().format(n ?? 0)} ກ�
 
 // Status helpers
 Color _accentColor(String? s) => switch (s) {
-  'active' => AppColors.online,
-  'completed' => AppColors.online,
-  'pending' => const Color(0xFFF59E0B),
-  'canceled' => const Color(0xFFEF4444),
+  'active' || 'completed' || 'approved' || 'released' => AppColors.online,
+  'pending' || 'pending_release' || 'held' => const Color(0xFFF59E0B),
+  'canceled' || 'rejected' => const Color(0xFFEF4444),
+  'refunded' => const Color(0xFF8B5CF6),
   'expired' => AppColors.textHint,
   'upgraded' => const Color(0xFF3B82F6),
+  'superseded' => AppColors.textHint,
   _ => AppColors.textHint,
 };
 
 Color _badgeBg(String? s) => switch (s) {
-  'active' || 'completed' => const Color(0xFFEDFAF3),
-  'pending' => const Color(0xFFFFFBEB),
-  'canceled' => const Color(0xFFFEF2F2),
+  'active' ||
+  'completed' ||
+  'approved' ||
+  'released' => const Color(0xFFEDFAF3),
+  'pending' || 'pending_release' || 'held' => const Color(0xFFFFFBEB),
+  'canceled' || 'rejected' => const Color(0xFFFEF2F2),
+  'refunded' => const Color(0xFFF5F3FF),
   'expired' => AppColors.surfaceSecondary,
   'upgraded' => const Color(0xFFEFF6FF),
+  'superseded' => const Color(0xFFEEF2FF),
   _ => AppColors.surfaceSecondary,
 };
 
 Color _badgeFg(String? s) => switch (s) {
-  'active' || 'completed' => const Color(0xFF15803D),
-  'pending' => const Color(0xFF92400E),
-  'canceled' => const Color(0xFFB91C1C),
+  'active' ||
+  'completed' ||
+  'approved' ||
+  'released' => const Color(0xFF15803D),
+  'pending' || 'pending_release' || 'held' => const Color(0xFF92400E),
+  'canceled' || 'rejected' => const Color(0xFFB91C1C),
+  'refunded' => const Color(0xFF6D28D9),
   'expired' => AppColors.textHint,
   'upgraded' => const Color(0xFF1D4ED8),
+  'superseded' => AppColors.textHint,
   _ => AppColors.textHint,
 };
 
 String _statusLabel(String? s) => switch (s) {
   'active' => 'ກຳລັງໃຊ້',
-  'completed' => 'ສຳເລັດ',
+  'completed' || 'approved' || 'released' => 'ສຳເລັດ',
   'pending' => 'ລໍຖ້າ',
-  'canceled' => 'ຍົກເລີກ',
+  'pending_release' => 'ລໍຖ້າໂອນ',
+  'canceled' || 'rejected' => 'ຍົກເລີກ',
+  'refunded' => 'ຄືນເງິນ',
   'expired' => 'ໝົດອາຍຸ',
   'upgraded' => 'ອັບເກຣດ',
+  'held' => 'ຄ້ຳປະກັນ',
+  'superseded' => 'ຖືກແທນທີ່',
   _ => s ?? '—',
 };
 
 const _kChips = <(String, String?)>[
   ('ທັງໝົດ', null),
-  ('ລໍຖ້າ', 'pending'),
+  ('ອັບເກຣດ', 'upgraded'),
+  ('ຖືກແທນທີ່', 'superseded'),
   ('ກຳລັງໃຊ້', 'active'),
-  ('ໝົດອາຍຸ', 'expired'),
   ('ຍົກເລີກ', 'canceled'),
 ];
 
@@ -226,7 +241,9 @@ class _HistoryCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final accent = _accentColor(item.status);
     final isExpiredOrCanceled =
-        item.status == 'expired' || item.status == 'canceled';
+        item.status == 'expired' ||
+        item.status == 'canceled' ||
+        item.status == 'superseded';
     final isActive = item.status == 'active';
     final now = DateTime.now();
     final daysLeft = item.endDate != null && item.endDate!.isAfter(now)
@@ -308,11 +325,18 @@ class _HistoryCard extends StatelessWidget {
                                       borderRadius: BorderRadius.circular(20.r),
                                     ),
                                     child: Text(
-                                      '${item.durationDays} ວັນ',
+                                      'ຍັງເຫຼືອ ${item.durationDays} ວັນ',
                                       style: TextStyle(
                                         fontSize: 12.sp,
                                         fontWeight: FontWeight.w700,
-                                        color: accent,
+                                        color: isExpiredOrCanceled
+                                            ? AppColors.textDisabled
+                                            : accent,
+                                        decoration: isExpiredOrCanceled
+                                            ? TextDecoration.lineThrough
+                                            : null,
+                                        decorationColor: AppColors.textDisabled,
+                                        decorationThickness: 2,
                                       ),
                                     ),
                                   ),
@@ -323,34 +347,20 @@ class _HistoryCard extends StatelessWidget {
                           SizedBox(width: 8.w),
                           Container(
                             padding: EdgeInsets.symmetric(
-                              horizontal: 9.w,
+                              horizontal: 12.w,
                               vertical: 5.h,
                             ),
                             decoration: BoxDecoration(
                               color: _badgeBg(item.status),
                               borderRadius: BorderRadius.circular(20.r),
                             ),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Container(
-                                  width: 5.r,
-                                  height: 5.r,
-                                  decoration: BoxDecoration(
-                                    color: _badgeFg(item.status),
-                                    shape: BoxShape.circle,
-                                  ),
-                                ),
-                                SizedBox(width: 4.w),
-                                Text(
-                                  _statusLabel(item.status),
-                                  style: TextStyle(
-                                    fontSize: 12.sp,
-                                    fontWeight: FontWeight.w700,
-                                    color: _badgeFg(item.status),
-                                  ),
-                                ),
-                              ],
+                            child: Text(
+                              _statusLabel(item.status),
+                              style: TextStyle(
+                                fontSize: 12.sp,
+                                fontWeight: FontWeight.w700,
+                                color: _badgeFg(item.status),
+                              ),
                             ),
                           ),
                         ],
@@ -494,6 +504,18 @@ class _HistoryListShimmer extends StatelessWidget {
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(16.r),
+            boxShadow: [
+              BoxShadow(
+                color: AppColors.primary.withValues(alpha: 0.10),
+                blurRadius: 20,
+                offset: const Offset(0, 6),
+              ),
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.05),
+                blurRadius: 10,
+                offset: const Offset(0, 2),
+              ),
+            ],
           ),
         ),
       ),

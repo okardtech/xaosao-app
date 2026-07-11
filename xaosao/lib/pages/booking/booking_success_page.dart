@@ -8,6 +8,7 @@ import 'package:xaosao/pages/booking/booking_args.dart';
 import 'package:xaosao/pages/dashboard/dasboard_page.dart';
 import 'package:xaosao/utils/currency_formatter.dart';
 import 'package:xaosao/widgets/app_button.dart';
+import 'package:xaosao/utils/service_helper.dart';
 import 'package:xaosao/widgets/app_network_image.dart';
 
 class BookingSuccessPage extends StatefulWidget {
@@ -65,8 +66,11 @@ class _BookingSuccessPageState extends State<BookingSuccessPage>
     final price = booking.price;
     final modelName = booking.model?.firstName ?? args.companionName;
     final modelPhoto = booking.model?.profile ?? args.companionPhoto;
-    final serviceName =
-        booking.modelService?.service?.name ?? args.service.name ?? '—';
+    final _rawServiceName =
+        booking.modelService?.service?.name ?? args.service.name;
+    final serviceName = _rawServiceName != null
+        ? ServiceHelper.serviceOriginalName(_rawServiceName)
+        : '—';
 
     return Scaffold(
       backgroundColor: AppColors.bg,

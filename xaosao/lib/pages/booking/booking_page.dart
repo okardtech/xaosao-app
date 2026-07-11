@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:xaosao/constants/app_color.dart';
@@ -8,6 +8,7 @@ import 'package:xaosao/pages/booking/components/per_hour_form.dart';
 import 'package:xaosao/pages/booking/getx/booking_logic.dart';
 import 'package:xaosao/utils/currency_formatter.dart';
 import 'package:xaosao/widgets/app_button.dart';
+import 'package:xaosao/utils/service_helper.dart';
 import 'package:xaosao/widgets/gradient_app_bar.dart';
 
 // ═══════════════════════════════════════════════════════════════
@@ -56,7 +57,7 @@ class _BookingPageState extends State<BookingPage> {
 // ── App bar ───────────────────────────────────────────────────
 PreferredSizeWidget bookingAppBar(BookingLogic logic) {
   return GradientAppBar(
-    title: logic.args.service.name ?? "no name",
+    title: ServiceHelper.serviceOriginalName(logic.args.service.name),
     subtitle: logic.args.companionName,
   );
 }
@@ -98,6 +99,7 @@ class BookingPickerBox extends StatelessWidget {
                 : Colors.black.withValues(alpha: 0.1),
             width: 1,
           ),
+         
         ),
         child: showInternalLabel
             ? Column(
@@ -172,9 +174,9 @@ class BookingSectionLabel extends StatelessWidget {
     return Text(
       text.toUpperCase(),
       style: TextStyle(
-        fontSize: 12.sp,
-        fontWeight: FontWeight.w700,
-        color: AppColors.textHint,
+        fontSize: 14.sp,
+        fontWeight: FontWeight.w400,
+        color: AppColors.textSecondary,
         letterSpacing: 0.6,
       ),
     );

@@ -104,7 +104,7 @@ class ChatMessage {
 class ChatPreview {
   final String id;
   final String name;
-  final int age;
+  final int? age;
   final String? imageUrl;
   final List<Color> gradient;
   final String lastMessage;
@@ -117,7 +117,7 @@ class ChatPreview {
   const ChatPreview({
     required this.id,
     required this.name,
-    required this.age,
+    this.age,
     this.imageUrl,
     required this.gradient,
     required this.lastMessage,

@@ -1,12 +1,15 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:xaosao/constants/app_color.dart';
 import 'package:xaosao/models/profile_model.dart';
 import 'package:xaosao/constants/app_routes.dart';
 import 'package:xaosao/pages/login/getx/login_logic.dart';
+import 'package:xaosao/widgets/app_image_preview.dart';
 import 'package:xaosao/widgets/app_network_image.dart';
 import 'package:xaosao/widgets/gradient_app_bar.dart';
+
+import '../../utils/service_helper.dart';
 
 class ProfileDetailPage extends StatefulWidget {
   final bool isClient;
@@ -49,6 +52,18 @@ class _ProfileDetailPageState extends State<ProfileDetailPage> {
                   borderRadius: BorderRadius.circular(20.r),
                   border: Border.all(
                       color: Colors.white.withValues(alpha: 0.7), width: 0.8),
+                  boxShadow: [
+                    BoxShadow(
+                      color: AppColors.primary.withValues(alpha: 0.10),
+                      blurRadius: 20,
+                      offset: const Offset(0, 6),
+                    ),
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.05),
+                      blurRadius: 10,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
                 ),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
@@ -328,13 +343,16 @@ class _AvatarCircle extends StatelessWidget {
   Widget build(BuildContext context) {
     final url = profile.profile;
     if (url != null && url.isNotEmpty) {
-      return ClipRRect(
-        borderRadius: BorderRadius.circular(35.r),
-        child: AppNetworkImage(
-          imageUrl: url,
-          width: 70.r,
-          height: 70.r,
-          accentColor: AppColors.primary,
+      return GestureDetector(
+        onTap: () => AppImagePreview.show(context, [url]),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(35.r),
+          child: AppNetworkImage(
+            imageUrl: url,
+            width: 70.r,
+            height: 70.r,
+            accentColor: AppColors.primary,
+          ),
         ),
       );
     }
@@ -539,20 +557,13 @@ class _ServiceChip extends StatelessWidget {
           border: Border.all(
               color: AppColors.primary.withOpacity(0.28), width: 0.8),
         ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(Icons.stars_rounded, size: 12.r, color: AppColors.primary),
-            SizedBox(width: 4.w),
-            Text(
-              name,
+        child: Text(
+              ServiceHelper.serviceOriginalName(name),
               style: TextStyle(
-                fontSize: 11.sp,
-                fontWeight: FontWeight.w600,
+                fontSize: 12.sp,
+                fontWeight: FontWeight.w400,
                 color: AppColors.primary,
               ),
             ),
-          ],
-        ),
       );
 }

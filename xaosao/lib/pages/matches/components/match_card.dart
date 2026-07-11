@@ -1,5 +1,6 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import '../../../constants/app_color.dart';
 import '../../home/components/companion_card.dart';
 
 // ═══════════════════════════════════════════════════════════════
@@ -65,14 +66,18 @@ class _MatchCardState extends State<MatchCard>
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(28.r),
+            border: Border.all(
+              color: Colors.black.withValues(alpha: 0.07),
+              width: 0.5,
+            ),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.08),
+                color: Colors.black.withValues(alpha: 0.08),
                 blurRadius: 24,
                 offset: const Offset(0, 8),
               ),
               BoxShadow(
-                color: Colors.black.withOpacity(0.04),
+                color: Colors.black.withValues(alpha: 0.04),
                 blurRadius: 6,
                 offset: const Offset(0, 2),
               ),
@@ -253,6 +258,18 @@ class _MatchCardState extends State<MatchCard>
                         border: Border.all(
                             color: Colors.white.withOpacity(0.18),
                             width: 0.8),
+                            boxShadow: [
+                              BoxShadow(
+                                color: AppColors.primary.withValues(alpha: 0.10),
+                                blurRadius: 20,
+                                offset: const Offset(0, 6),
+                              ),
+                              BoxShadow(
+                                color: Colors.black.withValues(alpha: 0.05),
+                                blurRadius: 10,
+                                offset: const Offset(0, 2),
+                              ),
+                            ],
                       ),
                       child: Row(
                         mainAxisSize: MainAxisSize.min,

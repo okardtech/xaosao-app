@@ -3,6 +3,7 @@
 //     final modelsHot = modelsHotFromJson(jsonString);
 
 import 'dart:convert';
+import 'package:xaosao/utils/api_date_parser.dart';
 
 List<ModelsHot> modelsHotFromJson(String str) => List<ModelsHot>.from(json.decode(str).map((x) => ModelsHot.fromJson(x)));
 
@@ -47,14 +48,14 @@ class ModelsHot {
         id: json["id"],
         firstName: json["firstName"],
         lastName: json["lastName"],
-        dob: DateTime.parse(json["dob"]),
+        dob: parseApiDateTime(json["dob"]) ?? DateTime(2000),
         gender: json["gender"],
         profile: json["profile"],
         rating: json["rating"],
         totalReview: json["total_review"],
         address: json["address"],
         availableStatus: json["available_status"],
-        updatedAt: DateTime.parse(json["updatedAt"]),
+        updatedAt: parseApiDateTime(json["updatedAt"]) ?? DateTime(2000),
         images: List<ImageHot>.from(json["Images"].map((x) => ImageHot.fromJson(x))),
         count: Count.fromJson(json["_count"]),
         hotScore: json["hotScore"],
