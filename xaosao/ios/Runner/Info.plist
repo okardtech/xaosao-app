@@ -3,9 +3,28 @@
 <plist version="1.0">
 <dict>
 	<key>NSPhotoLibraryAddUsageDescription</key>
-	<string>We need access to your photo library to save images.</string>
+	<string>Xaosao saves images (such as QR codes and shared photos) to your photo library.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>We need access to your photo library to save images.</string>
+	<string>Xaosao needs access to your photo library so you can choose photos for your profile, posts, and chat messages.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Xaosao needs access to your camera so you can take photos for your profile, posts, and chat messages.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Xaosao uses your location to show companions and services near you.</string>
+	<key>NSUserTrackingUsageDescription</key>
+	<string>Your data will be used to measure advertising efficiency and deliver a better experience.</string>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>remote-notification</string>
+	</array>
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
+	<key>SKAdNetworkItems</key>
+	<array>
+		<dict>
+			<key>SKAdNetworkIdentifier</key>
+			<string>cstr6suwn9.skadnetwork</string>
+		</dict>
+	</array>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
 	<key>LSApplicationQueriesSchemes</key>
@@ -64,8 +83,6 @@
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
-		<string>UIInterfaceOrientationLandscapeLeft</string>
-		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
 	<key>UISupportedInterfaceOrientations~ipad</key>
 	<array>
