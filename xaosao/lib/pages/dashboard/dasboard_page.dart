@@ -189,46 +189,46 @@ class _DashboardPageState extends State<DashboardPage>
           elevation: 12,
           items: [
             BottomNavigationBarItem(
-              icon: AppSvgIcon(assetName: AppIcons.exploreFill, color: AppColors.primaryVariant),
-              activeIcon: AppSvgIcon(assetName: AppIcons.exploreFill, color: AppColors.primary),
+              icon: AppSvgIcon(assetName: AppIcons.exploreFill, color: AppColors.primaryVariant,width: 20.w,height: 20.h),
+              activeIcon: AppSvgIcon(assetName: AppIcons.exploreFill, color: AppColors.primary,width: 20.w,height: 20.h),
               label: 'ຄົ້ນຫາ',
             ),
             BottomNavigationBarItem(
               icon: _NavBadgeIcon(
-                child: AppSvgIcon(assetName: AppIcons.chatFill, color: AppColors.primaryVariant),
+                child: AppSvgIcon(assetName: AppIcons.chatFill, color: AppColors.primaryVariant,width: 20.w,height: 20.h),
                 rxCount: NotificationService.chatUnreadCount,
               ),
               activeIcon: _NavBadgeIcon(
-                child: AppSvgIcon(assetName: AppIcons.chatFill, color: AppColors.primary),
+                child: AppSvgIcon(assetName: AppIcons.chatFill, color: AppColors.primary,width: 20.w,height: 20.h),
                 rxCount: NotificationService.chatUnreadCount,
               ),
               label: 'ຄູ່ເເຊັດ',
             ),
             BottomNavigationBarItem(
               icon: _NavBadgeIcon(
-                child: AppSvgIcon(assetName: AppIcons.calendar, color: AppColors.primaryVariant),
+                child: AppSvgIcon(assetName: AppIcons.calendar, color: AppColors.primaryVariant,width: 20.w,height: 20.h),
                 rxCount: NotificationService.bookingUnreadCount,
               ),
               activeIcon: _NavBadgeIcon(
-                child: AppSvgIcon(assetName: AppIcons.calendar, color: AppColors.primary),
+                child: AppSvgIcon(assetName: AppIcons.calendar, color: AppColors.primary,width: 20.w,height: 20.h),
                 rxCount: NotificationService.bookingUnreadCount,
               ),
               label: 'ນັດພົບ',
             ),
             BottomNavigationBarItem(
               icon: _NavBadgeIcon(
-                child: AppSvgIcon(assetName: AppIcons.comment, color: AppColors.primaryVariant),
+                child: AppSvgIcon(assetName: AppIcons.comment, color: AppColors.primaryVariant,width: 20.w,height: 20.h),
                 rxCount: NotificationService.postUnreadCount,
               ),
               activeIcon: _NavBadgeIcon(
-                child: AppSvgIcon(assetName: AppIcons.comment, color: AppColors.primary),
+                child: AppSvgIcon(assetName: AppIcons.comment, color: AppColors.primary,width: 20.w,height: 20.h),
                 rxCount: NotificationService.postUnreadCount,
               ),
               label: 'ໂພສຫາຄູ່',
             ),
             BottomNavigationBarItem(
-              icon: AppSvgIcon(assetName: AppIcons.user, color: AppColors.primaryVariant),
-              activeIcon: AppSvgIcon(assetName: AppIcons.user, color: AppColors.primary),
+              icon: AppSvgIcon(assetName: AppIcons.user, color: AppColors.primaryVariant,width: 20.w,height: 20.h),
+              activeIcon: AppSvgIcon(assetName: AppIcons.user, color: AppColors.primary,width: 20.w,height: 20.h),
               label: 'ໂປຮໄຟລ໌',
             ),
           ],
