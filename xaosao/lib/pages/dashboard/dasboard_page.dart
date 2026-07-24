@@ -7,6 +7,7 @@ import 'package:xaosao/constants/app_icons.dart';
 import 'package:xaosao/services/notification_service.dart';
 import 'package:xaosao/services/permission_coordinator.dart';
 import 'package:xaosao/services/storage_service.dart';
+import 'package:xaosao/utils/version_checker.dart';
 import 'package:xaosao/widgets/app_svg_icon.dart';
 import '../login/getx/login_logic.dart';
 import '../chat/chat_page.dart';
@@ -125,10 +126,15 @@ class _DashboardPageState extends State<DashboardPage>
       });
     }
 
-    // Runtime permissions — notifications then location, both with
-    // contextual primer sheets. Re-asks are throttled by a 7-day cooldown.
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (mounted) PermissionCoordinator.checkAndPrime(context);
+    // Runtime permissions first, then the "new version available"
+    // sheet. Both run sequentially so we never stack two modal sheets
+    // over each other. Each callee is safely re-entrant + rate-limited
+    // internally, so it's OK if dashboard mounts twice per session.
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      if (!mounted) return;
+      await PermissionCoordinator.checkAndPrime(context);
+      if (!mounted) return;
+      await VersionChecker.showIfUpdateAvailable(context);
     });
   }
 
@@ -195,34 +201,34 @@ class _DashboardPageState extends State<DashboardPage>
             ),
             BottomNavigationBarItem(
               icon: _NavBadgeIcon(
-                child: AppSvgIcon(assetName: AppIcons.chatFill, color: AppColors.primaryVariant,width: 20.w,height: 20.h),
                 rxCount: NotificationService.chatUnreadCount,
+                child: AppSvgIcon(assetName: AppIcons.chatFill, color: AppColors.primaryVariant,width: 20.w,height: 20.h),
               ),
               activeIcon: _NavBadgeIcon(
-                child: AppSvgIcon(assetName: AppIcons.chatFill, color: AppColors.primary,width: 20.w,height: 20.h),
                 rxCount: NotificationService.chatUnreadCount,
+                child: AppSvgIcon(assetName: AppIcons.chatFill, color: AppColors.primary,width: 20.w,height: 20.h),
               ),
               label: 'ຄູ່ເເຊັດ',
             ),
             BottomNavigationBarItem(
               icon: _NavBadgeIcon(
-                child: AppSvgIcon(assetName: AppIcons.calendar, color: AppColors.primaryVariant,width: 20.w,height: 20.h),
                 rxCount: NotificationService.bookingUnreadCount,
+                child: AppSvgIcon(assetName: AppIcons.calendar, color: AppColors.primaryVariant,width: 20.w,height: 20.h),
               ),
               activeIcon: _NavBadgeIcon(
-                child: AppSvgIcon(assetName: AppIcons.calendar, color: AppColors.primary,width: 20.w,height: 20.h),
                 rxCount: NotificationService.bookingUnreadCount,
+                child: AppSvgIcon(assetName: AppIcons.calendar, color: AppColors.primary,width: 20.w,height: 20.h),
               ),
               label: 'ນັດພົບ',
             ),
             BottomNavigationBarItem(
               icon: _NavBadgeIcon(
-                child: AppSvgIcon(assetName: AppIcons.comment, color: AppColors.primaryVariant,width: 20.w,height: 20.h),
                 rxCount: NotificationService.postUnreadCount,
+                child: AppSvgIcon(assetName: AppIcons.comment, color: AppColors.primaryVariant,width: 20.w,height: 20.h),
               ),
               activeIcon: _NavBadgeIcon(
-                child: AppSvgIcon(assetName: AppIcons.comment, color: AppColors.primary,width: 20.w,height: 20.h),
                 rxCount: NotificationService.postUnreadCount,
+                child: AppSvgIcon(assetName: AppIcons.comment, color: AppColors.primary,width: 20.w,height: 20.h),
               ),
               label: 'ໂພສຫາຄູ່',
             ),

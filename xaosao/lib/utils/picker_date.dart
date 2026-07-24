@@ -27,6 +27,7 @@ Future<DateTime?> pickDate(
           ),
           dividerColor: headerColor,
           datePickerTheme: DatePickerThemeData(
+            dividerColor: headerColor,
             headerBackgroundColor: headerColor,
             headerForegroundColor: Colors.white,
             backgroundColor: Colors.white,
