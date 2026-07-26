@@ -243,7 +243,7 @@ class _CustomerProfilePageState extends State<CustomerProfilePage> {
 
                   const Center(
                     child: Text(
-                      'XAOSAO v1.0.0',
+                      'XAOSAO v1.0.2',
                       style: TextStyle(
                         fontSize: 10,
                         color: Color(0xFFC4C4D0),

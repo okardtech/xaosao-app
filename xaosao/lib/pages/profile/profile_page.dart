@@ -212,7 +212,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     _LogoutButton(onTap: () => _confirmLogout(context)),
                     SizedBox(height: 14.h),
                     Text(
-                      'XAOSAO v1.0.0',
+                      'XAOSAO v1.0.2',
                       style: TextStyle(
                         fontSize: 10.sp,
                         fontWeight: FontWeight.w600,
