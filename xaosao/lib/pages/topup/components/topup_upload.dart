@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:xaosao/constants/app_color.dart';
 import 'package:xaosao/constants/app_routes.dart';
+import 'package:xaosao/l10n/app_localizations.dart';
 import 'package:xaosao/pages/topup/components/topup_constant.dart';
 import 'package:xaosao/pages/topup/getx/topup_logic.dart';
 import 'package:xaosao/constants/app_image.dart';
@@ -43,11 +44,12 @@ class _UploadState extends State<TopUpUploadSlipPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       backgroundColor: AppColors.bg,
       appBar: GradientAppBar(
-        title: 'ອັບໂຫຼດ Slip',
-        subtitle: 'ຢືນຢັນການຊຳລະ',
+        title: l10n.topupUploadTitle,
+        subtitle: l10n.topupUploadSubtitle,
         actions: [const TopUpStepBadge('3')],
       ),
       body: SafeArea(
@@ -77,7 +79,7 @@ class _UploadState extends State<TopUpUploadSlipPage> {
                     ),
                     SizedBox(width: 6.w),
                     Text(
-                      'ຮອງຮັບຮູບແບບ: JPG, PNG, PDF (ຂຸງສຸດ 10MB)',
+                      l10n.topupUploadFileTypes,
                       style: TextStyle(
                         fontSize: 12.sp,
                         color: AppColors.textHint,
@@ -110,7 +112,7 @@ class _UploadState extends State<TopUpUploadSlipPage> {
 
                 // ── Submit ────────────────────────────────────────
                 AppPrimaryButton(
-                  label: 'ສົ່ງ ແລະ ຢືນຢັນ',
+                  label: l10n.topupUploadSubmit,
                   trailingIcon: Icons.check_rounded,
                   enabled: st.slips.isNotEmpty,
                   onTap: _submit,
@@ -135,6 +137,7 @@ class _UploadZone extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return AnimatedContainer(
       duration: const Duration(milliseconds: 200),
       width: double.infinity,
@@ -169,7 +172,7 @@ class _UploadZone extends StatelessWidget {
           ),
           SizedBox(height: 10.h),
           Text(
-            'ອັບໂຫຼດໃບບິນການຊຳລະ',
+            l10n.topupUploadReceipt,
             style: TextStyle(
               fontSize: 14.sp,
               fontWeight: FontWeight.w700,
@@ -178,7 +181,7 @@ class _UploadZone extends StatelessWidget {
           ),
           SizedBox(height: 4.h),
           Text(
-            'ສາມາດອັບໃບຍືນຢັນໄດ້ທີ່ນີ້',
+            l10n.topupUploadReceiptSubtitle,
             style: TextStyle(fontSize: 12.sp, color: AppColors.textHint),
           ),
           SizedBox(height: 12.h),
@@ -220,7 +223,7 @@ class _UploadZone extends StatelessWidget {
             ),
             child: Center(
               child: Text(
-                slipCount == 0 ? 'ເລືອກໄຟລ໌' : 'ເພີ່ມ slip ອີກ',
+                slipCount == 0 ? l10n.topupSelectFile : l10n.topupAddMoreSlip,
                 style: TextStyle(
                   fontSize: 12.sp,
                   fontWeight: FontWeight.w700,
@@ -280,7 +283,7 @@ class _SlipExample extends StatelessWidget {
         Padding(
           padding: EdgeInsets.fromLTRB(13.w, 0.h, 13.w, 8.h),
           child: Text(
-            'ຕົວຢ່າງໃບບິນການຊຳລະ',
+            AppLocalizations.of(context)!.topupExampleReceipt,
             style: TextStyle(
               fontSize: 12.sp,
               fontWeight: FontWeight.w400,
@@ -333,7 +336,7 @@ class _AmberNote extends StatelessWidget {
           SizedBox(width: 10.w),
           Expanded(
             child: Text(
-              'ຂອບໃຈສຳລັບຄວາມໄວ້ວາງໃຈ: ທີມງານຈະກວດສອບ ແລະ ດຳເນີນການ ພາຍໃນ 1–2 ຊົ່ວໂມງ. ຫຼັງຈາກໄດ້ຮັບໃບຍືນຢັນແລ້ວ.',
+              AppLocalizations.of(context)!.topupThankYouMessage,
               style: TextStyle(
                 fontSize: 12.sp,
                 color: const Color(0xFF78350F),

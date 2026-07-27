@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:xaosao/constants/app_color.dart';
+import 'package:xaosao/l10n/app_localizations.dart';
 import 'package:xaosao/models/refferal_validate_model.dart';
 import 'package:xaosao/pages/register/components/register_widget.dart';
 import 'package:xaosao/widgets/app_network_image.dart';
@@ -97,14 +98,15 @@ class _RegisterPageState extends State<RegisterPage> {
   @override
   Widget build(BuildContext context) {
     final logic = Get.find<RegisterLogic>();
+    final l10n = AppLocalizations.of(context)!;
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       behavior: HitTestBehavior.opaque,
       child: Scaffold(
         backgroundColor: AppColors.bg,
         appBar: GradientAppBar(
-          title: _isCompanion ? 'ສ້າງບັນຊີ ສຳລັບຜູ້ໃຫ້ບໍລິການ' : 'ສ້າງບັນຊີ ສຳລັບລູກຄ້າ',
-          subtitle: 'ກະລຸນາຕື່ມຂໍ້ມູນໃຫ້ຄົບ',
+          title: _isCompanion ? l10n.registerCompanionTitle : l10n.registerCustomerTitle,
+          subtitle: l10n.registerFillInfo,
         ),
         body: SafeArea(
           child: Column(
@@ -134,12 +136,12 @@ class _RegisterPageState extends State<RegisterPage> {
                         children: [
                           Expanded(
                             child: _FieldCol(
-                              label: 'ຊື່',
+                              label: l10n.registerFirstName,
                               child: RegField(
                                 ctrl: _firstName,
                                 focus: _fnFocus,
                                 nextFocus: _lnFocus,
-                                hint: 'ປ້ອນຊື່',
+                                hint: l10n.registerFirstNameHint,
                                 icon: Icons.person_outline_rounded,
                                 role: widget.role,
                               ),
@@ -148,12 +150,12 @@ class _RegisterPageState extends State<RegisterPage> {
                           SizedBox(width: 6.w),
                           Expanded(
                             child: _FieldCol(
-                              label: 'ນາມສະກຸນ',
+                              label: l10n.registerLastName,
                               child: RegField(
                                 ctrl: _lastName,
                                 focus: _lnFocus,
                                 nextFocus: _phFocus,
-                                hint: 'ປ້ອນນາມສະກຸນ',
+                                hint: l10n.registerLastNameHint,
                                 icon: Icons.person_outline_rounded,
                                 role: widget.role,
                               ),
@@ -163,7 +165,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       ),
                       SizedBox(height: 12.h),
                       // ── ເບີໂທ ──────────────────────────────
-                      RegLabel('ເບີໂທລະສັບ'),
+                      RegLabel(l10n.registerPhone),
                       SizedBox(height: 4.h),
                       PhoneRegField(
                         ctrl: _phone,
@@ -173,7 +175,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       ),
                       SizedBox(height: 12.h),
                       // ── ເພດ ─────────────────────────────────
-                      RegLabel('ເລືອກເພດ'),
+                      RegLabel(l10n.registerSelectGender),
                       SizedBox(height: 4.h),
                       Obx(() {
                         final selected = logic.state.gender;
@@ -188,7 +190,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       Obx(() {
                         final dateTime = logic.state.dob;
                         return _FieldCol(
-                          label: 'ວັນເດືອນປີເກີດ',
+                          label: l10n.registerDob,
                           child: DatePickerField(
                             value: dateTime,
                             role: widget.role,
@@ -203,12 +205,12 @@ class _RegisterPageState extends State<RegisterPage> {
                       }),
                       SizedBox(height: 12.h),
                       _FieldCol(
-                        label: 'ລະຫັດຜ່ານ',
+                        label: l10n.registerPassword,
                         child: RegField(
                           ctrl: _password,
                           focus: _paFocus,
                           nextFocus: _adFocus,
-                          hint: 'ປ້ອນລະຫັດຜ່ານ',
+                          hint: l10n.registerPasswordHint,
                           icon: Icons.lock,
                           role: widget.role,
                         ),
@@ -217,12 +219,12 @@ class _RegisterPageState extends State<RegisterPage> {
 
                       // ── ທີ່ຢູ່ (Companion only) ────────────
                       if (_isCompanion) ...[
-                        RegLabel('ທີ່ຢູ່'),
+                        RegLabel(l10n.registerAddress),
                         SizedBox(height: 4.h),
                         RegField(
                           ctrl: _address,
                           focus: _adFocus,
-                          hint: 'ນາທົ່ມ,ໜອງວຽງຄຳ,ວຽງຈັນ...',
+                          hint: l10n.registerAddressHint,
                           icon: Icons.location_on_outlined,
                           role: widget.role,
                           action: TextInputAction.done,
@@ -327,7 +329,7 @@ class _ReferralBanner extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'ທ່ານໄດ້ຮັບການແນະນຳຈາກ',
+                  AppLocalizations.of(context)!.registerReferredBy,
                   style: TextStyle(
                     fontSize: 11.sp,
                     color: Colors.grey.shade600,

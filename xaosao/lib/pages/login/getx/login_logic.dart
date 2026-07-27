@@ -6,6 +6,7 @@ import 'package:xaosao/repository/login_repo.dart';
 import 'package:xaosao/services/notification_service.dart';
 import 'package:xaosao/services/storage_service.dart';
 import 'package:xaosao/utils/app_snackbar.dart';
+import 'package:xaosao/utils/l10n.dart';
 import 'package:xaosao/widgets/show_loading_alert.dart';
 
 class LoginLogic extends GetxController {
@@ -70,7 +71,7 @@ class LoginLogic extends GetxController {
       if (!res.success || res.data == null) {
         _updateState(state.copyWith(status: LoginStatus.failure));
         hideLoadingDialog();
-        AppSnackbar.error(res.laMessage ?? 'ເຂົ້າສູ່ລະບົບບໍ່ສຳເລັດ');
+        AppSnackbar.error(res.laMessage ?? l10n.loginFailed);
         return;
       }
       final loginData = res.data!;
@@ -94,7 +95,7 @@ class LoginLogic extends GetxController {
     } catch (e) {
       _updateState(state.copyWith(status: LoginStatus.failure));
       hideLoadingDialog();
-      AppSnackbar.error('ເຂົ້າສູ່ລະບົບບໍ່ສຳເລັດ');
+      AppSnackbar.error(l10n.loginFailed);
     }
   }
 

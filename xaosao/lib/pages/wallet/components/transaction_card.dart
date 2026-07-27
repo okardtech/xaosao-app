@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 import 'package:xaosao/constants/app_color.dart';
+import 'package:xaosao/l10n/app_localizations.dart';
 import 'package:xaosao/models/transactions_model.dart';
 import 'package:xaosao/pages/wallet/getx/wallet_state.dart';
 
@@ -9,30 +10,33 @@ class TransactionCard extends StatelessWidget {
   final TransactionsModel tx;
   const TransactionCard({super.key, required this.tx});
 
-  String get _title => switch (tx.identifier) {
-    'recharge' => 'ເຕີມເງິນ',
-    'subscription' => 'ຊື້ Package',
-    'gift' => 'ສົ່ງຂອງຂວັນ',
-    'booking_hold' => 'ຝາກຊຳລະການຈອງ',
-    'booking_refund' => 'ຄືນເງິນການຈອງ',
-    'gift_earning' => 'ຮັບຂອງຂວັນ',
-    'booking_earning' => 'ຮັບເງິນການຈອງ',
-    'withdrawal' => 'ຖອນເງິນ',
-    'referral' => 'ຄ່ານາຍໜ້າ',
-    'booking_referral' => 'ຄ່ານາຍໜ້າ (ການຈອງ)',
-    'subscription_referral' => 'ຄ່ານາຍໜ້າ (Package)',
-    _ => tx.identifier ?? 'ທຸລະກຳ',
+  String _title(AppLocalizations l10n) => switch (tx.identifier) {
+    'recharge' => l10n.walletTxTypeRecharge,
+    'subscription' => l10n.walletTxTypeSubscription,
+    'gift' => l10n.walletTxTypeGift,
+    'booking_hold' => l10n.walletTxTypeBookingHold,
+    'booking_refund' => l10n.walletTxTypeBookingRefund,
+    'gift_earning' => l10n.walletTxTypeGiftEarning,
+    'booking_earning' => l10n.walletTxTypeBookingEarning,
+    'withdrawal' => l10n.walletTxTypeWithdrawal,
+    'referral' => l10n.walletTxTypeReferral,
+    'booking_referral' => l10n.walletTxTypeBookingReferral,
+    'subscription_referral' => l10n.walletTxTypeSubscriptionReferral,
+    _ => tx.identifier ?? l10n.walletTxTypeGeneric,
   };
 
-  String get _amount =>
-      '+${NumberFormat.decimalPattern().format(tx.amount ?? 0)} ກີບ';
+  String _amount(AppLocalizations l10n) =>
+      '+${NumberFormat.decimalPattern().format(tx.amount ?? 0)} ${l10n.commonCurrencyKip}';
 
-  String get _date {
+  String _date(AppLocalizations l10n) {
     if (tx.createdAt == null) return '—';
     final d = tx.createdAt!;
-    const mo = [
-      '', 'ມ.ກ', 'ກ.ພ', 'ມ.ນ', 'ມ.ສ', 'ພ.ພ', 'ມ.ຖ',
-      'ກ.ລ', 'ສ.ຫ', 'ກ.ຍ', 'ຕ.ລ', 'ພ.ຈ', 'ທ.ວ',
+    final mo = <String>[
+      '',
+      l10n.monthShortJan, l10n.monthShortFeb, l10n.monthShortMar,
+      l10n.monthShortApr, l10n.monthShortMay, l10n.monthShortJun,
+      l10n.monthShortJul, l10n.monthShortAug, l10n.monthShortSep,
+      l10n.monthShortOct, l10n.monthShortNov, l10n.monthShortDec,
     ];
     final h = d.hour.toString().padLeft(2, '0');
     final m = d.minute.toString().padLeft(2, '0');
@@ -41,6 +45,7 @@ class TransactionCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final status = TxStatusX.from(tx.status);
     return Opacity(
       opacity: status.opacity,
@@ -83,7 +88,7 @@ class TransactionCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    _title,
+                    _title(l10n),
                     style: TextStyle(
                       fontSize: 14.sp,
                       fontWeight: FontWeight.w700,
@@ -92,7 +97,7 @@ class TransactionCard extends StatelessWidget {
                   ),
                   SizedBox(height: 2.h),
                   Text(
-                    _date,
+                    _date(l10n),
                     style: TextStyle(fontSize: 12.sp, color: AppColors.textHint),
                   ),
                 ],
@@ -102,7 +107,7 @@ class TransactionCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 Text(
-                  _amount,
+                  _amount(l10n),
                   style: TextStyle(
                     fontSize: 14.sp,
                     fontWeight: FontWeight.w700,

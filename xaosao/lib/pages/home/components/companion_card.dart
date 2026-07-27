@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:xaosao/utils/currency_formatter.dart';
+import 'package:xaosao/utils/l10n.dart';
 import 'package:xaosao/utils/location_utils.dart';
 import 'package:xaosao/widgets/app_like_button.dart';
 import 'package:xaosao/widgets/app_network_image.dart';
@@ -14,11 +15,11 @@ extension ServiceTypeExt on ServiceType {
   String get label {
     switch (this) {
       case ServiceType.social:
-        return 'ເພື່ອນສັງຄົມ';
+        return l10n.homeServiceSocial;
       case ServiceType.massage:
-        return 'ນວດ';
+        return l10n.serviceTypeMassage;
       case ServiceType.travel:
-        return 'ທ່ອງທ່ຽວ';
+        return l10n.homeServiceTravel;
     }
   }
 
@@ -47,11 +48,11 @@ extension ServiceTypeExt on ServiceType {
   String get description {
     switch (this) {
       case ServiceType.social:
-        return 'ທ່ຽວ, ງານລ້ຽງ, ທຸກໂອກາດ';
+        return l10n.homeCardSubtitleSocial;
       case ServiceType.massage:
-        return 'ນວດສຸຂະພາບໂດຍມືອາຊີບ';
+        return l10n.homeCardSubtitleMassage;
       case ServiceType.travel:
-        return 'Guide ໃນ ແລະ ຕ່າງປະເທດ';
+        return l10n.homeCardSubtitleTravel;
     }
   }
 

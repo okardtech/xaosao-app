@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:xaosao/constants/app_color.dart';
+import 'package:xaosao/l10n/app_localizations.dart';
 import 'package:xaosao/models/gallerys_model.dart';
-import 'package:xaosao/pages/profile/components/profile_constant.dart';
 import 'package:xaosao/widgets/app_image_preview.dart';
 
 class PhotoGrid extends StatelessWidget {
@@ -42,7 +42,7 @@ class PhotoGrid extends StatelessWidget {
         if (i < photos.length) {
           return _buildPhotoSlot(context, photos[i], i);
         }
-        return _buildAddSlot(i);
+        return _buildAddSlot(context, i);
       },
     );
   }
@@ -148,7 +148,7 @@ class PhotoGrid extends StatelessWidget {
     );
   }
 
-  Widget _buildAddSlot(int index) {
+  Widget _buildAddSlot(BuildContext context, int index) {
     final canAdd = photos.length < maxPhotos;
     return GestureDetector(
       onTap: canAdd ? () => onAdd(index) : null,
@@ -191,7 +191,7 @@ class PhotoGrid extends StatelessWidget {
             ),
             SizedBox(height: 6.h),
             Text(
-              'ເພີ່ມ',
+              AppLocalizations.of(context)!.commonAdd,
               style: TextStyle(
                 fontSize: 12.sp,
                 color: AppColors.textPrimary,

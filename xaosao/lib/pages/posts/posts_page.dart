@@ -7,6 +7,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:xaosao/constants/app_color.dart';
 import 'package:xaosao/constants/app_routes.dart';
+import 'package:xaosao/l10n/app_localizations.dart';
 import 'package:xaosao/pages/posts/components/comment_sheet.dart';
 import 'package:xaosao/pages/posts/components/post_card.dart';
 import 'package:xaosao/models/service_model.dart';
@@ -87,6 +88,7 @@ class _PostsPageState extends State<PostsPage> {
 
   // ── Header ─────────────────────────────────────────────────
   Widget _buildHeader() {
+    final l10n = AppLocalizations.of(context)!;
     return Padding(
       padding: EdgeInsets.fromLTRB(20.w, 20.h, 16.w, 0),
       child: Row(
@@ -97,7 +99,7 @@ class _PostsPageState extends State<PostsPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'ໂພສ',
+                  l10n.postsTitle,
                   style: TextStyle(
                     fontSize: 26.sp,
                     fontWeight: FontWeight.w900,
@@ -108,7 +110,7 @@ class _PostsPageState extends State<PostsPage> {
                 ),
                 SizedBox(height: 4.h),
                 Text(
-                  'ຄົ້ນຫາຜູ້ໃຫ້ບໍລິການທີ່ໃຊ້ຂອງທ່ານ',
+                  l10n.postsSubtitle,
                   style: TextStyle(
                     fontSize: 11.sp,
                     color: AppColors.textHint,
@@ -174,6 +176,7 @@ class _PostsPageState extends State<PostsPage> {
 
   // ── Tab 0: ທັງໝົດ (feed) ───────────────────────────────────
   Widget _buildFeedTab() {
+    final l10n = AppLocalizations.of(context)!;
     return Obx(() {
       final state = _logic.state;
       final feed = state.feed;
@@ -194,10 +197,10 @@ class _PostsPageState extends State<PostsPage> {
       if (state.feedStatus == PostStatus.failure && feed.isEmpty) {
         return AppEmptyState(
           icon: Icons.wifi_off_rounded,
-          title: 'ບໍ່ສາມາດໂຫຼດຂໍ້ມູນ',
-          subtitle: 'ກະລຸນາລອງໃໝ່ອີກຄັ້ງ',
+          title: l10n.postsCantLoad,
+          subtitle: l10n.postsPleaseRetry,
           iconColor: AppColors.primary,
-          actionLabel: 'ລອງໃໝ່',
+          actionLabel: l10n.commonRetry,
           onAction: () => _logic.fetchFeed(refresh: true),
         );
       }
@@ -205,8 +208,8 @@ class _PostsPageState extends State<PostsPage> {
       if (state.feedStatus == PostStatus.success && feed.isEmpty) {
         return AppEmptyState(
           icon: Icons.article_outlined,
-          title: 'ຍັງບໍ່ມີໂພສ',
-          subtitle: 'ໂພສຈາກ Companion ຈະສະແດງທີ່ນີ້',
+          title: l10n.postsEmpty,
+          subtitle: l10n.postsEmptyFeedSubtitle,
           iconColor: AppColors.primary,
         );
       }
@@ -294,6 +297,7 @@ class _PostsPageState extends State<PostsPage> {
 
   // ── Tab 1: ຂອງຂ້ອຍ ─────────────────────────────────────────
   Widget _buildMyPostsTab() {
+    final l10n = AppLocalizations.of(context)!;
     return Obx(() {
       final state = _logic.state;
       final posts = state.myPosts;
@@ -314,10 +318,10 @@ class _PostsPageState extends State<PostsPage> {
       if (state.myStatus == PostStatus.failure && posts.isEmpty) {
         return AppEmptyState(
           icon: Icons.wifi_off_rounded,
-          title: 'ບໍ່ສາມາດໂຫຼດຂໍ້ມູນ',
-          subtitle: 'ກະລຸນາລອງໃໝ່ອີກຄັ້ງ',
+          title: l10n.postsCantLoad,
+          subtitle: l10n.postsPleaseRetry,
           iconColor: AppColors.primary,
-          actionLabel: 'ລອງໃໝ່',
+          actionLabel: l10n.commonRetry,
           onAction: () => _logic.fetchMyPosts(refresh: true),
         );
       }
@@ -325,8 +329,8 @@ class _PostsPageState extends State<PostsPage> {
       if (state.myStatus == PostStatus.success && posts.isEmpty) {
         return AppEmptyState(
           icon: Icons.edit_note_rounded,
-          title: 'ຍັງບໍ່ມີໂພສ',
-          subtitle: 'ກົດ "ສ້າງໂພສ" ເພື່ອເລີ່ມໂພສ',
+          title: l10n.postsEmpty,
+          subtitle: l10n.postsEmptyMySubtitle,
           iconColor: AppColors.primary,
         );
       }
@@ -404,6 +408,7 @@ class _PostsPageState extends State<PostsPage> {
 
   // ── More sheet ──────────────────────────────────────────────
   void _showMoreSheet({required bool isMyPost}) {
+    final l10n = AppLocalizations.of(context)!;
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.transparent,
@@ -431,7 +436,7 @@ class _PostsPageState extends State<PostsPage> {
                   children: [
                     _SheetItem(
                       icon: Icons.share_outlined,
-                      label: 'ແຊຣ໌ໂພສ',
+                      label: l10n.postsShare,
                       onTap: () => Navigator.pop(context),
                     ),
                     Container(
@@ -440,7 +445,7 @@ class _PostsPageState extends State<PostsPage> {
                     ),
                     _SheetItem(
                       icon: Icons.flag_outlined,
-                      label: 'ລາຍງານ',
+                      label: l10n.postsReport,
                       onTap: () => Navigator.pop(context),
                       isRed: true,
                     ),
@@ -456,11 +461,12 @@ class _PostsPageState extends State<PostsPage> {
 
   // ── Confirm delete ──────────────────────────────────────────
   Future<void> _confirmDelete(String postId) async {
+    final l10n = AppLocalizations.of(context)!;
     final confirmed = await ConfirmSheet.show(
       context,
-      title: 'ລຶບໂພສ',
-      message: 'ທ່ານແນ່ໃຈທີ່ຈະລຶບໂພສນີ້ບໍ?\nການດຳເນີນການນີ້ບໍ່ສາມາດຍ້ອນຄືນໄດ້',
-      confirmLabel: 'ລຶບ',
+      title: l10n.postsDeleteTitle,
+      message: l10n.postsDeleteMessage,
+      confirmLabel: l10n.commonDelete,
       icon: AppIcons.delete,
       isDanger: true,
     );
@@ -469,11 +475,12 @@ class _PostsPageState extends State<PostsPage> {
 
   // ── Confirm hide ────────────────────────────────────────────
   Future<void> _confirmHide(String postId) async {
+    final l10n = AppLocalizations.of(context)!;
     final confirmed = await ConfirmSheet.show(
       context,
-      title: 'ປິດໂພສ',
-      message: 'ທ່ານແນ່ໃຈທີ່ຈະປິດໂພສນີ້ບໍ?\nລູກຄ້າຈະບໍ່ສາມາດເຫັນໂພສນີ້ໄດ້',
-      confirmLabel: 'ປິດໄພສ',
+      title: l10n.postsDisableTitle,
+      message: l10n.postsDisableMessage,
+      confirmLabel: l10n.postsDisableConfirm,
       icon: AppIcons.eyeHide,
       isDanger: false,
     );
@@ -497,6 +504,7 @@ class _LoadMoreRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     if (!hasMore && !isLoadingMore) {
       return SizedBox();
     }
@@ -538,7 +546,7 @@ class _LoadMoreRow extends StatelessWidget {
                 ),
                 SizedBox(width: 4.w),
                 Text(
-                  'ໂຫຼດເພີ່ມ',
+                  l10n.commonLoadMore,
                   style: TextStyle(
                     fontSize: 12.sp,
                     fontWeight: FontWeight.w700,
@@ -563,6 +571,7 @@ class _WriteBtn extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -589,7 +598,7 @@ class _WriteBtn extends StatelessWidget {
             Icon(Icons.add_rounded, size: 14.r, color: Colors.white),
             SizedBox(width: 5.w),
             Text(
-              'ສ້າງໂພສ',
+              l10n.postsCreate,
               style: TextStyle(
                 fontSize: 12.sp,
                 fontWeight: FontWeight.w800,
@@ -613,17 +622,20 @@ class _PillSwitcher extends StatelessWidget {
 
   const _PillSwitcher({required this.index, required this.onChanged});
 
-  static const _labels = ['ທັງໝົດ', 'ຂອງຂ້ອຍ'];
+  static List<String> _labels(AppLocalizations l10n) =>
+      [l10n.postsTabAll, l10n.postsTabMine];
   static const _pillGrad = [AppColors.primary, Color(0xFFFF6B85)];
   static const _dur = Duration(milliseconds: 250);
   static const _curve = Curves.easeInOut;
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final labels = _labels(l10n);
     return LayoutBuilder(
       builder: (_, cst) {
         const pad = 4.0;
-        final pillW = (cst.maxWidth - pad * 2) / _labels.length;
+        final pillW = (cst.maxWidth - pad * 2) / labels.length;
         final pillLeft = pad + index * pillW;
 
         return Container(
@@ -668,7 +680,7 @@ class _PillSwitcher extends StatelessWidget {
               ),
               // ── tap targets + labels ────────────────────────
               Row(
-                children: List.generate(_labels.length, (i) {
+                children: List.generate(labels.length, (i) {
                   final active = index == i;
                   return Expanded(
                     child: GestureDetector(
@@ -687,7 +699,7 @@ class _PillSwitcher extends StatelessWidget {
                                 : AppColors.textSecondary,
                             letterSpacing: active ? 0.1 : 0,
                           ),
-                          child: Text(_labels[i]),
+                          child: Text(labels[i]),
                         ),
                       ),
                     ),
@@ -777,9 +789,10 @@ class _CreatePostSheetState extends State<_CreatePostSheet> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final loginState = Get.find<LoginLogic>().state;
     final displayName = loginState.displayName.isEmpty
-        ? 'ທ່ານ'
+        ? l10n.commonYou
         : loginState.displayName;
     final profileUrl = loginState.profileImageUrl ?? '';
     final keyboardH = MediaQuery.of(context).viewInsets.bottom;
@@ -804,7 +817,7 @@ class _CreatePostSheetState extends State<_CreatePostSheet> {
             child: Row(
               children: [
                 Text(
-                  'ສ້າງໂພສ',
+                  l10n.postsCreate,
                   style: TextStyle(
                     fontSize: 17.sp,
                     fontWeight: FontWeight.w800,
@@ -896,7 +909,7 @@ class _CreatePostSheetState extends State<_CreatePostSheet> {
                                   ),
                                   SizedBox(width: 3.w),
                                   Text(
-                                    'ໂພສສາທາລະນະ',
+                                    l10n.postsPublicPost,
                                     style: TextStyle(
                                       fontSize: 12.sp,
                                       fontWeight: FontWeight.w400,
@@ -913,7 +926,7 @@ class _CreatePostSheetState extends State<_CreatePostSheet> {
                   ),
                   SizedBox(height: 16.h),
                   // ── content textarea ───────────────────────
-                  _SheetSectionLabel("ທ່ານກຳລັງຊອກຫາຄູ່ເເບບໃດ?"),
+                  _SheetSectionLabel(l10n.postsWhatLookingFor),
                   SizedBox(height: 8.h),
                   Container(
                     padding: EdgeInsets.fromLTRB(14.w, 14.h, 14.w, 10.h),
@@ -935,8 +948,8 @@ class _CreatePostSheetState extends State<_CreatePostSheet> {
                           maxLength: 500,
                           decoration: InputDecoration(
                             hintText: _isModel
-                                ? 'ຕົວຢ່າງ: ຂ້ອຍກຳລັງຊ່ວຍລູກຄ້າທີ່ໂພສນີ້ ເພື່ອຫາຄູ່ດື່ມ'
-                                : 'ຕົວຢ່າງ: ຂ້ອຍຕ້ອງການ 2 ຄົນເປັນຄູ່ດື່ມຄືນນີ້',
+                                ? l10n.postsHintCustomer
+                                : l10n.postsHintModel,
                             hintStyle: TextStyle(
                               fontSize: 14.sp,
                               color: const Color(0xFFC4C4D0),
@@ -1007,7 +1020,7 @@ class _CreatePostSheetState extends State<_CreatePostSheet> {
                                   ),
                                   SizedBox(height: 10.h),
                                   Text(
-                                    'ເພີ່ມຮູບພາບ',
+                                    l10n.postsAddPhotos,
                                     style: TextStyle(
                                       fontSize: 13.sp,
                                       fontWeight: FontWeight.w700,
@@ -1125,7 +1138,7 @@ class _CreatePostSheetState extends State<_CreatePostSheet> {
                                         ),
                                         SizedBox(width: 4.w),
                                         Text(
-                                          'ປ່ຽນຮູບ',
+                                          l10n.postsChangePhoto,
                                           style: TextStyle(
                                             fontSize: 10.sp,
                                             fontWeight: FontWeight.w600,
@@ -1142,7 +1155,7 @@ class _CreatePostSheetState extends State<_CreatePostSheet> {
                     SizedBox(height: 8.h),
                   ] else ...[
                     // ── gender (customer) ──────────────────────
-                    _SheetSectionLabel('ເລືອກເພດ'),
+                    _SheetSectionLabel(l10n.postsSelectGender),
                     SizedBox(height: 10.h),
                     _GenderSelector(
                       selected: _targetGender,
@@ -1151,7 +1164,7 @@ class _CreatePostSheetState extends State<_CreatePostSheet> {
                     SizedBox(height: 16.h),
 
                     // ── service (customer) ────────────────────
-                    _SheetSectionLabel('ເລືອກບໍລິການ'),
+                    _SheetSectionLabel(l10n.postsSelectService),
                     SizedBox(height: 10.h),
                     _ServicePicker(
                       services: _services,
@@ -1163,12 +1176,12 @@ class _CreatePostSheetState extends State<_CreatePostSheet> {
                     SizedBox(height: 16.h),
 
                     // ── location (customer) ────────────────────
-                    _SheetSectionLabel('ສະຖານທີ'),
+                    _SheetSectionLabel(l10n.postsLocation),
                     SizedBox(height: 8.h),
                     AppTextField(
                       controller: _locationCtrl,
                       focusNode: _locationFocus,
-                      hint: 'ຕົວຢ່າງ: ຮ້ານອາຫານ,ດາວອັງຄານ...',
+                      hint: l10n.postsLocationHint,
                       accent: AppColors.primary,
                       prefixIcon: Icons.location_on_outlined,
                       action: TextInputAction.done,
@@ -1215,7 +1228,7 @@ class _CreatePostSheetState extends State<_CreatePostSheet> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    'ຂ້ອຍຈະໃຫ້ທິບ',
+                                    l10n.postsWillTip,
                                     style: TextStyle(
                                       fontSize: 13.sp,
                                       fontWeight: FontWeight.w700,
@@ -1226,7 +1239,7 @@ class _CreatePostSheetState extends State<_CreatePostSheet> {
                                   ),
                                   SizedBox(height: 2.h),
                                   Text(
-                                    'ເພື່ອໃຫ້ຮູ້ວ່າຈະໃຫ້ທິບ, ຈຶ່ງມີຄົນສົນໃຈຫຼາຍຂຶ້ນ',
+                                    l10n.postsWillTipHelp,
                                     style: TextStyle(
                                       fontSize: 10.sp,
                                       color: AppColors.textHint,
@@ -1267,7 +1280,7 @@ class _CreatePostSheetState extends State<_CreatePostSheet> {
               children: [
                 Expanded(
                   child: AppOutlineButton(
-                    label: 'ຍົກເລີກ',
+                    label: l10n.commonCancel,
                     height: 44,
                     onTap: () => Navigator.pop(context),
                   ),
@@ -1275,7 +1288,7 @@ class _CreatePostSheetState extends State<_CreatePostSheet> {
                 SizedBox(width: 12.w),
                 Expanded(
                   child: AppPrimaryButton(
-                    label: 'ໂພສ ແລະ ແຈ້ງເຕື່ອນ',
+                    label: l10n.postsSubmitAndNotify,
                     leadingIcon: Icons.send_rounded,
                     height: 44,
                     enabled: _canPost,
@@ -1413,24 +1426,25 @@ class _GenderSelector extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Row(
       children: [
         _GenderOption(
-          label: 'ທຸກເພດ',
+          label: l10n.postsGenderAny,
           value: null,
           selected: selected,
           onTap: () => onChanged(null),
         ),
         SizedBox(width: 8.w),
         _GenderOption(
-          label: 'ຊາຍ',
+          label: l10n.genderMaleShort,
           value: 'male',
           selected: selected,
           onTap: () => onChanged('male'),
         ),
         SizedBox(width: 8.w),
         _GenderOption(
-          label: 'ຍິງ',
+          label: l10n.genderFemaleShort,
           value: 'female',
           selected: selected,
           onTap: () => onChanged('female'),
@@ -1576,6 +1590,7 @@ class _SheetItem extends StatelessWidget {
 class _GiftHistoryBanner extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Padding(
       padding: EdgeInsets.only(bottom: 14.h),
       child: GestureDetector(
@@ -1628,7 +1643,7 @@ class _GiftHistoryBanner extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'ປະຫວັດຂອງຂວັນ',
+                      l10n.postsGiftHistory,
                       style: TextStyle(
                         fontSize: 14.sp,
                         fontWeight: FontWeight.w800,
@@ -1637,7 +1652,7 @@ class _GiftHistoryBanner extends StatelessWidget {
                     ),
                     SizedBox(height: 2.h),
                     Text(
-                      'ດູລາຍການຂອງຂວັນທີ່ທ່ານສົ່ງໃຫ້ໂມເດວ',
+                      l10n.postsGiftHistorySubtitle,
                       style: TextStyle(
                         fontSize: 11.sp,
                         color: Colors.white.withValues(alpha: 0.85),

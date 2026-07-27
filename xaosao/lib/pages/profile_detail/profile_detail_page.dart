@@ -2,6 +2,7 @@
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:xaosao/constants/app_color.dart';
+import 'package:xaosao/l10n/app_localizations.dart';
 import 'package:xaosao/models/profile_model.dart';
 import 'package:xaosao/constants/app_routes.dart';
 import 'package:xaosao/pages/login/getx/login_logic.dart';
@@ -29,10 +30,11 @@ class _ProfileDetailPageState extends State<ProfileDetailPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       backgroundColor: AppColors.bg,
       appBar: GradientAppBar(
-        title: 'ໂປຣໄຟລ໌',
+        title: l10n.profileTitle,
         actions: [
           Padding(
             padding: EdgeInsets.only(right: 12.w),
@@ -71,7 +73,7 @@ class _ProfileDetailPageState extends State<ProfileDetailPage> {
                     Icon(Icons.edit_outlined, size: 13.r, color: Colors.white),
                     SizedBox(width: 4.w),
                     Text(
-                      'ແກ້ໄຂ',
+                      l10n.commonEdit,
                       style: TextStyle(
                         fontSize: 12.sp,
                         fontWeight: FontWeight.w600,
@@ -109,22 +111,22 @@ class _ProfileDetailPageState extends State<ProfileDetailPage> {
                 children: [
                   _ProfileHeader(profile: profile, isClient: widget.isClient),
                   SizedBox(height: 16.h),
-                  _SectionLabel('ຂໍ້ມູນທົ່ວໄປ'),
+                  _SectionLabel(l10n.profileSectionGeneralInfo),
                   SizedBox(height: 6.h),
-                  _InfoCard(children: _generalInfoRows(profile)),
+                  _InfoCard(children: _generalInfoRows(profile, l10n)),
                   SizedBox(height: 14.h),
                   if (widget.isClient) ...[
-                    _SectionLabel('ຂໍ້ມູນບັນຊີ'),
+                    _SectionLabel(l10n.profileSectionAccountInfo),
                     SizedBox(height: 6.h),
                     _InfoCard(
                         children:
-                            _accountInfoRows(profile as CustomerProfileModel)),
+                            _accountInfoRows(profile as CustomerProfileModel, l10n)),
                   ] else ...[
-                    _SectionLabel('ບໍລິການ'),
+                    _SectionLabel(l10n.profileSectionServices),
                     SizedBox(height: 6.h),
                     _InfoCard(
                         children:
-                            _servicesRows(profile as ModelProfileModel)),
+                            _servicesRows(profile as ModelProfileModel, l10n)),
                   ],
                 ],
               ),
@@ -144,38 +146,38 @@ class _ProfileDetailPageState extends State<ProfileDetailPage> {
     return age;
   }
 
-  List<Widget> _generalInfoRows(BaseProfileModel p) {
+  List<Widget> _generalInfoRows(BaseProfileModel p, AppLocalizations l10n) {
     final phone = p.whatsapp != null ? '+856 ${p.whatsapp}' : '—';
     final age = _calcAge(p.dob);
     final dob = p.dob != null
         ? '${p.dob!.day.toString().padLeft(2, '0')} / '
             '${p.dob!.month.toString().padLeft(2, '0')} / '
             '${p.dob!.year}'
-            '${age != null ? ' · $age ປີ' : ''}'
+            '${age != null ? ' · ${l10n.commonAgeYears(age)}' : ''}'
         : '—';
 
     final rows = <Widget>[
       _InfoRow(
         icon: Icons.person_outline_rounded,
-        label: 'ຊື່-ນາມສະກຸນ',
+        label: l10n.profileFullName,
         value: p.fullName.isEmpty ? '—' : p.fullName,
       ),
       const _RowDivider(),
       _InfoRow(
         icon: Icons.phone_outlined,
-        label: 'ເບີໂທ',
+        label: l10n.profilePhone,
         value: phone,
       ),
       const _RowDivider(),
       _InfoRow(
         icon: Icons.people_outline_rounded,
-        label: 'ເພດ',
-        value: _genderLabel(p.gender),
+        label: l10n.profileGender,
+        value: _genderLabel(p.gender, l10n),
       ),
       const _RowDivider(),
       _InfoRow(
         icon: Icons.calendar_month_outlined,
-        label: 'ວັນເດືອນປີເກີດ',
+        label: l10n.registerDob,
         value: dob,
       ),
     ];
@@ -185,7 +187,7 @@ class _ProfileDetailPageState extends State<ProfileDetailPage> {
         const _RowDivider(),
         _InfoRow(
           icon: Icons.location_on_outlined,
-          label: 'ທີ່ຢູ່',
+          label: l10n.registerAddress,
           value: p.address!,
         ),
       ]);
@@ -194,35 +196,35 @@ class _ProfileDetailPageState extends State<ProfileDetailPage> {
     return rows;
   }
 
-  List<Widget> _accountInfoRows(CustomerProfileModel p) {
+  List<Widget> _accountInfoRows(CustomerProfileModel p, AppLocalizations l10n) {
     final created = p.createdAt != null
         ? '${p.createdAt!.day.toString().padLeft(2, '0')} '
-            '${_monthName(p.createdAt!.month)} '
+            '${_monthName(p.createdAt!.month, l10n)} '
             '${p.createdAt!.year}'
         : '—';
     return [
       _InfoRow(
         icon: Icons.lock_outline_rounded,
-        label: 'ລະຫັດຜ່ານ',
+        label: l10n.registerPassword,
         value: '••••••••',
       ),
       const _RowDivider(),
       _InfoRow(
         icon: Icons.access_time_rounded,
-        label: 'ສ້າງບັນຊີ',
+        label: l10n.profileAccountCreated,
         value: created,
       ),
     ];
   }
 
-  List<Widget> _servicesRows(ModelProfileModel p) {
+  List<Widget> _servicesRows(ModelProfileModel p, AppLocalizations l10n) {
     if (p.services.isEmpty) {
       return [
         Padding(
           padding: EdgeInsets.symmetric(vertical: 10.h),
           child: Center(
             child: Text(
-              'ຍັງບໍ່ມີບໍລິການ',
+              l10n.profileNoServices,
               style:
                   TextStyle(fontSize: 13.sp, color: AppColors.textHint),
             ),
@@ -244,24 +246,24 @@ class _ProfileDetailPageState extends State<ProfileDetailPage> {
     ];
   }
 
-  String _genderLabel(String? g) {
+  String _genderLabel(String? g, AppLocalizations l10n) {
     switch (g) {
       case 'male':
-        return 'ຊາຍ';
+        return l10n.genderMaleShort;
       case 'female':
-        return 'ຍິງ';
+        return l10n.genderFemaleShort;
       case 'other':
-        return 'ອື່ນໆ';
+        return l10n.genderOther;
       default:
         return '—';
     }
   }
 
-  String _monthName(int m) {
-    const months = [
-      'ມັງກອນ', 'ກຸມພາ', 'ມີນາ', 'ເມສາ',
-      'ພຶດສະພາ', 'ມິຖຸນາ', 'ກໍລະກົດ', 'ສິງຫາ',
-      'ກັນຍາ', 'ຕຸລາ', 'ພະຈິກ', 'ທັນວາ',
+  String _monthName(int m, AppLocalizations l10n) {
+    final months = [
+      l10n.monthLongJan, l10n.monthLongFeb, l10n.monthLongMar, l10n.monthLongApr,
+      l10n.monthLongMay, l10n.monthLongJun, l10n.monthLongJul, l10n.monthLongAug,
+      l10n.monthLongSep, l10n.monthLongOct, l10n.monthLongNov, l10n.monthLongDec,
     ];
     return months[m - 1];
   }
@@ -392,7 +394,8 @@ class _VerifiedBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final label = isClient ? 'ຢືນຢັງແລ້ວ' : 'Companion ຢືນຢັງ';
+    final l10n = AppLocalizations.of(context)!;
+    final label = isClient ? l10n.profileVerifiedCustomer : l10n.profileVerifiedCompanion;
     final color =
         isVerified ? const Color(0xFF0EA5E9) : AppColors.textHint;
     return Container(

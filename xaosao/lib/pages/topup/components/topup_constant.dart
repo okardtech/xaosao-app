@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:xaosao/constants/app_color.dart';
+import 'package:xaosao/utils/l10n.dart';
 
 // ── Number formatters ─────────────────────────────────────────
 String fmtKip(int n) {
@@ -10,7 +11,7 @@ String fmtKip(int n) {
     if (i > 0 && (s.length - i) % 3 == 0) b.write(',');
     b.write(s[i]);
   }
-  return '${b.toString()} ກີບ';
+  return '${b.toString()} ${l10n.commonCurrencyKip}';
 }
 
 String fmtNum(int n) {

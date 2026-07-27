@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:xaosao/constants/app_color.dart';
 import 'package:xaosao/models/customer_wallet_model.dart';
 import 'package:xaosao/models/transactions_model.dart';
+import 'package:xaosao/utils/l10n.dart';
 
 // ── Status enum — maps API strings to UI ──────────────────────
 enum TxStatus { completed, pending, processing, cancelled }
@@ -15,10 +16,10 @@ extension TxStatusX on TxStatus {
       };
 
   String get label => switch (this) {
-        TxStatus.completed => 'ສຳເລັດ',
-        TxStatus.pending => 'ລໍຖ້າ',
-        TxStatus.processing => 'ກຳລັງດຳເນີນ',
-        TxStatus.cancelled => 'ຍົກເລີກ',
+        TxStatus.completed => l10n.walletTxStatusCompleted,
+        TxStatus.pending => l10n.walletTxStatusPending,
+        TxStatus.processing => l10n.walletTxStatusProcessing,
+        TxStatus.cancelled => l10n.walletTxStatusCancelled,
       };
 
   Color get iconBg => switch (this) {

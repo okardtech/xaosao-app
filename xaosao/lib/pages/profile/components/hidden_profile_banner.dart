@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:xaosao/constants/app_color.dart';
+import 'package:xaosao/l10n/app_localizations.dart';
 import 'package:xaosao/pages/login/getx/login_logic.dart';
 import 'package:xaosao/pages/profile/getx/profile_logic.dart';
 import 'package:xaosao/repository/gallery_repo.dart';
 import 'package:xaosao/utils/app_snackbar.dart';
+import 'package:xaosao/utils/l10n.dart' as g;
 
 Future<void> showHiddenProfileBanner(BuildContext context) {
   return showDialog(
@@ -38,20 +40,21 @@ class _HiddenProfileDialogState extends State<_HiddenProfileDialog> {
         try {
           Get.find<ProfileLogic>().syncHidden(false);
         } catch (_) {}
-        AppSnackbar.success('ສະແດງໂປຣໄຟສຳເລັດ');
+        AppSnackbar.success(g.l10n.profileHiddenShowSuccess);
         Navigator.of(context).pop();
       } else {
         setState(() => _loading = false);
-        AppSnackbar.error(res.laMessage ?? 'ເກີດຂໍ້ຜິດພາດ, ກະລຸນາລອງໃໝ່');
+        AppSnackbar.error(res.laMessage ?? g.l10n.commonError);
       }
     } catch (_) {
       if (mounted) setState(() => _loading = false);
-      AppSnackbar.error('ເກີດຂໍ້ຜິດພາດ, ກະລຸນາລອງໃໝ່');
+      AppSnackbar.error(g.l10n.commonError);
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Dialog(
       backgroundColor: Colors.transparent,
       insetPadding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 40.h),
@@ -69,8 +72,7 @@ class _HiddenProfileDialogState extends State<_HiddenProfileDialog> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'ລູກຄ້າບໍ່ສາມາດເຫັນໂປຣໄຟຂອງທ່ານໃນຕອນນີ້. '
-                      'ເມື່ອທ່ານພ້ອມຮັບການຈອງອີກຄັ້ງ, ກົດສະແດງໂປຣໄຟຂອງທ່ານ.',
+                      l10n.profileHiddenBannerBody,
                       style: TextStyle(
                         fontSize: 14.sp,
                         color: AppColors.textHint,
@@ -98,7 +100,7 @@ class _HiddenProfileDialogState extends State<_HiddenProfileDialog> {
                               ),
                               child: Center(
                                 child: Text(
-                                  'ປິດ',
+                                  l10n.profileHiddenClose,
                                   style: TextStyle(
                                     fontSize: 14.sp,
                                     fontWeight: FontWeight.w700,
@@ -157,7 +159,7 @@ class _HiddenProfileDialogState extends State<_HiddenProfileDialog> {
                                         ),
                                       )
                                     : Text(
-                                        'ສະແດງໂປຣໄຟ',
+                                        l10n.profileHiddenShow,
                                         style: TextStyle(
                                           fontSize: 14.sp,
                                           fontWeight: FontWeight.w800,
@@ -279,7 +281,7 @@ class _HiddenProfileHeader extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'ໂປຣໄຟຂອງທ່ານຖືກຊ່ອນຢູ່',
+                        AppLocalizations.of(context)!.profileHiddenHeaderTitle,
                         style: TextStyle(
                           fontSize: 16.sp,
                           fontWeight: FontWeight.w900,
@@ -289,7 +291,7 @@ class _HiddenProfileHeader extends StatelessWidget {
                       ),
                       SizedBox(height: 3.h),
                       Text(
-                        'ທ່ານຈະບໍ່ສະແດງໃນຜົນຄົ້ນຫາ',
+                        AppLocalizations.of(context)!.profileHiddenHeaderSubtitle,
                         style: TextStyle(
                           fontSize: 11.sp,
                           color: Colors.white.withValues(alpha: 0.75),

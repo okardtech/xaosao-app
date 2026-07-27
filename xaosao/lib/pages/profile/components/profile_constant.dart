@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:xaosao/l10n/app_localizations.dart';
 
 import '../../../constants/app_color.dart';
 
@@ -264,7 +265,7 @@ class ShareEnableCard extends StatelessWidget {
                     const SizedBox(width: 9),
                     Expanded(
                       child: Text(
-                        'ແຊຣ໌ Profile Link',
+                        AppLocalizations.of(context)!.profileShareLink,
                         style: TextStyle(
                           fontSize: 14.sp,
                           fontWeight: FontWeight.w700,
@@ -294,7 +295,7 @@ class ShareEnableCard extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'ເຊື່ອງໂປຣໄຟຂອງທ່ານ',
+                          AppLocalizations.of(context)!.profileHideYourProfile,
                           style: TextStyle(
                             fontSize: 12.sp,
                             fontWeight: FontWeight.w700,
@@ -376,14 +377,14 @@ class LogoutButton extends StatelessWidget {
           borderRadius: BorderRadius.circular(15),
           border: Border.all(color: AppColors.border, width: 0.5),
         ),
-        child: const Row(
+        child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.logout_rounded, size: 14, color: AppColors.primary),
-            SizedBox(width: 7),
+            const Icon(Icons.logout_rounded, size: 14, color: AppColors.primary),
+            const SizedBox(width: 7),
             Text(
-              'ອອກຈາກລະບົບ',
-              style: TextStyle(
+              AppLocalizations.of(context)!.profileLogout,
+              style: const TextStyle(
                 fontSize: 13,
                 fontWeight: FontWeight.w700,
                 color: AppColors.primary,

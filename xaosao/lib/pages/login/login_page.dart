@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:xaosao/constants/app_routes.dart';
 import 'package:xaosao/pages/login/components/login_widget.dart';
 import 'package:xaosao/utils/app_snackbar.dart';
+import 'package:xaosao/utils/l10n.dart';
 import 'package:xaosao/pages/login/components/role_tabs.dart';
 import 'package:xaosao/pages/login/getx/login_logic.dart';
 import '../../constants/app_color.dart';
@@ -28,11 +29,11 @@ class _LoginPageState extends State<LoginPage> {
     final phone = _phoneCtrl.text.trim();
     final pass = _passCtrl.text;
     if (phone.length < 8) {
-      AppSnackbar.error('ກະລຸນາໃສ່ເບີໂທລະສັບໃຫ້ຖືກຕ້ອງ');
+      AppSnackbar.error(l10n.authValidPhoneRequired);
       return;
     }
     if (pass.isEmpty) {
-      AppSnackbar.error('ກະລຸນາໃສ່ລະຫັດຜ່ານ');
+      AppSnackbar.error(l10n.authPasswordRequired);
       return;
     }
     FocusScope.of(context).unfocus();
@@ -98,7 +99,7 @@ class _LoginPageState extends State<LoginPage> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                'ຍິນດີຕ້ອນຮັບ 👋',
+                                l10n.authWelcome,
                                 style: TextStyle(
                                   fontSize: 18.sp,
                                   fontWeight: FontWeight.w900,
@@ -108,7 +109,7 @@ class _LoginPageState extends State<LoginPage> {
                               ),
                               SizedBox(height: 3.h),
                               Text(
-                                'ທ່ານເຂົ້າໃນຖານະໃດ?',
+                                l10n.authRolePrompt,
                                 style: TextStyle(
                                   fontSize: 14.sp,
                                   color: AppColors.textHint,
@@ -126,7 +127,7 @@ class _LoginPageState extends State<LoginPage> {
                               SizedBox(height: 20.h),
 
                               // ── Phone ─────────────────────────────────
-                              FieldLabel(label: 'ເບີໂທລະສັບ'),
+                              FieldLabel(label: l10n.authFieldPhone),
                               SizedBox(height: 5.h),
                               PhoneField(
                                 ctrl: _phoneCtrl,
@@ -139,7 +140,7 @@ class _LoginPageState extends State<LoginPage> {
                               SizedBox(height: 12.h),
 
                               // ── Password ──────────────────────────────
-                              FieldLabel(label: 'ລະຫັດຜ່ານ'),
+                              FieldLabel(label: l10n.authFieldPassword),
                               SizedBox(height: 5.h),
                               PasswordField(
                                 ctrl: _passCtrl,
@@ -161,7 +162,7 @@ class _LoginPageState extends State<LoginPage> {
                                     AppRoutes.forgotPassword,
                                   ),
                                   child: Text(
-                                    'ລືມລະຫັດຜ່ານ?',
+                                    l10n.authForgotPassword,
                                     style: TextStyle(
                                       fontSize: 14.sp,
                                       color: AppColors.textHint,
@@ -216,7 +217,7 @@ class _OrDivider extends StatelessWidget {
         Padding(
           padding: EdgeInsets.symmetric(horizontal: 10.w),
           child: Text(
-            'ຍັງບໍ່ມີບັນຊີ?',
+            l10n.authNoAccount,
             style: TextStyle(fontSize: 14.sp, color: const Color(0xFFC4C4D0)),
           ),
         ),

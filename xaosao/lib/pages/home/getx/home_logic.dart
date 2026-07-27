@@ -8,6 +8,7 @@ import 'package:xaosao/repository/discover_repo.dart';
 import 'package:xaosao/repository/review_repo.dart';
 import 'package:xaosao/services/storage_service.dart';
 import 'package:xaosao/utils/app_snackbar.dart';
+import 'package:xaosao/utils/l10n.dart';
 
 class HomeLogic extends GetxController {
   final _repo = DiscoverRepo();
@@ -121,7 +122,7 @@ class HomeLogic extends GetxController {
               isFirstPage ? HomeStatus.failure : HomeStatus.success,
         ));
         if (isFirstPage) {
-          AppSnackbar.error(res.laMessage ?? 'ໂຫຼດຂໍ້ມູນແນະນຳບໍ່ສຳເລັດ');
+          AppSnackbar.error(res.laMessage ?? l10n.homeLoadRecommendationsFailed);
         }
       }
     } catch (e) {
@@ -130,7 +131,7 @@ class HomeLogic extends GetxController {
         recommendedStatus:
             isFirstPage ? HomeStatus.failure : HomeStatus.success,
       ));
-      if (isFirstPage) AppSnackbar.error('ໂຫຼດຂໍ້ມູນແນະນຳບໍ່ສຳເລັດ');
+      if (isFirstPage) AppSnackbar.error(l10n.homeLoadRecommendationsFailed);
     } finally {
       _loadingRecommended = false;
     }
@@ -184,14 +185,14 @@ class HomeLogic extends GetxController {
           onlineStatus: isFirstPage ? HomeStatus.failure : HomeStatus.success,
         ));
         if (isFirstPage) {
-          AppSnackbar.error(res.laMessage ?? 'ໂຫຼດຂໍ້ມູນອອນລາຍບໍ່ສຳເລັດ');
+          AppSnackbar.error(res.laMessage ?? l10n.homeLoadOnlineFailed);
         }
       }
     } catch (_) {
       _updateState(state.copyWith(
         onlineStatus: isFirstPage ? HomeStatus.failure : HomeStatus.success,
       ));
-      if (isFirstPage) AppSnackbar.error('ໂຫຼດຂໍ້ມູນອອນລາຍບໍ່ສຳເລັດ');
+      if (isFirstPage) AppSnackbar.error(l10n.homeLoadOnlineFailed);
     } finally {
       _loadingOnline = false;
     }

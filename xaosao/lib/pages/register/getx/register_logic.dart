@@ -6,6 +6,7 @@ import 'package:xaosao/repository/referral_repo.dart';
 import 'package:xaosao/repository/register_repo.dart';
 import 'package:xaosao/utils/app_snackbar.dart';
 import 'package:xaosao/utils/image_picker_util.dart';
+import 'package:xaosao/utils/l10n.dart';
 import 'package:xaosao/widgets/show_loading_alert.dart';
 import '../../../services/storage_service.dart';
 import '../../login/getx/login_state.dart';
@@ -77,11 +78,11 @@ class RegisterLogic extends GetxController {
         );
       } else {
         _updateState(state.copyWith(servicesStatus: RegisterStatus.failure));
-        AppSnackbar.error(res.laMessage ?? 'ໂຫຼດບໍລິການບໍ່ສຳເລັດ');
+        AppSnackbar.error(res.laMessage ?? l10n.registerLoadServicesFailed);
       }
     } catch (e) {
       _updateState(state.copyWith(servicesStatus: RegisterStatus.failure));
-      AppSnackbar.error('ໂຫຼດບໍລິການບໍ່ສຳເລັດ');
+      AppSnackbar.error(l10n.registerLoadServicesFailed);
     }
   }
 
@@ -94,7 +95,7 @@ class RegisterLogic extends GetxController {
     String? address,
   }) async {
     if (state.avatarFile == null) {
-      AppSnackbar.error('ກະລຸນາເລືອກຮູບໂປຮໄຟລ໌');
+      AppSnackbar.error(l10n.registerSelectProfilePhoto);
       return;
     }
     _updateState(state.copyWith(status: RegisterStatus.loading));
@@ -135,7 +136,7 @@ class RegisterLogic extends GetxController {
         );
         hideLoadingDialog();
         if (!res.success) {
-          AppSnackbar.error(res.laMessage ?? 'ລົງທະບຽນບໍ່ສຳເລັດ');
+          AppSnackbar.error(res.laMessage ?? l10n.registerFailed);
           return;
         }
         Get.toNamed(
@@ -147,7 +148,7 @@ class RegisterLogic extends GetxController {
       print('error ==>${e}');
       _updateState(state.copyWith(status: RegisterStatus.failure));
       hideLoadingDialog();
-      AppSnackbar.error('ລົງທະບຽນບໍ່ສຳເລັດ');
+      AppSnackbar.error(l10n.registerFailed);
     }
   }
 
@@ -179,7 +180,7 @@ class RegisterLogic extends GetxController {
       );
       hideLoadingDialog();
       if (!res.success) {
-        AppSnackbar.error(res.laMessage ?? 'ລົງທະບຽນບໍ່ສຳເລັດ');
+        AppSnackbar.error(res.laMessage ?? l10n.registerFailed);
         return;
       }
       Get.toNamed(
@@ -189,7 +190,7 @@ class RegisterLogic extends GetxController {
     } catch (e) {
       _updateState(state.copyWith(status: RegisterStatus.failure));
       hideLoadingDialog();
-      AppSnackbar.error('ລົງທະບຽນບໍ່ສຳເລັດ');
+      AppSnackbar.error(l10n.registerFailed);
     }
   }
 
@@ -214,7 +215,7 @@ class RegisterLogic extends GetxController {
       );
       hideLoadingDialog();
       if (!res.success || res.data == null) {
-        AppSnackbar.error(res.laMessage ?? 'OTP ບໍ່ຖືກຕ້ອງ');
+        AppSnackbar.error(res.laMessage ?? l10n.registerInvalidOtp);
         return false;
       }
       if (isCustomer) {
@@ -239,14 +240,14 @@ class RegisterLogic extends GetxController {
         Get.offAllNamed(AppRoutes.dashboard);
       } else {
         await Get.find<StorageService>().remove('pending_ref_code');
-        AppSnackbar.success(res.laMessage ?? 'ການລົງທະບຽນສຳເລັດເເລ້ວ');
+        AppSnackbar.success(res.laMessage ?? l10n.registerSuccess);
         Get.offAllNamed(AppRoutes.login);
       }
       return true;
     } catch (e) {
       _updateState(state.copyWith(status: RegisterStatus.failure));
       hideLoadingDialog();
-      AppSnackbar.error('ກວດສອບ OTP ບໍ່ສຳເລັດ');
+      AppSnackbar.error(l10n.registerVerifyOtpFailed);
       return false;
     }
   }
@@ -260,14 +261,14 @@ class RegisterLogic extends GetxController {
       final res = await _repo.resendOtp(phone: phone, isCustomer: isCustomer);
       hideLoadingDialog();
       if (!res.success) {
-        AppSnackbar.error(res.laMessage ?? 'ສົ່ງ OTP ໃໝ່ບໍ່ສຳເລັດ');
+        AppSnackbar.error(res.laMessage ?? l10n.registerResendOtpFailed);
         return false;
       }
-      AppSnackbar.success('ສົ່ງລະຫັດ OTP ໃໝ່ແລ້ວ');
+      AppSnackbar.success(l10n.registerResendOtpSuccess);
       return true;
     } catch (e) {
       hideLoadingDialog();
-      AppSnackbar.error('ສົ່ງ OTP ໃໝ່ບໍ່ສຳເລັດ');
+      AppSnackbar.error(l10n.registerResendOtpFailed);
       return false;
     }
   }

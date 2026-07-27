@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:xaosao/constants/app_color.dart';
+import 'package:xaosao/l10n/app_localizations.dart';
 import 'package:xaosao/models/Recommended_model.dart';
 import 'package:xaosao/pages/home/components/companion_card.dart';
 import 'package:xaosao/pages/home/components/companion_filter.dart';
@@ -122,7 +123,7 @@ class _ExplorePageState extends State<ExplorePage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'ຄົ້ນຫາ',
+                AppLocalizations.of(context)!.homeSearch,
                 style: TextStyle(
                   fontSize: 22.sp,
                   fontWeight: FontWeight.w900,
@@ -131,7 +132,7 @@ class _ExplorePageState extends State<ExplorePage> {
                 ),
               ),
               Text(
-                'ຄົ້ນພົບຜູ້ຮ່ວມທາງຂອງທ່ານ',
+                AppLocalizations.of(context)!.homeFindCompanion,
                 style: TextStyle(
                   fontSize: 12.sp,
                   color: const Color(0xFF9B9BAD),
@@ -181,7 +182,7 @@ class _ExplorePageState extends State<ExplorePage> {
               ? AppSearchField(
                   controller: _searchCtrl,
                   onChanged: _logic.onSearchChanged,
-                  hintText: 'ຄົ້ນຫາດ້ວຍຊື່...',
+                  hintText: AppLocalizations.of(context)!.homeSearchHint,
                   autofocus: true,
                 )
               : const SizedBox.shrink(),
@@ -267,7 +268,7 @@ class _ExplorePageState extends State<ExplorePage> {
             _sectionHeader(
               icon: Icons.fiber_new_rounded,
               iconColor: const Color(0xFF4CAF50),
-              title: 'ກຳລັງອອນລາຍ',
+              title: AppLocalizations.of(context)!.homeOnlineNow,
             ),
             const OnlineLoadingShimmer(),
             SizedBox(height: 28.h),
@@ -281,7 +282,7 @@ class _ExplorePageState extends State<ExplorePage> {
           _sectionHeader(
             icon: Icons.fiber_new_rounded,
             iconColor: const Color(0xFF4CAF50),
-            title: 'ກຳລັງອອນລາຍ',
+            title: AppLocalizations.of(context)!.homeOnlineNow,
             onViewAll: () => Navigator.push(
               context,
               MaterialPageRoute(builder: (_) => const ViewAllCompanionsPage()),
@@ -308,7 +309,7 @@ class _ExplorePageState extends State<ExplorePage> {
             _sectionHeader(
               icon: Icons.star_rounded,
               iconColor: const Color(0xFFFFB800),
-              title: 'ແນະນຳສຳລັບທ່ານ',
+              title: AppLocalizations.of(context)!.homeRecommended,
             ),
             RecommendedLoadingShimmer(count: 4),
           ],
@@ -329,7 +330,7 @@ class _ExplorePageState extends State<ExplorePage> {
           _sectionHeader(
             icon: Icons.star_rounded,
             iconColor: const Color(0xFFFFB800),
-            title: 'ແນະນຳສຳລັບທ່ານ',
+            title: AppLocalizations.of(context)!.homeRecommended,
             onViewAll: () => Navigator.push(
               context,
               MaterialPageRoute(builder: (_) => const ViewAllCompanionsPage()),
@@ -465,7 +466,7 @@ class _ExplorePageState extends State<ExplorePage> {
               child: Row(
                 children: [
                   Text(
-                    'ເບິ່ງທັງໝົດ',
+                    AppLocalizations.of(context)!.homeSeeAll,
                     style: TextStyle(
                       fontSize: 12.sp,
                       fontWeight: FontWeight.w600,
@@ -498,7 +499,7 @@ class _ExplorePageState extends State<ExplorePage> {
           ),
           SizedBox(height: 14.h),
           Text(
-            'ບໍ່ພົບຜົນໄດ້ຮັບ',
+            AppLocalizations.of(context)!.homeNoResults,
             style: TextStyle(
               fontSize: 16.sp,
               fontWeight: FontWeight.w700,
@@ -507,7 +508,7 @@ class _ExplorePageState extends State<ExplorePage> {
           ),
           SizedBox(height: 6.h),
           Text(
-            'ລອງປ່ຽນ filter ໃໝ່',
+            AppLocalizations.of(context)!.homeTryFilter,
             style: TextStyle(fontSize: 13.sp, color: const Color(0xFFBBBBCC)),
           ),
         ],
@@ -543,7 +544,7 @@ class _ExplorePageState extends State<ExplorePage> {
             ),
             SizedBox(height: 20.h),
             Text(
-              'ຕົວກອງ',
+              AppLocalizations.of(context)!.homeFilters,
               style: TextStyle(
                 fontSize: 18.sp,
                 fontWeight: FontWeight.w800,
@@ -552,7 +553,7 @@ class _ExplorePageState extends State<ExplorePage> {
             ),
             SizedBox(height: 16.h),
             Text(
-              'ໄລຍະທາງສູງສຸດ',
+              AppLocalizations.of(context)!.homeMaxDistance,
               style: TextStyle(
                 fontSize: 13.sp,
                 fontWeight: FontWeight.w600,
@@ -575,7 +576,7 @@ class _ExplorePageState extends State<ExplorePage> {
                   elevation: 0,
                 ),
                 child: Text(
-                  'ນຳໃຊ້ Filter',
+                  AppLocalizations.of(context)!.homeApplyFilter,
                   style: TextStyle(
                     fontSize: 15.sp,
                     fontWeight: FontWeight.w700,
@@ -597,7 +598,7 @@ class _ExplorePageState extends State<ExplorePage> {
       {'label': '< 5km', 'value': 5.0},
       {'label': '< 10km', 'value': 10.0},
       {'label': '< 30km', 'value': 30.0},
-      {'label': 'ທັງໝົດ', 'value': 200.0},
+      {'label': AppLocalizations.of(context)!.commonAll, 'value': 200.0},
     ];
     return Obx(() {
       final current = _logic.state.maxDistanceKm;

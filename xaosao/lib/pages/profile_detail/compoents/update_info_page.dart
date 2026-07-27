@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:xaosao/constants/app_color.dart';
 import 'package:xaosao/constants/app_data_config.dart';
+import 'package:xaosao/l10n/app_localizations.dart';
 import 'package:xaosao/models/profile_model.dart';
 import 'package:xaosao/pages/login/getx/login_state.dart';
 import 'package:xaosao/pages/profile_detail/getx/profile_detail_logic.dart';
@@ -100,14 +101,15 @@ class _UpdateInfoPageState extends State<UpdateInfoPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       behavior: HitTestBehavior.opaque,
       child: Scaffold(
         backgroundColor: AppColors.bg,
         appBar: GradientAppBar(
-          title: 'ແກ້ໄຂຂໍ້ມູນ',
-          subtitle: 'ກະລຸນາຕື່ມຂໍ້ມູນໃຫ້ຄົບ',
+          title: l10n.profileEditTitle,
+          subtitle: l10n.registerFillInfo,
         ),
         body: SafeArea(
           child: SingleChildScrollView(
@@ -121,12 +123,12 @@ class _UpdateInfoPageState extends State<UpdateInfoPage> {
                   children: [
                     Expanded(
                       child: _FieldCol(
-                        label: 'ຊື່',
+                        label: l10n.registerFirstName,
                         child: RegField(
                           ctrl: _firstNameCtrl,
                           focus: _fnFocus,
                           nextFocus: _lnFocus,
-                          hint: 'ປ້ອນຊື່',
+                          hint: l10n.registerFirstNameHint,
                           icon: Icons.person_outline_rounded,
                           role: RegisterRole.customer,
                         ),
@@ -135,11 +137,11 @@ class _UpdateInfoPageState extends State<UpdateInfoPage> {
                     SizedBox(width: 6.w),
                     Expanded(
                       child: _FieldCol(
-                        label: 'ນາມສະກຸນ',
+                        label: l10n.registerLastName,
                         child: RegField(
                           ctrl: _lastNameCtrl,
                           focus: _lnFocus,
-                          hint: 'ປ້ອນນາມສະກຸນ',
+                          hint: l10n.registerLastNameHint,
                           icon: Icons.person_outline_rounded,
                           role: RegisterRole.customer,
                           action: TextInputAction.next,
@@ -152,7 +154,7 @@ class _UpdateInfoPageState extends State<UpdateInfoPage> {
 
                 // ── ເບີໂທ (read-only) ─────────────────────────────────
                 _FieldCol(
-                  label: 'ເບີໂທ (ບໍ່ສາມາດປ່ຽນ)',
+                  label: l10n.profilePhoneReadonlyLabel,
                   child: _PhoneReadOnly(
                     number: widget.profile.whatsapp?.toString() ?? '',
                   ),
@@ -160,7 +162,7 @@ class _UpdateInfoPageState extends State<UpdateInfoPage> {
                 SizedBox(height: 12.h),
 
                 // ── ເພດ ───────────────────────────────────────────────
-                RegLabel('ເລືອກເພດ'),
+                RegLabel(l10n.registerSelectGender),
                 SizedBox(height: 4.h),
                 GenderSelector(
                   selected: _selectedGender,
@@ -170,7 +172,7 @@ class _UpdateInfoPageState extends State<UpdateInfoPage> {
 
                 // ── ວັນເດືອນປີເກີດ ────────────────────────────────────
                 _FieldCol(
-                  label: 'ວັນເດືອນປີເກີດ',
+                  label: l10n.registerDob,
                   child: DatePickerField(
                     value: _selectedDob,
                     role: RegisterRole.customer,
@@ -182,11 +184,11 @@ class _UpdateInfoPageState extends State<UpdateInfoPage> {
                 // ── ທີ່ຢູ່ (model only) ────────────────────────────────
                 if (_isModel) ...[
                   _FieldCol(
-                    label: 'ທີ່ຢູ່',
+                    label: l10n.registerAddress,
                     child: RegField(
                       ctrl: _addressCtrl,
                       focus: _adFocus,
-                      hint: 'ເຊັ່ນ: ໂຊນ 1, ວຽງຈັນ',
+                      hint: l10n.profileAddressHint,
                       icon: Icons.location_on_outlined,
                       role: RegisterRole.customer,
                       action: TextInputAction.done,
@@ -197,7 +199,7 @@ class _UpdateInfoPageState extends State<UpdateInfoPage> {
 
                 // ── ໝາຍເຫດ ───────────────────────────────────────────
                 _InfoNote(
-                  'ການປ່ຽນລະຫັດຜ່ານ ແລະ ເລກໂທ, ຕ້ອງໄປທີ່ ໜ້າຕັ້ງຄ່າ',
+                  l10n.profileEditNote,
                 ),
                 SizedBox(height: 24.h),
 
@@ -369,7 +371,7 @@ class _SaveButton extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(
-                      'ບັນທຶກ',
+                      AppLocalizations.of(context)!.profileSave,
                       style: TextStyle(
                         fontSize: 14.sp,
                         fontWeight: FontWeight.w700,

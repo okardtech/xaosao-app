@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:xaosao/constants/app_color.dart';
+import 'package:xaosao/l10n/app_localizations.dart';
 import 'package:xaosao/models/my_booking_model.dart';
 
 // ═══════════════════════════════════════════════════════════════
@@ -26,6 +27,7 @@ class BookingSummaryStrip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final total     = bookings.length;
     final active    = bookings.where((b) => _isActive(b.status)).length;
     final completed = bookings.where((b) => _isCompleted(b.status)).length;
@@ -33,7 +35,7 @@ class BookingSummaryStrip extends StatelessWidget {
 
     return Row(children: [
       _SCard(
-        count: total, label: 'ທັງໝົດ',
+        count: total, label: l10n.commonAll,
         icon: Icons.calendar_month_outlined,
         accent: const Color(0xFF1A1A2E),
         iconBg: const Color(0xFFF0F0F5),
@@ -43,7 +45,7 @@ class BookingSummaryStrip extends StatelessWidget {
       ),
       SizedBox(width: 7.w),
       _SCard(
-        count: active, label: 'ກຳລັງມາ',
+        count: active, label: l10n.bookingSummaryActive,
         icon: Icons.access_time_rounded,
         accent: const Color(0xFF3B82F6),
         iconBg: const Color(0xFFEFF6FF),
@@ -53,7 +55,7 @@ class BookingSummaryStrip extends StatelessWidget {
       ),
       SizedBox(width: 7.w),
       _SCard(
-        count: completed, label: 'ສຳເລັດ',
+        count: completed, label: l10n.walletTxStatusCompleted,
         icon: Icons.check_circle_outline_rounded,
         accent: const Color(0xFF22C55E),
         iconBg: const Color(0xFFEDFAF3),
@@ -63,7 +65,7 @@ class BookingSummaryStrip extends StatelessWidget {
       ),
       SizedBox(width: 7.w),
       _SCard(
-        count: cancelled, label: 'ຍົກເລີກ',
+        count: cancelled, label: l10n.walletTxStatusCancelled,
         icon: Icons.cancel_outlined,
         accent: const Color(0xFF9B9BAD),
         iconBg: const Color(0xFFF0F0F5),

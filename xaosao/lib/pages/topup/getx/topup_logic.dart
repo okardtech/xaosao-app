@@ -5,6 +5,7 @@ import 'package:xaosao/pages/wallet/getx/wallet_logic.dart';
 import 'package:xaosao/repository/wallet_repo.dart';
 import 'package:xaosao/repository/package_repo.dart' as sub_repo;
 import 'package:xaosao/utils/app_snackbar.dart';
+import 'package:xaosao/utils/l10n.dart';
 import 'package:xaosao/widgets/show_loading_alert.dart';
 
 class TopupLogic extends GetxController {
@@ -46,11 +47,11 @@ class TopupLogic extends GetxController {
         _state.value = state.copyWith(loadingQr: false, qrUrl: res.data);
       } else {
         _state.value = state.copyWith(loadingQr: false);
-        AppSnackbar.error(res.laMessage ?? 'ບໍ່ສາມາດໂຫຼດ QR ໄດ້');
+        AppSnackbar.error(res.laMessage ?? l10n.topupQrLoadFailed);
       }
     } catch (e) {
       _state.value = state.copyWith(loadingQr: false);
-      AppSnackbar.error('ເກີດຂໍ້ຜິດພາດ: $e');
+      AppSnackbar.error(l10n.commonErrorDetail(e.toString()));
     }
   }
 
@@ -67,7 +68,7 @@ class TopupLogic extends GetxController {
         );
         hideLoadingDialog();
         if (res.data == true) return true;
-        AppSnackbar.error(res.laMessage ?? 'ການຊື້ Package ບໍ່ສຳເລັດ');
+        AppSnackbar.error(res.laMessage ?? l10n.topupPackageFailed);
         return false;
       }
 
@@ -80,11 +81,11 @@ class TopupLogic extends GetxController {
         if (Get.isRegistered<WalletLogic>()) Get.find<WalletLogic>().refresh();
         return true;
       }
-      AppSnackbar.error(res.laMessage ?? 'ບໍ່ສາມາດສົ່ງໃບຈ່າຍໄດ້');
+      AppSnackbar.error(res.laMessage ?? l10n.topupSlipUploadFailed);
       return false;
     } catch (e) {
       hideLoadingDialog();
-      AppSnackbar.error('ເກີດຂໍ້ຜິດພາດ: $e');
+      AppSnackbar.error(l10n.commonErrorDetail(e.toString()));
       return false;
     }
   }

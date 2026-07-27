@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:xaosao/constants/app_color.dart';
+import 'package:xaosao/l10n/app_localizations.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
 //  Gender Tab Bar  — underline indicator style, no counts
@@ -15,14 +16,15 @@ class GenderTabBar extends StatelessWidget {
     required this.onChanged,
   });
 
-  static const _tabs = [
-    {'value': 'male', 'label': 'ຜູ້ຊາຍ'},
-    {'value': 'female', 'label': 'ຜູ້ຍິງ'},
-    {'value': 'all', 'label': 'ທັງໝົດ'},
-  ];
+  List<Map<String, String>> _buildTabs(AppLocalizations l10n) => [
+        {'value': 'male', 'label': l10n.genderMale},
+        {'value': 'female', 'label': l10n.genderFemale},
+        {'value': 'all', 'label': l10n.commonAll},
+      ];
 
   @override
   Widget build(BuildContext context) {
+    final tabs = _buildTabs(AppLocalizations.of(context)!);
     return DecoratedBox(
       decoration: BoxDecoration(
         border: Border(
@@ -33,7 +35,7 @@ class GenderTabBar extends StatelessWidget {
         ),
       ),
       child: Row(
-        children: _tabs.map((t) {
+        children: tabs.map((t) {
           final val = t['value'] as String;
           final isSelected = selected == val;
           return Expanded(
@@ -86,20 +88,21 @@ class CategoryPillRow extends StatelessWidget {
     required this.onChanged,
   });
 
-  static const _categories = [
-    {'value': 'new', 'label': 'ໃໝ່', 'emoji': '✨'},
-    {'value': 'nearby', 'label': 'ໃກ້ຄຽງ', 'emoji': '📍'},
-    {'value': 'vip', 'label': 'VIP', 'emoji': '⭐'},
-    {'value': 'popular', 'label': 'ນິຍົມ', 'emoji': '🔥'},
-  ];
+  List<Map<String, String>> _buildCategories(AppLocalizations l10n) => [
+        {'value': 'new', 'label': l10n.viewCompanionFilterNew, 'emoji': '✨'},
+        {'value': 'nearby', 'label': l10n.homeFilterNearby, 'emoji': '📍'},
+        {'value': 'vip', 'label': 'VIP', 'emoji': '⭐'},
+        {'value': 'popular', 'label': l10n.viewCompanionFilterPopular, 'emoji': '🔥'},
+      ];
 
   @override
   Widget build(BuildContext context) {
+    final categories = _buildCategories(AppLocalizations.of(context)!);
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       physics: const BouncingScrollPhysics(),
       child: Row(
-        children: _categories.map((c) {
+        children: categories.map((c) {
           final val = c['value'] as String;
           final isSelected = selected == val;
 
@@ -155,31 +158,32 @@ class ServiceFilterRow extends StatelessWidget {
     required this.onToggle,
   });
 
-  static const _filters = [
-    {
-      'value': 'social',
-      'label': 'ເພື່ອນສັງຄົມ',
-      'icon': Icons.people_alt_outlined,
-      'color': 0xFFF06292,
-    },
-    {
-      'value': 'massage',
-      'label': 'ນວດ',
-      'icon': Icons.spa_outlined,
-      'color': 0xFF9C6FDE,
-    },
-    {
-      'value': 'travel',
-      'label': 'ທ່ອງທ່ຽວ',
-      'icon': Icons.flight_takeoff_outlined,
-      'color': 0xFF42A5F5,
-    },
-  ];
+  List<Map<String, dynamic>> _buildFilters(AppLocalizations l10n) => [
+        {
+          'value': 'social',
+          'label': l10n.homeServiceSocial,
+          'icon': Icons.people_alt_outlined,
+          'color': 0xFFF06292,
+        },
+        {
+          'value': 'massage',
+          'label': l10n.serviceTypeMassage,
+          'icon': Icons.spa_outlined,
+          'color': 0xFF9C6FDE,
+        },
+        {
+          'value': 'travel',
+          'label': l10n.homeServiceTravel,
+          'icon': Icons.flight_takeoff_outlined,
+          'color': 0xFF42A5F5,
+        },
+      ];
 
   @override
   Widget build(BuildContext context) {
+    final filters = _buildFilters(AppLocalizations.of(context)!);
     return Row(
-      children: _filters.map((f) {
+      children: filters.map((f) {
         final val = f['value'] as String;
         final isOn = selected.contains(val);
         final color = Color(f['color'] as int);
