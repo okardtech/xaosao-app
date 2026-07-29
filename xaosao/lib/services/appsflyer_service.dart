@@ -57,11 +57,19 @@ class AppsFlyerService extends GetxService {
       final link = res.deepLink;
       if (link == null) return;
 
-      // ── Legacy: referral code ─────────────────────────────────
+      // ── Referral: code (+ optional target=model|customer) ────
       final refCode = link.getStringValue('code');
+      final target = link.getStringValue('target');
       if (refCode != null && refCode.isNotEmpty) {
         incomingRefCode.value = refCode;
-        Get.find<StorageService>().write('pending_ref_code', refCode);
+        final storage = Get.find<StorageService>();
+        storage.write('pending_ref_code', refCode);
+        if (target != null && target.isNotEmpty) {
+          storage.write('pending_ref_target', target);
+        }
+        Get.find<DeepLinkService>()
+            .handleReferral(code: refCode, target: target);
+        return; // Referral links never double as profile deep links.
       }
 
       // ── Page deep link: type + id ─────────────────────────────

@@ -5,6 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:xaosao/l10n/app_localizations.dart';
 
 class AppImagePreview extends StatefulWidget {
   final List<String> images;
@@ -174,7 +175,7 @@ class _AppImagePreviewState extends State<AppImagePreview> {
                     ),
                     SizedBox(height: 8.h),
                     Text(
-                      'ໂຫຼດຮູບບໍ່ໄດ້',
+                      AppLocalizations.of(context)!.commonImageLoadFailed,
                       style: TextStyle(
                         fontSize: 12.sp,
                         color: Colors.white38,

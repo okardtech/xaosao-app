@@ -17,21 +17,18 @@ class LanguageService extends GetxService {
   }
 
   void _loadSavedLanguage() {
+    // On first install we deliberately ignore the device locale and default
+    // to Lao — the app targets a Lao audience, and the user shouldn't have
+    // to switch language after installing just because their phone is set
+    // to Thai/English. Once they pick a language from Settings the choice
+    // is persisted via [changeLanguage] and read here on subsequent starts.
     final savedLang = _authService.getLanguage();
+    final langCode =
+        (savedLang != null && supportedLanguages.contains(savedLang))
+            ? savedLang
+            : 'lo';
 
-    if (savedLang != null) {
-      _locale.value = Locale(savedLang);
-    } else {
-      final deviceLocale = Get.deviceLocale;
-      final deviceLangCode = deviceLocale?.languageCode ?? 'lo';
-
-      final langCode = supportedLanguages.contains(deviceLangCode)
-          ? deviceLangCode
-          : 'lo';
-
-      _locale.value = Locale(langCode);
-    }
-
+    _locale.value = Locale(langCode);
     Get.updateLocale(_locale.value);
   }
 

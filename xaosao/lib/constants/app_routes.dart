@@ -38,6 +38,7 @@ import '../pages/booking/booking_args.dart';
 import '../pages/booking/booking_page.dart';
 import '../pages/meet_ups/booking_detail_loader_page.dart';
 import '../pages/share_linked/share_linked_page.dart';
+import '../pages/share_linked/referral_tiers_page.dart';
 import '../pages/referral_analytics/referral_analytics_page.dart';
 import '../pages/setting/companion_policy_privacy.dart';
 import '../pages/setting/customer_policy_privacy.dart';
@@ -81,6 +82,7 @@ class AppRoutes {
   static const String bookingDetail = '/booking-detail';
   static const String chatDetail = '/chat-detail';
   static const String shareLink = '/share-link';
+  static const String referralTiers = '/referral-tiers';
   static const String referralAnalytics = '/referral-analytics';
   static const String companionPolicyPrivacy = '/companion-policy-privacy';
   static const String customerPolicyPrivacy = '/customer-policy-privacy';
@@ -192,6 +194,8 @@ class AppRoutes {
       case shareLink:
         final model = settings.arguments as ModelProfileModel;
         return _slideRight(ShareLinkedPage(model: model));
+      case referralTiers:
+        return _slideRight(const ReferralTiersPage());
       case referralAnalytics:
         return _slideRight(const ReferralAnalyticsPage());
       case companionPolicyPrivacy:

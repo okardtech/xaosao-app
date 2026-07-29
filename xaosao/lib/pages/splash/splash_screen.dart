@@ -79,11 +79,16 @@ class _SplashPageState extends State<SplashPage> {
   void _goTo(String route) {
     if (!mounted) return;
     Navigator.pushNamedAndRemoveUntil(context, route, (_) => false);
-    // Once the user lands on the dashboard, any deep link that arrived
-    // during cold start is safe to dispatch.
+    final deepLink = Get.find<DeepLinkService>();
+    // Flag auth-check complete so a queued referral link can flush —
+    // regardless of whether we landed on dashboard, onboarding, or login.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      deepLink.markSessionResolved();
+    });
+    // Profile deep links (type + id) only make sense post-dashboard.
     if (route == AppRoutes.dashboard) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        Get.find<DeepLinkService>().markNavigatorReady();
+        deepLink.markNavigatorReady();
       });
     }
   }
@@ -217,7 +222,7 @@ class _SplashPageState extends State<SplashPage> {
                 const _LoadingDots(),
                 SizedBox(height: 10.h),
                 Text(
-                  'v1.0.2',
+                  'v1.0.3',
                   style: TextStyle(
                     fontSize: 12.sp,
                     color: Colors.white.withOpacity(0.28),

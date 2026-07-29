@@ -35,7 +35,10 @@ class RegisterLogic extends GetxController {
   void setRole(RegisterRole role) {
     _updateState(state.copyWith(role: role));
     savedServiceSelections = []; // fresh registration start — clear any prior selections
-    if (role == RegisterRole.companion) _loadAndValidateReferral();
+    // Both flows can carry a pending referral now — customer signups from
+    // a customer OneLink also need the referrer resolved so the banner
+    // renders.
+    _loadAndValidateReferral();
   }
 
   void saveServiceSelections(List<Map<String, dynamic>> data) {
@@ -145,7 +148,7 @@ class RegisterLogic extends GetxController {
         );
       }
     } catch (e) {
-      print('error ==>${e}');
+      // print('error ==>${e}');
       _updateState(state.copyWith(status: RegisterStatus.failure));
       hideLoadingDialog();
       AppSnackbar.error(l10n.registerFailed);
@@ -239,7 +242,8 @@ class RegisterLogic extends GetxController {
 
         Get.offAllNamed(AppRoutes.dashboard);
       } else {
-        await Get.find<StorageService>().remove('pending_ref_code');
+        final storage = Get.find<StorageService>();
+        await storage.remove('pending_ref_code');
         AppSnackbar.success(res.laMessage ?? l10n.registerSuccess);
         Get.offAllNamed(AppRoutes.login);
       }
@@ -287,6 +291,7 @@ class RegisterLogic extends GetxController {
     _pendingPassword = '';
     _pendingAddress = '';
     _pendingFilePath = '';
-    Get.find<StorageService>().remove('pending_ref_code');
+    final storage = Get.find<StorageService>();
+    storage.remove('pending_ref_code');
   }
 }

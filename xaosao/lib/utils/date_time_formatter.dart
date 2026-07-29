@@ -1,26 +1,22 @@
+import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:xaosao/utils/l10n.dart';
 
 class DateTimeFormatter {
-  static const _fullMonths = [
-    'ມັງກອນ', 'ກຸມພາ', 'ມີນາ', 'ເມສາ', 'ພຶດສະພາ', 'ມິຖຸນາ',
-    'ກໍລະກົດ', 'ສິງຫາ', 'ກັນຍາ', 'ຕຸລາ', 'ພະຈິກ', 'ທັນວາ',
-  ];
+  /// Current UI locale code — used to pick localized month/day names.
+  /// Falls back to `lo` (the app's default) when GetX hasn't resolved yet.
+  static String _locale() => Get.locale?.languageCode ?? 'lo';
 
-  static const _shortMonths = [
-    'ມ.ກ', 'ກ.ພ', 'ມ.ນ', 'ມ.ສ', 'ພ.ຈ', 'ມິ.ຖ',
-    'ກ.ລ', 'ສ.ຫ', 'ກ.ຍ', 'ຕ.ລ', 'ພ.ສ', 'ທ.ວ',
-  ];
-
-  /// "15 ມີນາ 2026"
+  /// "15 March 2026" / "15 ມີນາ 2026" / "15 มีนาคม 2026"
   static String laoDate(DateTime? dt) {
     if (dt == null) return '-';
-    return '${dt.day} ${_fullMonths[dt.month - 1]} ${dt.year}';
+    return DateFormat('d MMMM y', _locale()).format(dt);
   }
 
-  /// "15 ມ.ນ 2026"
+  /// "15 Mar 2026" / "15 ມ.ນ 2026" / "15 มี.ค. 2026"
   static String laoDateShort(DateTime? dt) {
     if (dt == null) return '-';
-    return '${dt.day} ${_shortMonths[dt.month - 1]} ${dt.year}';
+    return DateFormat('d MMM y', _locale()).format(dt);
   }
 
   /// "03:20"
@@ -31,7 +27,7 @@ class DateTimeFormatter {
     return '$h:$m';
   }
 
-  /// "15 ມ.ນ 2026  ·  03:20"
+  /// "15 Mar 2026  ·  03:20"
   static String laoDateTime(DateTime? dt) {
     if (dt == null) return '-';
     return '${laoDateShort(dt)}  ·  ${laoTime(dt)}';
@@ -52,8 +48,10 @@ class DateTimeFormatter {
     final today = DateTime(now.year, now.month, now.day);
     final day = DateTime(t.year, t.month, t.day);
     final time = DateFormat('h:mm a').format(t);
-    if (day == today) return 'ມື້ນີ້, $time';
-    if (day == today.subtract(const Duration(days: 1))) return 'ມື້ວານ, $time';
-    return DateFormat('MMM d, h:mm a').format(t);
+    if (day == today) return '${l10n.dateToday}, $time';
+    if (day == today.subtract(const Duration(days: 1))) {
+      return '${l10n.dateYesterday}, $time';
+    }
+    return DateFormat('MMM d, h:mm a', _locale()).format(t);
   }
 }

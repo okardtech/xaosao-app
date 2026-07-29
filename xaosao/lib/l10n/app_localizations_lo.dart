@@ -1420,7 +1420,7 @@ class AppLocalizationsLo extends AppLocalizations {
   String get profileHiddenHeaderSubtitle => 'ທ່ານຈະບໍ່ສະແດງໃນຜົນຄົ້ນຫາ';
 
   @override
-  String get profileShareLink => 'ແຊຣ໌ Profile Link';
+  String get profileShareLink => 'ແຊຣ໌ລິ້ງແນະນຳຂອງທ່ານ';
 
   @override
   String get profileHideYourProfile => 'ເຊື່ອງໂປຣໄຟຂອງທ່ານ';
@@ -1743,4 +1743,1658 @@ class AppLocalizationsLo extends AppLocalizations {
 
   @override
   String get commonCantLoadData => 'ບໍ່ສາມາດໂຫຼດຂໍ້ມູນໄດ້';
+
+  @override
+  String get packageHistoryTitle => 'ປະຫວັດ Package';
+
+  @override
+  String get packageHistorySubtitle => 'ລາຍການຊື້ທັງໝົດ';
+
+  @override
+  String get packageHistoryEmpty => 'ບໍ່ມີລາຍການ';
+
+  @override
+  String get packageStatusActive => 'ກຳລັງໃຊ້';
+
+  @override
+  String get packageStatusCompleted => 'ສຳເລັດ';
+
+  @override
+  String get packageStatusPending => 'ລໍຖ້າ';
+
+  @override
+  String get packageStatusPendingRelease => 'ລໍຖ້າໂອນ';
+
+  @override
+  String get packageStatusCanceled => 'ຍົກເລີກ';
+
+  @override
+  String get packageStatusRefunded => 'ຄືນເງິນ';
+
+  @override
+  String get packageStatusExpired => 'ໝົດອາຍຸ';
+
+  @override
+  String get packageStatusUpgraded => 'ອັບເກຣດ';
+
+  @override
+  String get packageStatusHeld => 'ຄ້ຳປະກັນ';
+
+  @override
+  String get packageStatusSuperseded => 'ຖືກແທນທີ່';
+
+  @override
+  String get packageAmount => 'ຈຳນວນ';
+
+  @override
+  String packageDaysRemaining(int days) {
+    return 'ຍັງເຫຼືອ $days ວັນ';
+  }
+
+  @override
+  String packageExpiresShort(String date) {
+    return 'ໝົດ $date';
+  }
+
+  @override
+  String get subscriptionPrice => 'ລາຄາ';
+
+  @override
+  String get subscriptionDuration => 'ໄລຍະເວລາ';
+
+  @override
+  String get subscriptionBenefits => 'ສິ່ງທີ່ທ່ານຈະໄດ້ຮັບ:';
+
+  @override
+  String get subscriptionViewAll => 'ເບິ່ງແພັກທັງໝົດ';
+
+  @override
+  String get subscriptionClose => 'ປິດ';
+
+  @override
+  String get subscriptionBuyNow => 'ຊື້ເລີຍ';
+
+  @override
+  String get subscriptionTopUp => 'ຕື່ມເງິນ';
+
+  @override
+  String subscriptionDurationHours(int hours) {
+    return '$hours ຊ.ມ';
+  }
+
+  @override
+  String get subscriptionDuration1Day => '1 ວັນ';
+
+  @override
+  String get subscriptionDuration1Week => '1 ອາທິດ';
+
+  @override
+  String get subscriptionDuration1Month => '1 ເດືອນ';
+
+  @override
+  String get subscriptionDuration3Months => '3 ເດືອນ';
+
+  @override
+  String get subscriptionDuration1Year => '1 ປີ';
+
+  @override
+  String subscriptionDurationDays(int days) {
+    return '$days ວັນ';
+  }
+
+  @override
+  String get subscriptionSpecialPack => 'ແພັກພິເສດ';
+
+  @override
+  String get subscriptionYourBalance => 'ຍອດເງິນຂອງທ່ານ';
+
+  @override
+  String subscriptionNeedMore(String amount) {
+    return 'ຕ້ອງການ +$amount KIP';
+  }
+
+  @override
+  String get subscriptionCanPay => 'ຊຳລະໄດ້ເລີຍ';
+
+  @override
+  String get subscriptionNeedPackageBody =>
+      'ກະລຸນາຊື້ Package ກ່ອນ ຈຶ່ງສາມາດຈອງບໍລິການໄດ້. Package ຈະໃຫ້ທ່ານສິດໃນການຈອງ ແລະ ໃຊ້ງານຕ່າງໆ.';
+
+  @override
+  String get subscriptionViewPackage => 'ເບິ່ງ Package';
+
+  @override
+  String get subscriptionNeedPackage => 'ຕ້ອງການ Package';
+
+  @override
+  String get subscriptionNoActive => 'ທ່ານຍັງບໍ່ທັນສະໝັກ Package ໃດ';
+
+  @override
+  String get subscriptionServicePrice => 'ລາຄາບໍລິການ';
+
+  @override
+  String get subscriptionShortfall => 'ຂາດຢູ່';
+
+  @override
+  String subscriptionTopUpAmount(String amount) {
+    return 'ຕື່ມ $amount KIP';
+  }
+
+  @override
+  String get subscriptionInsufficient => 'ຍອດເງິນບໍ່ພຽງພໍ';
+
+  @override
+  String get subscriptionPleaseTopup => 'ກະລຸນາຕື່ມເງິນກ່ອນຈອງ';
+
+  @override
+  String get subscriptionPendingVerification => 'ລໍຖ້າການຢືນຢັນ';
+
+  @override
+  String get subscriptionAlreadySubscribed => 'ທ່ານໄດ້ສະໝັກ Package ແລ້ວ';
+
+  @override
+  String get subscriptionPendingBadge => 'ລໍຖ້າ';
+
+  @override
+  String get subscriptionPendingBody =>
+      'Package ຂອງທ່ານກຳລັງລໍຖ້າການຢືນຢັນຈາກ Admin. ກະລຸນາລໍຖ້າ ຫຼື ຕິດຕໍ່ Admin ເພື່ອຢືນຢັນໂດຍໄວ.';
+
+  @override
+  String get subscriptionAdminPhone => 'ເບີໂທ Admin';
+
+  @override
+  String get subscriptionCallAdmin => 'ໂທຫາ Admin';
+
+  @override
+  String get subscriptionWaitingVerification => 'ກຳລັງລໍຖ້າການຢືນຢັນ';
+
+  @override
+  String get subscriptionAdminChecking => 'Package ຂອງທ່ານລໍຖ້າ Admin ກວດສອບ';
+
+  @override
+  String get packagePurchaseFailed => 'ການຊື້ບໍ່ສຳເລັດ';
+
+  @override
+  String get packageFeature1 => 'ເຂົ້າເຖິງທຸກຟີເຈີແບບໄຮ້ຂີດຈໍາກັດ';
+
+  @override
+  String get packageFeature2 => 'ສົ່ງຂໍ້ຄວາມແຊັດໄດ້ບໍ່ຈໍາກັດ';
+
+  @override
+  String get packageFeature3 => 'ນັດໝາຍນໍາຄົນທີ່ເຮົາມັກໄດ້ບໍ່ຈໍາກັດ';
+
+  @override
+  String get packageFeature4 => 'ເປີດສິດເຂົ້າເບິ່ງໂປຣໄຟລ໌ VIP ຂອງສາວໆ';
+
+  @override
+  String get packageFeature5 => 'ລະບົບຄົ້ນຫາ ແລະ ຄັດກອງແບບຂັ້ນສູງ';
+
+  @override
+  String get packageFeature6 => 'ໄດ້ຮັບບໍລິການຊ່ວຍເຫຼືອລະດັບພິເສດຕະຫຼອດ 24/7';
+
+  @override
+  String get packageFeature7 => 'ເພີ່ມການເບິ່ງເຫັນໂປຣໄຟລ໌';
+
+  @override
+  String get packagePlanShort1 =>
+      'ສຳຫຼວດທຸກຟີເຈີລະດັບພຣີມຽມ ແລະ ເລີ່ມເຊື່ອມຕໍ່ໄດ້ທັນທີ';
+
+  @override
+  String get packagePlanShort2 =>
+      'ທົດລອງບໍລິການ 24 ຊົ່ວໂມງ ດ້ວຍແຊັດ ແລະ ການຈອງແບບບໍ່ຈຳກັດ';
+
+  @override
+  String get packagePlanShort3 =>
+      'ດີລທີ່ຄຸ້ມຄ່າທີ່ສຸດ ສຳລັບການນັດໝາຍໄລຍະຍາວ ແລະ ການເຊື່ອມຕໍ່ທີ່ຈິງໃຈ';
+
+  @override
+  String get packageChooseTitle => 'ເລືອກແຜນ';
+
+  @override
+  String get packageChooseSubtitle => 'ຍົກລະດັບປະສົບການຂອງທ່ານ';
+
+  @override
+  String get packageHistoryButton => 'ປະຫວັດ';
+
+  @override
+  String get packageCancelAnytime => 'ຍົກເລີກໄດ້ທຸກເວລາ · ໂອນຄືນຕາມນະໂຍບາຍ';
+
+  @override
+  String get packageWaitingVerification => 'ລໍຖ້າການຢືນຢັນ';
+
+  @override
+  String get packageExpiredLabel => 'ໝົດອາຍຸແລ້ວ';
+
+  @override
+  String get packageNearExpiry => 'ໃກ້ໝົດອາຍຸ';
+
+  @override
+  String get packageActive => 'ກຳລັງໃຊ້ງານ';
+
+  @override
+  String get packageProcessingVerification => 'ກຳລັງດຳເນີນການຢືນຢັນ...';
+
+  @override
+  String packageExpiresOn(String date) {
+    return 'ໝົດອາຍຸ $date';
+  }
+
+  @override
+  String get packageDays => 'ວັນ';
+
+  @override
+  String get packageRemainingLabel => 'ຄົງເຫຼືອ';
+
+  @override
+  String get packageChooseYourPlan => 'ເລືອກແຜນຂອງທ່ານ';
+
+  @override
+  String get packageUpgradeExperience => 'ຍົກລະດັບປະສົບການ';
+
+  @override
+  String get packageChooseFitPlan =>
+      'ເລືອກແຜນທີ່ເໝາະສົມ ແລ້ວຊອກຫາຄູ່ໄດ້ທຸກເວລາ';
+
+  @override
+  String get packageLoadFailedShort => 'ໂຫຼດບໍ່ສຳເລັດ';
+
+  @override
+  String get packageNoPackage => 'ບໍ່ມີ Package';
+
+  @override
+  String get packageRequestProcessing =>
+      'ຄຳຮ້ອງຂໍຂອງທ່ານກຳລັງຖືກດຳເນີນການ · ກະລຸນາລໍຖ້າ';
+
+  @override
+  String get packageCurrent => 'ແພັກເກດປັດຈຸບັນ';
+
+  @override
+  String get packageSelectPlan => 'ເລືອກແຜນນີ້';
+
+  @override
+  String get checkoutPurchaseSuccess => 'ຊື້ Package ສຳເລັດ';
+
+  @override
+  String get checkoutUpgradeTitle => 'ການອັບເກຣດ';
+
+  @override
+  String get checkoutUpgradeSubtitle => 'ກວດສອບ ແລະ ຢືນຢັນການຊຳລະ';
+
+  @override
+  String get checkoutProcessPayment => 'ດຳເນີນການຊຳລະ';
+
+  @override
+  String get checkoutAlreadySubscribed => 'ສະໝັກ Package ຢູ່ແລ້ວ';
+
+  @override
+  String checkoutPillPlan(String name) {
+    return 'ແຜນ $name';
+  }
+
+  @override
+  String checkoutPillRemainingDays(int days) {
+    return 'ເຫຼືອ $days ວັນ';
+  }
+
+  @override
+  String get checkoutUpgradeInfo =>
+      'ການຊຳລະໃໝ່ຈະເລີ່ມຕໍ່ຈາກ Package ປັດຈຸບັນ ແລະ ວັນທີ່ຍັງເຫຼືອຈະຖືກນຳໃສ່ Package ໃໝ່.';
+
+  @override
+  String get checkoutPackageDuration => 'ໄລຍະ Package';
+
+  @override
+  String get checkoutNewPackageDuration => 'ໄລຍະ Package ໃໝ່';
+
+  @override
+  String get checkoutBonusFromOld => '+ ໂບນັດ (Package ເດີມ)';
+
+  @override
+  String get checkoutTotalDuration => 'ໄລຍະທັງໝົດ';
+
+  @override
+  String get checkoutPaymentSummary => 'ສະຫຼຸບການຊຳລະ';
+
+  @override
+  String get checkoutWalletBalance => 'ຍອດ Wallet';
+
+  @override
+  String get checkoutPackagePrice => 'ລາຄາ Package';
+
+  @override
+  String get checkoutRemaining => 'ຍອດຄົງເຫຼືອ';
+
+  @override
+  String get checkoutShortfallSuffix => ' (ຂາດ)';
+
+  @override
+  String get checkoutWalletDeductInfo =>
+      'ຍອດ Wallet ຈະຖືກຕັດທັນທີ. Package ຈະເປີດໃຊ້ງານຫຼັງຈາກການຊຳລະສຳເລັດ.';
+
+  @override
+  String get onboardingTopCompanions => 'ເພື່ອນແນະນຳຍອດນິຍົມ';
+
+  @override
+  String get onboardingTopCompanionsSubtitle =>
+      'ຄົ້ນພົບຜູ້ໃຫ້ບໍລິການທີ່ໄດ້ຮັບຄະແນນສູງ';
+
+  @override
+  String get onboardingWelcome => 'ຍິນດີຕ້ອນຮັບ 👋';
+
+  @override
+  String get onboardingFindYourCompanion => 'ຊອກຫາເພື່ອນຂອງທ່ານ';
+
+  @override
+  String get onboardingLoginOrSignup => 'ເຂົ້າສູ່ລະບົບ / ສ້າງບັນຊີ';
+
+  @override
+  String get onboardingActionsHint =>
+      'ເບິ່ງໂປຣໄຟລ໌ · ສົ່ງຂໍ້ຄວາມ · ຈອງໄດ້ທັນທີ';
+
+  @override
+  String get onboardingLogin => 'ເຂົ້າສູ່ລະບົບ';
+
+  @override
+  String get onboardingOurServices => 'ບໍລິການຂອງພວກເຮົາ';
+
+  @override
+  String get onboardingMassageTitle => 'ບໍລິການນວດ';
+
+  @override
+  String get onboardingMassageSubtitle =>
+      'ບໍລິການນວດສຸຂະພາບໂດຍຜູ້ໃຫ້ບໍລິການມືອາຊີບ ສະດວກຮອດບ້ານ';
+
+  @override
+  String get onboardingSocialSubtitle =>
+      'ຄູ່ຮ່ວມງານສຳລັບງານສັງຄົມ ເພື່ອເພີ່ມຄວາມມ່ວນຊື່ນ ແລະ ຄວາມປະທັບໃຈ';
+
+  @override
+  String get onboardingTravelTitle => 'ເພື່ອນທ່ອງທ່ຽວ';
+
+  @override
+  String get onboardingTravelSubtitle =>
+      'ຄູ່ຮ່ວມທ່ອງທ່ຽວທີ່ພ້ອມພາເຈົ້າຄົ້ນພົບປະສົບການໃໝ່ ທັງໃນ ແລະ ຕ່າງປະເທດ';
+
+  @override
+  String get onboardingLevelGeneral => 'ທົ່ວໄປ';
+
+  @override
+  String get onboardingLevelSpecial => 'ພິເສດ';
+
+  @override
+  String get onboardingLevelPartner => 'ພາກຮ່ວມ';
+
+  @override
+  String get onboardingPartnerBenefits => 'ສິດປະໂຫຍດພາກຮ່ວມ';
+
+  @override
+  String get onboardingIncreaseIncome => 'ເພີ່ມລາຍຮັບຂອງທ່ານ';
+
+  @override
+  String get onboardingJoinNow => 'ເຂົ້າຮ່ວມເລີຍ';
+
+  @override
+  String get onboardingConditionRegister => 'ລົງທະບຽນເປັນຄູ່ຮ່ວມ';
+
+  @override
+  String get onboardingEarnPer20 => 'ຕໍ່ 1 ຄົນທີ່ແນະນຳ · ສູງສຸດ 20 ຄົນ';
+
+  @override
+  String get onboardingCondition20People => 'ແນະນຳຄູ່ຮ່ວມ 20 ຄົນ';
+
+  @override
+  String get onboardingEarnCommission => 'ຄ່າຄອມມິຊັນ ແລະ ຈຳນວນແນະນຳ';
+
+  @override
+  String get onboardingEarnVipSummary => 'ສະຫຼຸບ VIP ແລະ ຄ່າຄອມມິຊັນໃນເວລາ';
+
+  @override
+  String get onboardingReadyToEarn => 'ພ້ອມເລີ່ມຫາລາຍຮັບບໍ?';
+
+  @override
+  String get onboardingRegisterUnlock =>
+      'ລົງທະບຽນຕອນນີ້ ແລະ ປົດລັອກລະດັບທີ່ສູງຂຶ້ນ ໂດຍການແນະນຳຜູ້ອື່ນ';
+
+  @override
+  String get onboardingGetStarted => 'ເລີ່ມຕົ້ນ';
+
+  @override
+  String get notifSettingTitle => 'ຕັ້ງຄ່າລະບົບ';
+
+  @override
+  String get notifSettingSubtitle => 'ຈັດການການແຈ້ງເຕືອນຂອງທ່ານ';
+
+  @override
+  String get notifSettingChannelsSection => 'ຊ່ອງທາງການແຈ້ງເຕືອນ';
+
+  @override
+  String get notifSettingPushSubtitle => 'ແຈ້ງເຕືອນໂດຍກົງໃສ່ໂທລະສັບ';
+
+  @override
+  String get notifSettingSmsSubtitle => 'ຮັບຂໍ້ຄວາມສັ້ນໃສ່ເບີໂທ';
+
+  @override
+  String get notifSettingBannerTitle => 'ການຕັ້ງຄ່າການແຈ້ງເຕືອນ';
+
+  @override
+  String get notifSettingBannerBody =>
+      'ເລືອກຊ່ອງທາງທີ່ທ່ານຕ້ອງການຮັບຂໍ້ຄວາມ\nການປ່ຽນແປງຈະຖືກບັນທຶກໂດຍອັດຕະໂນມັດ';
+
+  @override
+  String get notifSettingFooterNote =>
+      'ການປ່ຽນແປງຈະຖືກບັນທຶກທັນທີ. ທ່ານສາມາດປ່ຽນການຕັ້ງຄ່າໄດ້ຕະຫຼອດເວລາ.';
+
+  @override
+  String get notifSettingUpdateFailed => 'ອັບເດດບໍ່ສຳເລັດ';
+
+  @override
+  String get notifListTitle => 'ການແຈ້ງເຕືອນ';
+
+  @override
+  String get notifListSubtitle => 'ລາຍການແຈ້ງເຕືອນທັງໝົດຂອງທ່ານ';
+
+  @override
+  String get notifListMarkAllRead => 'ອ່ານທັງໝົດ';
+
+  @override
+  String get notifListEmptyTitle => 'ຍັງບໍ່ມີການແຈ້ງເຕືອນ';
+
+  @override
+  String get notifListEmptySubtitle => 'ການແຈ້ງເຕືອນຈະສະແດງທີ່ນີ້';
+
+  @override
+  String get notifTimeJustNow => 'ຫາກໍ່ນີ້';
+
+  @override
+  String notifTimeMinutes(int n) {
+    return '$n ນາທີ';
+  }
+
+  @override
+  String notifTimeHours(int n) {
+    return '$n ຊົ່ວໂມງ';
+  }
+
+  @override
+  String get notifTimeYesterday => 'ມື້ວານ';
+
+  @override
+  String notifTimeDaysAgo(int n) {
+    return '$n ມື້ກ່ອນ';
+  }
+
+  @override
+  String notifTimeWeeksAgo(int n) {
+    return '$n ອາທິດຜ່ານມາ';
+  }
+
+  @override
+  String notifTimeMonthsAgo(int n) {
+    return '$n ເດືອນກ່ອນ';
+  }
+
+  @override
+  String get welcomeTitle => 'ຍິນດີຕ້ອນຮັບ!';
+
+  @override
+  String get welcomeBody =>
+      'ບັນຊີຂອງທ່ານສ້າງສຳເລັດແລ້ວ.\nຂໍໃຫ້ທ່ານມີຄວາມສຸກໃນການໃຊ້ງານ!';
+
+  @override
+  String get welcomeCanDoTitle => 'ສິ່ງທີ່ທ່ານສາມາດເຮັດໄດ້';
+
+  @override
+  String get welcomeChat => 'ສົນທະນາ';
+
+  @override
+  String get welcomeBook => 'ຈອງ';
+
+  @override
+  String get welcomeExplore => 'ຄົ້ນຫາ';
+
+  @override
+  String get welcomeGetStartedCta => 'ເລີ່ມໃຊ້ງານເລີຍ';
+
+  @override
+  String get modelWalletAvailableBalance => 'ຍອດເງິນສາມາດຖອນໄດ້';
+
+  @override
+  String get modelWalletStatPending => 'ລໍຖ້າ';
+
+  @override
+  String get modelWalletStatWithdrawn => 'ຖອນແລ້ວ';
+
+  @override
+  String get modelWalletStatTotalIncome => 'ລາຍຮັບທັງໝົດ';
+
+  @override
+  String get modelWalletWithdrawBtn => 'ຖອນເງິນ';
+
+  @override
+  String get modelWalletIncomeHistory => 'ປະຫວັດລາຍຮັບ';
+
+  @override
+  String get modelWalletEmptyTitle => 'ຍັງບໍ່ມີລາຍການ';
+
+  @override
+  String get modelWalletEmptySubtitle =>
+      'ລາຍການລາຍຮັບຂອງທ່ານ\nຈະສະແດງຢູ່ທີ່ນີ້';
+
+  @override
+  String get modelWalletWithdrawFailed => 'ບໍ່ສາມາດຖອນເງິນໄດ້';
+
+  @override
+  String get withdrawTitle => 'ຖອນເງິນ';
+
+  @override
+  String get withdrawSubtitle => 'ຈ່າຍໃຫ້ບັນຊີທະນາຄານ';
+
+  @override
+  String get withdrawSelectBank => 'ເລືອກບັນຊີທະນາຄານ';
+
+  @override
+  String get withdrawAmountLabel => 'ຈໍານວນເງິນ';
+
+  @override
+  String get withdrawAmountHint => 'ປ້ອນຈໍານວນ';
+
+  @override
+  String get withdrawHintMin => 'ຕ່ຳສຸດ';
+
+  @override
+  String get withdrawHintMax => 'ສູງສຸດ';
+
+  @override
+  String withdrawBelowMin(String amount) {
+    return 'ຈໍານວນຕ່ຳກວ່າຂີດຈໍາກັດ ($amount)';
+  }
+
+  @override
+  String withdrawAboveMax(String amount) {
+    return 'ເກີນຍອດທີ່ສາມາດຖອນໄດ້ ($amount)';
+  }
+
+  @override
+  String get withdrawConfirmBtn => 'ຢືນຢັນການຖອນ';
+
+  @override
+  String get withdrawableBalance => 'ຍອດທີ່ຖອນໄດ້';
+
+  @override
+  String get withdrawAll => 'ຖອນທັງໝົດ';
+
+  @override
+  String get withdrawUnavailable => 'ຖອນບໍ່ໄດ້';
+
+  @override
+  String get withdrawNoBankTitle => 'ຍັງບໍ່ມີບັນຊີທະນາຄານ';
+
+  @override
+  String get withdrawNoBankSubtitle => 'ກະລຸນາເພີ່ມບັນຊີກ່ອນທີ່ຈະຖອນເງິນ';
+
+  @override
+  String get withdrawAddBank => 'ເພີ່ມບັນຊີທະນາຄານ';
+
+  @override
+  String get discoverTitle => 'ຄົ້ນພົບ';
+
+  @override
+  String get discoverSubtitle => 'ຄົ້ນຫາຜູ້ໃຊ້ທີ່ທ່ານໃຈ';
+
+  @override
+  String get discoverSearchHint => 'ຄົ້ນຫາດ້ວຍຊື່...';
+
+  @override
+  String get discoverTabForYou => 'ສຳລັບທ່ານ';
+
+  @override
+  String get discoverTabWhoLikedMe => 'ຖືກໃຈຂ້ອຍ';
+
+  @override
+  String get discoverTabILiked => 'ຂ້ອຍຖືກໃຈ';
+
+  @override
+  String get discoverEmptyAllTitle => 'ບໍ່ພົບຜູ້ໃຊ້';
+
+  @override
+  String get discoverEmptyAllSubtitle => 'ລອງປ່ຽນຕົວກອງ ຫຼື ຄົ້ນຫາໃໝ່ອີກຄັ້ງ';
+
+  @override
+  String get discoverEmptyForYouTitle => 'ຍັງບໍ່ມີຄຳແນະນຳ';
+
+  @override
+  String get discoverEmptyForYouSubtitle => 'ລະບົບຈະຊອກຫາຜູ້ທີ່ເໝາະສົມໃຫ້ທ່ານ';
+
+  @override
+  String get discoverEmptyWhoLikedMeTitle => 'ຍັງບໍ່ມີໃຜຖືກໃຈທ່ານ';
+
+  @override
+  String get discoverEmptyWhoLikedMeSubtitle => 'ສ້າງໂປຣໄຟລ໌ທີ່ດີເພື່ອດຶງດູດ';
+
+  @override
+  String get discoverEmptyILikedTitle => 'ທ່ານຍັງບໍ່ໄດ້ຖືກໃຈໃຜ';
+
+  @override
+  String get discoverEmptyILikedSubtitle =>
+      'ຄົ້ນຫາແລ້ວກົດ ♥ ເພື່ອສະແດງຄວາມສົນໃຈ';
+
+  @override
+  String get detailPersonalInfo => 'ຂໍ້ມູນສ່ວນຕົວ';
+
+  @override
+  String get detailStatAge => 'ອາຍຸ';
+
+  @override
+  String get detailStatMemberSince => 'ສະມາຊິກຕັ້ງແຕ່';
+
+  @override
+  String get detailStatTier => 'ລະດັບ';
+
+  @override
+  String get detailViewPhotos => 'ດູຮູບ';
+
+  @override
+  String get detailTapPhotoToExpand => 'ກົດທີ່ຮູບເພື່ອຂະຫຍາຍ';
+
+  @override
+  String get detailStatRating => 'ຄະເເນນ';
+
+  @override
+  String get detailStatPosts => 'ໂພສ';
+
+  @override
+  String get detailStatGifts => 'ຂອງຂວັນ';
+
+  @override
+  String get detailStatCount => 'ຈໍານວນ';
+
+  @override
+  String get meetupsEntryFromMeetUps => 'ຈາກໜ້ານັດພົບ';
+
+  @override
+  String get meetupsEntryFromChat => 'ຈາກ Chat';
+
+  @override
+  String get meetupsDayShortSun => 'ອາ';
+
+  @override
+  String get meetupsDayShortMon => 'ຈ';
+
+  @override
+  String get meetupsDayShortTue => 'ອ';
+
+  @override
+  String get meetupsDayShortWed => 'ພ';
+
+  @override
+  String get meetupsDayShortThu => 'ພຫ';
+
+  @override
+  String get meetupsDayShortFri => 'ສຸ';
+
+  @override
+  String get meetupsDayShortSat => 'ສ';
+
+  @override
+  String get meetupsClockSuffix => 'ໂມງ';
+
+  @override
+  String meetupsCountdownDays(int days, int hours) {
+    return 'ເຫຼືອອີກ $days ວັນ $hours ຊ.ມ.';
+  }
+
+  @override
+  String meetupsCountdownHours(int hours) {
+    return 'ເຫຼືອອີກ $hours ຊ.ມ.';
+  }
+
+  @override
+  String meetupsCountdownMinutes(int minutes) {
+    return 'ເຫຼືອ $minutes ນາທີ';
+  }
+
+  @override
+  String meetupsServiceMultiplier(String name, int n, String unit) {
+    return '$name × $n $unit';
+  }
+
+  @override
+  String get meetupsUnitDays => 'ວັນ';
+
+  @override
+  String get meetupsUnitHours => 'ຊົ່ວໂມງ';
+
+  @override
+  String get meetupsServiceFallback => 'ບໍລິການ';
+
+  @override
+  String get meetupsStepCreateBooking => 'ສ້າງການຈອງ';
+
+  @override
+  String get meetupsStepWaitCompanionConfirm => 'ລໍຖ້າ Companion ຢືນຢັນ';
+
+  @override
+  String get meetupsStepCompanionConfirmed => 'Companion ຢືນຢັນ';
+
+  @override
+  String get meetupsStepWaitingMeetup => 'ລໍຖ້ານັດພົບ';
+
+  @override
+  String get meetupsStepInProgress => 'ກຳລັງດຳເນີນ';
+
+  @override
+  String get meetupsStepWaitingConfirmation => 'ລໍຢືນຢັນ';
+
+  @override
+  String get meetupsStepMeetingUp => 'ດຳເນີນນັດພົບ';
+
+  @override
+  String get meetupsStepCompleted => 'ສຳເລັດ';
+
+  @override
+  String get meetupsStepCancelled => 'ຍົກເລີກ';
+
+  @override
+  String get meetupsStepRejected => 'ຖືກປະຕິເສດ';
+
+  @override
+  String get meetupsStepDisputed => 'ຂໍ້ຂັດແຍ້ງ';
+
+  @override
+  String get meetupsCantLoadData => 'ບໍ່ສາມາດໂຫຼດຂໍ້ມູນ';
+
+  @override
+  String get meetupsCantPerform => 'ບໍ່ສາມາດດຳເນີນການໄດ້';
+
+  @override
+  String get meetupsSectionDateTime => 'ວັນທີ ແລະ ເວລາ';
+
+  @override
+  String get meetupsSectionLocation => 'ສະຖານທີ່ນັດພົບ';
+
+  @override
+  String get meetupsSectionServices => 'ບໍລິການ';
+
+  @override
+  String get meetupsMapLink => 'ແຜນທີ່ ›';
+
+  @override
+  String get meetupsPriceSummary => 'ສະຫຼຸບລາຄາ';
+
+  @override
+  String get meetupsPriceTotal => 'ລວມທັງໝົດ';
+
+  @override
+  String get meetupsYourReview => 'ຄຳຕິຊົມຂອງທ່ານ';
+
+  @override
+  String meetupsYouRated(String name) {
+    return 'ທ່ານໃຫ້ຄະແນນ $name';
+  }
+
+  @override
+  String get meetupsProgress => 'ຄວາມຄືບໜ້າ';
+
+  @override
+  String get meetupsCancellationPolicy => 'ນະໂຍບາຍຍົກເລີກ';
+
+  @override
+  String get meetupsCancelBefore => 'ຍົກເລີກກ່ອນ ';
+
+  @override
+  String get meetupsWillRefund => ' ຈະໄດ້ຄືນ ';
+
+  @override
+  String get meetupsWithin24h => ' ພາຍໃນ 24 ຊ.ມ.';
+
+  @override
+  String get meetupsActionMessage => 'ຂໍ້ຄວາມ';
+
+  @override
+  String get meetupsActionCall => 'ໂທ';
+
+  @override
+  String get meetupsActionCancel => 'ຍົກເລີກ';
+
+  @override
+  String get meetupsActionShare => 'ແຊຣ໌';
+
+  @override
+  String get meetupsActionReport => 'ລາຍງານ';
+
+  @override
+  String get meetupsActionConfirmShort => 'ຢືນຢັນ';
+
+  @override
+  String get meetupsSnackPleaseTitle => 'ກະລຸນາ';
+
+  @override
+  String get loginRoleCustomerLabel => 'ຜູ້ຈອງ';
+
+  @override
+  String get loginRoleCustomerSub => 'ຄົ້ນຫາ ແລະ ຈອງບໍລິການ';
+
+  @override
+  String get loginRoleCompanionLabel => 'ຜູ້ໃຫ້ບໍລິການ';
+
+  @override
+  String get loginRoleCompanionSub => 'ໂພສບໍລິການ ແລະ ຮັບການຈອງ';
+
+  @override
+  String get forgotTitle => 'ລືມລະຫັດຜ່ານ';
+
+  @override
+  String get forgotEnterRegistered => 'ໃສ່ເບີໂທທີ່ລົງທະບຽນ';
+
+  @override
+  String get forgotOtpWillSendHere => 'ລະຫັດ OTP ຈະຖືກສົ່ງໄປຫາເບີນີ້';
+
+  @override
+  String get forgotSendOtp => 'ສົ່ງລະຫັດ OTP';
+
+  @override
+  String get forgotBackToLogin => 'ກັບຄືນໜ້າເຂົ້າສູ່ລະບົບ';
+
+  @override
+  String get forgotIdentityVerifyTitle => 'ຢືນຢັນຕົວຕົນ';
+
+  @override
+  String get forgotSetNewPasswordTitle => 'ຕັ້ງລະຫັດຜ່ານໃໝ່';
+
+  @override
+  String get forgotSetNewPasswordSubtitle => 'ຕັ້ງລະຫັດຜ່ານໃໝ່ທີ່ປອດໄພ';
+
+  @override
+  String get forgotSavePassword => 'ບັນທຶກລະຫັດຜ່ານ';
+
+  @override
+  String get forgotStepPhone => 'ໂທລະສັບ';
+
+  @override
+  String get forgotConfirmPassword => 'ຢືນຢັນລະຫັດຜ່ານ';
+
+  @override
+  String get feedbackTitle => 'ຄຳຕິຊົມ';
+
+  @override
+  String get feedbackSubtitle => 'ສົ່ງຄຳຄິດເຫັນ ຫຼື ລາຍງານບັນຫາ';
+
+  @override
+  String get feedbackSendNew => 'ສົ່ງຄຳຕິຊົມໃໝ່';
+
+  @override
+  String get feedbackMine => 'ຄຳຕິຊົມຂອງຂ້ອຍ';
+
+  @override
+  String get feedbackTypeLabel => 'ປະເພດ';
+
+  @override
+  String get feedbackTypeHint => 'ເລືອກປະເພດຄຳຕິຊົມ';
+
+  @override
+  String get feedbackSubjectLabel => 'ຫົວຂໍ້';
+
+  @override
+  String get feedbackSubjectHint => 'ໃສ່ຫົວຂໍ້ຄຳຕິຊົມ...';
+
+  @override
+  String get feedbackDescLabel => 'ລາຍລະອຽດ';
+
+  @override
+  String get feedbackDescHint => 'ອະທິບາຍລາຍລະອຽດເພີ່ມເຕີມ...';
+
+  @override
+  String get feedbackDescMinLength => 'ກະລຸນາໃສ່ລາຍລະອຽດຢ່າງໜ້ອຍ 10 ຕົວອັກສອນ';
+
+  @override
+  String get feedbackSubmit => 'ສົ່ງຄຳຕິຊົມ';
+
+  @override
+  String get feedbackSubmitFailed => 'ສົ່ງຄຳຕິຊົມບໍ່ສຳເລັດ';
+
+  @override
+  String get feedbackEmptyTitle => 'ຍັງບໍ່ມີຄຳຕິຊົມ';
+
+  @override
+  String get feedbackEmptySubtitle => 'ສົ່ງຄຳຕິຊົມຂອງທ່ານດ້ານເທິງ';
+
+  @override
+  String get feedbackStatusResolved => 'ແກ້ໄຂແລ້ວ';
+
+  @override
+  String get feedbackTypeBug => 'ຂໍ້ຜິດພາດ (Bug)';
+
+  @override
+  String get feedbackTypeFeature => 'ຂໍ້ສະເໜີ (Feature)';
+
+  @override
+  String get feedbackTypeGeneral => 'ທົ່ວໄປ (General)';
+
+  @override
+  String get feedbackTypePayment => 'ບັນຫາການຊຳລະ (Payment)';
+
+  @override
+  String get feedbackTypePerformance => 'ປະສິດທິພາບ (Performance)';
+
+  @override
+  String get feedbackTypeOther => 'ອື່ນໆ (Other)';
+
+  @override
+  String get dashboardTabChat => 'ຄູ່ເເຊັດ';
+
+  @override
+  String get dashboardTabPosts => 'ໂພສຫາຄູ່';
+
+  @override
+  String get reviewRatingRequired => 'ກະລຸນາໃຫ້ຄະແນນ';
+
+  @override
+  String get reviewTextRequired => 'ກະລຸນາຂຽນລີວິວ';
+
+  @override
+  String get reviewSubmitSuccess => 'ສົ່ງລີວິວສຳເລັດ';
+
+  @override
+  String get reviewSubmitFailed => 'ສົ່ງລີວິວບໍ່ສຳເລັດ';
+
+  @override
+  String get reviewWriteTitle => 'ຂຽນລີວິວ';
+
+  @override
+  String reviewForCompanion(String name) {
+    return 'ສຳລັບ $name';
+  }
+
+  @override
+  String get reviewGiveRating => 'ໃຫ້ຄະແນນ';
+
+  @override
+  String get reviewSubjectLabel => 'ຫົວຂໍ້ (ທາງເລືອກ)';
+
+  @override
+  String get reviewSubjectHint => 'ໃສ່ຫົວຂໍ້ລີວິວ...';
+
+  @override
+  String get reviewYourReview => 'ລີວິວຂອງທ່ານ';
+
+  @override
+  String get reviewShareHint => 'ແບ່ງປັນປະສົບການຂອງທ່ານ...';
+
+  @override
+  String get reviewSubmit => 'ສົ່ງລີວິວ';
+
+  @override
+  String get reviewRatingBad => 'ບໍ່ດີ';
+
+  @override
+  String get reviewRatingOk => 'ພໍໃຊ້ໄດ້';
+
+  @override
+  String get reviewRatingGood => 'ດີ';
+
+  @override
+  String get reviewRatingVeryGood => 'ດີຫຼາຍ';
+
+  @override
+  String get reviewRatingExcellent => 'ດີເລີດ!';
+
+  @override
+  String get reviewRatingPick => 'ເລືອກຄະແນນ';
+
+  @override
+  String get cpRatingsSection => 'ຄະແນນ ແລະ ລີວິວ';
+
+  @override
+  String get cpStatusAvailable => 'ໃຊ້ງານຢູ່';
+
+  @override
+  String get cpStatusUnavailable => 'ບໍ່ໄດ້ໃຊ້ງານ';
+
+  @override
+  String get cpStatusLabel => 'ສະຖານະ';
+
+  @override
+  String get cpNoServicesNow => 'ບໍ່ມີບໍລິການໃນຂະນະນີ້';
+
+  @override
+  String get cpNoReviewsBeFirst => 'ຍັງບໍ່ມີລີວິວ ເປັນຄົນທຳອິດ!';
+
+  @override
+  String get cpLoadMoreReviews => 'ໂຫຼດລີວິວເພີ່ມ';
+
+  @override
+  String cpReviewsCount(int count) {
+    return '$count ລີວິວ';
+  }
+
+  @override
+  String get cpOnline => 'ອອນລາຍ';
+
+  @override
+  String get cpStatReviews => 'ລີວິວ';
+
+  @override
+  String get cpStatFollowers => 'ຕິດຕາມ';
+
+  @override
+  String get cpAnonymous => 'ນິລະນາມ';
+
+  @override
+  String get cpBookNow => 'ຈອງດຽວນີ້';
+
+  @override
+  String get chatTitle => 'ສົນທະນາ';
+
+  @override
+  String chatNewMessages(int count) {
+    return '$count ຂໍ້ຄວາມໃໝ່';
+  }
+
+  @override
+  String get chatSearchHint => 'ຄົ້ນຫາ...';
+
+  @override
+  String get chatFallbackName => 'ການສົນທະນານີ້';
+
+  @override
+  String get chatDeleteConvTitle => 'ລຶບການສົນທະນາ';
+
+  @override
+  String chatDeleteConvMessage(String name) {
+    return 'ລຶບການສົນທະນາກັບ $name?\nຂໍ້ຄວາມຍັງສາມາດເຫັນໄດ້ຈາກອີກຝ່າຍ';
+  }
+
+  @override
+  String get chatCantEnter => 'ບໍ່ສາມາດເຂົ້າໄດ້';
+
+  @override
+  String get chatBlockedByYou => 'ທ່ານໄດ້ບລັອກການສົນທະນານີ້';
+
+  @override
+  String get chatBlockedByOther => 'ການສົນທະນານີ້ຖືກບລັອກ';
+
+  @override
+  String chatUnblockName(String name) {
+    return 'ຍົກເລີກການບລັອກ $name';
+  }
+
+  @override
+  String chatBlockName(String name) {
+    return 'ບລັອກ $name';
+  }
+
+  @override
+  String get chatUnblockConfirmMsg => 'ຍົກເລີກການບລັອກ ແລະ ສືບຕໍ່ສົນທະນາ?';
+
+  @override
+  String chatBlockConfirmMsg(String name) {
+    return 'ທ່ານ ແລະ $name ຈະບໍ່ສາມາດສົ່ງຂໍ້ຄວາມຫາກັນໄດ້';
+  }
+
+  @override
+  String get chatUnblock => 'ຍົກເລີກການບລັອກ';
+
+  @override
+  String get chatBlock => 'ບລັອກ';
+
+  @override
+  String get chatEmpty => 'ບໍ່ພົບການສົນທະນາ';
+
+  @override
+  String get chatConversationBlocked => 'ການສົນທະນາຖືກບລັອກ';
+
+  @override
+  String get chatTyping => 'ກຳລັງພິມ...';
+
+  @override
+  String get chatOffline => 'ອອຟລາຍ';
+
+  @override
+  String get chatSelectedImage => 'ຮູບພາບທີ່ເລືອກ';
+
+  @override
+  String get chatInputHint => 'ພິມຂໍ້ຄວາມ...';
+
+  @override
+  String get chatSendFailed => 'ສົ່ງບໍ່ສຳເລັດ';
+
+  @override
+  String get chatSendPleaseRetry => 'ກະລຸນາລອງໃໝ່';
+
+  @override
+  String get chatDateToday => 'ມື້ນີ້';
+
+  @override
+  String get chatDeleteMsgTitle => 'ລຶບຂໍ້ຄວາມ';
+
+  @override
+  String get chatDeleteMsgBody =>
+      'ຂໍ້ຄວາມຈະຖືກລຶບອອກຈາກຝ່າຍຂອງທ່ານເທົ່ານັ້ນ\nອີກຝ່າຍຍັງສາມາດເຫັນຂໍ້ຄວາມໄດ້';
+
+  @override
+  String get chatImagePrefix => '📷 ຮູບພາບ';
+
+  @override
+  String get bookingLabelDate => 'ວັນທີ';
+
+  @override
+  String get bookingHoursCount => 'ຈຳນວນຊົ່ວໂມງ';
+
+  @override
+  String bookingHoursValue(int hours) {
+    return '$hours ຊົ່ວໂມງ';
+  }
+
+  @override
+  String bookingHoursShortValue(int hours) {
+    return '$hours ຊມ';
+  }
+
+  @override
+  String get bookingTotalPriceShort => 'ລາຄາລວມ';
+
+  @override
+  String get bookingGoToMeetups => 'ໄປໜ້າການນັດພົບ';
+
+  @override
+  String get bookingSuccessTitle => 'ຈອງສຳເລັດ!';
+
+  @override
+  String get bookingSuccessBody => 'ການຈອງຂອງທ່ານໄດ້ຖືກຮັບແລ້ວ';
+
+  @override
+  String get bookingUnitNight => 'ຄືນ';
+
+  @override
+  String get bookingDateDeparture => 'ວັນທີອອກເດີນທາງ';
+
+  @override
+  String get bookingDateReturn => 'ວັນທີກັບມາ';
+
+  @override
+  String get bookingDatePlaceholder => 'ວັນ/ເດືອນ/ປີ';
+
+  @override
+  String get bookingLocationHint => 'ໃສ່ທີ່ຢູ່ ຫຼື ສະຖານທີ່...';
+
+  @override
+  String get bookingAttireLabel => 'ການແຕ່ງກາຍທີ່ຕ້ອງການ';
+
+  @override
+  String get bookingAttireHint => 'ຕົວຢ່າງ: ແຕ່ງຕົວເຊັກຊີ(ທາງເລືອກ)';
+
+  @override
+  String get bookingTipService => 'ທິບ / ບໍລິການ';
+
+  @override
+  String bookingAddTipTo(String name) {
+    return 'ເພີ່ມທິບໃຫ້ $name';
+  }
+
+  @override
+  String bookingRatePerUnit(String rate, String unit) {
+    return '$rate ກີບ / $unit';
+  }
+
+  @override
+  String bookingRatePerHour(String rate) {
+    return '$rate ກີບ / ຊົ່ວໂມງ';
+  }
+
+  @override
+  String bookingRatePerHourShort(String rate) {
+    return '$rate ກີບ / ຊມ';
+  }
+
+  @override
+  String bookingCountUnit(String unit) {
+    return 'ຈຳນວນ$unit';
+  }
+
+  @override
+  String get bookingSelectTime => 'ເລືອກເວລາ';
+
+  @override
+  String get bookingSlotBooked => 'ຈອງແລ້ວ';
+
+  @override
+  String get bookingSelectMassageType => 'ເລືອກປະເພດນວດ';
+
+  @override
+  String bookingVariantsCount(int count) {
+    return '$count ປະເພດ';
+  }
+
+  @override
+  String get bookingDateAppointment => 'ວັນທີນັດໝາຍ';
+
+  @override
+  String get bookingTimeMeeting => 'ເວລາພົບກັນ';
+
+  @override
+  String get bookingTimeFormat => 'ຊົ່ວໂມງ:ນາທີ';
+
+  @override
+  String get bookingSelectPlaceholder => 'ເລືອກ';
+
+  @override
+  String get bookingMassageTypeLabel => 'ປະເພດນວດ';
+
+  @override
+  String get bookingSelectVariant => 'ເລືອກປະເພດ';
+
+  @override
+  String get bookingCreationFailed => 'ການຈອງລົ້ມເຫຼວ';
+
+  @override
+  String get shareTitle => 'ແນະນຳໝູ່';
+
+  @override
+  String get shareAppbarSubtitle => 'ແບ່ງປັນລິ້ງ ແລະ ເພີ່ມລາຍຮັບຂອງທ່ານ';
+
+  @override
+  String get shareSubtitleGeneral => 'ຮັບ 10,000 ກີບ ຕໍ່ການແນະນຳ';
+
+  @override
+  String get shareSubtitleCommission => 'ຮັບຄ່າຄອມມິສຊັນຈາກການແນະນຳ';
+
+  @override
+  String get shareTierGeneral => 'ທົ່ວໄປ';
+
+  @override
+  String get shareTierSpecial => 'ພິເສດ';
+
+  @override
+  String get shareTierPartner => 'ພາກຮ່ວມ';
+
+  @override
+  String shareTierBadge(String tier) {
+    return 'ລະດັບ $tier';
+  }
+
+  @override
+  String get shareTabModel => 'ລິ້ງແນະນຳໂມເດວ';
+
+  @override
+  String get shareTabCustomer => 'ລິ້ງແນະນຳລູກຄ້າ';
+
+  @override
+  String get shareLinkModelDesc => 'ແບ່ງປັນລິ້ງນີ້ໃຫ້ໝູ່ທີ່ຢາກເປັນໂມເດວ';
+
+  @override
+  String get shareLinkCustomerDesc => 'ແບ່ງປັນລິ້ງນີ້ໃຫ້ລູກຄ້າສະໝັກ';
+
+  @override
+  String get shareCopy => 'ຄັດລອກ';
+
+  @override
+  String get shareCopied => 'ຄັດລອກແລ້ວ';
+
+  @override
+  String get shareShareLink => 'ແບ່ງປັນ';
+
+  @override
+  String get shareViewQr => 'QR';
+
+  @override
+  String get shareStatsModels => 'ໂມເດວທີ່ແນະນຳ';
+
+  @override
+  String get shareStatsCustomers => 'ລູກຄ້າທີ່ແນະນຳ';
+
+  @override
+  String get shareStatsCommission => 'ຄ່າຄອມມິສຊັນ';
+
+  @override
+  String get shareStatsTotal => 'ລາຍໄດ້ລວມ';
+
+  @override
+  String get shareCommissionsTitle => 'ປະຫວັດຄ່າຄອມມິສຊັນ';
+
+  @override
+  String get shareCommissionsEmpty => 'ຍັງບໍ່ມີຄ່າຄອມມິສຊັນ';
+
+  @override
+  String get shareCommissionsEmptySub =>
+      'ຄ່າຄອມມິສຊັນຈາກລູກຄ້າ ຫຼື ໂມເດວທີ່ທ່ານແນະນຳ ຈະສະແດງທີ່ນີ້';
+
+  @override
+  String get shareLearnMore => 'ຮຽນຮູ້ເພີ່ມກ່ຽວກັບລະດັບ';
+
+  @override
+  String get shareProgressToNext => 'ຄວາມຄືບໜ້າສູ່ລະດັບຕໍ່ໄປ';
+
+  @override
+  String shareUpgradeToSpecialRemaining(int n) {
+    return 'ອີກ $n ຄົນ ຈຶ່ງໄດ້ລະດັບພິເສດ';
+  }
+
+  @override
+  String shareUpgradeToPartnerRemainingModels(int n) {
+    return 'ອີກ $n ຄົນ ຈຶ່ງໄດ້ລະດັບພາກຮ່ວມ';
+  }
+
+  @override
+  String shareUpgradeToPartnerRemainingEarnings(String amount) {
+    return 'ອີກ $amount ກີບ ຈຶ່ງໄດ້ລະດັບພາກຮ່ວມ';
+  }
+
+  @override
+  String get shareTierMaxed => 'ທ່ານໄດ້ຮັບລະດັບສູງສຸດແລ້ວ';
+
+  @override
+  String get shareCurrentTier => 'ລະດັບປັດຈຸບັນ';
+
+  @override
+  String shareEarnPerReferral(String amount) {
+    return 'ຮັບ $amount ກີບ/ຄົນ';
+  }
+
+  @override
+  String get shareInviteMessage => 'ສະໝັກກັບ Xaosao ຜ່ານລິ້ງຂອງຂ້ອຍ!';
+
+  @override
+  String get shareInviteSubject => 'ເຂົ້າຮ່ວມ Xaosao';
+
+  @override
+  String get shareCommissionReferral => 'ການແນະນຳ';
+
+  @override
+  String get shareQrBrandName => 'xaosao — ເຊົ້າສາວ';
+
+  @override
+  String get shareQrBrandTagline =>
+      'ບ້ານພັກທີ່ລວບລວມນາງ-ສາວທີ່ໂດດ ແລະ ພ້ອມທີ່ຈະບ້ານຢູ່ທ່ານ.';
+
+  @override
+  String get shareQrDownload => 'ດາວໂຫຼດ QR';
+
+  @override
+  String get shareQrPermissionDenied => 'ກະລຸນາອະນຸຍາດການເຂົ້າເຖິງຄັງຮູບ';
+
+  @override
+  String get shareQrSaved => 'ບັນທຶກ QR ລົງຄັງຮູບແລ້ວ';
+
+  @override
+  String get shareQrSaveFailed => 'ບໍ່ສາມາດບັນທຶກໄດ້ ກະລຸນາລອງໃໝ່';
+
+  @override
+  String get shareQrErrorGeneric => 'ເກີດຂໍ້ຜິດພາດ ກະລຸນາລອງໃໝ່';
+
+  @override
+  String get analyticsTitle => 'ການວິເຄາະການແນະນຳ';
+
+  @override
+  String get analyticsSubtitle => 'ສະຖິຕິ ແລະ ລາຍໄດ້ຂອງທ່ານ';
+
+  @override
+  String get analyticsLoadFailed => 'ໂຫຼດຂໍ້ມູນບໍ່ສຳເລັດ';
+
+  @override
+  String get analyticsRetry => 'ລອງໃໝ່';
+
+  @override
+  String get analyticsReferralStats => 'ສະຖິຕິການແນະນຳ';
+
+  @override
+  String get analyticsReferrals => 'ການແນະນຳ';
+
+  @override
+  String get analyticsEarnings => 'ລາຍໄດ້';
+
+  @override
+  String get analyticsTierProgress => 'ຄວາມຄືບໜ້າລະດັບ';
+
+  @override
+  String get analyticsModels => 'ໂມເດວ';
+
+  @override
+  String get analyticsCustomers => 'ລູກຄ້າ';
+
+  @override
+  String get analyticsBookings => 'ຈອງ';
+
+  @override
+  String get analyticsSubscriptions => 'ສະມາຊິກ';
+
+  @override
+  String get analyticsApproved => 'ອະນຸມັດ';
+
+  @override
+  String get analyticsPending => 'ລໍຖ້າ';
+
+  @override
+  String get analyticsActive => 'ໃຊ້ງານ';
+
+  @override
+  String get analyticsInactive => 'ບໍ່ໃຊ້';
+
+  @override
+  String get analyticsTotal => 'ທັງໝົດ';
+
+  @override
+  String get analyticsTotalEarnings => 'ລາຍໄດ້ທັງໝົດ';
+
+  @override
+  String get analyticsModelEarnings => 'ລາຍໄດ້ໂມເດວ';
+
+  @override
+  String get analyticsCommission => 'ຄ່ານາຍໜ້າ';
+
+  @override
+  String get analyticsEarningsByType => 'ລາຍໄດ້ແຕ່ລະປະເພດ';
+
+  @override
+  String get analyticsAllModels => 'ໂມເດວທັງໝົດ';
+
+  @override
+  String get analyticsApprovedModels => 'ໂມເດວອະນຸມັດ';
+
+  @override
+  String get analyticsAllCustomers => 'ລູກຄ້າທັງໝົດ';
+
+  @override
+  String get analyticsActiveCustomers => 'ລູກຄ້າໃຊ້ງານ';
+
+  @override
+  String get analyticsReady => 'ພ້ອມແລ້ວ!';
+
+  @override
+  String analyticsSpecialCondition(int n) {
+    return 'ແນະນຳໂມເດວໃຫ້ຄົບ $n ທ່ານ';
+  }
+
+  @override
+  String get analyticsPartnerCondition => 'ຕ້ອງການທັງໂມເດວ ແລະ ລາຍໄດ້';
+
+  @override
+  String get snackbarErrorTitle => 'ຜິດພາດ';
+
+  @override
+  String get snackbarSuccessTitle => 'ສຳເລັດ';
+
+  @override
+  String get snackbarInfoTitle => 'ຂໍ້ມູນ';
+
+  @override
+  String get qrLoadFailed => 'ໂຫຼດ QR ບໍ່ສຳເລັດ';
+
+  @override
+  String get imagePickerTitle => 'ເລືອກຮູບໂປຣໄຟ';
+
+  @override
+  String get imagePickerGallery => 'ຄັງຮູບ';
+
+  @override
+  String get imagePickerCamera => 'ກ້ອງຖ່າຍຮູບ';
+
+  @override
+  String get serviceUnitHour => '/ຊົ່ວໂມງ';
+
+  @override
+  String get serviceUnitDay => '/ວັນ';
+
+  @override
+  String get serviceUnitNight => '/ຄືນ';
+
+  @override
+  String get serviceUnitOnce => 'ຄັ້ງດຽວ';
+
+  @override
+  String get serviceUnitMinute => '/ນາທີ';
+
+  @override
+  String get phoneRequired => 'ກະລຸນາໃສ່ເບີໂທ';
+
+  @override
+  String get phoneMustStartWith20 => 'ເບີໂທຕ້ອງເລີ່ມດ້ວຍ 20';
+
+  @override
+  String get phonePrefixInvalid => 'ຕ້ອງເປັນ: 202, 205, 206, 207 ຫຼື 209';
+
+  @override
+  String phoneLength(int n) {
+    return 'ເບີໂທຕ້ອງມີ $n ຕົວເລກ';
+  }
+
+  @override
+  String get deepLinkShareSelf => 'ມາເບິ່ງໂປຣໄຟລ໌ໃນ Xaosao';
+
+  @override
+  String deepLinkShareOther(String name) {
+    return 'ມາເບິ່ງໂປຣໄຟລ໌ຂອງ $name ໃນ Xaosao';
+  }
+
+  @override
+  String get dateToday => 'ມື້ນີ້';
+
+  @override
+  String get dateYesterday => 'ມື້ວານ';
+
+  @override
+  String get commonSearch => 'ຄົ້ນຫາ...';
+
+  @override
+  String get commonPasswordHint => 'ລະຫັດຜ່ານ';
+
+  @override
+  String get commonImageLoadFailed => 'ໂຫຼດຮູບບໍ່ໄດ້';
+
+  @override
+  String get walletBalanceShort => 'ຍອດກະເປົ໋າ';
+
+  @override
+  String get updateRequiredTitle => 'ຈຳເປັນຕ້ອງອັບເດດແອັບ';
+
+  @override
+  String get updateAvailableTitle => 'ອັບເດດແອັບໃໝ່ພ້ອມແລ້ວ!';
+
+  @override
+  String get updateRequiredBody =>
+      'ກະລຸນາອັບເດດເປັນເວີຊັນຫຼ້າສຸດ ເພື່ອສືບຕໍ່ໃຊ້ Xaosao';
+
+  @override
+  String get updateAvailableBody =>
+      'ພວກເຮົາໄດ້ປັບປຸງແອັບໃຫ້ດີຂຶ້ນ — ອັບເດດເລີຍເພື່ອປະສົບການທີ່ດີທີ່ສຸດ';
+
+  @override
+  String get updateNow => 'ອັບເດດດຽວນີ້';
+
+  @override
+  String get updateLater => 'ພາຍຫຼັງ';
+
+  @override
+  String get updateCurrentVersion => 'ເວີຊັ່ນປັດຈຸບັນ';
+
+  @override
+  String get updateNewVersion => 'ເວີຊັ່ນໃໝ່';
+
+  @override
+  String get updateWhatsNew => 'ມີຫຍັງໃໝ່';
+
+  @override
+  String get giftSheetTitle => '🎁 ສົ່ງຂອງຂວັນ';
+
+  @override
+  String giftSheetPickFor(String name) {
+    return 'ເລືອກຂອງຂວັນໃຫ້ $name';
+  }
+
+  @override
+  String get giftEmpty => 'ບໍ່ມີຂອງຂວັນໃນຂະນະນີ້';
+
+  @override
+  String get giftPickFirst => 'ເລືອກຂອງຂວັນກ່ອນ';
+
+  @override
+  String get giftSendFailed => 'ສ່ງຂອງຂວັນບໍ່ສຳເລັດ';
+
+  @override
+  String get giftSendSuccess => 'ສ່ງຂອງຂວັນສຳເລັດ!';
+
+  @override
+  String giftSendButton(String name, String price) {
+    return 'ສົ່ງ $name · $price';
+  }
+
+  @override
+  String get tiersTitle => 'ລະດັບ Referral ໂມເດວ';
+
+  @override
+  String get tiersSubtitle => 'ຮຽນຮູ້ວິທີການເພີ່ມລາຍໄດ້ຂອງທ່ານ';
+
+  @override
+  String get tiersOverview =>
+      'ໂຕແຊຣ໌ Referral link ຂອງໂມເດວ ຈະແບ່ງອອກເປັນ 3 ລະດັບ';
+
+  @override
+  String get tiersLevel1Title => 'ລະດັບທົ່ວໄປ';
+
+  @override
+  String get tiersLevel1Desc =>
+      'ສະແດງພຽງແຕ່ລິ້ງແນະນຳໃຫ້ກັບ ໂມເດວ ດ້ວຍກັນເທົ່ານັ້ນ ແລະ ໄດ້ຮັບສະເພາະເງີນແນະນຳ 10,000/ຄົນ (ບໍ່ມີເງື່ອນໄຂໃດໆ ທຸກຄົນທີ່ເປັນໂມເດວສາມາເຮັດໄດ້ໝົດ)';
+
+  @override
+  String get tiersLevel2Title => 'ລະດັບພິເສດ';
+
+  @override
+  String get tiersLevel2Condition => 'ຕ້ອງມີຜູ້ແນະນຳຫຼາຍກວ່າ 5 ຄົນ';
+
+  @override
+  String get tiersLevel2Links =>
+      'ຈະມີລິ້ງແນະນຳ 2 ລິ້ງຄື: ລິ້ງແນະນຳລູກຄ້າ ແລະ ລິ້ງແນະນຳໂມເດວດ້ວຍກັນ';
+
+  @override
+  String get tiersLevel2Benefit =>
+      'ບໍ່ໄດ້ຮັບເງີນ 10,000 ກີບ ແຕ່ຈະໄດ້ຮັບເປັນເປີເຊັນແທນເຊັ່ນ: 20% ຂອງເງີນທີ່ລູກຄ້າ subscription, 2% ຂອງໂມເດວທີ່ຕົວເອງແນະນຳເວລາມີຄົນຈອງ';
+
+  @override
+  String get tiersLevel3Title => 'ລະດັບພາກຮ່ວມ';
+
+  @override
+  String get tiersLevel3Condition =>
+      'ຕ້ອງມີຜູ້ແນະນຳຫຼາຍກວ່າ 5 ຄົນຂຶ້ນໄປ ແລະ ລາຍໄດ້ລວມຂອງຄ່າຄອມມິສຊັນທີ່ໄດ້ຈາກລູກຄ້າ sub ແລະ ລູກຄ້າຈອງໂມເດວທີ່ແນະນຳ 1,000,000 ກີບ';
+
+  @override
+  String get tiersLevel3Links =>
+      'ຈະມີລິ້ງແນະນຳ 2 ລິ້ງຄື: ລິ້ງແນະນຳລູກຄ້າ ແລະ ລິ້ງແນະນຳໂມເດວດ້ວຍກັນ';
+
+  @override
+  String get tiersLevel3Benefit =>
+      'ບໍ່ໄດ້ຮັບເງີນ 10,000 ກີບ ແຕ່ຈະໄດ້ຮັບເປັນເປີເຊັນແທນເຊັ່ນ: 40% ຂອງເງີນທີ່ລູກຄ້າ subscription, 4% ຂອງໂມເດວທີ່ຕົວເອງແນະນຳເວລາມີຄົນຈອງ';
+
+  @override
+  String get tiersConditionLabel => 'ເງື່ອນໄຂ';
+
+  @override
+  String get tiersBenefitLabel => 'ຜົນປະໂຫຍດທີ່ຈະໄດ້ຮັບ';
+
+  @override
+  String get tiersLinksLabel => 'ລິ້ງແນະນຳ';
+
+  @override
+  String get tiersCurrentBadge => 'ລະດັບປັດຈຸບັນຂອງທ່ານ';
+
+  @override
+  String get tiersLockedNote => 'ຍັງບໍ່ປົດລັອກ';
 }

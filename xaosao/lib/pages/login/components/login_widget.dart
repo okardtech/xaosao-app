@@ -38,7 +38,7 @@ class LoginHero extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Container(
+          SizedBox(
             width: 80.r,
             height: 80.r,
             child: Image.asset(AppImage.xaosaoNoBack),
@@ -232,7 +232,7 @@ class _PhoneFieldState extends State<PhoneField> {
 
   @override
   Widget build(BuildContext context) {
-    print('values: ${widget.ctrl.text}: ${widget.focus.hasFocus}');
+    // print('values: ${widget.ctrl.text}: ${widget.focus.hasFocus}');
     return AnimatedContainer(
       duration: const Duration(milliseconds: 180),
       height: 48.h,

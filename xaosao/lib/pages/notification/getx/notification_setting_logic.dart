@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 import 'package:xaosao/repository/setting_repo.dart';
 import 'package:xaosao/utils/app_snackbar.dart';
+import 'package:xaosao/utils/l10n.dart';
 import 'notification_setting_state.dart';
 
 class NotifSettingLogic extends GetxController {
@@ -56,7 +57,7 @@ class NotifSettingLogic extends GetxController {
 
     if (!res.success) {
       _state.value = prev;
-      AppSnackbar.error(res.laMessage ?? 'ອັບເດດບໍ່ສຳເລັດ');
+      AppSnackbar.error(res.laMessage ?? l10n.notifSettingUpdateFailed);
     }
   }
 }

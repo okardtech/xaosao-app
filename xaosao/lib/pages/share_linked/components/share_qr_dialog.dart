@@ -9,7 +9,9 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:saver_gallery/saver_gallery.dart';
 import 'package:xaosao/constants/app_color.dart';
+import 'package:xaosao/l10n/app_localizations.dart';
 import 'package:xaosao/utils/app_snackbar.dart';
+import 'package:xaosao/utils/l10n.dart' as g;
 
 class ShareQrDialog extends StatefulWidget {
   final String modelName;
@@ -55,7 +57,7 @@ class _ShareQrDialogState extends State<ShareQrDialog> {
       if (Platform.isIOS) {
         final status = await Permission.photosAddOnly.request();
         if (!status.isGranted) {
-          AppSnackbar.error('ກະລຸນາອະນຸຍາດການເຂົ້າເຖິງຄັງຮູບ');
+          AppSnackbar.error(g.l10n.shareQrPermissionDenied);
           return;
         }
       }
@@ -75,12 +77,12 @@ class _ShareQrDialogState extends State<ShareQrDialog> {
         skipIfExists: false,
       );
       if (result.isSuccess) {
-        AppSnackbar.success('ບັນທຶກ QR ລົງຄັງຮູບແລ້ວ');
+        AppSnackbar.success(g.l10n.shareQrSaved);
       } else {
-        AppSnackbar.error('ບໍ່ສາມາດບັນທຶກໄດ້ ກະລຸນາລອງໃໝ່');
+        AppSnackbar.error(g.l10n.shareQrSaveFailed);
       }
     } catch (_) {
-      AppSnackbar.error('ເກີດຂໍ້ຜິດພາດ ກະລຸນາລອງໃໝ່');
+      AppSnackbar.error(g.l10n.shareQrErrorGeneric);
     } finally {
       if (mounted) setState(() => _saving = false);
     }
@@ -88,6 +90,7 @@ class _ShareQrDialogState extends State<ShareQrDialog> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     const headerHeight = 100.0;
     const avatarRadius = 36.0;
 
@@ -229,7 +232,7 @@ class _ShareQrDialogState extends State<ShareQrDialog> {
                           ),
                           SizedBox(width: 6.w),
                           Text(
-                            'xaosao-ເຊົ້າສາວ',
+                            l10n.shareQrBrandName,
                             style: TextStyle(
                               fontSize: 13.sp,
                               fontWeight: FontWeight.w700,
@@ -240,7 +243,7 @@ class _ShareQrDialogState extends State<ShareQrDialog> {
                       ),
                       SizedBox(height: 6.h),
                       Text(
-                        'ບ້ານພັກທີ່ລວບລວມນາງ-ສາວທີ່ໂດດ ແລະ ພ້ອມທີ່ຈະບ້ານຢູ່ທ່ານ.',
+                        l10n.shareQrBrandTagline,
                         style: TextStyle(
                           fontSize: 11.sp,
                           color: AppColors.textHint,
@@ -267,7 +270,7 @@ class _ShareQrDialogState extends State<ShareQrDialog> {
                                 )
                               : Icon(Icons.download_rounded, size: 18.r),
                           label: Text(
-                            'ດາວໂຫຼດ QR',
+                            l10n.shareQrDownload,
                             style: TextStyle(
                               fontSize: 14.sp,
                               fontWeight: FontWeight.w700,

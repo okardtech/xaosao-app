@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:xaosao/constants/app_color.dart';
+import 'package:xaosao/l10n/app_localizations.dart';
 import 'package:xaosao/models/booking_success_model.dart';
 import 'package:xaosao/pages/booking/booking_args.dart';
 import 'package:xaosao/pages/dashboard/dasboard_page.dart';
@@ -61,6 +62,7 @@ class _BookingSuccessPageState extends State<BookingSuccessPage>
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final booking = widget.booking;
     final args = widget.args;
     final price = booking.price;
@@ -97,31 +99,31 @@ class _BookingSuccessPageState extends State<BookingSuccessPage>
                 rows: [
                   _DetailRow(
                     icon: Icons.design_services_outlined,
-                    label: 'ບໍລິການ',
+                    label: l10n.meetupsSectionServices,
                     value: serviceName,
                   ),
                   _DetailRow(
                     icon: Icons.calendar_today_rounded,
-                    label: 'ວັນທີ',
+                    label: l10n.bookingLabelDate,
                     value: _fmtDate(booking.startDate),
                   ),
                   if (booking.location != null &&
                       booking.location!.isNotEmpty)
                     _DetailRow(
                       icon: Icons.location_on_outlined,
-                      label: 'ສະຖານທີ່',
+                      label: l10n.bookingLocation,
                       value: booking.location!,
                     ),
                   if (booking.hours != null)
                     _DetailRow(
                       icon: Icons.timer_outlined,
-                      label: 'ຈຳນວນຊົ່ວໂມງ',
-                      value: '${booking.hours} ຊົ່ວໂມງ',
+                      label: l10n.bookingHoursCount,
+                      value: l10n.bookingHoursValue(booking.hours!),
                     ),
                   if (price != null)
                     _DetailRow(
                       icon: Icons.payments_outlined,
-                      label: 'ລາຄາລວມ',
+                      label: l10n.bookingTotalPriceShort,
                       value: CurrFormatter.kip(price.toDouble()),
                       valueColor: AppColors.primary,
                       valueBold: true,
@@ -133,7 +135,7 @@ class _BookingSuccessPageState extends State<BookingSuccessPage>
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 20.w),
               child: AppPrimaryButton(
-                label: 'ໄປໜ້າການນັດພົບ',
+                label: l10n.bookingGoToMeetups,
                 trailingIcon: Icons.calendar_month_rounded,
                 onTap: _goToMeetups,
               ),
@@ -154,6 +156,7 @@ class _Hero extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Container(
       width: double.infinity,
       padding: EdgeInsets.fromLTRB(0, 48.h, 0, 30.h),
@@ -186,7 +189,7 @@ class _Hero extends StatelessWidget {
             ),
             SizedBox(height: 16.h),
             Text(
-              'ຈອງສຳເລັດ!',
+              l10n.bookingSuccessTitle,
               style: TextStyle(
                 fontSize: 22.sp,
                 fontWeight: FontWeight.w900,
@@ -196,7 +199,7 @@ class _Hero extends StatelessWidget {
             ),
             SizedBox(height: 6.h),
             Text(
-              'ການຈອງຂອງທ່ານໄດ້ຖືກຮັບແລ້ວ',
+              l10n.bookingSuccessBody,
               style: TextStyle(
                 fontSize: 13.sp,
                 color: Colors.white.withValues(alpha: 0.75),
@@ -283,6 +286,7 @@ class _DetailCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final isPending = status == null || status == 'pending';
     return Container(
       decoration: BoxDecoration(
@@ -326,7 +330,7 @@ class _DetailCard extends StatelessWidget {
                 ),
                 SizedBox(width: 6.w),
                 Text(
-                  isPending ? 'ລໍຖ້າການຢືນຢັນ' : 'ຢືນຢັນແລ້ວ',
+                  isPending ? l10n.subscriptionPendingVerification : l10n.profileVerifiedBadge,
                   style: TextStyle(
                     fontSize: 12.sp,
                     fontWeight: FontWeight.w600,

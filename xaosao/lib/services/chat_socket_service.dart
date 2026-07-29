@@ -24,13 +24,13 @@ class ChatSocketService extends GetxService {
   // ── Connect ────────────────────────────────────────────────
   void connect() {
     if (_socket != null && _socket!.connected) {
-      debugPrint('[Socket] Already connected, skipping');
+      // debugPrint('[Socket] Already connected, skipping');
       return;
     }
 
     final token = Get.find<StorageService>().read<String>('token') ?? '';
-    debugPrint('[Socket] Connecting to ${ApiConstants.chatSocketUrl} ...');
-    debugPrint('[Socket] Token present: ${token.isNotEmpty}');
+    // debugPrint('[Socket] Connecting to ${ApiConstants.chatSocketUrl} ...');
+    // debugPrint('[Socket] Token present: ${token.isNotEmpty}');
 
     _socket = IO.io(
       ApiConstants.chatSocketUrl,
@@ -46,42 +46,42 @@ class ChatSocketService extends GetxService {
 
     _socket!
       ..onConnect((_) {
-        debugPrint('[Socket] ✅ Connected — id: ${_socket?.id}');
+        // debugPrint('[Socket] ✅ Connected — id: ${_socket?.id}');
         isConnected.value = true;
         onReconnect?.call();
       })
       ..onDisconnect((reason) {
-        debugPrint('[Socket] ❌ Disconnected — reason: $reason');
+        // debugPrint('[Socket] ❌ Disconnected — reason: $reason');
         isConnected.value = false;
       })
       ..onConnectError((err) {
-        debugPrint('[Socket] ⚠️ Connect error — $err');
+        // debugPrint('[Socket] ⚠️ Connect error — $err');
         isConnected.value = false;
       })
       ..on('connected', (data) {
-        debugPrint('[Socket] 👤 Server confirmed: $data');
+        // debugPrint('[Socket] 👤 Server confirmed: $data');
         if (data is Map && data['userId'] != null) {
           connectedUserId.value = data['userId'].toString();
         }
       })
       ..on('new_message', (data) {
-        debugPrint('[Socket] 💬 new_message: $data');
+        // debugPrint('[Socket] 💬 new_message: $data');
         onNewMessage?.call(data);
       })
       ..on('messages_read', (data) {
-        debugPrint('[Socket] 👁️ messages_read: $data');
+        // debugPrint('[Socket] 👁️ messages_read: $data');
         onMessagesRead?.call(data);
       })
       ..on('user_typing', (data) => onUserTyping?.call(data))
       ..on('message_notification', (data) {
-        debugPrint('[Socket] 🔔 message_notification: $data');
+        // debugPrint('[Socket] 🔔 message_notification: $data');
         onMessageNotification?.call(data);
       })
       ..onAny((event, data) {
         // Log every event to surface unexpected event names from the server
-        if (event != 'user_typing') {
-          debugPrint('[Socket] ← event "$event": $data');
-        }
+        // if (event != 'user_typing') {
+        //   // debugPrint('[Socket] ← event "$event": $data');
+        // }
       });
 
     _socket!.connect();
@@ -97,10 +97,10 @@ class ChatSocketService extends GetxService {
   // ── Room management ────────────────────────────────────────
   void joinConversation(String conversationId) {
     if (_socket == null || !_socket!.connected) {
-      debugPrint('[Socket] ⚠️ join_conversation "$conversationId" dropped — not connected');
+      // debugPrint('[Socket] ⚠️ join_conversation "$conversationId" dropped — not connected');
       return;
     }
-    debugPrint('[Socket] → join_conversation: $conversationId');
+    // debugPrint('[Socket] → join_conversation: $conversationId');
     _socket!.emitWithAck(
       'join_conversation',
       {'conversation_id': conversationId},
@@ -158,10 +158,10 @@ class ChatSocketService extends GetxService {
   // ── Internal ───────────────────────────────────────────────
   void _emit(String event, Map<String, dynamic> data) {
     if (_socket != null && _socket!.connected) {
-      debugPrint('[Socket] → emit "$event": $data');
+      // debugPrint('[Socket] → emit "$event": $data');
       _socket!.emit(event, data);
     } else {
-      debugPrint('[Socket] ⚠️ emit "$event" dropped — not connected');
+      // debugPrint('[Socket] ⚠️ emit "$event" dropped — not connected');
     }
   }
 

@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:xaosao/constants/app_color.dart';
+import 'package:xaosao/l10n/app_localizations.dart';
 import 'package:xaosao/models/my_feedback_model.dart';
 import 'package:xaosao/widgets/app_button.dart';
 import 'package:xaosao/widgets/app_dropdown.dart';
@@ -27,13 +28,13 @@ class _FeedbackPageState extends State<FeedbackPage> {
   String? _selectedType;
   String? _descError;
 
-  static const _feedbackTypes = [
-    AppDropdownItem(value: 'bug', label: 'ຂໍ້ຜິດພາດ (Bug)', icon: Icons.bug_report_outlined),
-    AppDropdownItem(value: 'feature_request', label: 'ຂໍ້ສະເໜີ (Feature)', icon: Icons.lightbulb_outline_rounded),
-    AppDropdownItem(value: 'general', label: 'ທົ່ວໄປ (General)', icon: Icons.chat_bubble_outline_rounded),
-    AppDropdownItem(value: 'payment_issue', label: 'ບັນຫາການຊຳລະ (Payment)', icon: Icons.payment_outlined),
-    AppDropdownItem(value: 'performance', label: 'ປະສິດທິພາບ (Performance)', icon: Icons.speed_outlined),
-    AppDropdownItem(value: 'other', label: 'ອື່ນໆ (Other)', icon: Icons.more_horiz_rounded),
+  List<AppDropdownItem<String>> _buildFeedbackTypes(AppLocalizations l10n) => [
+    AppDropdownItem(value: 'bug', label: l10n.feedbackTypeBug, icon: Icons.bug_report_outlined),
+    AppDropdownItem(value: 'feature_request', label: l10n.feedbackTypeFeature, icon: Icons.lightbulb_outline_rounded),
+    AppDropdownItem(value: 'general', label: l10n.feedbackTypeGeneral, icon: Icons.chat_bubble_outline_rounded),
+    AppDropdownItem(value: 'payment_issue', label: l10n.feedbackTypePayment, icon: Icons.payment_outlined),
+    AppDropdownItem(value: 'performance', label: l10n.feedbackTypePerformance, icon: Icons.speed_outlined),
+    AppDropdownItem(value: 'other', label: l10n.feedbackTypeOther, icon: Icons.more_horiz_rounded),
   ];
 
   @override
@@ -57,7 +58,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
     final desc = _descCtrl.text.trim();
     if (type == null || subject.isEmpty) return;
     if (desc.length < 10) {
-      setState(() => _descError = 'ກະລຸນາໃສ່ລາຍລະອຽດຢ່າງໜ້ອຍ 10 ຕົວອັກສອນ');
+      setState(() => _descError = AppLocalizations.of(context)!.feedbackDescMinLength);
       return;
     }
     final ok = await _logic.submitFeedback(type: type, subject: subject, desc: desc);
@@ -74,11 +75,12 @@ class _FeedbackPageState extends State<FeedbackPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       backgroundColor: AppColors.bg,
       appBar: GradientAppBar(
-        title: 'ຄຳຕິຊົມ',
-        subtitle: 'ສົ່ງຄຳຄິດເຫັນ ຫຼື ລາຍງານບັນຫາ',
+        title: l10n.feedbackTitle,
+        subtitle: l10n.feedbackSubtitle,
         expandedHeight: 80,
       ),
       body: CustomScrollView(
@@ -92,7 +94,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
                 children: [
                   _SectionHeader(
                     icon: Icons.edit_note_rounded,
-                    label: 'ສົ່ງຄຳຕິຊົມໃໝ່',
+                    label: l10n.feedbackSendNew,
                   ),
                   SizedBox(height: 12.h),
                   _InputCard(
@@ -100,7 +102,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
                     descCtrl: _descCtrl,
                     subjectFocus: _subjectFocus,
                     descFocus: _descFocus,
-                    feedbackTypes: _feedbackTypes,
+                    feedbackTypes: _buildFeedbackTypes(l10n),
                     selectedType: _selectedType,
                     onTypeChanged: (v) => setState(() => _selectedType = v),
                     descError: _descError,
@@ -112,7 +114,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
                   SizedBox(height: 24.h),
                   _SectionHeader(
                     icon: Icons.forum_rounded,
-                    label: 'ຄຳຕິຊົມຂອງຂ້ອຍ',
+                    label: l10n.feedbackMine,
                   ),
                   SizedBox(height: 12.h),
                 ],
@@ -207,6 +209,7 @@ class _InputCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
@@ -232,34 +235,34 @@ class _InputCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          AppFieldLabel('ປະເພດ', required: false),
+          AppFieldLabel(l10n.feedbackTypeLabel, required: false),
           SizedBox(height: 6.h),
           AppDropdown<String>(
             value: selectedType,
             items: feedbackTypes,
             onChanged: onTypeChanged,
-            hint: 'ເລືອກປະເພດຄຳຕິຊົມ',
+            hint: l10n.feedbackTypeHint,
             prefixIcon: Icons.label_outline_rounded,
           ),
           SizedBox(height: 14.h),
-          AppFieldLabel('ຫົວຂໍ້', required: false),
+          AppFieldLabel(l10n.feedbackSubjectLabel, required: false),
           SizedBox(height: 6.h),
           AppTextField(
             controller: subjectCtrl,
             focusNode: subjectFocus,
             nextFocusNode: descFocus,
-            hint: 'ໃສ່ຫົວຂໍ້ຄຳຕິຊົມ...',
+            hint: l10n.feedbackSubjectHint,
             accent: AppColors.primary,
             prefixIcon: Icons.edit_outlined,
             action: TextInputAction.next,
           ),
           SizedBox(height: 14.h),
-          AppFieldLabel('ລາຍລະອຽດ', required: false),
+          AppFieldLabel(l10n.feedbackDescLabel, required: false),
           SizedBox(height: 6.h),
           AppTextField(
             controller: descCtrl,
             focusNode: descFocus,
-            hint: 'ອະທິບາຍລາຍລະອຽດເພີ່ມເຕີມ...',
+            hint: l10n.feedbackDescHint,
             accent: AppColors.primary,
             prefixIcon: Icons.notes_rounded,
             keyboardType: TextInputType.multiline,
@@ -283,7 +286,7 @@ class _InputCard extends StatelessWidget {
           ),
           SizedBox(height: 12.h),
           AppPrimaryButton(
-            label: 'ສົ່ງຄຳຕິຊົມ',
+            label: l10n.feedbackSubmit,
             leadingIcon: Icons.send_rounded,
             onTap: onSubmit,
           ),
@@ -300,7 +303,9 @@ class _FeedbackCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final chip = _statusChip(item.status);
+    final l10n = AppLocalizations.of(context)!;
+    // ignore: unused_local_variable
+    final chip = _statusChip(item.status, l10n);
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
@@ -402,31 +407,31 @@ class _StatusBadge extends StatelessWidget {
   }
 }
 
-_StatusChipData _statusChip(String? status) {
+_StatusChipData _statusChip(String? status, AppLocalizations l10n) {
   switch ((status ?? '').toLowerCase()) {
     case 'resolved':
     case 'completed':
       return _StatusChipData(
-        label: 'ແກ້ໄຂແລ້ວ',
+        label: l10n.feedbackStatusResolved,
         fg: const Color(0xFF15803D),
         bg: const Color(0xFFEDFAF3),
       );
     case 'inprogress':
     case 'in_progress':
       return _StatusChipData(
-        label: 'ກຳລັງດຳເນີນ',
+        label: l10n.walletTxStatusProcessing,
         fg: const Color(0xFF3B82F6),
         bg: const Color(0xFFEFF6FF),
       );
     case 'rejected':
       return _StatusChipData(
-        label: 'ປະຕິເສດ',
+        label: l10n.bookingActionReject,
         fg: const Color(0xFFDC2626),
         bg: const Color(0xFFFEF2F2),
       );
     default:
       return _StatusChipData(
-        label: 'ລໍຖ້າ',
+        label: l10n.walletTxStatusPending,
         fg: const Color(0xFF92400E),
         bg: const Color(0xFFFFFBEB),
       );
@@ -448,6 +453,7 @@ class _StatusChipData {
 class _EmptyState extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 32.h),
       child: Center(
@@ -468,7 +474,7 @@ class _EmptyState extends StatelessWidget {
             ),
             SizedBox(height: 12.h),
             Text(
-              'ຍັງບໍ່ມີຄຳຕິຊົມ',
+              l10n.feedbackEmptyTitle,
               style: TextStyle(
                 fontSize: 14.sp,
                 fontWeight: FontWeight.w700,
@@ -477,7 +483,7 @@ class _EmptyState extends StatelessWidget {
             ),
             SizedBox(height: 4.h),
             Text(
-              'ສົ່ງຄຳຕິຊົມຂອງທ່ານດ້ານເທິງ',
+              l10n.feedbackEmptySubtitle,
               style: TextStyle(fontSize: 12.sp, color: AppColors.textHint),
             ),
           ],

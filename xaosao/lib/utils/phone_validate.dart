@@ -1,4 +1,5 @@
 import 'package:flutter/services.dart';
+import 'package:xaosao/utils/l10n.dart';
 
 /// Laos mobile number rules:
 ///   • Must start with 20
@@ -16,17 +17,17 @@ class LaoPhoneValidator {
     '209',
   ];
 
-  /// Returns a Lao error string, or null when the number is valid.
+  /// Returns a localized error string, or null when the number is valid.
   static String? error(String? value) {
     final v = (value ?? '').trim();
-    if (v.isEmpty) return 'ກະລຸນາໃສ່ເບີໂທ';
+    if (v.isEmpty) return l10n.phoneRequired;
     if (v.length < 2 || !v.startsWith('20')) {
-      return 'ເບີໂທຕ້ອງເລີ່ມດ້ວຍ 20';
+      return l10n.phoneMustStartWith20;
     }
     if (v.length >= 3 && !validPrefixes.any((p) => v.startsWith(p))) {
-      return 'ຕ້ອງເປັນ: 202, 205, 206, 207 ຫຼື 209';
+      return l10n.phonePrefixInvalid;
     }
-    if (v.length != length) return 'ເບີໂທຕ້ອງມີ $length ຕົວເລກ';
+    if (v.length != length) return l10n.phoneLength(length);
     return null;
   }
 

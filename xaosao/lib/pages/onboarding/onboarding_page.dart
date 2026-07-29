@@ -4,12 +4,16 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:xaosao/constants/app_color.dart';
 import 'package:xaosao/constants/app_icons.dart';
+import 'package:xaosao/constants/app_image.dart';
+import 'package:xaosao/l10n/app_localizations.dart';
 import 'package:xaosao/pages/login/login_page.dart';
 import 'package:xaosao/pages/onboarding/components/companion_widget.dart';
+import 'package:xaosao/services/language_service.dart';
 import 'package:xaosao/widgets/app_network_image.dart';
 import 'package:xaosao/pages/onboarding/components/service_card_large.dart';
 import 'package:xaosao/pages/onboarding/getx/onboarding_logic.dart';
 import 'package:xaosao/widgets/app_svg_icon.dart';
+import 'package:xaosao/widgets/language_selector_sheet.dart';
 import '../../models/models_hot.dart';
 import '../../utils/age_formatter.dart';
 import 'getx/onboarding_state.dart';
@@ -116,6 +120,7 @@ class _XaosaoHomePageState extends State<XaosaoHomePage>
   @override
   Widget build(BuildContext context) {
     final logic = Get.find<OnboardingLogic>();
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       backgroundColor: const Color(0xFFF8F8FC),
       body: CustomScrollView(
@@ -153,7 +158,11 @@ class _XaosaoHomePageState extends State<XaosaoHomePage>
               ],
             ),
             actions: [
-              // ── Notification bell only (no login) ──────────
+              // ── Language switcher ──────────────────────────
+              const _LanguageChip(),
+              SizedBox(width: 10.w),
+
+              // ── Notification bell (opens login) ────────────
               Padding(
                 padding: EdgeInsets.only(right: 20.w),
                 child: Stack(
@@ -238,8 +247,8 @@ class _XaosaoHomePageState extends State<XaosaoHomePage>
                       Padding(
                         padding: EdgeInsets.symmetric(horizontal: 18.w),
                         child: _sectionHeader(
-                          'ເພື່ອນແນະນຳຍອດນິຍົມ',
-                          subtitle: 'ຄົ້ນພົບຜູ້ໃຫ້ບໍລິການທີ່ໄດ້ຮັບຄະແນນສູງ',
+                          l10n.onboardingTopCompanions,
+                          subtitle: l10n.onboardingTopCompanionsSubtitle,
                           onViewAll: () {},
                         ),
                       ),
@@ -283,6 +292,7 @@ class _XaosaoHomePageState extends State<XaosaoHomePage>
   //  WELCOME + LOGIN BANNER  (replaces hero)
   // ──────────────────────────────────────────────────────────────
   Widget _buildWelcomeBanner() {
+    final l10n = AppLocalizations.of(context)!;
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 18.w),
       child: Column(
@@ -296,7 +306,7 @@ class _XaosaoHomePageState extends State<XaosaoHomePage>
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'ຍິນດີຕ້ອນຮັບ 👋',
+                      l10n.onboardingWelcome,
                       style: TextStyle(
                         fontSize: 13.sp,
                         color: const Color(0xFF9B9BAD),
@@ -304,7 +314,7 @@ class _XaosaoHomePageState extends State<XaosaoHomePage>
                     ),
                     SizedBox(height: 3.h),
                     Text(
-                      'ຊອກຫາເພື່ອນຂອງທ່ານ',
+                      l10n.onboardingFindYourCompanion,
                       style: TextStyle(
                         fontSize: 20.sp,
                         fontWeight: FontWeight.w800,
@@ -368,7 +378,7 @@ class _XaosaoHomePageState extends State<XaosaoHomePage>
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'ເຂົ້າສູ່ລະບົບ / ສ້າງບັນຊີ',
+                          l10n.onboardingLoginOrSignup,
                           style: TextStyle(
                             fontSize: 14.sp,
                             fontWeight: FontWeight.w700,
@@ -378,7 +388,7 @@ class _XaosaoHomePageState extends State<XaosaoHomePage>
                         ),
                         SizedBox(height: 3.h),
                         Text(
-                          'ເບິ່ງໂປຣໄຟລ໌ · ສົ່ງຂໍ້ຄວາມ · ຈອງໄດ້ທັນທີ',
+                          l10n.onboardingActionsHint,
                           style: TextStyle(
                             fontSize: 10.sp,
                             color: Colors.white.withOpacity(0.50),
@@ -414,7 +424,7 @@ class _XaosaoHomePageState extends State<XaosaoHomePage>
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Text(
-                          'ເຂົ້າສູ່ລະບົບ',
+                          l10n.onboardingLogin,
                           style: TextStyle(
                             fontSize: 12.sp,
                             fontWeight: FontWeight.w800,
@@ -443,17 +453,18 @@ class _XaosaoHomePageState extends State<XaosaoHomePage>
   //  SERVICES  (unchanged from original)
   // ──────────────────────────────────────────────────────────────
   Widget _buildServices() {
+    final l10n = AppLocalizations.of(context)!;
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 18.w),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _sectionHeader('ບໍລິການຂອງພວກເຮົາ'),
+          _sectionHeader(l10n.onboardingOurServices),
           SizedBox(height: 16.h),
           ServiceCardLarge(
             icon: Icons.spa_outlined,
-            title: 'ບໍລິການນວດ',
-            subtitle: 'ບໍລິການນວດສຸຂະພາບໂດຍຜູ້ໃຫ້ບໍລິການມືອາຊີບ ສະດວກຮອດບ້ານ',
+            title: l10n.onboardingMassageTitle,
+            subtitle: l10n.onboardingMassageSubtitle,
             accentColor: AppColors.primary,
             onTap: () {
               Navigator.push(
@@ -468,9 +479,8 @@ class _XaosaoHomePageState extends State<XaosaoHomePage>
               Expanded(
                 child: ServiceCardSmall(
                   icon: Icons.local_bar_outlined,
-                  title: 'ເພື່ອນສັງຄົມ',
-                  subtitle:
-                      'ຄູ່ຮ່ວມງານສຳລັບງານສັງຄົມ ເພື່ອເພີ່ມຄວາມມ່ວນຊື່ນ ແລະ ຄວາມປະທັບໃຈ',
+                  title: l10n.homeServiceSocial,
+                  subtitle: l10n.onboardingSocialSubtitle,
                   accentColor: AppColors.primary,
                   onTap: () {
                     Navigator.push(
@@ -484,9 +494,8 @@ class _XaosaoHomePageState extends State<XaosaoHomePage>
               Expanded(
                 child: ServiceCardSmall(
                   icon: Icons.flight_takeoff_outlined,
-                  title: 'ເພື່ອນທ່ອງທ່ຽວ',
-                  subtitle:
-                      'ຄູ່ຮ່ວມທ່ອງທ່ຽວທີ່ພ້ອມພາເຈົ້າຄົ້ນພົບປະສົບການໃໝ່ ທັງໃນ ແລະ ຕ່າງປະເທດ',
+                  title: l10n.onboardingTravelTitle,
+                  subtitle: l10n.onboardingTravelSubtitle,
                   accentColor: AppColors.primary,
                   onTap: () {
                     Navigator.push(
@@ -507,14 +516,15 @@ class _XaosaoHomePageState extends State<XaosaoHomePage>
   //  HOT COMPANIONS  (unchanged from original)
   // ──────────────────────────────────────────────────────────────
   Widget _buildCompanions(List<ModelsHot> hostList) {
+    final l10n = AppLocalizations.of(context)!;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
           padding: EdgeInsets.symmetric(horizontal: 18.w),
           child: _sectionHeader(
-            'ເພື່ອນແນະນຳຍອດນິຍົມ',
-            subtitle: 'ຄົ້ນພົບຜູ້ໃຫ້ບໍລິການທີ່ໄດ້ຮັບຄະແນນສູງ',
+            l10n.onboardingTopCompanions,
+            subtitle: l10n.onboardingTopCompanionsSubtitle,
             onViewAll: () {
               Navigator.push(
                 context,
@@ -556,6 +566,7 @@ class _XaosaoHomePageState extends State<XaosaoHomePage>
   // ──────────────────────────────────────────────────────────────
   //  PARTNER BENEFITS  — everything in ONE card, no Explore CTA
   Widget _buildPartnerBenefits() {
+    final l10n = AppLocalizations.of(context)!;
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 18.w),
       child: Container(
@@ -580,7 +591,7 @@ class _XaosaoHomePageState extends State<XaosaoHomePage>
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    "ສິດປະໂຫຍດພາກຮ່ວມ",
+                    l10n.onboardingPartnerBenefits,
                     // 'PARTNER BENEFITS',
                     style: TextStyle(
                       fontSize: 9.sp,
@@ -595,7 +606,7 @@ class _XaosaoHomePageState extends State<XaosaoHomePage>
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        "ເພີ່ມລາຍຮັບຂອງທ່ານ",
+                        l10n.onboardingIncreaseIncome,
                         // 'Grow Your\nEarnings',
                         style: TextStyle(
                           fontSize: 20.sp,
@@ -625,7 +636,7 @@ class _XaosaoHomePageState extends State<XaosaoHomePage>
                             borderRadius: BorderRadius.circular(20.r),
                           ),
                           child: Text(
-                            "ເຂົ້າຮ່ວມເລີຍ",
+                            l10n.onboardingJoinNow,
                             // 'JOIN NOW',
                             style: TextStyle(
                               fontSize: 9.sp,
@@ -658,13 +669,13 @@ class _XaosaoHomePageState extends State<XaosaoHomePage>
                       child: _tierCell(
                         dotColor: AppColors.primary,
                         // name: 'Normal',
-                        name: 'ທົ່ວໄປ',
+                        name: l10n.onboardingLevelGeneral,
                         // condition: 'Register as\ncompanion',
-                        condition: "ລົງທະບຽນເປັນຄູ່ຮ່ວມ",
+                        condition: l10n.onboardingConditionRegister,
                         earnValue: '10,000',
                         earnUnit: ' KIP',
                         // earnSub: 'per referral · up to 20',
-                        earnSub: "ຕໍ່ 1 ຄົນທີ່ແນະນຳ · ສູງສຸດ 20 ຄົນ",
+                        earnSub: l10n.onboardingEarnPer20,
                         highlight: false,
                       ),
                     ),
@@ -673,13 +684,13 @@ class _XaosaoHomePageState extends State<XaosaoHomePage>
                       child: _tierCell(
                         dotColor: const Color(0xFF9B9BAD),
                         // name: 'Special',
-                        name: "ພິເສດ",
+                        name: l10n.onboardingLevelSpecial,
                         // condition: 'Refer 20\ncompanions',
-                        condition: "ແນະນຳຄູ່ຮ່ວມ 20 ຄົນ",
+                        condition: l10n.onboardingCondition20People,
                         earnValue: '2–20',
                         earnUnit: '%',
                         // earnSub: 'commission\n+ referrals',
-                        earnSub: "ຄ່າຄອມມິຊັນ ແລະ ຈຳນວນແນະນຳ",
+                        earnSub: l10n.onboardingEarnCommission,
                         highlight: true,
                       ),
                     ),
@@ -688,12 +699,12 @@ class _XaosaoHomePageState extends State<XaosaoHomePage>
                       child: _tierCell(
                         dotColor: const Color(0xFF1A1A2E),
                         // name: 'Partner',
-                        name: 'ພາກຮ່ວມ',
+                        name: l10n.onboardingLevelPartner,
                         condition: '2,000,000\nKIP earned',
                         earnValue: '4–40',
                         earnUnit: '%',
                         // earnSub: 'VIP · forever\ncommission',
-                        earnSub: "ສະຫຼຸບ VIP ແລະ ຄ່າຄອມມິຊັນໃນເວລາ",
+                        earnSub: l10n.onboardingEarnVipSummary,
                         highlight: false,
                       ),
                     ),
@@ -722,7 +733,7 @@ class _XaosaoHomePageState extends State<XaosaoHomePage>
                       children: [
                         Text(
                           // 'Ready to start earning?',
-                          "ພ້ອມເລີ່ມຫາລາຍຮັບບໍ?",
+                          l10n.onboardingReadyToEarn,
                           style: TextStyle(
                             fontSize: 13.sp,
                             fontWeight: FontWeight.w700,
@@ -733,7 +744,7 @@ class _XaosaoHomePageState extends State<XaosaoHomePage>
                         SizedBox(height: 3.h),
                         Text(
                           // 'Register now and unlock higher\ntiers by referring companions.',
-                          "ລົງທະບຽນຕອນນີ້ ແລະ ປົດລັອກລະດັບທີ່ສູງຂຶ້ນ ໂດຍການແນະນຳຜູ້ອື່ນ",
+                          l10n.onboardingRegisterUnlock,
                           style: TextStyle(
                             fontSize: 10.sp,
                             color: const Color(0xFF9B9BAD),
@@ -780,7 +791,7 @@ class _XaosaoHomePageState extends State<XaosaoHomePage>
                           SizedBox(height: 4.h),
                           Text(
                             // 'Get Started',
-                            "ເລີ່ມຕົ້ນ",
+                            l10n.onboardingGetStarted,
                             style: TextStyle(
                               fontSize: 9.sp,
                               fontWeight: FontWeight.w800,
@@ -891,6 +902,7 @@ class _XaosaoHomePageState extends State<XaosaoHomePage>
     String? subtitle,
     VoidCallback? onViewAll,
   }) {
+    final l10n = AppLocalizations.of(context)!;
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -923,7 +935,7 @@ class _XaosaoHomePageState extends State<XaosaoHomePage>
           GestureDetector(
             onTap: onViewAll,
             child: Text(
-              'ເບິ່ງທັງໝົດ',
+              l10n.homeSeeAll,
               style: TextStyle(
                 fontSize: 13.sp,
                 fontWeight: FontWeight.w600,
@@ -933,5 +945,88 @@ class _XaosaoHomePageState extends State<XaosaoHomePage>
           ),
       ],
     );
+  }
+}
+
+// ══════════════════════════════════════════════════════════════════
+//  _LanguageChip
+//  Pill button on the app bar that shows the current language flag
+//  and code (LO/EN/TH). Tap opens [LanguageSelectorSheet]; the flag
+//  swaps reactively once the user picks a new language.
+// ══════════════════════════════════════════════════════════════════
+class _LanguageChip extends StatelessWidget {
+  const _LanguageChip();
+
+  String _flagFor(String code) {
+    switch (code) {
+      case 'en':
+        return AppImage.enFlag;
+      case 'th':
+        return AppImage.thFlag;
+      case 'lo':
+      default:
+        return AppImage.laFlag;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final langService = Get.find<LanguageService>();
+    return Obx(() {
+      final code = langService.locale.languageCode;
+      return GestureDetector(
+        onTap: () => LanguageSelectorSheet.show(context),
+        child: Container(
+          height: 35.r,
+          padding: EdgeInsets.symmetric(horizontal: 10.w),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(20.r),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.07),
+                blurRadius: 10,
+                offset: const Offset(0, 2),
+              ),
+            ],
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ClipRRect(
+                borderRadius: BorderRadius.circular(4.r),
+                child: Image.asset(
+                  _flagFor(code),
+                  width: 22.w,
+                  height: 16.h,
+                  fit: BoxFit.cover,
+                  errorBuilder: (_, __, ___) => Icon(
+                    Icons.language_rounded,
+                    size: 16.r,
+                    color: const Color(0xFF1A1A2E),
+                  ),
+                ),
+              ),
+              SizedBox(width: 6.w),
+              Text(
+                code.toUpperCase(),
+                style: TextStyle(
+                  fontSize: 11.sp,
+                  fontWeight: FontWeight.w800,
+                  color: const Color(0xFF1A1A2E),
+                  letterSpacing: 0.5,
+                ),
+              ),
+              SizedBox(width: 2.w),
+              Icon(
+                Icons.keyboard_arrow_down_rounded,
+                size: 16.r,
+                color: const Color(0xFF9B9BAD),
+              ),
+            ],
+          ),
+        ),
+      );
+    });
   }
 }

@@ -1425,7 +1425,7 @@ class AppLocalizationsEn extends AppLocalizations {
       'You will not appear in search results';
 
   @override
-  String get profileShareLink => 'Share profile link';
+  String get profileShareLink => 'Share your referral link';
 
   @override
   String get profileHideYourProfile => 'Hide your profile';
@@ -1750,4 +1750,1663 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get commonCantLoadData => 'Cannot load data';
+
+  @override
+  String get packageHistoryTitle => 'Package history';
+
+  @override
+  String get packageHistorySubtitle => 'All purchases';
+
+  @override
+  String get packageHistoryEmpty => 'No records';
+
+  @override
+  String get packageStatusActive => 'Active';
+
+  @override
+  String get packageStatusCompleted => 'Completed';
+
+  @override
+  String get packageStatusPending => 'Pending';
+
+  @override
+  String get packageStatusPendingRelease => 'Pending release';
+
+  @override
+  String get packageStatusCanceled => 'Canceled';
+
+  @override
+  String get packageStatusRefunded => 'Refunded';
+
+  @override
+  String get packageStatusExpired => 'Expired';
+
+  @override
+  String get packageStatusUpgraded => 'Upgraded';
+
+  @override
+  String get packageStatusHeld => 'Held';
+
+  @override
+  String get packageStatusSuperseded => 'Superseded';
+
+  @override
+  String get packageAmount => 'Amount';
+
+  @override
+  String packageDaysRemaining(int days) {
+    return '$days days left';
+  }
+
+  @override
+  String packageExpiresShort(String date) {
+    return 'Expires $date';
+  }
+
+  @override
+  String get subscriptionPrice => 'Price';
+
+  @override
+  String get subscriptionDuration => 'Duration';
+
+  @override
+  String get subscriptionBenefits => 'What you\'ll get:';
+
+  @override
+  String get subscriptionViewAll => 'View all packages';
+
+  @override
+  String get subscriptionClose => 'Close';
+
+  @override
+  String get subscriptionBuyNow => 'Buy now';
+
+  @override
+  String get subscriptionTopUp => 'Top up';
+
+  @override
+  String subscriptionDurationHours(int hours) {
+    return '$hours h';
+  }
+
+  @override
+  String get subscriptionDuration1Day => '1 day';
+
+  @override
+  String get subscriptionDuration1Week => '1 week';
+
+  @override
+  String get subscriptionDuration1Month => '1 month';
+
+  @override
+  String get subscriptionDuration3Months => '3 months';
+
+  @override
+  String get subscriptionDuration1Year => '1 year';
+
+  @override
+  String subscriptionDurationDays(int days) {
+    return '$days days';
+  }
+
+  @override
+  String get subscriptionSpecialPack => 'Special pack';
+
+  @override
+  String get subscriptionYourBalance => 'Your balance';
+
+  @override
+  String subscriptionNeedMore(String amount) {
+    return 'Need +$amount KIP';
+  }
+
+  @override
+  String get subscriptionCanPay => 'You can pay';
+
+  @override
+  String get subscriptionNeedPackageBody =>
+      'Please purchase a Package first to book services. A Package grants you booking and usage rights.';
+
+  @override
+  String get subscriptionViewPackage => 'View Package';
+
+  @override
+  String get subscriptionNeedPackage => 'Package required';
+
+  @override
+  String get subscriptionNoActive => 'You don\'t have any active Package yet';
+
+  @override
+  String get subscriptionServicePrice => 'Service price';
+
+  @override
+  String get subscriptionShortfall => 'Short';
+
+  @override
+  String subscriptionTopUpAmount(String amount) {
+    return 'Top up $amount KIP';
+  }
+
+  @override
+  String get subscriptionInsufficient => 'Insufficient balance';
+
+  @override
+  String get subscriptionPleaseTopup => 'Please top up before booking';
+
+  @override
+  String get subscriptionPendingVerification => 'Pending verification';
+
+  @override
+  String get subscriptionAlreadySubscribed =>
+      'You already subscribed to a Package';
+
+  @override
+  String get subscriptionPendingBadge => 'Pending';
+
+  @override
+  String get subscriptionPendingBody =>
+      'Your Package is pending Admin verification. Please wait or contact Admin for faster verification.';
+
+  @override
+  String get subscriptionAdminPhone => 'Admin phone';
+
+  @override
+  String get subscriptionCallAdmin => 'Call Admin';
+
+  @override
+  String get subscriptionWaitingVerification => 'Waiting for verification';
+
+  @override
+  String get subscriptionAdminChecking =>
+      'Your Package is waiting for Admin review';
+
+  @override
+  String get packagePurchaseFailed => 'Purchase failed';
+
+  @override
+  String get packageFeature1 => 'Unlimited access to all features';
+
+  @override
+  String get packageFeature2 => 'Unlimited chat messages';
+
+  @override
+  String get packageFeature3 => 'Unlimited bookings with people you like';
+
+  @override
+  String get packageFeature4 => 'Access to VIP profiles';
+
+  @override
+  String get packageFeature5 => 'Advanced search and filters';
+
+  @override
+  String get packageFeature6 => '24/7 priority support';
+
+  @override
+  String get packageFeature7 => 'Increased profile visibility';
+
+  @override
+  String get packagePlanShort1 =>
+      'Explore all premium features and start connecting right away';
+
+  @override
+  String get packagePlanShort2 =>
+      '24-hour trial with unlimited chat and bookings';
+
+  @override
+  String get packagePlanShort3 =>
+      'The best value for long-term dates and genuine connections';
+
+  @override
+  String get packageChooseTitle => 'Choose a plan';
+
+  @override
+  String get packageChooseSubtitle => 'Upgrade your experience';
+
+  @override
+  String get packageHistoryButton => 'History';
+
+  @override
+  String get packageCancelAnytime => 'Cancel anytime · Refund per policy';
+
+  @override
+  String get packageWaitingVerification => 'Pending verification';
+
+  @override
+  String get packageExpiredLabel => 'Expired';
+
+  @override
+  String get packageNearExpiry => 'Near expiry';
+
+  @override
+  String get packageActive => 'Active';
+
+  @override
+  String get packageProcessingVerification => 'Processing verification...';
+
+  @override
+  String packageExpiresOn(String date) {
+    return 'Expires $date';
+  }
+
+  @override
+  String get packageDays => 'days';
+
+  @override
+  String get packageRemainingLabel => 'Remaining';
+
+  @override
+  String get packageChooseYourPlan => 'Choose your plan';
+
+  @override
+  String get packageUpgradeExperience => 'Upgrade your experience';
+
+  @override
+  String get packageChooseFitPlan =>
+      'Pick a plan that fits and find matches anytime';
+
+  @override
+  String get packageLoadFailedShort => 'Load failed';
+
+  @override
+  String get packageNoPackage => 'No Package';
+
+  @override
+  String get packageRequestProcessing =>
+      'Your request is being processed · please wait';
+
+  @override
+  String get packageCurrent => 'Current package';
+
+  @override
+  String get packageSelectPlan => 'Select this plan';
+
+  @override
+  String get checkoutPurchaseSuccess => 'Package purchased successfully';
+
+  @override
+  String get checkoutUpgradeTitle => 'Upgrade';
+
+  @override
+  String get checkoutUpgradeSubtitle => 'Review and confirm payment';
+
+  @override
+  String get checkoutProcessPayment => 'Process payment';
+
+  @override
+  String get checkoutAlreadySubscribed => 'Already subscribed to a Package';
+
+  @override
+  String checkoutPillPlan(String name) {
+    return 'Plan $name';
+  }
+
+  @override
+  String checkoutPillRemainingDays(int days) {
+    return '$days days left';
+  }
+
+  @override
+  String get checkoutUpgradeInfo =>
+      'The new payment will start after the current Package, and remaining days will be carried into the new Package.';
+
+  @override
+  String get checkoutPackageDuration => 'Package duration';
+
+  @override
+  String get checkoutNewPackageDuration => 'New Package duration';
+
+  @override
+  String get checkoutBonusFromOld => '+ Bonus (from previous Package)';
+
+  @override
+  String get checkoutTotalDuration => 'Total duration';
+
+  @override
+  String get checkoutPaymentSummary => 'Payment summary';
+
+  @override
+  String get checkoutWalletBalance => 'Wallet balance';
+
+  @override
+  String get checkoutPackagePrice => 'Package price';
+
+  @override
+  String get checkoutRemaining => 'Remaining balance';
+
+  @override
+  String get checkoutShortfallSuffix => ' (short)';
+
+  @override
+  String get checkoutWalletDeductInfo =>
+      'Wallet balance will be deducted immediately. The Package will activate after payment succeeds.';
+
+  @override
+  String get onboardingTopCompanions => 'Top companions';
+
+  @override
+  String get onboardingTopCompanionsSubtitle =>
+      'Discover our highest-rated companions';
+
+  @override
+  String get onboardingWelcome => 'Welcome 👋';
+
+  @override
+  String get onboardingFindYourCompanion => 'Find your companion';
+
+  @override
+  String get onboardingLoginOrSignup => 'Log in / Sign up';
+
+  @override
+  String get onboardingActionsHint => 'View profiles · Chat · Book instantly';
+
+  @override
+  String get onboardingLogin => 'Log in';
+
+  @override
+  String get onboardingOurServices => 'Our services';
+
+  @override
+  String get onboardingMassageTitle => 'Massage';
+
+  @override
+  String get onboardingMassageSubtitle =>
+      'Professional wellness massage at home, delivered by verified therapists';
+
+  @override
+  String get onboardingSocialSubtitle =>
+      'Social event partners to add fun and make lasting impressions';
+
+  @override
+  String get onboardingTravelTitle => 'Travel companion';
+
+  @override
+  String get onboardingTravelSubtitle =>
+      'Travel partners ready to help you discover new experiences at home and abroad';
+
+  @override
+  String get onboardingLevelGeneral => 'General';
+
+  @override
+  String get onboardingLevelSpecial => 'Special';
+
+  @override
+  String get onboardingLevelPartner => 'Partner';
+
+  @override
+  String get onboardingPartnerBenefits => 'Partner benefits';
+
+  @override
+  String get onboardingIncreaseIncome => 'Grow your income';
+
+  @override
+  String get onboardingJoinNow => 'Join now';
+
+  @override
+  String get onboardingConditionRegister => 'Register as a partner';
+
+  @override
+  String get onboardingEarnPer20 => 'Per referral · up to 20 people';
+
+  @override
+  String get onboardingCondition20People => 'Refer 20 partners';
+
+  @override
+  String get onboardingEarnCommission => 'Commission and referral bonuses';
+
+  @override
+  String get onboardingEarnVipSummary => 'VIP summary and on-time commissions';
+
+  @override
+  String get onboardingReadyToEarn => 'Ready to start earning?';
+
+  @override
+  String get onboardingRegisterUnlock =>
+      'Register now and unlock higher tiers by referring others';
+
+  @override
+  String get onboardingGetStarted => 'Get started';
+
+  @override
+  String get notifSettingTitle => 'System settings';
+
+  @override
+  String get notifSettingSubtitle => 'Manage your notifications';
+
+  @override
+  String get notifSettingChannelsSection => 'Notification channels';
+
+  @override
+  String get notifSettingPushSubtitle => 'Alerts sent straight to your phone';
+
+  @override
+  String get notifSettingSmsSubtitle => 'Short messages to your number';
+
+  @override
+  String get notifSettingBannerTitle => 'Notification preferences';
+
+  @override
+  String get notifSettingBannerBody =>
+      'Choose how you want to receive messages\nChanges are saved automatically';
+
+  @override
+  String get notifSettingFooterNote =>
+      'Changes are saved immediately. You can adjust settings anytime.';
+
+  @override
+  String get notifSettingUpdateFailed => 'Update failed';
+
+  @override
+  String get notifListTitle => 'Notifications';
+
+  @override
+  String get notifListSubtitle => 'All your notifications';
+
+  @override
+  String get notifListMarkAllRead => 'Mark all read';
+
+  @override
+  String get notifListEmptyTitle => 'No notifications yet';
+
+  @override
+  String get notifListEmptySubtitle => 'Notifications will appear here';
+
+  @override
+  String get notifTimeJustNow => 'Just now';
+
+  @override
+  String notifTimeMinutes(int n) {
+    return '$n min';
+  }
+
+  @override
+  String notifTimeHours(int n) {
+    return '$n h';
+  }
+
+  @override
+  String get notifTimeYesterday => 'Yesterday';
+
+  @override
+  String notifTimeDaysAgo(int n) {
+    return '$n days ago';
+  }
+
+  @override
+  String notifTimeWeeksAgo(int n) {
+    return '$n weeks ago';
+  }
+
+  @override
+  String notifTimeMonthsAgo(int n) {
+    return '$n months ago';
+  }
+
+  @override
+  String get welcomeTitle => 'Welcome!';
+
+  @override
+  String get welcomeBody =>
+      'Your account has been created.\nEnjoy using the app!';
+
+  @override
+  String get welcomeCanDoTitle => 'What you can do';
+
+  @override
+  String get welcomeChat => 'Chat';
+
+  @override
+  String get welcomeBook => 'Book';
+
+  @override
+  String get welcomeExplore => 'Explore';
+
+  @override
+  String get welcomeGetStartedCta => 'Get started now';
+
+  @override
+  String get modelWalletAvailableBalance => 'Available balance';
+
+  @override
+  String get modelWalletStatPending => 'Pending';
+
+  @override
+  String get modelWalletStatWithdrawn => 'Withdrawn';
+
+  @override
+  String get modelWalletStatTotalIncome => 'Total income';
+
+  @override
+  String get modelWalletWithdrawBtn => 'Withdraw';
+
+  @override
+  String get modelWalletIncomeHistory => 'Income history';
+
+  @override
+  String get modelWalletEmptyTitle => 'No transactions yet';
+
+  @override
+  String get modelWalletEmptySubtitle =>
+      'Your income entries\nwill appear here';
+
+  @override
+  String get modelWalletWithdrawFailed => 'Withdrawal failed';
+
+  @override
+  String get withdrawTitle => 'Withdraw';
+
+  @override
+  String get withdrawSubtitle => 'Send to a bank account';
+
+  @override
+  String get withdrawSelectBank => 'Select a bank account';
+
+  @override
+  String get withdrawAmountLabel => 'Amount';
+
+  @override
+  String get withdrawAmountHint => 'Enter amount';
+
+  @override
+  String get withdrawHintMin => 'Minimum';
+
+  @override
+  String get withdrawHintMax => 'Maximum';
+
+  @override
+  String withdrawBelowMin(String amount) {
+    return 'Amount is below minimum ($amount)';
+  }
+
+  @override
+  String withdrawAboveMax(String amount) {
+    return 'Exceeds withdrawable balance ($amount)';
+  }
+
+  @override
+  String get withdrawConfirmBtn => 'Confirm withdrawal';
+
+  @override
+  String get withdrawableBalance => 'Withdrawable balance';
+
+  @override
+  String get withdrawAll => 'Withdraw all';
+
+  @override
+  String get withdrawUnavailable => 'Cannot withdraw';
+
+  @override
+  String get withdrawNoBankTitle => 'No bank account yet';
+
+  @override
+  String get withdrawNoBankSubtitle =>
+      'Please add a bank account before withdrawing';
+
+  @override
+  String get withdrawAddBank => 'Add bank account';
+
+  @override
+  String get discoverTitle => 'Discover';
+
+  @override
+  String get discoverSubtitle => 'Find people you like';
+
+  @override
+  String get discoverSearchHint => 'Search by name...';
+
+  @override
+  String get discoverTabForYou => 'For you';
+
+  @override
+  String get discoverTabWhoLikedMe => 'Liked me';
+
+  @override
+  String get discoverTabILiked => 'I liked';
+
+  @override
+  String get discoverEmptyAllTitle => 'No users found';
+
+  @override
+  String get discoverEmptyAllSubtitle =>
+      'Try changing filters or searching again';
+
+  @override
+  String get discoverEmptyForYouTitle => 'No recommendations yet';
+
+  @override
+  String get discoverEmptyForYouSubtitle => 'We\'ll find people that match you';
+
+  @override
+  String get discoverEmptyWhoLikedMeTitle => 'No one has liked you yet';
+
+  @override
+  String get discoverEmptyWhoLikedMeSubtitle =>
+      'Create a great profile to attract likes';
+
+  @override
+  String get discoverEmptyILikedTitle => 'You haven\'t liked anyone';
+
+  @override
+  String get discoverEmptyILikedSubtitle => 'Browse and tap ♥ to show interest';
+
+  @override
+  String get detailPersonalInfo => 'Personal info';
+
+  @override
+  String get detailStatAge => 'Age';
+
+  @override
+  String get detailStatMemberSince => 'Member since';
+
+  @override
+  String get detailStatTier => 'Tier';
+
+  @override
+  String get detailViewPhotos => 'View photos';
+
+  @override
+  String get detailTapPhotoToExpand => 'Tap a photo to expand';
+
+  @override
+  String get detailStatRating => 'Rating';
+
+  @override
+  String get detailStatPosts => 'Posts';
+
+  @override
+  String get detailStatGifts => 'Gifts';
+
+  @override
+  String get detailStatCount => 'Count';
+
+  @override
+  String get meetupsEntryFromMeetUps => 'From meet-ups';
+
+  @override
+  String get meetupsEntryFromChat => 'From Chat';
+
+  @override
+  String get meetupsDayShortSun => 'Sun';
+
+  @override
+  String get meetupsDayShortMon => 'Mon';
+
+  @override
+  String get meetupsDayShortTue => 'Tue';
+
+  @override
+  String get meetupsDayShortWed => 'Wed';
+
+  @override
+  String get meetupsDayShortThu => 'Thu';
+
+  @override
+  String get meetupsDayShortFri => 'Fri';
+
+  @override
+  String get meetupsDayShortSat => 'Sat';
+
+  @override
+  String get meetupsClockSuffix => 'hrs';
+
+  @override
+  String meetupsCountdownDays(int days, int hours) {
+    return '$days d $hours h left';
+  }
+
+  @override
+  String meetupsCountdownHours(int hours) {
+    return '$hours h left';
+  }
+
+  @override
+  String meetupsCountdownMinutes(int minutes) {
+    return '$minutes min left';
+  }
+
+  @override
+  String meetupsServiceMultiplier(String name, int n, String unit) {
+    return '$name × $n $unit';
+  }
+
+  @override
+  String get meetupsUnitDays => 'days';
+
+  @override
+  String get meetupsUnitHours => 'hours';
+
+  @override
+  String get meetupsServiceFallback => 'Service';
+
+  @override
+  String get meetupsStepCreateBooking => 'Booking created';
+
+  @override
+  String get meetupsStepWaitCompanionConfirm => 'Waiting for companion';
+
+  @override
+  String get meetupsStepCompanionConfirmed => 'Companion confirmed';
+
+  @override
+  String get meetupsStepWaitingMeetup => 'Waiting for meet-up';
+
+  @override
+  String get meetupsStepInProgress => 'In progress';
+
+  @override
+  String get meetupsStepWaitingConfirmation => 'Waiting for confirmation';
+
+  @override
+  String get meetupsStepMeetingUp => 'Meeting up';
+
+  @override
+  String get meetupsStepCompleted => 'Completed';
+
+  @override
+  String get meetupsStepCancelled => 'Cancelled';
+
+  @override
+  String get meetupsStepRejected => 'Rejected';
+
+  @override
+  String get meetupsStepDisputed => 'Disputed';
+
+  @override
+  String get meetupsCantLoadData => 'Cannot load data';
+
+  @override
+  String get meetupsCantPerform => 'Cannot perform action';
+
+  @override
+  String get meetupsSectionDateTime => 'Date and time';
+
+  @override
+  String get meetupsSectionLocation => 'Meet-up location';
+
+  @override
+  String get meetupsSectionServices => 'Services';
+
+  @override
+  String get meetupsMapLink => 'Map ›';
+
+  @override
+  String get meetupsPriceSummary => 'Price summary';
+
+  @override
+  String get meetupsPriceTotal => 'Total';
+
+  @override
+  String get meetupsYourReview => 'Your review';
+
+  @override
+  String meetupsYouRated(String name) {
+    return 'You rated $name';
+  }
+
+  @override
+  String get meetupsProgress => 'Progress';
+
+  @override
+  String get meetupsCancellationPolicy => 'Cancellation policy';
+
+  @override
+  String get meetupsCancelBefore => 'Cancel before ';
+
+  @override
+  String get meetupsWillRefund => ' to get back ';
+
+  @override
+  String get meetupsWithin24h => ' within 24 h.';
+
+  @override
+  String get meetupsActionMessage => 'Message';
+
+  @override
+  String get meetupsActionCall => 'Call';
+
+  @override
+  String get meetupsActionCancel => 'Cancel';
+
+  @override
+  String get meetupsActionShare => 'Share';
+
+  @override
+  String get meetupsActionReport => 'Report';
+
+  @override
+  String get meetupsActionConfirmShort => 'Confirm';
+
+  @override
+  String get meetupsSnackPleaseTitle => 'Please';
+
+  @override
+  String get loginRoleCustomerLabel => 'Customer';
+
+  @override
+  String get loginRoleCustomerSub => 'Browse and book services';
+
+  @override
+  String get loginRoleCompanionLabel => 'Companion';
+
+  @override
+  String get loginRoleCompanionSub => 'Post services and receive bookings';
+
+  @override
+  String get forgotTitle => 'Forgot password';
+
+  @override
+  String get forgotEnterRegistered => 'Enter your registered phone';
+
+  @override
+  String get forgotOtpWillSendHere => 'An OTP code will be sent to this number';
+
+  @override
+  String get forgotSendOtp => 'Send OTP';
+
+  @override
+  String get forgotBackToLogin => 'Back to login';
+
+  @override
+  String get forgotIdentityVerifyTitle => 'Verify identity';
+
+  @override
+  String get forgotSetNewPasswordTitle => 'Set a new password';
+
+  @override
+  String get forgotSetNewPasswordSubtitle => 'Set a secure new password';
+
+  @override
+  String get forgotSavePassword => 'Save password';
+
+  @override
+  String get forgotStepPhone => 'Phone';
+
+  @override
+  String get forgotConfirmPassword => 'Confirm password';
+
+  @override
+  String get feedbackTitle => 'Feedback';
+
+  @override
+  String get feedbackSubtitle => 'Send suggestions or report an issue';
+
+  @override
+  String get feedbackSendNew => 'Send new feedback';
+
+  @override
+  String get feedbackMine => 'My feedback';
+
+  @override
+  String get feedbackTypeLabel => 'Category';
+
+  @override
+  String get feedbackTypeHint => 'Choose a feedback category';
+
+  @override
+  String get feedbackSubjectLabel => 'Subject';
+
+  @override
+  String get feedbackSubjectHint => 'Enter feedback subject...';
+
+  @override
+  String get feedbackDescLabel => 'Description';
+
+  @override
+  String get feedbackDescHint => 'Add more details...';
+
+  @override
+  String get feedbackDescMinLength => 'Please enter at least 10 characters';
+
+  @override
+  String get feedbackSubmit => 'Send feedback';
+
+  @override
+  String get feedbackSubmitFailed => 'Failed to send feedback';
+
+  @override
+  String get feedbackEmptyTitle => 'No feedback yet';
+
+  @override
+  String get feedbackEmptySubtitle => 'Send your feedback above';
+
+  @override
+  String get feedbackStatusResolved => 'Resolved';
+
+  @override
+  String get feedbackTypeBug => 'Bug';
+
+  @override
+  String get feedbackTypeFeature => 'Feature';
+
+  @override
+  String get feedbackTypeGeneral => 'General';
+
+  @override
+  String get feedbackTypePayment => 'Payment';
+
+  @override
+  String get feedbackTypePerformance => 'Performance';
+
+  @override
+  String get feedbackTypeOther => 'Other';
+
+  @override
+  String get dashboardTabChat => 'Chats';
+
+  @override
+  String get dashboardTabPosts => 'Posts';
+
+  @override
+  String get reviewRatingRequired => 'Please give a rating';
+
+  @override
+  String get reviewTextRequired => 'Please write a review';
+
+  @override
+  String get reviewSubmitSuccess => 'Review submitted';
+
+  @override
+  String get reviewSubmitFailed => 'Failed to submit review';
+
+  @override
+  String get reviewWriteTitle => 'Write a review';
+
+  @override
+  String reviewForCompanion(String name) {
+    return 'For $name';
+  }
+
+  @override
+  String get reviewGiveRating => 'Rate';
+
+  @override
+  String get reviewSubjectLabel => 'Subject (optional)';
+
+  @override
+  String get reviewSubjectHint => 'Enter review subject...';
+
+  @override
+  String get reviewYourReview => 'Your review';
+
+  @override
+  String get reviewShareHint => 'Share your experience...';
+
+  @override
+  String get reviewSubmit => 'Submit review';
+
+  @override
+  String get reviewRatingBad => 'Bad';
+
+  @override
+  String get reviewRatingOk => 'OK';
+
+  @override
+  String get reviewRatingGood => 'Good';
+
+  @override
+  String get reviewRatingVeryGood => 'Very good';
+
+  @override
+  String get reviewRatingExcellent => 'Excellent!';
+
+  @override
+  String get reviewRatingPick => 'Pick a rating';
+
+  @override
+  String get cpRatingsSection => 'Ratings and reviews';
+
+  @override
+  String get cpStatusAvailable => 'Available';
+
+  @override
+  String get cpStatusUnavailable => 'Unavailable';
+
+  @override
+  String get cpStatusLabel => 'Status';
+
+  @override
+  String get cpNoServicesNow => 'No services right now';
+
+  @override
+  String get cpNoReviewsBeFirst => 'No reviews yet, be the first!';
+
+  @override
+  String get cpLoadMoreReviews => 'Load more reviews';
+
+  @override
+  String cpReviewsCount(int count) {
+    return '$count reviews';
+  }
+
+  @override
+  String get cpOnline => 'Online';
+
+  @override
+  String get cpStatReviews => 'Reviews';
+
+  @override
+  String get cpStatFollowers => 'Followers';
+
+  @override
+  String get cpAnonymous => 'Anonymous';
+
+  @override
+  String get cpBookNow => 'Book now';
+
+  @override
+  String get chatTitle => 'Chats';
+
+  @override
+  String chatNewMessages(int count) {
+    return '$count new messages';
+  }
+
+  @override
+  String get chatSearchHint => 'Search...';
+
+  @override
+  String get chatFallbackName => 'this conversation';
+
+  @override
+  String get chatDeleteConvTitle => 'Delete conversation';
+
+  @override
+  String chatDeleteConvMessage(String name) {
+    return 'Delete conversation with $name?\nMessages will still be visible on their side';
+  }
+
+  @override
+  String get chatCantEnter => 'Cannot open';
+
+  @override
+  String get chatBlockedByYou => 'You have blocked this conversation';
+
+  @override
+  String get chatBlockedByOther => 'This conversation is blocked';
+
+  @override
+  String chatUnblockName(String name) {
+    return 'Unblock $name';
+  }
+
+  @override
+  String chatBlockName(String name) {
+    return 'Block $name';
+  }
+
+  @override
+  String get chatUnblockConfirmMsg => 'Unblock and continue chatting?';
+
+  @override
+  String chatBlockConfirmMsg(String name) {
+    return 'You and $name will not be able to send each other messages';
+  }
+
+  @override
+  String get chatUnblock => 'Unblock';
+
+  @override
+  String get chatBlock => 'Block';
+
+  @override
+  String get chatEmpty => 'No conversations found';
+
+  @override
+  String get chatConversationBlocked => 'Conversation blocked';
+
+  @override
+  String get chatTyping => 'typing...';
+
+  @override
+  String get chatOffline => 'Offline';
+
+  @override
+  String get chatSelectedImage => 'Selected image';
+
+  @override
+  String get chatInputHint => 'Type a message...';
+
+  @override
+  String get chatSendFailed => 'Failed to send';
+
+  @override
+  String get chatSendPleaseRetry => 'Please try again';
+
+  @override
+  String get chatDateToday => 'Today';
+
+  @override
+  String get chatDeleteMsgTitle => 'Delete message';
+
+  @override
+  String get chatDeleteMsgBody =>
+      'The message will only be deleted from your side\nThe other person will still see it';
+
+  @override
+  String get chatImagePrefix => '📷 Image';
+
+  @override
+  String get bookingLabelDate => 'Date';
+
+  @override
+  String get bookingHoursCount => 'Hours';
+
+  @override
+  String bookingHoursValue(int hours) {
+    return '$hours hours';
+  }
+
+  @override
+  String bookingHoursShortValue(int hours) {
+    return '$hours hr';
+  }
+
+  @override
+  String get bookingTotalPriceShort => 'Total price';
+
+  @override
+  String get bookingGoToMeetups => 'Go to meet-ups';
+
+  @override
+  String get bookingSuccessTitle => 'Booking confirmed!';
+
+  @override
+  String get bookingSuccessBody => 'Your booking has been received';
+
+  @override
+  String get bookingUnitNight => 'night';
+
+  @override
+  String get bookingDateDeparture => 'Departure date';
+
+  @override
+  String get bookingDateReturn => 'Return date';
+
+  @override
+  String get bookingDatePlaceholder => 'dd/mm/yyyy';
+
+  @override
+  String get bookingLocationHint => 'Enter address or location...';
+
+  @override
+  String get bookingAttireLabel => 'Preferred attire';
+
+  @override
+  String get bookingAttireHint => 'e.g. dress sexy (optional)';
+
+  @override
+  String get bookingTipService => 'Tip / service';
+
+  @override
+  String bookingAddTipTo(String name) {
+    return 'Add a tip for $name';
+  }
+
+  @override
+  String bookingRatePerUnit(String rate, String unit) {
+    return '$rate KIP / $unit';
+  }
+
+  @override
+  String bookingRatePerHour(String rate) {
+    return '$rate KIP / hour';
+  }
+
+  @override
+  String bookingRatePerHourShort(String rate) {
+    return '$rate KIP / hr';
+  }
+
+  @override
+  String bookingCountUnit(String unit) {
+    return '$unit count';
+  }
+
+  @override
+  String get bookingSelectTime => 'Select time';
+
+  @override
+  String get bookingSlotBooked => 'Booked';
+
+  @override
+  String get bookingSelectMassageType => 'Select massage type';
+
+  @override
+  String bookingVariantsCount(int count) {
+    return '$count variants';
+  }
+
+  @override
+  String get bookingDateAppointment => 'Appointment date';
+
+  @override
+  String get bookingTimeMeeting => 'Meeting time';
+
+  @override
+  String get bookingTimeFormat => 'hh:mm';
+
+  @override
+  String get bookingSelectPlaceholder => 'Select';
+
+  @override
+  String get bookingMassageTypeLabel => 'Massage type';
+
+  @override
+  String get bookingSelectVariant => 'Select variant';
+
+  @override
+  String get bookingCreationFailed => 'Booking failed';
+
+  @override
+  String get shareTitle => 'Invite friends';
+
+  @override
+  String get shareAppbarSubtitle => 'Share your link and grow your income';
+
+  @override
+  String get shareSubtitleGeneral => 'Earn 10,000 KIP per referral';
+
+  @override
+  String get shareSubtitleCommission => 'Earn commissions from your referrals';
+
+  @override
+  String get shareTierGeneral => 'General';
+
+  @override
+  String get shareTierSpecial => 'Special';
+
+  @override
+  String get shareTierPartner => 'Partner';
+
+  @override
+  String shareTierBadge(String tier) {
+    return '$tier tier';
+  }
+
+  @override
+  String get shareTabModel => 'Model referral';
+
+  @override
+  String get shareTabCustomer => 'Customer referral';
+
+  @override
+  String get shareLinkModelDesc =>
+      'Share this link with people who want to be a model';
+
+  @override
+  String get shareLinkCustomerDesc =>
+      'Share this link with customers to sign up';
+
+  @override
+  String get shareCopy => 'Copy';
+
+  @override
+  String get shareCopied => 'Copied';
+
+  @override
+  String get shareShareLink => 'Share';
+
+  @override
+  String get shareViewQr => 'QR';
+
+  @override
+  String get shareStatsModels => 'Models referred';
+
+  @override
+  String get shareStatsCustomers => 'Customers referred';
+
+  @override
+  String get shareStatsCommission => 'Commission';
+
+  @override
+  String get shareStatsTotal => 'Total earnings';
+
+  @override
+  String get shareCommissionsTitle => 'Commission history';
+
+  @override
+  String get shareCommissionsEmpty => 'No commissions yet';
+
+  @override
+  String get shareCommissionsEmptySub =>
+      'Commissions from customers or models you refer will appear here';
+
+  @override
+  String get shareLearnMore => 'Learn more about tiers';
+
+  @override
+  String get shareProgressToNext => 'Progress to next tier';
+
+  @override
+  String shareUpgradeToSpecialRemaining(int n) {
+    return '$n more referrals to reach Special';
+  }
+
+  @override
+  String shareUpgradeToPartnerRemainingModels(int n) {
+    return '$n more referrals to reach Partner';
+  }
+
+  @override
+  String shareUpgradeToPartnerRemainingEarnings(String amount) {
+    return '$amount KIP more to reach Partner';
+  }
+
+  @override
+  String get shareTierMaxed => 'You\'ve reached the top tier';
+
+  @override
+  String get shareCurrentTier => 'Current tier';
+
+  @override
+  String shareEarnPerReferral(String amount) {
+    return 'Earn $amount KIP / person';
+  }
+
+  @override
+  String get shareInviteMessage => 'Sign up on Xaosao with my link!';
+
+  @override
+  String get shareInviteSubject => 'Join Xaosao';
+
+  @override
+  String get shareCommissionReferral => 'Referral';
+
+  @override
+  String get shareQrBrandName => 'xaosao — companions';
+
+  @override
+  String get shareQrBrandTagline =>
+      'A curated companion experience, always ready when you are.';
+
+  @override
+  String get shareQrDownload => 'Download QR';
+
+  @override
+  String get shareQrPermissionDenied => 'Please allow access to Photos';
+
+  @override
+  String get shareQrSaved => 'QR code saved to Photos';
+
+  @override
+  String get shareQrSaveFailed =>
+      'Couldn\'t save the QR code, please try again';
+
+  @override
+  String get shareQrErrorGeneric => 'Something went wrong, please try again';
+
+  @override
+  String get analyticsTitle => 'Referral analytics';
+
+  @override
+  String get analyticsSubtitle => 'Your stats and earnings';
+
+  @override
+  String get analyticsLoadFailed => 'Failed to load data';
+
+  @override
+  String get analyticsRetry => 'Retry';
+
+  @override
+  String get analyticsReferralStats => 'Referral stats';
+
+  @override
+  String get analyticsReferrals => 'Referrals';
+
+  @override
+  String get analyticsEarnings => 'Earnings';
+
+  @override
+  String get analyticsTierProgress => 'Tier progress';
+
+  @override
+  String get analyticsModels => 'Models';
+
+  @override
+  String get analyticsCustomers => 'Customers';
+
+  @override
+  String get analyticsBookings => 'Bookings';
+
+  @override
+  String get analyticsSubscriptions => 'Subscriptions';
+
+  @override
+  String get analyticsApproved => 'Approved';
+
+  @override
+  String get analyticsPending => 'Pending';
+
+  @override
+  String get analyticsActive => 'Active';
+
+  @override
+  String get analyticsInactive => 'Inactive';
+
+  @override
+  String get analyticsTotal => 'Total';
+
+  @override
+  String get analyticsTotalEarnings => 'Total earnings';
+
+  @override
+  String get analyticsModelEarnings => 'Model earnings';
+
+  @override
+  String get analyticsCommission => 'Commission';
+
+  @override
+  String get analyticsEarningsByType => 'Earnings by type';
+
+  @override
+  String get analyticsAllModels => 'All models';
+
+  @override
+  String get analyticsApprovedModels => 'Approved models';
+
+  @override
+  String get analyticsAllCustomers => 'All customers';
+
+  @override
+  String get analyticsActiveCustomers => 'Active customers';
+
+  @override
+  String get analyticsReady => 'Ready!';
+
+  @override
+  String analyticsSpecialCondition(int n) {
+    return 'Refer $n approved models';
+  }
+
+  @override
+  String get analyticsPartnerCondition => 'Requires both models and earnings';
+
+  @override
+  String get snackbarErrorTitle => 'Error';
+
+  @override
+  String get snackbarSuccessTitle => 'Success';
+
+  @override
+  String get snackbarInfoTitle => 'Info';
+
+  @override
+  String get qrLoadFailed => 'Failed to load QR';
+
+  @override
+  String get imagePickerTitle => 'Choose profile photo';
+
+  @override
+  String get imagePickerGallery => 'Gallery';
+
+  @override
+  String get imagePickerCamera => 'Camera';
+
+  @override
+  String get serviceUnitHour => '/hour';
+
+  @override
+  String get serviceUnitDay => '/day';
+
+  @override
+  String get serviceUnitNight => '/night';
+
+  @override
+  String get serviceUnitOnce => 'One-time';
+
+  @override
+  String get serviceUnitMinute => '/min';
+
+  @override
+  String get phoneRequired => 'Please enter phone number';
+
+  @override
+  String get phoneMustStartWith20 => 'Phone must start with 20';
+
+  @override
+  String get phonePrefixInvalid => 'Must be: 202, 205, 206, 207 or 209';
+
+  @override
+  String phoneLength(int n) {
+    return 'Phone must be $n digits';
+  }
+
+  @override
+  String get deepLinkShareSelf => 'Check out my profile on Xaosao';
+
+  @override
+  String deepLinkShareOther(String name) {
+    return 'Check out $name\'s profile on Xaosao';
+  }
+
+  @override
+  String get dateToday => 'Today';
+
+  @override
+  String get dateYesterday => 'Yesterday';
+
+  @override
+  String get commonSearch => 'Search...';
+
+  @override
+  String get commonPasswordHint => 'Password';
+
+  @override
+  String get commonImageLoadFailed => 'Couldn\'t load image';
+
+  @override
+  String get walletBalanceShort => 'Wallet balance';
+
+  @override
+  String get updateRequiredTitle => 'App update required';
+
+  @override
+  String get updateAvailableTitle => 'A new app version is available!';
+
+  @override
+  String get updateRequiredBody =>
+      'Please update to the latest version to keep using Xaosao';
+
+  @override
+  String get updateAvailableBody =>
+      'We\'ve made the app better — update now for the best experience';
+
+  @override
+  String get updateNow => 'Update now';
+
+  @override
+  String get updateLater => 'Later';
+
+  @override
+  String get updateCurrentVersion => 'Current version';
+
+  @override
+  String get updateNewVersion => 'New version';
+
+  @override
+  String get updateWhatsNew => 'What\'s new';
+
+  @override
+  String get giftSheetTitle => '🎁 Send a gift';
+
+  @override
+  String giftSheetPickFor(String name) {
+    return 'Choose a gift for $name';
+  }
+
+  @override
+  String get giftEmpty => 'No gifts available right now';
+
+  @override
+  String get giftPickFirst => 'Please pick a gift first';
+
+  @override
+  String get giftSendFailed => 'Failed to send the gift';
+
+  @override
+  String get giftSendSuccess => 'Gift sent!';
+
+  @override
+  String giftSendButton(String name, String price) {
+    return 'Send $name · $price';
+  }
+
+  @override
+  String get tiersTitle => 'Model referral tiers';
+
+  @override
+  String get tiersSubtitle => 'Learn how to boost your earnings';
+
+  @override
+  String get tiersOverview => 'Model referral links are divided into 3 tiers';
+
+  @override
+  String get tiersLevel1Title => 'General tier';
+
+  @override
+  String get tiersLevel1Desc =>
+      'Only a model referral link is available; you earn 10,000 KIP per referral (no conditions — every model qualifies).';
+
+  @override
+  String get tiersLevel2Title => 'Special tier';
+
+  @override
+  String get tiersLevel2Condition => 'Refer more than 5 people';
+
+  @override
+  String get tiersLevel2Links =>
+      'You get 2 links: a customer referral link and a model referral link';
+
+  @override
+  String get tiersLevel2Benefit =>
+      'No flat 10,000 KIP anymore — instead you earn 20% of customer subscriptions, and 2% of bookings made with models you referred.';
+
+  @override
+  String get tiersLevel3Title => 'Partner tier';
+
+  @override
+  String get tiersLevel3Condition =>
+      'Refer more than 5 people AND earn 1,000,000 KIP in total commissions (from customer subs + bookings on your referred models)';
+
+  @override
+  String get tiersLevel3Links =>
+      'You get 2 links: a customer referral link and a model referral link';
+
+  @override
+  String get tiersLevel3Benefit =>
+      'No flat 10,000 KIP — instead you earn 40% of customer subscriptions, and 4% of bookings made with models you referred.';
+
+  @override
+  String get tiersConditionLabel => 'Condition';
+
+  @override
+  String get tiersBenefitLabel => 'Benefits';
+
+  @override
+  String get tiersLinksLabel => 'Referral links';
+
+  @override
+  String get tiersCurrentBadge => 'Your current tier';
+
+  @override
+  String get tiersLockedNote => 'Not unlocked yet';
 }

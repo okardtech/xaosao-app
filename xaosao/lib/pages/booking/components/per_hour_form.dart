@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:xaosao/constants/app_color.dart';
+import 'package:xaosao/l10n/app_localizations.dart';
 import 'package:xaosao/pages/booking/booking_page.dart';
 import 'package:xaosao/utils/service_helper.dart';
 import 'package:xaosao/pages/booking/getx/booking_logic.dart';
@@ -46,6 +47,7 @@ class _PerHourFormState extends State<PerHourForm> {
 
   void _showTimeSheet() {
     if (_logic.state.date == null) return;
+    final l10n = AppLocalizations.of(context)!;
 
     showModalBottomSheet(
       context: context,
@@ -93,7 +95,7 @@ class _PerHourFormState extends State<PerHourForm> {
                       ),
                       SizedBox(width: 8.w),
                       Text(
-                        'ເລືອກເວລາ',
+                        l10n.bookingSelectTime,
                         style: TextStyle(
                           fontSize: 15.sp,
                           fontWeight: FontWeight.w700,
@@ -209,7 +211,7 @@ class _PerHourFormState extends State<PerHourForm> {
                                     ),
                                     SizedBox(height: 1.h),
                                     Text(
-                                      'ຈອງແລ້ວ',
+                                      l10n.bookingSlotBooked,
                                       style: TextStyle(
                                         fontSize: 9.sp,
                                         fontWeight: FontWeight.w600,
@@ -247,6 +249,7 @@ class _PerHourFormState extends State<PerHourForm> {
   }
 
   void _showHourSheet() {
+    final l10n = AppLocalizations.of(context)!;
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.white,
@@ -275,7 +278,7 @@ class _PerHourFormState extends State<PerHourForm> {
               child: Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
-                  'ຈຳນວນຊົ່ວໂມງ',
+                  l10n.bookingHoursCount,
                   style: TextStyle(
                     fontSize: 14.sp,
                     fontWeight: FontWeight.w700,
@@ -334,7 +337,7 @@ class _PerHourFormState extends State<PerHourForm> {
                       ),
                       alignment: Alignment.center,
                       child: Text(
-                        '$h ຊົ່ວໂມງ',
+                        l10n.bookingHoursValue(h),
                         style: TextStyle(
                           fontSize: 13.sp,
                           fontWeight: FontWeight.w700,
@@ -370,6 +373,7 @@ class _PerHourFormState extends State<PerHourForm> {
   void _showVariantSheet() {
     final variants = _logic.args.service.variants ?? [];
     if (variants.isEmpty) return;
+    final l10n = AppLocalizations.of(context)!;
 
     showModalBottomSheet(
       context: context,
@@ -418,7 +422,7 @@ class _PerHourFormState extends State<PerHourForm> {
                     ),
                     SizedBox(width: 8.w),
                     Text(
-                      'ເລືອກປະເພດນວດ',
+                      l10n.bookingSelectMassageType,
                       style: TextStyle(
                         fontSize: 15.sp,
                         fontWeight: FontWeight.w700,
@@ -427,7 +431,7 @@ class _PerHourFormState extends State<PerHourForm> {
                     ),
                     const Spacer(),
                     Text(
-                      '${variants.length} ປະເພດ',
+                      l10n.bookingVariantsCount(variants.length),
                       style: TextStyle(
                         fontSize: 12.sp,
                         color: AppColors.textHint,
@@ -519,7 +523,7 @@ class _PerHourFormState extends State<PerHourForm> {
                                     SizedBox(height: 3.h),
                                     Text(
                                       v.pricePerHour != null
-                                          ? '${CurrFormatter.format(v.pricePerHour!)} ກີບ / ຊົ່ວໂມງ'
+                                          ? l10n.bookingRatePerHour(CurrFormatter.format(v.pricePerHour!))
                                           : '—',
                                       style: TextStyle(
                                         fontSize: 12.sp,
@@ -571,6 +575,7 @@ class _PerHourFormState extends State<PerHourForm> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       backgroundColor: AppColors.bg,
       appBar: bookingAppBar(_logic),
@@ -622,7 +627,7 @@ class _PerHourFormState extends State<PerHourForm> {
                                             CrossAxisAlignment.start,
                                         children: [
                                           Text(
-                                            'ວັນທີນັດໝາຍ',
+                                            l10n.bookingDateAppointment,
                                             style: TextStyle(
                                               fontSize: 14.sp,
                                               fontWeight: FontWeight.w400,
@@ -635,7 +640,7 @@ class _PerHourFormState extends State<PerHourForm> {
                                             icon: Icons.calendar_today_rounded,
                                             label: '',
                                             value: _fmtDate(st.date),
-                                            placeholder: 'ວັນ/ເດືອນ/ປີ',
+                                            placeholder: l10n.bookingDatePlaceholder,
                                             onTap: () =>
                                                 _logic.pickDate(context),
                                           ),
@@ -649,7 +654,7 @@ class _PerHourFormState extends State<PerHourForm> {
                                             CrossAxisAlignment.start,
                                         children: [
                                           Text(
-                                            'ເວລາພົບກັນ',
+                                            l10n.bookingTimeMeeting,
                                             style: TextStyle(
                                               fontSize: 14.sp,
                                               fontWeight: FontWeight.w400,
@@ -662,7 +667,7 @@ class _PerHourFormState extends State<PerHourForm> {
                                             icon: Icons.schedule_rounded,
                                             label: '',
                                             value: _fmtTime(st.time, context),
-                                            placeholder: 'ຊົ່ວໂມງ:ນາທີ',
+                                            placeholder: l10n.bookingTimeFormat,
                                             onTap: _showTimeSheet,
                                           ),
                                         ],
@@ -684,7 +689,7 @@ class _PerHourFormState extends State<PerHourForm> {
                                         crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
                                           Text(
-                                            'ຈຳນວນຊົ່ວໂມງ',
+                                            l10n.bookingHoursCount,
                                             style: TextStyle(
                                               fontSize: 12.sp,
                                               fontWeight: FontWeight.w600,
@@ -696,8 +701,8 @@ class _PerHourFormState extends State<PerHourForm> {
                                             showInternalLabel: false,
                                             icon: Icons.timer_outlined,
                                             label: '',
-                                            value: '${st.hours} ຊົ່ວໂມງ',
-                                            placeholder: 'ເລືອກ',
+                                            value: l10n.bookingHoursValue(st.hours),
+                                            placeholder: l10n.bookingSelectPlaceholder,
                                             onTap: _showHourSheet,
                                           ),
                                         ],
@@ -711,7 +716,7 @@ class _PerHourFormState extends State<PerHourForm> {
                                           crossAxisAlignment: CrossAxisAlignment.start,
                                           children: [
                                             Text(
-                                              'ປະເພດນວດ',
+                                              l10n.bookingMassageTypeLabel,
                                               style: TextStyle(
                                                 fontSize: 12.sp,
                                                 fontWeight: FontWeight.w600,
@@ -724,7 +729,7 @@ class _PerHourFormState extends State<PerHourForm> {
                                               icon: Icons.spa_outlined,
                                               label: '',
                                               value: st.selectedVariantName ?? '',
-                                              placeholder: 'ເລືອກປະເພດ',
+                                              placeholder: l10n.bookingSelectVariant,
                                               onTap: _showVariantSheet,
                                             ),
                                           ],
@@ -743,7 +748,7 @@ class _PerHourFormState extends State<PerHourForm> {
                                   16.w,
                                   8.h,
                                 ),
-                                child: BookingSectionLabel('ສະຖານທີ່ນັດພົບ'),
+                                child: BookingSectionLabel(l10n.meetupsSectionLocation),
                               ),
                               Padding(
                                 padding: EdgeInsets.symmetric(horizontal: 16.w),
@@ -751,7 +756,7 @@ class _PerHourFormState extends State<PerHourForm> {
                                   controller: _locationCtrl,
                                   focusNode: _locationFocus,
                                   nextFocusNode: _noteFocus,
-                                  hint: 'ໃສ່ທີ່ຢູ່ ຫຼື ສະຖານທີ່...',
+                                  hint: l10n.bookingLocationHint,
                                   prefixIcon: Icons.location_on_outlined,
                                   accent: AppColors.primary,
                                   action: TextInputAction.next,
@@ -767,14 +772,14 @@ class _PerHourFormState extends State<PerHourForm> {
                                   16.w,
                                   8.h,
                                 ),
-                                child: BookingSectionLabel('ການແຕ່ງກາຍທີ່ຕ້ອງການ'),
+                                child: BookingSectionLabel(l10n.bookingAttireLabel),
                               ),
                               Padding(
                                 padding: EdgeInsets.symmetric(horizontal: 16.w),
                                 child: AppTextField(
                                   controller: _noteCtrl,
                                   focusNode: _noteFocus,
-                                  hint: 'ຕົວຢ່າງ: ແຕ່ງຕົວເຊັກຊີ(ທາງເລືອກ)',
+                                  hint: l10n.bookingAttireHint,
                                   prefixIcon: Icons.notes_rounded,
                                   accent: AppColors.primary,
                                   action: TextInputAction.done,
@@ -824,7 +829,7 @@ class _PerHourFormState extends State<PerHourForm> {
                                             CrossAxisAlignment.start,
                                         children: [
                                           Text(
-                                            'ທິບ / ບໍລິການ',
+                                            l10n.bookingTipService,
                                             style: TextStyle(
                                               fontSize: 12.sp,
                                               fontWeight: FontWeight.w700,
@@ -833,7 +838,7 @@ class _PerHourFormState extends State<PerHourForm> {
                                           ),
                                           SizedBox(height: 2.h),
                                           Text(
-                                            'ເພີ່ມທິບໃຫ້ ${widget.modelName}',
+                                            l10n.bookingAddTipTo(widget.modelName),
                                             style: TextStyle(
                                               fontSize: 12.sp,
                                               color: AppColors.textHint,
@@ -872,10 +877,10 @@ class _PerHourFormState extends State<PerHourForm> {
                                       : ServiceHelper.serviceOriginalName(
                                           _logic.args.service.name,
                                         ),
-                                  rateValue:
-                                      '${CurrFormatter.format(_logic.rate)} ກີບ / ຊມ',
-                                  countLabel: 'ຈຳນວນຊົ່ວໂມງ',
-                                  countValue: '${st.hours} ຊມ',
+                                  rateValue: l10n.bookingRatePerHourShort(
+                                      CurrFormatter.format(_logic.rate)),
+                                  countLabel: l10n.bookingHoursCount,
+                                  countValue: l10n.bookingHoursShortValue(st.hours),
                                   total: _logic.totalHour,
                                 ),
                               ),

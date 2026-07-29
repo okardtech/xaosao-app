@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:xaosao/constants/app_color.dart';
 import 'package:xaosao/constants/app_icons.dart';
+import 'package:xaosao/l10n/app_localizations.dart';
 import 'package:xaosao/services/notification_service.dart';
 import 'package:xaosao/services/permission_coordinator.dart';
 import 'package:xaosao/services/storage_service.dart';
@@ -170,6 +171,7 @@ class _DashboardPageState extends State<DashboardPage>
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: const SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,
@@ -197,7 +199,7 @@ class _DashboardPageState extends State<DashboardPage>
             BottomNavigationBarItem(
               icon: AppSvgIcon(assetName: AppIcons.exploreFill, color: AppColors.primaryVariant,width: 20.w,height: 20.h),
               activeIcon: AppSvgIcon(assetName: AppIcons.exploreFill, color: AppColors.primary,width: 20.w,height: 20.h),
-              label: 'ຄົ້ນຫາ',
+              label: l10n.homeSearch,
             ),
             BottomNavigationBarItem(
               icon: _NavBadgeIcon(
@@ -208,7 +210,7 @@ class _DashboardPageState extends State<DashboardPage>
                 rxCount: NotificationService.chatUnreadCount,
                 child: AppSvgIcon(assetName: AppIcons.chatFill, color: AppColors.primary,width: 20.w,height: 20.h),
               ),
-              label: 'ຄູ່ເເຊັດ',
+              label: l10n.dashboardTabChat,
             ),
             BottomNavigationBarItem(
               icon: _NavBadgeIcon(
@@ -219,7 +221,7 @@ class _DashboardPageState extends State<DashboardPage>
                 rxCount: NotificationService.bookingUnreadCount,
                 child: AppSvgIcon(assetName: AppIcons.calendar, color: AppColors.primary,width: 20.w,height: 20.h),
               ),
-              label: 'ນັດພົບ',
+              label: l10n.meetUpsTitle,
             ),
             BottomNavigationBarItem(
               icon: _NavBadgeIcon(
@@ -230,12 +232,12 @@ class _DashboardPageState extends State<DashboardPage>
                 rxCount: NotificationService.postUnreadCount,
                 child: AppSvgIcon(assetName: AppIcons.comment, color: AppColors.primary,width: 20.w,height: 20.h),
               ),
-              label: 'ໂພສຫາຄູ່',
+              label: l10n.dashboardTabPosts,
             ),
             BottomNavigationBarItem(
               icon: AppSvgIcon(assetName: AppIcons.user, color: AppColors.primaryVariant,width: 20.w,height: 20.h),
               activeIcon: AppSvgIcon(assetName: AppIcons.user, color: AppColors.primary,width: 20.w,height: 20.h),
-              label: 'ໂປຮໄຟລ໌',
+              label: l10n.profileTitle,
             ),
           ],
         ),

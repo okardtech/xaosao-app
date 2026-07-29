@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:xaosao/constants/app_color.dart';
+import 'package:xaosao/l10n/app_localizations.dart';
 import 'package:xaosao/pages/booking/booking_page.dart';
 import 'package:xaosao/utils/service_helper.dart';
 import 'package:xaosao/pages/booking/getx/booking_logic.dart';
@@ -41,8 +42,9 @@ class _PerDayFormState extends State<PerDayForm> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final isNight = _logic.args.service.billingType == 'per_night';
-    final unit = isNight ? 'ຄືນ' : 'ວັນ';
+    final unit = isNight ? l10n.bookingUnitNight : l10n.meetupsUnitDays;
 
     return Scaffold(
       backgroundColor: AppColors.bg,
@@ -92,7 +94,7 @@ class _PerDayFormState extends State<PerDayForm> {
                                           CrossAxisAlignment.start,
                                       children: [
                                         Text(
-                                          'ວັນທີອອກເດີນທາງ',
+                                          l10n.bookingDateDeparture,
                                           style: TextStyle(
                                             fontSize: 14.sp,
                                             fontWeight: FontWeight.w400,
@@ -106,7 +108,7 @@ class _PerDayFormState extends State<PerDayForm> {
                                               Icons.play_circle_outline_rounded,
                                           label: '',
                                           value: _fmt(st.startDate),
-                                          placeholder: 'ວັນ/ເດືອນ/ປີ',
+                                          placeholder: l10n.bookingDatePlaceholder,
                                           onTap: () =>
                                               _logic.pickStartDate(context),
                                         ),
@@ -120,7 +122,7 @@ class _PerDayFormState extends State<PerDayForm> {
                                           CrossAxisAlignment.start,
                                       children: [
                                         Text(
-                                          'ວັນທີກັບມາ',
+                                          l10n.bookingDateReturn,
                                           style: TextStyle(
                                             fontSize: 14.sp,
                                             fontWeight: FontWeight.w400,
@@ -133,7 +135,7 @@ class _PerDayFormState extends State<PerDayForm> {
                                           icon: Icons.flag_rounded,
                                           label: '',
                                           value: _fmt(st.endDate),
-                                          placeholder: 'ວັນ/ເດືອນ/ປີ',
+                                          placeholder: l10n.bookingDatePlaceholder,
                                           onTap: () =>
                                               _logic.pickEndDate(context),
                                         ),
@@ -147,7 +149,7 @@ class _PerDayFormState extends State<PerDayForm> {
                             // ── Location ─────────────────────────
                             Padding(
                               padding: EdgeInsets.fromLTRB(16.w, 0, 16.w, 8.h),
-                              child: BookingSectionLabel('ສະຖານທີ່ນັດພົບ'),
+                              child: BookingSectionLabel(l10n.meetupsSectionLocation),
                             ),
                             Padding(
                               padding: EdgeInsets.symmetric(horizontal: 16.w),
@@ -155,7 +157,7 @@ class _PerDayFormState extends State<PerDayForm> {
                                 controller: _locationCtrl,
                                 focusNode: _locationFocus,
                                 nextFocusNode: _noteFocus,
-                                hint: 'ໃສ່ທີ່ຢູ່ ຫຼື ສະຖານທີ່...',
+                                hint: l10n.bookingLocationHint,
                                 prefixIcon: Icons.location_on_outlined,
                                 accent: AppColors.primary,
                                 action: TextInputAction.next,
@@ -166,14 +168,14 @@ class _PerDayFormState extends State<PerDayForm> {
                             // ── Note ─────────────────────────────
                             Padding(
                               padding: EdgeInsets.fromLTRB(16.w, 0, 16.w, 8.h),
-                              child: BookingSectionLabel('ການແຕ່ງກາຍທີ່ຕ້ອງການ'),
+                              child: BookingSectionLabel(l10n.bookingAttireLabel),
                             ),
                             Padding(
                               padding: EdgeInsets.symmetric(horizontal: 16.w),
                               child: AppTextField(
                                 controller: _noteCtrl,
                                 focusNode: _noteFocus,
-                                hint: 'ຕົວຢ່າງ: ແຕ່ງຕົວເຊັກຊີ(ທາງເລືອກ)',
+                                hint: l10n.bookingAttireHint,
                                 prefixIcon: Icons.notes_rounded,
                                 accent: AppColors.primary,
                                 action: TextInputAction.done,
@@ -214,7 +216,7 @@ class _PerDayFormState extends State<PerDayForm> {
                                           CrossAxisAlignment.start,
                                       children: [
                                         Text(
-                                          'ທິບ / ບໍລິການ',
+                                          l10n.bookingTipService,
                                           style: TextStyle(
                                             fontSize: 14.sp,
                                             fontWeight: FontWeight.w700,
@@ -223,7 +225,7 @@ class _PerDayFormState extends State<PerDayForm> {
                                         ),
                                         SizedBox(height: 2.h),
                                         Text(
-                                          'ເພີ່ມທິບໃຫ້ ${widget.modelName}',
+                                          l10n.bookingAddTipTo(widget.modelName),
                                           style: TextStyle(
                                             fontSize: 12.sp,
                                             color: AppColors.textHint,
@@ -256,9 +258,9 @@ class _PerDayFormState extends State<PerDayForm> {
                               child: BookingSummary(
                                 rateLabel:
                                     ServiceHelper.serviceOriginalName(_logic.args.service.name),
-                                rateValue:
-                                    '${CurrFormatter.format(_logic.rate)} ກີບ / $unit',
-                                countLabel: 'ຈຳນວນ$unit',
+                                rateValue: l10n.bookingRatePerUnit(
+                                    CurrFormatter.format(_logic.rate), unit),
+                                countLabel: l10n.bookingCountUnit(unit),
                                 countValue: '$days $unit',
                                 total: _logic.totalDay,
                               ),

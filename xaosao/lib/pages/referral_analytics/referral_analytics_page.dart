@@ -4,9 +4,12 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:xaosao/constants/app_color.dart';
+import 'package:xaosao/constants/app_icons.dart';
+import 'package:xaosao/l10n/app_localizations.dart';
 import 'package:xaosao/models/referral_mdoel.dart';
 import 'package:xaosao/utils/currency_formatter.dart';
 import 'package:xaosao/widgets/gradient_app_bar.dart';
+import '../../widgets/app_svg_icon.dart';
 import 'getx/referral_analytics_logic.dart';
 import 'getx/referral_analytics_state.dart';
 
@@ -16,12 +19,13 @@ class ReferralAnalyticsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final logic = Get.find<ReferralAnalyticsLogic>();
+    final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
       backgroundColor: AppColors.bg,
       appBar: GradientAppBar(
-        title: 'ການວິເຄາະການແນະນຳ',
-        subtitle: 'ສະຖິຕິ ແລະ ລາຍໄດ້ຂອງທ່ານ',
+        title: l10n.analyticsTitle,
+        subtitle: l10n.analyticsSubtitle,
         actions: [
           Obx(() {
             if (logic.state.status == ReferralStatus.loading) {
@@ -70,7 +74,7 @@ class ReferralAnalyticsPage extends StatelessWidget {
                 ),
                 SizedBox(height: 12.h),
                 Text(
-                  'ໂຫຼດຂໍ້ມູນບໍ່ສຳເລັດ',
+                  l10n.analyticsLoadFailed,
                   style: TextStyle(
                     fontSize: 14.sp,
                     color: AppColors.textPrimary,
@@ -87,7 +91,7 @@ class ReferralAnalyticsPage extends StatelessWidget {
                     ),
                     elevation: 0,
                   ),
-                  child: const Text('ລອງໃໝ່'),
+                  child: Text(l10n.analyticsRetry),
                 ),
               ],
             ),
@@ -112,22 +116,22 @@ class ReferralAnalyticsPage extends StatelessWidget {
                 // SizedBox(height: 14.h),
                 _EarningsHero(stats: d.stats),
                 SizedBox(height: 14.h),
-                _SectionLabel('ສະຖິຕິການແນະນຳ'),
+                _SectionLabel(l10n.analyticsReferralStats),
                 SizedBox(height: 10.h),
                 _StatsGrid(stats: d.stats),
                 SizedBox(height: 14.h),
-                _SectionLabel('ການແນະນຳ'),
+                _SectionLabel(l10n.analyticsReferrals),
                 SizedBox(height: 10.h),
                 Row(
                   children: [
                     Expanded(
                       child: _DonutCard(
-                        title: 'ໂມດອ',
+                        title: l10n.analyticsModels,
                         approved: d.stats?.approvedReferredModels ?? 0,
                         pending: d.stats?.pendingReferredModels ?? 0,
                         total: d.stats?.totalReferredModels ?? 0,
-                        approvedLabel: 'ອະນຸມັດ',
-                        pendingLabel: 'ລໍຖ້າ',
+                        approvedLabel: l10n.analyticsApproved,
+                        pendingLabel: l10n.analyticsPending,
                         approvedColor: const Color(0xFF22C55E),
                         pendingColor: AppColors.commissionFg,
                       ),
@@ -135,14 +139,14 @@ class ReferralAnalyticsPage extends StatelessWidget {
                     SizedBox(width: 12.w),
                     Expanded(
                       child: _DonutCard(
-                        title: 'ລູກຄ້າ',
+                        title: l10n.analyticsCustomers,
                         approved: d.stats?.activeReferredCustomers ?? 0,
                         pending:
                             (d.stats?.totalReferredCustomers ?? 0) -
                             (d.stats?.activeReferredCustomers ?? 0),
                         total: d.stats?.totalReferredCustomers ?? 0,
-                        approvedLabel: 'ໃຊ້ງານ',
-                        pendingLabel: 'ບໍ່ໃຊ້',
+                        approvedLabel: l10n.analyticsActive,
+                        pendingLabel: l10n.analyticsInactive,
                         approvedColor: AppColors.primary,
                         pendingColor: AppColors.textDisabled,
                       ),
@@ -150,19 +154,19 @@ class ReferralAnalyticsPage extends StatelessWidget {
                   ],
                 ),
                 SizedBox(height: 14.h),
-                _SectionLabel('ລາຍໄດ້'),
+                _SectionLabel(l10n.analyticsEarnings),
                 SizedBox(height: 10.h),
                 _EarningsBarChart(stats: d.stats),
                 SizedBox(height: 14.h),
-                _SectionLabel('ຄວາມຄືບໜ້າລະດັບ'),
+                _SectionLabel(l10n.analyticsTierProgress),
                 SizedBox(height: 10.h),
                 _TierProgressCard(
                   data: d,
-                  tierName: 'Special',
+                  tierName: l10n.shareTierSpecial,
                   tierIcon: Icons.star_rounded,
                   tierColor: AppColors.commissionFg,
-                  description:
-                      'ແນະນຳໂມດອໃຫ້ຄົບ ${d.upgradeProgress?.modelThreshold ?? 5} ທ່ານ',
+                  description: l10n.analyticsSpecialCondition(
+                      d.upgradeProgress?.modelThreshold ?? 5),
                   current: d.upgradeProgress?.currentApprovedModels ?? 0,
                   target: d.upgradeProgress?.modelThreshold ?? 5,
                   canUpgrade: d.upgradeProgress?.canUpgradeToSpecial ?? false,
@@ -187,6 +191,7 @@ class _EarningsHero extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final total = stats?.totalEarnings ?? 0;
     final modelEarnings = stats?.modelReferralEarnings ?? 0;
     final commission = stats?.totalCommissionEarnings ?? 0;
@@ -199,9 +204,9 @@ class _EarningsHero extends StatelessWidget {
           end: Alignment.bottomRight,
         ),
         borderRadius: BorderRadius.circular(20.r),
-        border: Border.all(
-          color: AppColors.commissionFg.withValues(alpha: 0.3),
-        ),
+        // border: Border.all(
+        //   color: AppColors.commissionFg.withValues(alpha: 0.3),
+        // ),
         boxShadow: [
           BoxShadow(
             color: AppColors.commissionFg.withValues(alpha: 0.12),
@@ -219,19 +224,21 @@ class _EarningsHero extends StatelessWidget {
               Container(
                 width: 32.r,
                 height: 32.r,
+                padding: EdgeInsets.all(6.r),
                 decoration: BoxDecoration(
                   color: AppColors.commissionFg.withValues(alpha: 0.15),
                   shape: BoxShape.circle,
                 ),
-                child: Icon(
-                  Icons.account_balance_wallet_rounded,
-                  size: 16.r,
+                child: AppSvgIcon(
+                  assetName: AppIcons.wallet,
+                  width: 14.r,
+                  height: 14.r,
                   color: AppColors.commissionFg,
                 ),
               ),
               SizedBox(width: 10.w),
               Text(
-                'ລາຍໄດ້ທັງໝົດ',
+                l10n.analyticsTotalEarnings,
                 style: TextStyle(
                   fontSize: 14.sp,
                   fontWeight: FontWeight.w700,
@@ -255,7 +262,7 @@ class _EarningsHero extends StatelessWidget {
           Row(
             children: [
               _MiniStat(
-                label: 'ລາຍໄດ້ໂມເດວ',
+                label: l10n.analyticsModelEarnings,
                 value: CurrFormatter.kip(modelEarnings),
                 color: const Color(0xFF22C55E),
               ),
@@ -267,7 +274,7 @@ class _EarningsHero extends StatelessWidget {
               ),
               SizedBox(width: 8.w),
               _MiniStat(
-                label: 'ຄ່ານາຍໜ້າ',
+                label: l10n.analyticsCommission,
                 value: CurrFormatter.kip(commission),
                 color: AppColors.primary,
               ),
@@ -321,28 +328,29 @@ class _StatsGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final cells = [
       (
-        icon: Icons.people_alt_rounded,
-        label: 'ໂມເດວທັງໝົດ',
+        icon: AppIcons.userGroup,
+        label: l10n.analyticsAllModels,
         value: '${stats?.totalReferredModels ?? 0}',
         color: const Color(0xFF8B5CF6),
       ),
       (
-        icon: Icons.verified_rounded,
-        label: 'ໂມດອອະນຸມັດ',
+        icon: AppIcons.verify,
+        label: l10n.analyticsApprovedModels,
         value: '${stats?.approvedReferredModels ?? 0}',
         color: const Color(0xFF22C55E),
       ),
       (
-        icon: Icons.person_rounded,
-        label: 'ລູກຄ້າທັງໝົດ',
+        icon: AppIcons.user,
+        label: l10n.analyticsAllCustomers,
         value: '${stats?.totalReferredCustomers ?? 0}',
         color: AppColors.primary,
       ),
       (
-        icon: Icons.bolt_rounded,
-        label: 'ລູກຄ້າໃຊ້ງານ',
+        icon: AppIcons.bolt,
+        label: l10n.analyticsActiveCustomers,
         value: '${stats?.activeReferredCustomers ?? 0}',
         color: const Color(0xFF3B82F6),
       ),
@@ -370,7 +378,7 @@ class _StatsGrid extends StatelessWidget {
 }
 
 class _StatCell extends StatelessWidget {
-  final IconData icon;
+  final String icon;
   final String label;
   final String value;
   final Color color;
@@ -401,11 +409,18 @@ class _StatCell extends StatelessWidget {
           Container(
             width: 32.r,
             height: 32.r,
+            padding: EdgeInsets.all(8.r),
             decoration: BoxDecoration(
               color: color.withValues(alpha: 0.1),
               shape: BoxShape.circle,
             ),
-            child: Icon(icon, size: 16.r, color: color),
+            child: AppSvgIcon(
+              assetName: icon,
+              width: 14.r,
+              height: 14.r,
+              color: color,
+            ),
+            // child: Icon(icon, size: 16.r, color: color),
           ),
           SizedBox(width: 10.w),
           Expanded(
@@ -424,6 +439,7 @@ class _StatCell extends StatelessWidget {
                 ),
                 Text(
                   label,
+                  maxLines: 1,
                   style: TextStyle(fontSize: 12.sp, color: AppColors.textHint),
                 ),
               ],
@@ -537,7 +553,7 @@ class _DonutCard extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      'ທັງໝົດ',
+                      AppLocalizations.of(context)!.analyticsTotal,
                       style: TextStyle(
                         fontSize: 10.sp,
                         color: AppColors.textHint,
@@ -600,6 +616,7 @@ class _EarningsBarChart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final modelE = (stats?.modelReferralEarnings ?? 0).toDouble();
     final bookingE = (stats?.bookingCommissionEarnings ?? 0).toDouble();
     final subE = (stats?.subscriptionCommissionEarnings ?? 0).toDouble();
@@ -610,7 +627,11 @@ class _EarningsBarChart extends StatelessWidget {
       AppColors.primary,
       const Color(0xFF8B5CF6),
     ];
-    final labels = ['ໂມເດວ', 'ຈອງ', 'ສະມາຊິກ'];
+    final labels = [
+      l10n.analyticsModels,
+      l10n.analyticsBookings,
+      l10n.analyticsSubscriptions,
+    ];
     final values = [modelE, bookingE, subE];
 
     return Container(
@@ -630,7 +651,7 @@ class _EarningsBarChart extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'ລາຍໄດ້ແຕ່ລະປະເພດ',
+            l10n.analyticsEarningsByType,
             style: TextStyle(
               fontSize: 14.sp,
               fontWeight: FontWeight.w400,
@@ -775,6 +796,7 @@ class _TierProgressCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final progress = target == 0 ? 1.0 : (current / target).clamp(0.0, 1.0);
 
     return Container(
@@ -813,7 +835,7 @@ class _TierProgressCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'ລະດັບ $tierName',
+                      l10n.shareTierBadge(tierName),
                       style: TextStyle(
                         fontSize: 14.sp,
                         fontWeight: FontWeight.w800,
@@ -838,7 +860,7 @@ class _TierProgressCard extends StatelessWidget {
                     borderRadius: BorderRadius.circular(20.r),
                   ),
                   child: Text(
-                    'ພ້ອມແລ້ວ!',
+                    l10n.analyticsReady,
                     style: TextStyle(
                       fontSize: 10.sp,
                       fontWeight: FontWeight.w700,
@@ -853,7 +875,7 @@ class _TierProgressCard extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                'ໂມເດວທີ່ອະນຸມັດ',
+                l10n.analyticsApprovedModels,
                 style: TextStyle(
                   fontSize: 12.sp,
                   color: AppColors.textSecondary,
@@ -894,6 +916,7 @@ class _PartnerTierCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final up = data.upgradeProgress;
     final modelProg = ((up?.partnerModelProgress ?? 0) / 100.0).clamp(0.0, 1.0);
     final earningsProg = ((up?.partnerEarningsProgress ?? 0) / 100.0).clamp(
@@ -943,7 +966,7 @@ class _PartnerTierCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'ລະດັບ Partner',
+                      l10n.shareTierBadge(l10n.shareTierPartner),
                       style: TextStyle(
                         fontSize: 14.sp,
                         fontWeight: FontWeight.w800,
@@ -951,7 +974,7 @@ class _PartnerTierCard extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      'ຕ້ອງການທັງໂມດອ ແລະ ລາຍໄດ້',
+                      l10n.analyticsPartnerCondition,
                       style: TextStyle(
                         fontSize: 12.sp,
                         color: AppColors.textHint,
@@ -968,7 +991,7 @@ class _PartnerTierCard extends StatelessWidget {
                     borderRadius: BorderRadius.circular(20.r),
                   ),
                   child: Text(
-                    'ພ້ອມແລ້ວ!',
+                    l10n.analyticsReady,
                     style: TextStyle(
                       fontSize: 10.sp,
                       fontWeight: FontWeight.w700,
@@ -980,7 +1003,7 @@ class _PartnerTierCard extends StatelessWidget {
           ),
           SizedBox(height: 14.h),
           _ProgressRow(
-            label: 'ໂມດອ',
+            label: l10n.analyticsModels,
             sublabel:
                 '${up?.currentApprovedModels ?? 0} / ${up?.modelThreshold ?? 5}',
             progress: modelProg,
@@ -988,7 +1011,7 @@ class _PartnerTierCard extends StatelessWidget {
           ),
           SizedBox(height: 10.h),
           _ProgressRow(
-            label: 'ລາຍໄດ້',
+            label: l10n.analyticsEarnings,
             sublabel:
                 '${CurrFormatter.kip(up?.currentCommissionEarnings ?? 0)} / ${CurrFormatter.kip(up?.earningsThreshold ?? 1000000)}',
             progress: earningsProg,

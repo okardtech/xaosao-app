@@ -334,9 +334,9 @@ class _ServicesSelectState extends State<ServicesSelect> {
                         ..._entries.asMap().entries.map((mapEntry) {
                           final idx = mapEntry.key;
                           final entry = mapEntry.value;
-                          print(
-                            'Rendering service card for ${entry.service.name}, selected: ${entry.selected}, price: ${entry.priceCtrl.text}, variants: ${entry.variants.length}',
-                          );
+                          // print(
+                          //   'Rendering service card for ${entry.service.name}, selected: ${entry.selected}, price: ${entry.priceCtrl.text}, variants: ${entry.variants.length}',
+                          // );
                           return Padding(
                             padding: EdgeInsets.only(
                               bottom: idx < _entries.length - 1 ? 12.h : 0,

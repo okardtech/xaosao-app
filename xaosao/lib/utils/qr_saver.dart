@@ -2,6 +2,7 @@ import 'dart:typed_data';
 import 'package:dio/dio.dart';
 import 'package:saver_gallery/saver_gallery.dart';
 import 'package:xaosao/utils/app_snackbar.dart';
+import 'package:xaosao/utils/l10n.dart';
 
 class QrSaver {
   QrSaver._();
@@ -13,7 +14,7 @@ class QrSaver {
         options: Options(responseType: ResponseType.bytes),
       );
       if (res.data == null) {
-        AppSnackbar.error('ໂຫຼດ QR ບໍ່ສຳເລັດ');
+        AppSnackbar.error(l10n.qrLoadFailed);
         return false;
       }
       final bytes = Uint8List.fromList(res.data!);
@@ -25,13 +26,13 @@ class QrSaver {
         skipIfExists: false,
       );
       if (result.isSuccess) {
-        AppSnackbar.success('ບັນທຶກ QR ໃສ່ຄັງຮູບແລ້ວ');
+        AppSnackbar.success(l10n.shareQrSaved);
         return true;
       }
-      AppSnackbar.error('ບໍ່ສາມາດບັນທຶກ QR ໄດ້');
+      AppSnackbar.error(l10n.shareQrSaveFailed);
       return false;
     } catch (_) {
-      AppSnackbar.error('ເກີດຂໍ້ຜິດພາດ ກະລຸນາລອງໃໝ່');
+      AppSnackbar.error(l10n.shareQrErrorGeneric);
       return false;
     }
   }

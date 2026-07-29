@@ -1,5 +1,6 @@
 import 'package:share_plus/share_plus.dart';
 import 'package:xaosao/services/deep_link_service.dart';
+import 'package:xaosao/utils/l10n.dart';
 
 /// Reusable AppsFlyer OneLink builder + share helpers for sharing
 /// in-app destinations (companion profile, model detail) so the link
@@ -59,7 +60,7 @@ class DeepLinkShare {
   static String _composeBody(String? displayName, String link) {
     final who = (displayName ?? '').trim();
     return who.isEmpty
-        ? 'ມາເບິ່ງໂປຣໄຟລ໌ໃນ Xaosao\n$link'
-        : 'ມາເບິ່ງໂປຣໄຟລ໌ຂອງ $who ໃນ Xaosao\n$link';
+        ? '${l10n.deepLinkShareSelf}\n$link'
+        : '${l10n.deepLinkShareOther(who)}\n$link';
   }
 }

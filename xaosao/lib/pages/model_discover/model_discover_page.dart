@@ -6,6 +6,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:xaosao/constants/app_color.dart';
 import 'package:xaosao/constants/app_routes.dart';
+import 'package:xaosao/l10n/app_localizations.dart';
 import 'package:xaosao/widgets/app_search_field.dart';
 import 'package:xaosao/widgets/empty_state.dart';
 import 'package:xaosao/widgets/notif_badge.dart';
@@ -26,33 +27,45 @@ class _Tab {
   const _Tab({required this.label, required this.icon, this.filter});
 }
 
-const _tabs = [
-  _Tab(label: 'ທັງໝົດ', icon: Icons.grid_view_rounded, filter: null),
-  _Tab(label: 'ສຳລັບທ່ານ', icon: Icons.auto_awesome_rounded, filter: 'for-you'),
-  _Tab(label: 'ຖືກໃຈຂ້ອຍ', icon: Icons.favorite_rounded, filter: 'who-liked-me'),
-  _Tab(label: 'ຂ້ອຍຖືກໃຈ', icon: Icons.star_rounded, filter: 'i-liked'),
+List<_Tab> _buildTabs(AppLocalizations l10n) => [
+  _Tab(label: l10n.commonAll, icon: Icons.grid_view_rounded, filter: null),
+  _Tab(
+    label: l10n.discoverTabForYou,
+    icon: Icons.auto_awesome_rounded,
+    filter: 'for-you',
+  ),
+  _Tab(
+    label: l10n.discoverTabWhoLikedMe,
+    icon: Icons.favorite_rounded,
+    filter: 'who-liked-me',
+  ),
+  _Tab(
+    label: l10n.discoverTabILiked,
+    icon: Icons.star_rounded,
+    filter: 'i-liked',
+  ),
 ];
 
-const _emptyData = [
+List<(IconData, String, String)> _buildEmptyData(AppLocalizations l10n) => [
   (
     Icons.search_off_rounded,
-    'ບໍ່ພົບຜູ້ໃຊ້',
-    'ລອງປ່ຽນຕົວກອງ ຫຼື ຄົ້ນຫາໃໝ່ອີກຄັ້ງ',
+    l10n.discoverEmptyAllTitle,
+    l10n.discoverEmptyAllSubtitle,
   ),
   (
     Icons.auto_awesome_rounded,
-    'ຍັງບໍ່ມີຄຳແນະນຳ',
-    'ລະບົບຈະຊອກຫາຜູ້ທີ່ເໝາະສົມໃຫ້ທ່ານ',
+    l10n.discoverEmptyForYouTitle,
+    l10n.discoverEmptyForYouSubtitle,
   ),
   (
     Icons.favorite_border_rounded,
-    'ຍັງບໍ່ມີໃຜຖືກໃຈທ່ານ',
-    'ສ້າງໂປຣໄຟລ໌ທີ່ດີເພື່ອດຶງດູດ',
+    l10n.discoverEmptyWhoLikedMeTitle,
+    l10n.discoverEmptyWhoLikedMeSubtitle,
   ),
   (
     Icons.star_border_rounded,
-    'ທ່ານຍັງບໍ່ໄດ້ຖືກໃຈໃຜ',
-    'ຄົ້ນຫາແລ້ວກົດ ♥ ເພື່ອສະແດງຄວາມສົນໃຈ',
+    l10n.discoverEmptyILikedTitle,
+    l10n.discoverEmptyILikedSubtitle,
   ),
 ];
 
@@ -108,21 +121,22 @@ class _ModelDiscoverPageState extends State<ModelDiscoverPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       backgroundColor: const Color(0xFFF8F8FC),
       body: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildHeader(),
-            _buildSearchField(),
-            _buildTabBar(),
+            _buildHeader(l10n),
+            _buildSearchField(l10n),
+            _buildTabBar(l10n),
             Expanded(
               child: RefreshIndicator(
                 color: AppColors.primary,
                 backgroundColor: Colors.white,
                 onRefresh: () => _logic.loadModels(refresh: true),
-                child: Obx(() => _buildContent(_logic.state)),
+                child: Obx(() => _buildContent(_logic.state, l10n)),
               ),
             ),
           ],
@@ -132,7 +146,7 @@ class _ModelDiscoverPageState extends State<ModelDiscoverPage> {
   }
 
   // ── Header ────────────────────────────────────────────────────
-  Widget _buildHeader() {
+  Widget _buildHeader(AppLocalizations l10n) {
     return Padding(
       padding: EdgeInsets.fromLTRB(20.w, 14.h, 16.w, 4.h),
       child: Row(
@@ -142,7 +156,7 @@ class _ModelDiscoverPageState extends State<ModelDiscoverPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'ຄົ້ນພົບ',
+                  l10n.discoverTitle,
                   style: TextStyle(
                     fontSize: 24.sp,
                     fontWeight: FontWeight.w900,
@@ -151,7 +165,7 @@ class _ModelDiscoverPageState extends State<ModelDiscoverPage> {
                   ),
                 ),
                 Text(
-                  'ຄົ້ນຫາຜູ້ໃຊ້ທີ່ທ່ານໃຈ',
+                  l10n.discoverSubtitle,
                   style: TextStyle(fontSize: 12.sp, color: AppColors.textHint),
                 ),
               ],
@@ -180,7 +194,7 @@ class _ModelDiscoverPageState extends State<ModelDiscoverPage> {
   }
 
   // ── Collapsible search bar ────────────────────────────────────
-  Widget _buildSearchField() {
+  Widget _buildSearchField(AppLocalizations l10n) {
     return Obx(() {
       final open = _logic.searchOpen.value;
       return AnimatedOpacity(
@@ -197,7 +211,7 @@ class _ModelDiscoverPageState extends State<ModelDiscoverPage> {
               ? AppSearchField(
                   controller: _searchCtrl,
                   onChanged: _logic.onSearchChanged,
-                  hintText: 'ຄົ້ນຫາດ້ວຍຊື່...',
+                  hintText: l10n.discoverSearchHint,
                   autofocus: true,
                 )
               : const SizedBox.shrink(),
@@ -207,7 +221,8 @@ class _ModelDiscoverPageState extends State<ModelDiscoverPage> {
   }
 
   // ── Tab bar — underline style matching GenderTabBar ──────────
-  Widget _buildTabBar() {
+  Widget _buildTabBar(AppLocalizations l10n) {
+    final tabs = _buildTabs(l10n);
     return Obx(() {
       final tabIdx = _logic.tabIndex.value;
       return Container(
@@ -223,11 +238,11 @@ class _ModelDiscoverPageState extends State<ModelDiscoverPage> {
             ),
           ),
           child: Row(
-            children: List.generate(_tabs.length, (i) {
+            children: List.generate(tabs.length, (i) {
               final isActive = tabIdx == i;
               return Expanded(
                 child: GestureDetector(
-                  onTap: () => _logic.selectTab(i, _tabs[i].filter),
+                  onTap: () => _logic.selectTab(i, tabs[i].filter),
                   child: AnimatedContainer(
                     duration: const Duration(milliseconds: 220),
                     curve: Curves.easeInOut,
@@ -243,7 +258,7 @@ class _ModelDiscoverPageState extends State<ModelDiscoverPage> {
                       ),
                     ),
                     child: Text(
-                      _tabs[i].label,
+                      tabs[i].label,
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         fontSize: 13.sp,
@@ -266,7 +281,7 @@ class _ModelDiscoverPageState extends State<ModelDiscoverPage> {
   }
 
   // ── Content ───────────────────────────────────────────────────
-  Widget _buildContent(ModelDiscoverState st) {
+  Widget _buildContent(ModelDiscoverState st, AppLocalizations l10n) {
     final isLoading =
         st.status == DiscoverStatus.initial ||
         st.status == DiscoverStatus.loading;
@@ -276,18 +291,19 @@ class _ModelDiscoverPageState extends State<ModelDiscoverPage> {
     if (st.status == DiscoverStatus.failure && st.models.isEmpty) {
       return AppEmptyState(
         icon: Icons.wifi_off_rounded,
-        title: 'ໂຫຼດຂໍ້ມູນບໍ່ໄດ້',
-        subtitle: 'ກວດສອບການເຊື່ອມຕໍ່ແລ້ວລອງໃໝ່',
+        title: l10n.commonLoadDataFailed,
+        subtitle: l10n.commonConnectionRetry,
         iconColor: const Color(0xFFDC2626),
         iconBgColor: const Color(0xFFFFF0F0),
-        actionLabel: 'ລອງໃໝ່',
+        actionLabel: l10n.commonRetry,
         onAction: () => _logic.loadModels(refresh: true),
       );
     }
 
     if (st.models.isEmpty) {
-      final idx = _logic.tabIndex.value.clamp(0, _emptyData.length - 1);
-      final (icon, title, subtitle) = _emptyData[idx];
+      final emptyData = _buildEmptyData(l10n);
+      final idx = _logic.tabIndex.value.clamp(0, emptyData.length - 1);
+      final (icon, title, subtitle) = emptyData[idx];
       return AppEmptyState(icon: icon, title: title, subtitle: subtitle);
     }
 

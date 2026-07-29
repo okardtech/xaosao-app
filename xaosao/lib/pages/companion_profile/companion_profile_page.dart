@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:xaosao/constants/app_color.dart';
 import 'package:xaosao/constants/app_routes.dart';
+import 'package:xaosao/l10n/app_localizations.dart';
 import 'package:xaosao/models/Recommended_model.dart';
 import 'package:xaosao/models/review_model.dart';
 import 'package:xaosao/pages/package/components/subscription_banner.dart';
@@ -119,6 +120,8 @@ class _CompanionProfilePageState extends State<CompanionProfilePage> {
     );
   }
 
+  AppLocalizations get _l10n => AppLocalizations.of(context)!;
+
   // ── CustomScrollView ──────────────────────────────────────────
   Widget _buildScrollView() {
     return CustomScrollView(
@@ -227,19 +230,22 @@ class _CompanionProfilePageState extends State<CompanionProfilePage> {
                 if (status == CompanionLoadStatus.initial ||
                     status == CompanionLoadStatus.loading ||
                     profile == null)
-                  _Section(title: 'ຂໍ້ມູນສ່ວນຕົວ', child: _ProfileInfoShimmer())
+                  _Section(
+                    title: _l10n.detailPersonalInfo,
+                    child: _ProfileInfoShimmer(),
+                  )
                 else
                   _Section(
-                    title: 'ຂໍ້ມູນສ່ວນຕົວ',
+                    title: _l10n.detailPersonalInfo,
                     child: _buildInfoGrid(profile),
                   ),
                 _Section(
                   key: _serviceKey,
-                  title: 'ເລືອກບໍລິການ',
+                  title: _l10n.postsSelectService,
                   child: Obx(() => _buildServicesSection()),
                 ),
                 _Section(
-                  title: 'ຄະແນນ ແລະ ລີວິວ',
+                  title: _l10n.cpRatingsSection,
                   child: Obx(() => _buildReviewSection()),
                 ),
                 SizedBox(height: 24.h),
@@ -253,12 +259,15 @@ class _CompanionProfilePageState extends State<CompanionProfilePage> {
 
   // ── Info grid ─────────────────────────────────────────────────
   Widget _buildInfoGrid(RecommendedModel profile) {
+    final l10n = _l10n;
     final age = _age(profile);
     final memberSince = profile.createdAt != null
         ? DateFormat('MMM yyyy').format(profile.createdAt!)
         : '—';
     final isAvailable = profile.status == 'active';
-    final statusLabel = isAvailable ? 'ໃຊ້ງານຢູ່' : 'ບໍ່ໄດ້ໃຊ້ງານ';
+    final statusLabel = isAvailable
+        ? l10n.cpStatusAvailable
+        : l10n.cpStatusUnavailable;
     final statusColor = isAvailable ? AppColors.online : AppColors.primary;
     final address = profile.address != null ? '${profile.address}' : '—';
 
@@ -285,12 +294,18 @@ class _CompanionProfilePageState extends State<CompanionProfilePage> {
           IntrinsicHeight(
             child: Row(
               children: [
-                _StatStrip(label: 'ອາຍຸ', value: age > 0 ? '$age ປີ' : '—'),
-                _StatStripDivider(),
-                _StatStrip(label: 'ສະມາຊິກຕັ້ງແຕ່', value: memberSince),
+                _StatStrip(
+                  label: l10n.detailStatAge,
+                  value: age > 0 ? l10n.commonAgeYears(age) : '—',
+                ),
                 _StatStripDivider(),
                 _StatStrip(
-                  label: 'ສະຖານະ',
+                  label: l10n.detailStatMemberSince,
+                  value: memberSince,
+                ),
+                _StatStripDivider(),
+                _StatStrip(
+                  label: l10n.cpStatusLabel,
                   value: statusLabel,
                   valueColor: statusColor,
                 ),
@@ -321,7 +336,7 @@ class _CompanionProfilePageState extends State<CompanionProfilePage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'ທີ່ຢູ່',
+                        l10n.registerAddress,
                         style: TextStyle(
                           fontSize: 12.sp,
                           color: AppColors.textHint,
@@ -383,7 +398,7 @@ class _CompanionProfilePageState extends State<CompanionProfilePage> {
     if (st.services.isEmpty) {
       return _EmptyCard(
         icon: Icons.spa_outlined,
-        message: 'ບໍ່ມີບໍລິການໃນຂະນະນີ້',
+        message: _l10n.cpNoServicesNow,
       );
     }
 
@@ -425,7 +440,7 @@ class _CompanionProfilePageState extends State<CompanionProfilePage> {
         ] else if (st.reviews.isEmpty) ...[
           _EmptyCard(
             icon: Icons.star_border_rounded,
-            message: 'ຍັງບໍ່ມີລີວິວ ເປັນຄົນທຳອິດ!',
+            message: _l10n.cpNoReviewsBeFirst,
           ),
         ] else ...[
           ...st.reviews.map(
@@ -476,7 +491,7 @@ class _CompanionProfilePageState extends State<CompanionProfilePage> {
                 ),
                 child: Center(
                   child: Text(
-                    'ໂຫຼດລີວິວເພີ່ມ',
+                    _l10n.cpLoadMoreReviews,
                     style: TextStyle(
                       fontSize: 12.sp,
                       fontWeight: FontWeight.w700,
@@ -534,7 +549,7 @@ class _CompanionProfilePageState extends State<CompanionProfilePage> {
               _Stars(rating: rating, size: 14.r),
               SizedBox(height: 4.h),
               Text(
-                '$totalReviews ລີວິວ',
+                _l10n.cpReviewsCount(totalReviews),
                 style: TextStyle(fontSize: 10.sp, color: AppColors.textHint),
               ),
             ],
@@ -573,7 +588,7 @@ class _CompanionProfilePageState extends State<CompanionProfilePage> {
                   Icon(Icons.edit_rounded, size: 13.r, color: Colors.white),
                   SizedBox(width: 5.w),
                   Text(
-                    'ຂຽນລີວິວ',
+                    _l10n.reviewWriteTitle,
                     style: TextStyle(
                       fontSize: 12.sp,
                       fontWeight: FontWeight.w700,
@@ -643,7 +658,7 @@ class _CompanionProfilePageState extends State<CompanionProfilePage> {
                             ),
                             SizedBox(width: 6.w),
                             Text(
-                              'ເເຊັດ',
+                              _l10n.bookingActionChat,
                               style: TextStyle(
                                 fontSize: 12.sp,
                                 fontWeight: FontWeight.w700,
@@ -929,6 +944,7 @@ class _PhotoSliderState extends State<_PhotoSlider>
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return SizedBox(
       height: widget.height,
       child: Stack(
@@ -1027,7 +1043,7 @@ class _PhotoSliderState extends State<_PhotoSlider>
                   pulse: _pulseCtrl,
                   label: _count > 1
                       ? '${_current + 1} / $_count'
-                      : 'ເບິ່ງຮູບ',
+                      : l10n.detailViewPhotos,
                 ),
               ),
             ),
@@ -1158,7 +1174,7 @@ class _TapHintChip extends StatelessWidget {
           Icon(Icons.touch_app_rounded, size: 13.r, color: Colors.white),
           SizedBox(width: 6.w),
           Text(
-            'ກົດທີ່ຮູບເພື່ອຂະຫຍາຍ',
+            AppLocalizations.of(context)!.detailTapPhotoToExpand,
             style: TextStyle(
               fontSize: 11.sp,
               fontWeight: FontWeight.w700,
@@ -1182,6 +1198,7 @@ class _InfoOverlay extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Padding(
       padding: EdgeInsets.fromLTRB(16.w, 0, 16.w, 16.h),
       child: Column(
@@ -1193,7 +1210,7 @@ class _InfoOverlay extends StatelessWidget {
             children: [
               if (model.online)
                 _Badge(
-                  label: 'ອອນລາຍ',
+                  label: l10n.cpOnline,
                   bg: const Color(0xE022C55E),
                   fg: Colors.white,
                   dot: true,
@@ -1304,6 +1321,7 @@ class _StatsStrip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final rating = model.rating ?? 0.0;
     final likes = model.likeCount ?? 0;
     final friends = model.friendsCount ?? 0;
@@ -1333,28 +1351,28 @@ class _StatsStrip extends StatelessWidget {
             icon: Icons.star_rounded,
             iconColor: AppColors.vipGold,
             value: rating.toStringAsFixed(1),
-            label: 'ຄະແນນ',
+            label: l10n.detailStatRating,
           ),
           _vDivider(),
           _StatCell(
             icon: Icons.rate_review_outlined,
             iconColor: Colors.white.withValues(alpha: 0.70),
             value: _fmt(reviews),
-            label: 'ລີວິວ',
+            label: l10n.cpStatReviews,
           ),
           _vDivider(),
           _StatCell(
             icon: Icons.favorite_rounded,
             iconColor: AppColors.primary,
             value: _fmt(likes),
-            label: 'ຖືກໃຈ',
+            label: l10n.profileStatLikes,
           ),
           _vDivider(),
           _StatCell(
             icon: Icons.people_outline_rounded,
             iconColor: Colors.white.withValues(alpha: 0.70),
             value: _fmt(friends),
-            label: 'ຕິດຕາມ',
+            label: l10n.cpStatFollowers,
           ),
         ],
       ),
@@ -1606,7 +1624,7 @@ class _ServiceCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 Text(
-                  '$priceStr ກີບ',
+                  '$priceStr ${AppLocalizations.of(context)!.commonCurrencyKip}',
                   style: TextStyle(
                     fontSize: 14.sp,
                     fontWeight: FontWeight.w900,
@@ -1660,12 +1678,13 @@ class _ReviewCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final isAnon = review.isAnonymous == true;
     final firstName = review.customer?.firstName ?? '';
     final lastName = review.customer?.lastName ?? '';
     final name = isAnon
-        ? 'ນິລະນາມ'
-        : '$firstName $lastName'.trim().ifBlank('ຜູ້ໃຊ້');
+        ? l10n.cpAnonymous
+        : '$firstName $lastName'.trim().ifBlank(l10n.commonUser);
     final initial = name[0].toUpperCase();
     final dateStr = review.createdAt != null
         ? DateFormat('dd MMM yyyy').format(review.createdAt!)
@@ -1778,6 +1797,7 @@ class _BookingBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final svc = selectedService;
     final hasService = svc != null;
     final price = svc?.customRate ?? svc?.customHourlyRate;
@@ -1816,7 +1836,7 @@ class _BookingBar extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
-                  'ລາຄາ',
+                  l10n.subscriptionPrice,
                   style: TextStyle(
                     fontSize: 12.sp,
                     color: AppColors.textHint,
@@ -1855,7 +1875,7 @@ class _BookingBar extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
-                  'ກະລຸນາ',
+                  l10n.meetupsSnackPleaseTitle,
                   style: TextStyle(
                     fontSize: 9.sp,
                     color: AppColors.textHint,
@@ -1864,7 +1884,7 @@ class _BookingBar extends StatelessWidget {
                 ),
                 SizedBox(height: 2.h),
                 Text(
-                  'ເລືອກບໍລິການ',
+                  l10n.postsSelectService,
                   style: TextStyle(
                     fontSize: 14.sp,
                     fontWeight: FontWeight.w700,
@@ -1919,7 +1939,7 @@ class _BookingBar extends StatelessWidget {
                   ),
                   SizedBox(width: 7.w),
                   Text(
-                    'ຈອງດຽວນີ້',
+                    l10n.cpBookNow,
                     style: TextStyle(
                       fontSize: 14.sp,
                       fontWeight: FontWeight.w800,
@@ -2071,6 +2091,7 @@ class _RetryCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Container(
       padding: EdgeInsets.all(20.r),
       decoration: BoxDecoration(
@@ -2094,7 +2115,7 @@ class _RetryCard extends StatelessWidget {
           Icon(Icons.wifi_off_rounded, size: 28.r, color: AppColors.textHint),
           SizedBox(height: 8.h),
           Text(
-            'ໂຫຼດຂໍ້ມູນບໍ່ໄດ້',
+            l10n.commonLoadDataFailed,
             style: TextStyle(
               fontSize: 12.sp,
               color: AppColors.textHint,
@@ -2111,7 +2132,7 @@ class _RetryCard extends StatelessWidget {
                 borderRadius: BorderRadius.circular(10.r),
               ),
               child: Text(
-                'ລອງໃໝ່',
+                l10n.commonRetry,
                 style: TextStyle(
                   fontSize: 12.sp,
                   fontWeight: FontWeight.w700,

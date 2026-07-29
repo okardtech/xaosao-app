@@ -2821,7 +2821,7 @@ abstract class AppLocalizations {
   /// No description provided for @profileShareLink.
   ///
   /// In lo, this message translates to:
-  /// **'ແຊຣ໌ Profile Link'**
+  /// **'ແຊຣ໌ລິ້ງແນະນຳຂອງທ່ານ'**
   String get profileShareLink;
 
   /// No description provided for @profileHideYourProfile.
@@ -3399,6 +3399,3066 @@ abstract class AppLocalizations {
   /// In lo, this message translates to:
   /// **'ບໍ່ສາມາດໂຫຼດຂໍ້ມູນໄດ້'**
   String get commonCantLoadData;
+
+  /// No description provided for @packageHistoryTitle.
+  ///
+  /// In lo, this message translates to:
+  /// **'ປະຫວັດ Package'**
+  String get packageHistoryTitle;
+
+  /// No description provided for @packageHistorySubtitle.
+  ///
+  /// In lo, this message translates to:
+  /// **'ລາຍການຊື້ທັງໝົດ'**
+  String get packageHistorySubtitle;
+
+  /// No description provided for @packageHistoryEmpty.
+  ///
+  /// In lo, this message translates to:
+  /// **'ບໍ່ມີລາຍການ'**
+  String get packageHistoryEmpty;
+
+  /// No description provided for @packageStatusActive.
+  ///
+  /// In lo, this message translates to:
+  /// **'ກຳລັງໃຊ້'**
+  String get packageStatusActive;
+
+  /// No description provided for @packageStatusCompleted.
+  ///
+  /// In lo, this message translates to:
+  /// **'ສຳເລັດ'**
+  String get packageStatusCompleted;
+
+  /// No description provided for @packageStatusPending.
+  ///
+  /// In lo, this message translates to:
+  /// **'ລໍຖ້າ'**
+  String get packageStatusPending;
+
+  /// No description provided for @packageStatusPendingRelease.
+  ///
+  /// In lo, this message translates to:
+  /// **'ລໍຖ້າໂອນ'**
+  String get packageStatusPendingRelease;
+
+  /// No description provided for @packageStatusCanceled.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຍົກເລີກ'**
+  String get packageStatusCanceled;
+
+  /// No description provided for @packageStatusRefunded.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຄືນເງິນ'**
+  String get packageStatusRefunded;
+
+  /// No description provided for @packageStatusExpired.
+  ///
+  /// In lo, this message translates to:
+  /// **'ໝົດອາຍຸ'**
+  String get packageStatusExpired;
+
+  /// No description provided for @packageStatusUpgraded.
+  ///
+  /// In lo, this message translates to:
+  /// **'ອັບເກຣດ'**
+  String get packageStatusUpgraded;
+
+  /// No description provided for @packageStatusHeld.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຄ້ຳປະກັນ'**
+  String get packageStatusHeld;
+
+  /// No description provided for @packageStatusSuperseded.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຖືກແທນທີ່'**
+  String get packageStatusSuperseded;
+
+  /// No description provided for @packageAmount.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຈຳນວນ'**
+  String get packageAmount;
+
+  /// No description provided for @packageDaysRemaining.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຍັງເຫຼືອ {days} ວັນ'**
+  String packageDaysRemaining(int days);
+
+  /// No description provided for @packageExpiresShort.
+  ///
+  /// In lo, this message translates to:
+  /// **'ໝົດ {date}'**
+  String packageExpiresShort(String date);
+
+  /// No description provided for @subscriptionPrice.
+  ///
+  /// In lo, this message translates to:
+  /// **'ລາຄາ'**
+  String get subscriptionPrice;
+
+  /// No description provided for @subscriptionDuration.
+  ///
+  /// In lo, this message translates to:
+  /// **'ໄລຍະເວລາ'**
+  String get subscriptionDuration;
+
+  /// No description provided for @subscriptionBenefits.
+  ///
+  /// In lo, this message translates to:
+  /// **'ສິ່ງທີ່ທ່ານຈະໄດ້ຮັບ:'**
+  String get subscriptionBenefits;
+
+  /// No description provided for @subscriptionViewAll.
+  ///
+  /// In lo, this message translates to:
+  /// **'ເບິ່ງແພັກທັງໝົດ'**
+  String get subscriptionViewAll;
+
+  /// No description provided for @subscriptionClose.
+  ///
+  /// In lo, this message translates to:
+  /// **'ປິດ'**
+  String get subscriptionClose;
+
+  /// No description provided for @subscriptionBuyNow.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຊື້ເລີຍ'**
+  String get subscriptionBuyNow;
+
+  /// No description provided for @subscriptionTopUp.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຕື່ມເງິນ'**
+  String get subscriptionTopUp;
+
+  /// No description provided for @subscriptionDurationHours.
+  ///
+  /// In lo, this message translates to:
+  /// **'{hours} ຊ.ມ'**
+  String subscriptionDurationHours(int hours);
+
+  /// No description provided for @subscriptionDuration1Day.
+  ///
+  /// In lo, this message translates to:
+  /// **'1 ວັນ'**
+  String get subscriptionDuration1Day;
+
+  /// No description provided for @subscriptionDuration1Week.
+  ///
+  /// In lo, this message translates to:
+  /// **'1 ອາທິດ'**
+  String get subscriptionDuration1Week;
+
+  /// No description provided for @subscriptionDuration1Month.
+  ///
+  /// In lo, this message translates to:
+  /// **'1 ເດືອນ'**
+  String get subscriptionDuration1Month;
+
+  /// No description provided for @subscriptionDuration3Months.
+  ///
+  /// In lo, this message translates to:
+  /// **'3 ເດືອນ'**
+  String get subscriptionDuration3Months;
+
+  /// No description provided for @subscriptionDuration1Year.
+  ///
+  /// In lo, this message translates to:
+  /// **'1 ປີ'**
+  String get subscriptionDuration1Year;
+
+  /// No description provided for @subscriptionDurationDays.
+  ///
+  /// In lo, this message translates to:
+  /// **'{days} ວັນ'**
+  String subscriptionDurationDays(int days);
+
+  /// No description provided for @subscriptionSpecialPack.
+  ///
+  /// In lo, this message translates to:
+  /// **'ແພັກພິເສດ'**
+  String get subscriptionSpecialPack;
+
+  /// No description provided for @subscriptionYourBalance.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຍອດເງິນຂອງທ່ານ'**
+  String get subscriptionYourBalance;
+
+  /// No description provided for @subscriptionNeedMore.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຕ້ອງການ +{amount} KIP'**
+  String subscriptionNeedMore(String amount);
+
+  /// No description provided for @subscriptionCanPay.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຊຳລະໄດ້ເລີຍ'**
+  String get subscriptionCanPay;
+
+  /// No description provided for @subscriptionNeedPackageBody.
+  ///
+  /// In lo, this message translates to:
+  /// **'ກະລຸນາຊື້ Package ກ່ອນ ຈຶ່ງສາມາດຈອງບໍລິການໄດ້. Package ຈະໃຫ້ທ່ານສິດໃນການຈອງ ແລະ ໃຊ້ງານຕ່າງໆ.'**
+  String get subscriptionNeedPackageBody;
+
+  /// No description provided for @subscriptionViewPackage.
+  ///
+  /// In lo, this message translates to:
+  /// **'ເບິ່ງ Package'**
+  String get subscriptionViewPackage;
+
+  /// No description provided for @subscriptionNeedPackage.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຕ້ອງການ Package'**
+  String get subscriptionNeedPackage;
+
+  /// No description provided for @subscriptionNoActive.
+  ///
+  /// In lo, this message translates to:
+  /// **'ທ່ານຍັງບໍ່ທັນສະໝັກ Package ໃດ'**
+  String get subscriptionNoActive;
+
+  /// No description provided for @subscriptionServicePrice.
+  ///
+  /// In lo, this message translates to:
+  /// **'ລາຄາບໍລິການ'**
+  String get subscriptionServicePrice;
+
+  /// No description provided for @subscriptionShortfall.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຂາດຢູ່'**
+  String get subscriptionShortfall;
+
+  /// No description provided for @subscriptionTopUpAmount.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຕື່ມ {amount} KIP'**
+  String subscriptionTopUpAmount(String amount);
+
+  /// No description provided for @subscriptionInsufficient.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຍອດເງິນບໍ່ພຽງພໍ'**
+  String get subscriptionInsufficient;
+
+  /// No description provided for @subscriptionPleaseTopup.
+  ///
+  /// In lo, this message translates to:
+  /// **'ກະລຸນາຕື່ມເງິນກ່ອນຈອງ'**
+  String get subscriptionPleaseTopup;
+
+  /// No description provided for @subscriptionPendingVerification.
+  ///
+  /// In lo, this message translates to:
+  /// **'ລໍຖ້າການຢືນຢັນ'**
+  String get subscriptionPendingVerification;
+
+  /// No description provided for @subscriptionAlreadySubscribed.
+  ///
+  /// In lo, this message translates to:
+  /// **'ທ່ານໄດ້ສະໝັກ Package ແລ້ວ'**
+  String get subscriptionAlreadySubscribed;
+
+  /// No description provided for @subscriptionPendingBadge.
+  ///
+  /// In lo, this message translates to:
+  /// **'ລໍຖ້າ'**
+  String get subscriptionPendingBadge;
+
+  /// No description provided for @subscriptionPendingBody.
+  ///
+  /// In lo, this message translates to:
+  /// **'Package ຂອງທ່ານກຳລັງລໍຖ້າການຢືນຢັນຈາກ Admin. ກະລຸນາລໍຖ້າ ຫຼື ຕິດຕໍ່ Admin ເພື່ອຢືນຢັນໂດຍໄວ.'**
+  String get subscriptionPendingBody;
+
+  /// No description provided for @subscriptionAdminPhone.
+  ///
+  /// In lo, this message translates to:
+  /// **'ເບີໂທ Admin'**
+  String get subscriptionAdminPhone;
+
+  /// No description provided for @subscriptionCallAdmin.
+  ///
+  /// In lo, this message translates to:
+  /// **'ໂທຫາ Admin'**
+  String get subscriptionCallAdmin;
+
+  /// No description provided for @subscriptionWaitingVerification.
+  ///
+  /// In lo, this message translates to:
+  /// **'ກຳລັງລໍຖ້າການຢືນຢັນ'**
+  String get subscriptionWaitingVerification;
+
+  /// No description provided for @subscriptionAdminChecking.
+  ///
+  /// In lo, this message translates to:
+  /// **'Package ຂອງທ່ານລໍຖ້າ Admin ກວດສອບ'**
+  String get subscriptionAdminChecking;
+
+  /// No description provided for @packagePurchaseFailed.
+  ///
+  /// In lo, this message translates to:
+  /// **'ການຊື້ບໍ່ສຳເລັດ'**
+  String get packagePurchaseFailed;
+
+  /// No description provided for @packageFeature1.
+  ///
+  /// In lo, this message translates to:
+  /// **'ເຂົ້າເຖິງທຸກຟີເຈີແບບໄຮ້ຂີດຈໍາກັດ'**
+  String get packageFeature1;
+
+  /// No description provided for @packageFeature2.
+  ///
+  /// In lo, this message translates to:
+  /// **'ສົ່ງຂໍ້ຄວາມແຊັດໄດ້ບໍ່ຈໍາກັດ'**
+  String get packageFeature2;
+
+  /// No description provided for @packageFeature3.
+  ///
+  /// In lo, this message translates to:
+  /// **'ນັດໝາຍນໍາຄົນທີ່ເຮົາມັກໄດ້ບໍ່ຈໍາກັດ'**
+  String get packageFeature3;
+
+  /// No description provided for @packageFeature4.
+  ///
+  /// In lo, this message translates to:
+  /// **'ເປີດສິດເຂົ້າເບິ່ງໂປຣໄຟລ໌ VIP ຂອງສາວໆ'**
+  String get packageFeature4;
+
+  /// No description provided for @packageFeature5.
+  ///
+  /// In lo, this message translates to:
+  /// **'ລະບົບຄົ້ນຫາ ແລະ ຄັດກອງແບບຂັ້ນສູງ'**
+  String get packageFeature5;
+
+  /// No description provided for @packageFeature6.
+  ///
+  /// In lo, this message translates to:
+  /// **'ໄດ້ຮັບບໍລິການຊ່ວຍເຫຼືອລະດັບພິເສດຕະຫຼອດ 24/7'**
+  String get packageFeature6;
+
+  /// No description provided for @packageFeature7.
+  ///
+  /// In lo, this message translates to:
+  /// **'ເພີ່ມການເບິ່ງເຫັນໂປຣໄຟລ໌'**
+  String get packageFeature7;
+
+  /// No description provided for @packagePlanShort1.
+  ///
+  /// In lo, this message translates to:
+  /// **'ສຳຫຼວດທຸກຟີເຈີລະດັບພຣີມຽມ ແລະ ເລີ່ມເຊື່ອມຕໍ່ໄດ້ທັນທີ'**
+  String get packagePlanShort1;
+
+  /// No description provided for @packagePlanShort2.
+  ///
+  /// In lo, this message translates to:
+  /// **'ທົດລອງບໍລິການ 24 ຊົ່ວໂມງ ດ້ວຍແຊັດ ແລະ ການຈອງແບບບໍ່ຈຳກັດ'**
+  String get packagePlanShort2;
+
+  /// No description provided for @packagePlanShort3.
+  ///
+  /// In lo, this message translates to:
+  /// **'ດີລທີ່ຄຸ້ມຄ່າທີ່ສຸດ ສຳລັບການນັດໝາຍໄລຍະຍາວ ແລະ ການເຊື່ອມຕໍ່ທີ່ຈິງໃຈ'**
+  String get packagePlanShort3;
+
+  /// No description provided for @packageChooseTitle.
+  ///
+  /// In lo, this message translates to:
+  /// **'ເລືອກແຜນ'**
+  String get packageChooseTitle;
+
+  /// No description provided for @packageChooseSubtitle.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຍົກລະດັບປະສົບການຂອງທ່ານ'**
+  String get packageChooseSubtitle;
+
+  /// No description provided for @packageHistoryButton.
+  ///
+  /// In lo, this message translates to:
+  /// **'ປະຫວັດ'**
+  String get packageHistoryButton;
+
+  /// No description provided for @packageCancelAnytime.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຍົກເລີກໄດ້ທຸກເວລາ · ໂອນຄືນຕາມນະໂຍບາຍ'**
+  String get packageCancelAnytime;
+
+  /// No description provided for @packageWaitingVerification.
+  ///
+  /// In lo, this message translates to:
+  /// **'ລໍຖ້າການຢືນຢັນ'**
+  String get packageWaitingVerification;
+
+  /// No description provided for @packageExpiredLabel.
+  ///
+  /// In lo, this message translates to:
+  /// **'ໝົດອາຍຸແລ້ວ'**
+  String get packageExpiredLabel;
+
+  /// No description provided for @packageNearExpiry.
+  ///
+  /// In lo, this message translates to:
+  /// **'ໃກ້ໝົດອາຍຸ'**
+  String get packageNearExpiry;
+
+  /// No description provided for @packageActive.
+  ///
+  /// In lo, this message translates to:
+  /// **'ກຳລັງໃຊ້ງານ'**
+  String get packageActive;
+
+  /// No description provided for @packageProcessingVerification.
+  ///
+  /// In lo, this message translates to:
+  /// **'ກຳລັງດຳເນີນການຢືນຢັນ...'**
+  String get packageProcessingVerification;
+
+  /// No description provided for @packageExpiresOn.
+  ///
+  /// In lo, this message translates to:
+  /// **'ໝົດອາຍຸ {date}'**
+  String packageExpiresOn(String date);
+
+  /// No description provided for @packageDays.
+  ///
+  /// In lo, this message translates to:
+  /// **'ວັນ'**
+  String get packageDays;
+
+  /// No description provided for @packageRemainingLabel.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຄົງເຫຼືອ'**
+  String get packageRemainingLabel;
+
+  /// No description provided for @packageChooseYourPlan.
+  ///
+  /// In lo, this message translates to:
+  /// **'ເລືອກແຜນຂອງທ່ານ'**
+  String get packageChooseYourPlan;
+
+  /// No description provided for @packageUpgradeExperience.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຍົກລະດັບປະສົບການ'**
+  String get packageUpgradeExperience;
+
+  /// No description provided for @packageChooseFitPlan.
+  ///
+  /// In lo, this message translates to:
+  /// **'ເລືອກແຜນທີ່ເໝາະສົມ ແລ້ວຊອກຫາຄູ່ໄດ້ທຸກເວລາ'**
+  String get packageChooseFitPlan;
+
+  /// No description provided for @packageLoadFailedShort.
+  ///
+  /// In lo, this message translates to:
+  /// **'ໂຫຼດບໍ່ສຳເລັດ'**
+  String get packageLoadFailedShort;
+
+  /// No description provided for @packageNoPackage.
+  ///
+  /// In lo, this message translates to:
+  /// **'ບໍ່ມີ Package'**
+  String get packageNoPackage;
+
+  /// No description provided for @packageRequestProcessing.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຄຳຮ້ອງຂໍຂອງທ່ານກຳລັງຖືກດຳເນີນການ · ກະລຸນາລໍຖ້າ'**
+  String get packageRequestProcessing;
+
+  /// No description provided for @packageCurrent.
+  ///
+  /// In lo, this message translates to:
+  /// **'ແພັກເກດປັດຈຸບັນ'**
+  String get packageCurrent;
+
+  /// No description provided for @packageSelectPlan.
+  ///
+  /// In lo, this message translates to:
+  /// **'ເລືອກແຜນນີ້'**
+  String get packageSelectPlan;
+
+  /// No description provided for @checkoutPurchaseSuccess.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຊື້ Package ສຳເລັດ'**
+  String get checkoutPurchaseSuccess;
+
+  /// No description provided for @checkoutUpgradeTitle.
+  ///
+  /// In lo, this message translates to:
+  /// **'ການອັບເກຣດ'**
+  String get checkoutUpgradeTitle;
+
+  /// No description provided for @checkoutUpgradeSubtitle.
+  ///
+  /// In lo, this message translates to:
+  /// **'ກວດສອບ ແລະ ຢືນຢັນການຊຳລະ'**
+  String get checkoutUpgradeSubtitle;
+
+  /// No description provided for @checkoutProcessPayment.
+  ///
+  /// In lo, this message translates to:
+  /// **'ດຳເນີນການຊຳລະ'**
+  String get checkoutProcessPayment;
+
+  /// No description provided for @checkoutAlreadySubscribed.
+  ///
+  /// In lo, this message translates to:
+  /// **'ສະໝັກ Package ຢູ່ແລ້ວ'**
+  String get checkoutAlreadySubscribed;
+
+  /// No description provided for @checkoutPillPlan.
+  ///
+  /// In lo, this message translates to:
+  /// **'ແຜນ {name}'**
+  String checkoutPillPlan(String name);
+
+  /// No description provided for @checkoutPillRemainingDays.
+  ///
+  /// In lo, this message translates to:
+  /// **'ເຫຼືອ {days} ວັນ'**
+  String checkoutPillRemainingDays(int days);
+
+  /// No description provided for @checkoutUpgradeInfo.
+  ///
+  /// In lo, this message translates to:
+  /// **'ການຊຳລະໃໝ່ຈະເລີ່ມຕໍ່ຈາກ Package ປັດຈຸບັນ ແລະ ວັນທີ່ຍັງເຫຼືອຈະຖືກນຳໃສ່ Package ໃໝ່.'**
+  String get checkoutUpgradeInfo;
+
+  /// No description provided for @checkoutPackageDuration.
+  ///
+  /// In lo, this message translates to:
+  /// **'ໄລຍະ Package'**
+  String get checkoutPackageDuration;
+
+  /// No description provided for @checkoutNewPackageDuration.
+  ///
+  /// In lo, this message translates to:
+  /// **'ໄລຍະ Package ໃໝ່'**
+  String get checkoutNewPackageDuration;
+
+  /// No description provided for @checkoutBonusFromOld.
+  ///
+  /// In lo, this message translates to:
+  /// **'+ ໂບນັດ (Package ເດີມ)'**
+  String get checkoutBonusFromOld;
+
+  /// No description provided for @checkoutTotalDuration.
+  ///
+  /// In lo, this message translates to:
+  /// **'ໄລຍະທັງໝົດ'**
+  String get checkoutTotalDuration;
+
+  /// No description provided for @checkoutPaymentSummary.
+  ///
+  /// In lo, this message translates to:
+  /// **'ສະຫຼຸບການຊຳລະ'**
+  String get checkoutPaymentSummary;
+
+  /// No description provided for @checkoutWalletBalance.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຍອດ Wallet'**
+  String get checkoutWalletBalance;
+
+  /// No description provided for @checkoutPackagePrice.
+  ///
+  /// In lo, this message translates to:
+  /// **'ລາຄາ Package'**
+  String get checkoutPackagePrice;
+
+  /// No description provided for @checkoutRemaining.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຍອດຄົງເຫຼືອ'**
+  String get checkoutRemaining;
+
+  /// No description provided for @checkoutShortfallSuffix.
+  ///
+  /// In lo, this message translates to:
+  /// **' (ຂາດ)'**
+  String get checkoutShortfallSuffix;
+
+  /// No description provided for @checkoutWalletDeductInfo.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຍອດ Wallet ຈະຖືກຕັດທັນທີ. Package ຈະເປີດໃຊ້ງານຫຼັງຈາກການຊຳລະສຳເລັດ.'**
+  String get checkoutWalletDeductInfo;
+
+  /// No description provided for @onboardingTopCompanions.
+  ///
+  /// In lo, this message translates to:
+  /// **'ເພື່ອນແນະນຳຍອດນິຍົມ'**
+  String get onboardingTopCompanions;
+
+  /// No description provided for @onboardingTopCompanionsSubtitle.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຄົ້ນພົບຜູ້ໃຫ້ບໍລິການທີ່ໄດ້ຮັບຄະແນນສູງ'**
+  String get onboardingTopCompanionsSubtitle;
+
+  /// No description provided for @onboardingWelcome.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຍິນດີຕ້ອນຮັບ 👋'**
+  String get onboardingWelcome;
+
+  /// No description provided for @onboardingFindYourCompanion.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຊອກຫາເພື່ອນຂອງທ່ານ'**
+  String get onboardingFindYourCompanion;
+
+  /// No description provided for @onboardingLoginOrSignup.
+  ///
+  /// In lo, this message translates to:
+  /// **'ເຂົ້າສູ່ລະບົບ / ສ້າງບັນຊີ'**
+  String get onboardingLoginOrSignup;
+
+  /// No description provided for @onboardingActionsHint.
+  ///
+  /// In lo, this message translates to:
+  /// **'ເບິ່ງໂປຣໄຟລ໌ · ສົ່ງຂໍ້ຄວາມ · ຈອງໄດ້ທັນທີ'**
+  String get onboardingActionsHint;
+
+  /// No description provided for @onboardingLogin.
+  ///
+  /// In lo, this message translates to:
+  /// **'ເຂົ້າສູ່ລະບົບ'**
+  String get onboardingLogin;
+
+  /// No description provided for @onboardingOurServices.
+  ///
+  /// In lo, this message translates to:
+  /// **'ບໍລິການຂອງພວກເຮົາ'**
+  String get onboardingOurServices;
+
+  /// No description provided for @onboardingMassageTitle.
+  ///
+  /// In lo, this message translates to:
+  /// **'ບໍລິການນວດ'**
+  String get onboardingMassageTitle;
+
+  /// No description provided for @onboardingMassageSubtitle.
+  ///
+  /// In lo, this message translates to:
+  /// **'ບໍລິການນວດສຸຂະພາບໂດຍຜູ້ໃຫ້ບໍລິການມືອາຊີບ ສະດວກຮອດບ້ານ'**
+  String get onboardingMassageSubtitle;
+
+  /// No description provided for @onboardingSocialSubtitle.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຄູ່ຮ່ວມງານສຳລັບງານສັງຄົມ ເພື່ອເພີ່ມຄວາມມ່ວນຊື່ນ ແລະ ຄວາມປະທັບໃຈ'**
+  String get onboardingSocialSubtitle;
+
+  /// No description provided for @onboardingTravelTitle.
+  ///
+  /// In lo, this message translates to:
+  /// **'ເພື່ອນທ່ອງທ່ຽວ'**
+  String get onboardingTravelTitle;
+
+  /// No description provided for @onboardingTravelSubtitle.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຄູ່ຮ່ວມທ່ອງທ່ຽວທີ່ພ້ອມພາເຈົ້າຄົ້ນພົບປະສົບການໃໝ່ ທັງໃນ ແລະ ຕ່າງປະເທດ'**
+  String get onboardingTravelSubtitle;
+
+  /// No description provided for @onboardingLevelGeneral.
+  ///
+  /// In lo, this message translates to:
+  /// **'ທົ່ວໄປ'**
+  String get onboardingLevelGeneral;
+
+  /// No description provided for @onboardingLevelSpecial.
+  ///
+  /// In lo, this message translates to:
+  /// **'ພິເສດ'**
+  String get onboardingLevelSpecial;
+
+  /// No description provided for @onboardingLevelPartner.
+  ///
+  /// In lo, this message translates to:
+  /// **'ພາກຮ່ວມ'**
+  String get onboardingLevelPartner;
+
+  /// No description provided for @onboardingPartnerBenefits.
+  ///
+  /// In lo, this message translates to:
+  /// **'ສິດປະໂຫຍດພາກຮ່ວມ'**
+  String get onboardingPartnerBenefits;
+
+  /// No description provided for @onboardingIncreaseIncome.
+  ///
+  /// In lo, this message translates to:
+  /// **'ເພີ່ມລາຍຮັບຂອງທ່ານ'**
+  String get onboardingIncreaseIncome;
+
+  /// No description provided for @onboardingJoinNow.
+  ///
+  /// In lo, this message translates to:
+  /// **'ເຂົ້າຮ່ວມເລີຍ'**
+  String get onboardingJoinNow;
+
+  /// No description provided for @onboardingConditionRegister.
+  ///
+  /// In lo, this message translates to:
+  /// **'ລົງທະບຽນເປັນຄູ່ຮ່ວມ'**
+  String get onboardingConditionRegister;
+
+  /// No description provided for @onboardingEarnPer20.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຕໍ່ 1 ຄົນທີ່ແນະນຳ · ສູງສຸດ 20 ຄົນ'**
+  String get onboardingEarnPer20;
+
+  /// No description provided for @onboardingCondition20People.
+  ///
+  /// In lo, this message translates to:
+  /// **'ແນະນຳຄູ່ຮ່ວມ 20 ຄົນ'**
+  String get onboardingCondition20People;
+
+  /// No description provided for @onboardingEarnCommission.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຄ່າຄອມມິຊັນ ແລະ ຈຳນວນແນະນຳ'**
+  String get onboardingEarnCommission;
+
+  /// No description provided for @onboardingEarnVipSummary.
+  ///
+  /// In lo, this message translates to:
+  /// **'ສະຫຼຸບ VIP ແລະ ຄ່າຄອມມິຊັນໃນເວລາ'**
+  String get onboardingEarnVipSummary;
+
+  /// No description provided for @onboardingReadyToEarn.
+  ///
+  /// In lo, this message translates to:
+  /// **'ພ້ອມເລີ່ມຫາລາຍຮັບບໍ?'**
+  String get onboardingReadyToEarn;
+
+  /// No description provided for @onboardingRegisterUnlock.
+  ///
+  /// In lo, this message translates to:
+  /// **'ລົງທະບຽນຕອນນີ້ ແລະ ປົດລັອກລະດັບທີ່ສູງຂຶ້ນ ໂດຍການແນະນຳຜູ້ອື່ນ'**
+  String get onboardingRegisterUnlock;
+
+  /// No description provided for @onboardingGetStarted.
+  ///
+  /// In lo, this message translates to:
+  /// **'ເລີ່ມຕົ້ນ'**
+  String get onboardingGetStarted;
+
+  /// No description provided for @notifSettingTitle.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຕັ້ງຄ່າລະບົບ'**
+  String get notifSettingTitle;
+
+  /// No description provided for @notifSettingSubtitle.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຈັດການການແຈ້ງເຕືອນຂອງທ່ານ'**
+  String get notifSettingSubtitle;
+
+  /// No description provided for @notifSettingChannelsSection.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຊ່ອງທາງການແຈ້ງເຕືອນ'**
+  String get notifSettingChannelsSection;
+
+  /// No description provided for @notifSettingPushSubtitle.
+  ///
+  /// In lo, this message translates to:
+  /// **'ແຈ້ງເຕືອນໂດຍກົງໃສ່ໂທລະສັບ'**
+  String get notifSettingPushSubtitle;
+
+  /// No description provided for @notifSettingSmsSubtitle.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຮັບຂໍ້ຄວາມສັ້ນໃສ່ເບີໂທ'**
+  String get notifSettingSmsSubtitle;
+
+  /// No description provided for @notifSettingBannerTitle.
+  ///
+  /// In lo, this message translates to:
+  /// **'ການຕັ້ງຄ່າການແຈ້ງເຕືອນ'**
+  String get notifSettingBannerTitle;
+
+  /// No description provided for @notifSettingBannerBody.
+  ///
+  /// In lo, this message translates to:
+  /// **'ເລືອກຊ່ອງທາງທີ່ທ່ານຕ້ອງການຮັບຂໍ້ຄວາມ\nການປ່ຽນແປງຈະຖືກບັນທຶກໂດຍອັດຕະໂນມັດ'**
+  String get notifSettingBannerBody;
+
+  /// No description provided for @notifSettingFooterNote.
+  ///
+  /// In lo, this message translates to:
+  /// **'ການປ່ຽນແປງຈະຖືກບັນທຶກທັນທີ. ທ່ານສາມາດປ່ຽນການຕັ້ງຄ່າໄດ້ຕະຫຼອດເວລາ.'**
+  String get notifSettingFooterNote;
+
+  /// No description provided for @notifSettingUpdateFailed.
+  ///
+  /// In lo, this message translates to:
+  /// **'ອັບເດດບໍ່ສຳເລັດ'**
+  String get notifSettingUpdateFailed;
+
+  /// No description provided for @notifListTitle.
+  ///
+  /// In lo, this message translates to:
+  /// **'ການແຈ້ງເຕືອນ'**
+  String get notifListTitle;
+
+  /// No description provided for @notifListSubtitle.
+  ///
+  /// In lo, this message translates to:
+  /// **'ລາຍການແຈ້ງເຕືອນທັງໝົດຂອງທ່ານ'**
+  String get notifListSubtitle;
+
+  /// No description provided for @notifListMarkAllRead.
+  ///
+  /// In lo, this message translates to:
+  /// **'ອ່ານທັງໝົດ'**
+  String get notifListMarkAllRead;
+
+  /// No description provided for @notifListEmptyTitle.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຍັງບໍ່ມີການແຈ້ງເຕືອນ'**
+  String get notifListEmptyTitle;
+
+  /// No description provided for @notifListEmptySubtitle.
+  ///
+  /// In lo, this message translates to:
+  /// **'ການແຈ້ງເຕືອນຈະສະແດງທີ່ນີ້'**
+  String get notifListEmptySubtitle;
+
+  /// No description provided for @notifTimeJustNow.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຫາກໍ່ນີ້'**
+  String get notifTimeJustNow;
+
+  /// No description provided for @notifTimeMinutes.
+  ///
+  /// In lo, this message translates to:
+  /// **'{n} ນາທີ'**
+  String notifTimeMinutes(int n);
+
+  /// No description provided for @notifTimeHours.
+  ///
+  /// In lo, this message translates to:
+  /// **'{n} ຊົ່ວໂມງ'**
+  String notifTimeHours(int n);
+
+  /// No description provided for @notifTimeYesterday.
+  ///
+  /// In lo, this message translates to:
+  /// **'ມື້ວານ'**
+  String get notifTimeYesterday;
+
+  /// No description provided for @notifTimeDaysAgo.
+  ///
+  /// In lo, this message translates to:
+  /// **'{n} ມື້ກ່ອນ'**
+  String notifTimeDaysAgo(int n);
+
+  /// No description provided for @notifTimeWeeksAgo.
+  ///
+  /// In lo, this message translates to:
+  /// **'{n} ອາທິດຜ່ານມາ'**
+  String notifTimeWeeksAgo(int n);
+
+  /// No description provided for @notifTimeMonthsAgo.
+  ///
+  /// In lo, this message translates to:
+  /// **'{n} ເດືອນກ່ອນ'**
+  String notifTimeMonthsAgo(int n);
+
+  /// No description provided for @welcomeTitle.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຍິນດີຕ້ອນຮັບ!'**
+  String get welcomeTitle;
+
+  /// No description provided for @welcomeBody.
+  ///
+  /// In lo, this message translates to:
+  /// **'ບັນຊີຂອງທ່ານສ້າງສຳເລັດແລ້ວ.\nຂໍໃຫ້ທ່ານມີຄວາມສຸກໃນການໃຊ້ງານ!'**
+  String get welcomeBody;
+
+  /// No description provided for @welcomeCanDoTitle.
+  ///
+  /// In lo, this message translates to:
+  /// **'ສິ່ງທີ່ທ່ານສາມາດເຮັດໄດ້'**
+  String get welcomeCanDoTitle;
+
+  /// No description provided for @welcomeChat.
+  ///
+  /// In lo, this message translates to:
+  /// **'ສົນທະນາ'**
+  String get welcomeChat;
+
+  /// No description provided for @welcomeBook.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຈອງ'**
+  String get welcomeBook;
+
+  /// No description provided for @welcomeExplore.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຄົ້ນຫາ'**
+  String get welcomeExplore;
+
+  /// No description provided for @welcomeGetStartedCta.
+  ///
+  /// In lo, this message translates to:
+  /// **'ເລີ່ມໃຊ້ງານເລີຍ'**
+  String get welcomeGetStartedCta;
+
+  /// No description provided for @modelWalletAvailableBalance.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຍອດເງິນສາມາດຖອນໄດ້'**
+  String get modelWalletAvailableBalance;
+
+  /// No description provided for @modelWalletStatPending.
+  ///
+  /// In lo, this message translates to:
+  /// **'ລໍຖ້າ'**
+  String get modelWalletStatPending;
+
+  /// No description provided for @modelWalletStatWithdrawn.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຖອນແລ້ວ'**
+  String get modelWalletStatWithdrawn;
+
+  /// No description provided for @modelWalletStatTotalIncome.
+  ///
+  /// In lo, this message translates to:
+  /// **'ລາຍຮັບທັງໝົດ'**
+  String get modelWalletStatTotalIncome;
+
+  /// No description provided for @modelWalletWithdrawBtn.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຖອນເງິນ'**
+  String get modelWalletWithdrawBtn;
+
+  /// No description provided for @modelWalletIncomeHistory.
+  ///
+  /// In lo, this message translates to:
+  /// **'ປະຫວັດລາຍຮັບ'**
+  String get modelWalletIncomeHistory;
+
+  /// No description provided for @modelWalletEmptyTitle.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຍັງບໍ່ມີລາຍການ'**
+  String get modelWalletEmptyTitle;
+
+  /// No description provided for @modelWalletEmptySubtitle.
+  ///
+  /// In lo, this message translates to:
+  /// **'ລາຍການລາຍຮັບຂອງທ່ານ\nຈະສະແດງຢູ່ທີ່ນີ້'**
+  String get modelWalletEmptySubtitle;
+
+  /// No description provided for @modelWalletWithdrawFailed.
+  ///
+  /// In lo, this message translates to:
+  /// **'ບໍ່ສາມາດຖອນເງິນໄດ້'**
+  String get modelWalletWithdrawFailed;
+
+  /// No description provided for @withdrawTitle.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຖອນເງິນ'**
+  String get withdrawTitle;
+
+  /// No description provided for @withdrawSubtitle.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຈ່າຍໃຫ້ບັນຊີທະນາຄານ'**
+  String get withdrawSubtitle;
+
+  /// No description provided for @withdrawSelectBank.
+  ///
+  /// In lo, this message translates to:
+  /// **'ເລືອກບັນຊີທະນາຄານ'**
+  String get withdrawSelectBank;
+
+  /// No description provided for @withdrawAmountLabel.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຈໍານວນເງິນ'**
+  String get withdrawAmountLabel;
+
+  /// No description provided for @withdrawAmountHint.
+  ///
+  /// In lo, this message translates to:
+  /// **'ປ້ອນຈໍານວນ'**
+  String get withdrawAmountHint;
+
+  /// No description provided for @withdrawHintMin.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຕ່ຳສຸດ'**
+  String get withdrawHintMin;
+
+  /// No description provided for @withdrawHintMax.
+  ///
+  /// In lo, this message translates to:
+  /// **'ສູງສຸດ'**
+  String get withdrawHintMax;
+
+  /// No description provided for @withdrawBelowMin.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຈໍານວນຕ່ຳກວ່າຂີດຈໍາກັດ ({amount})'**
+  String withdrawBelowMin(String amount);
+
+  /// No description provided for @withdrawAboveMax.
+  ///
+  /// In lo, this message translates to:
+  /// **'ເກີນຍອດທີ່ສາມາດຖອນໄດ້ ({amount})'**
+  String withdrawAboveMax(String amount);
+
+  /// No description provided for @withdrawConfirmBtn.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຢືນຢັນການຖອນ'**
+  String get withdrawConfirmBtn;
+
+  /// No description provided for @withdrawableBalance.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຍອດທີ່ຖອນໄດ້'**
+  String get withdrawableBalance;
+
+  /// No description provided for @withdrawAll.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຖອນທັງໝົດ'**
+  String get withdrawAll;
+
+  /// No description provided for @withdrawUnavailable.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຖອນບໍ່ໄດ້'**
+  String get withdrawUnavailable;
+
+  /// No description provided for @withdrawNoBankTitle.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຍັງບໍ່ມີບັນຊີທະນາຄານ'**
+  String get withdrawNoBankTitle;
+
+  /// No description provided for @withdrawNoBankSubtitle.
+  ///
+  /// In lo, this message translates to:
+  /// **'ກະລຸນາເພີ່ມບັນຊີກ່ອນທີ່ຈະຖອນເງິນ'**
+  String get withdrawNoBankSubtitle;
+
+  /// No description provided for @withdrawAddBank.
+  ///
+  /// In lo, this message translates to:
+  /// **'ເພີ່ມບັນຊີທະນາຄານ'**
+  String get withdrawAddBank;
+
+  /// No description provided for @discoverTitle.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຄົ້ນພົບ'**
+  String get discoverTitle;
+
+  /// No description provided for @discoverSubtitle.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຄົ້ນຫາຜູ້ໃຊ້ທີ່ທ່ານໃຈ'**
+  String get discoverSubtitle;
+
+  /// No description provided for @discoverSearchHint.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຄົ້ນຫາດ້ວຍຊື່...'**
+  String get discoverSearchHint;
+
+  /// No description provided for @discoverTabForYou.
+  ///
+  /// In lo, this message translates to:
+  /// **'ສຳລັບທ່ານ'**
+  String get discoverTabForYou;
+
+  /// No description provided for @discoverTabWhoLikedMe.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຖືກໃຈຂ້ອຍ'**
+  String get discoverTabWhoLikedMe;
+
+  /// No description provided for @discoverTabILiked.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຂ້ອຍຖືກໃຈ'**
+  String get discoverTabILiked;
+
+  /// No description provided for @discoverEmptyAllTitle.
+  ///
+  /// In lo, this message translates to:
+  /// **'ບໍ່ພົບຜູ້ໃຊ້'**
+  String get discoverEmptyAllTitle;
+
+  /// No description provided for @discoverEmptyAllSubtitle.
+  ///
+  /// In lo, this message translates to:
+  /// **'ລອງປ່ຽນຕົວກອງ ຫຼື ຄົ້ນຫາໃໝ່ອີກຄັ້ງ'**
+  String get discoverEmptyAllSubtitle;
+
+  /// No description provided for @discoverEmptyForYouTitle.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຍັງບໍ່ມີຄຳແນະນຳ'**
+  String get discoverEmptyForYouTitle;
+
+  /// No description provided for @discoverEmptyForYouSubtitle.
+  ///
+  /// In lo, this message translates to:
+  /// **'ລະບົບຈະຊອກຫາຜູ້ທີ່ເໝາະສົມໃຫ້ທ່ານ'**
+  String get discoverEmptyForYouSubtitle;
+
+  /// No description provided for @discoverEmptyWhoLikedMeTitle.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຍັງບໍ່ມີໃຜຖືກໃຈທ່ານ'**
+  String get discoverEmptyWhoLikedMeTitle;
+
+  /// No description provided for @discoverEmptyWhoLikedMeSubtitle.
+  ///
+  /// In lo, this message translates to:
+  /// **'ສ້າງໂປຣໄຟລ໌ທີ່ດີເພື່ອດຶງດູດ'**
+  String get discoverEmptyWhoLikedMeSubtitle;
+
+  /// No description provided for @discoverEmptyILikedTitle.
+  ///
+  /// In lo, this message translates to:
+  /// **'ທ່ານຍັງບໍ່ໄດ້ຖືກໃຈໃຜ'**
+  String get discoverEmptyILikedTitle;
+
+  /// No description provided for @discoverEmptyILikedSubtitle.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຄົ້ນຫາແລ້ວກົດ ♥ ເພື່ອສະແດງຄວາມສົນໃຈ'**
+  String get discoverEmptyILikedSubtitle;
+
+  /// No description provided for @detailPersonalInfo.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຂໍ້ມູນສ່ວນຕົວ'**
+  String get detailPersonalInfo;
+
+  /// No description provided for @detailStatAge.
+  ///
+  /// In lo, this message translates to:
+  /// **'ອາຍຸ'**
+  String get detailStatAge;
+
+  /// No description provided for @detailStatMemberSince.
+  ///
+  /// In lo, this message translates to:
+  /// **'ສະມາຊິກຕັ້ງແຕ່'**
+  String get detailStatMemberSince;
+
+  /// No description provided for @detailStatTier.
+  ///
+  /// In lo, this message translates to:
+  /// **'ລະດັບ'**
+  String get detailStatTier;
+
+  /// No description provided for @detailViewPhotos.
+  ///
+  /// In lo, this message translates to:
+  /// **'ດູຮູບ'**
+  String get detailViewPhotos;
+
+  /// No description provided for @detailTapPhotoToExpand.
+  ///
+  /// In lo, this message translates to:
+  /// **'ກົດທີ່ຮູບເພື່ອຂະຫຍາຍ'**
+  String get detailTapPhotoToExpand;
+
+  /// No description provided for @detailStatRating.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຄະເເນນ'**
+  String get detailStatRating;
+
+  /// No description provided for @detailStatPosts.
+  ///
+  /// In lo, this message translates to:
+  /// **'ໂພສ'**
+  String get detailStatPosts;
+
+  /// No description provided for @detailStatGifts.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຂອງຂວັນ'**
+  String get detailStatGifts;
+
+  /// No description provided for @detailStatCount.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຈໍານວນ'**
+  String get detailStatCount;
+
+  /// No description provided for @meetupsEntryFromMeetUps.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຈາກໜ້ານັດພົບ'**
+  String get meetupsEntryFromMeetUps;
+
+  /// No description provided for @meetupsEntryFromChat.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຈາກ Chat'**
+  String get meetupsEntryFromChat;
+
+  /// No description provided for @meetupsDayShortSun.
+  ///
+  /// In lo, this message translates to:
+  /// **'ອາ'**
+  String get meetupsDayShortSun;
+
+  /// No description provided for @meetupsDayShortMon.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຈ'**
+  String get meetupsDayShortMon;
+
+  /// No description provided for @meetupsDayShortTue.
+  ///
+  /// In lo, this message translates to:
+  /// **'ອ'**
+  String get meetupsDayShortTue;
+
+  /// No description provided for @meetupsDayShortWed.
+  ///
+  /// In lo, this message translates to:
+  /// **'ພ'**
+  String get meetupsDayShortWed;
+
+  /// No description provided for @meetupsDayShortThu.
+  ///
+  /// In lo, this message translates to:
+  /// **'ພຫ'**
+  String get meetupsDayShortThu;
+
+  /// No description provided for @meetupsDayShortFri.
+  ///
+  /// In lo, this message translates to:
+  /// **'ສຸ'**
+  String get meetupsDayShortFri;
+
+  /// No description provided for @meetupsDayShortSat.
+  ///
+  /// In lo, this message translates to:
+  /// **'ສ'**
+  String get meetupsDayShortSat;
+
+  /// No description provided for @meetupsClockSuffix.
+  ///
+  /// In lo, this message translates to:
+  /// **'ໂມງ'**
+  String get meetupsClockSuffix;
+
+  /// No description provided for @meetupsCountdownDays.
+  ///
+  /// In lo, this message translates to:
+  /// **'ເຫຼືອອີກ {days} ວັນ {hours} ຊ.ມ.'**
+  String meetupsCountdownDays(int days, int hours);
+
+  /// No description provided for @meetupsCountdownHours.
+  ///
+  /// In lo, this message translates to:
+  /// **'ເຫຼືອອີກ {hours} ຊ.ມ.'**
+  String meetupsCountdownHours(int hours);
+
+  /// No description provided for @meetupsCountdownMinutes.
+  ///
+  /// In lo, this message translates to:
+  /// **'ເຫຼືອ {minutes} ນາທີ'**
+  String meetupsCountdownMinutes(int minutes);
+
+  /// No description provided for @meetupsServiceMultiplier.
+  ///
+  /// In lo, this message translates to:
+  /// **'{name} × {n} {unit}'**
+  String meetupsServiceMultiplier(String name, int n, String unit);
+
+  /// No description provided for @meetupsUnitDays.
+  ///
+  /// In lo, this message translates to:
+  /// **'ວັນ'**
+  String get meetupsUnitDays;
+
+  /// No description provided for @meetupsUnitHours.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຊົ່ວໂມງ'**
+  String get meetupsUnitHours;
+
+  /// No description provided for @meetupsServiceFallback.
+  ///
+  /// In lo, this message translates to:
+  /// **'ບໍລິການ'**
+  String get meetupsServiceFallback;
+
+  /// No description provided for @meetupsStepCreateBooking.
+  ///
+  /// In lo, this message translates to:
+  /// **'ສ້າງການຈອງ'**
+  String get meetupsStepCreateBooking;
+
+  /// No description provided for @meetupsStepWaitCompanionConfirm.
+  ///
+  /// In lo, this message translates to:
+  /// **'ລໍຖ້າ Companion ຢືນຢັນ'**
+  String get meetupsStepWaitCompanionConfirm;
+
+  /// No description provided for @meetupsStepCompanionConfirmed.
+  ///
+  /// In lo, this message translates to:
+  /// **'Companion ຢືນຢັນ'**
+  String get meetupsStepCompanionConfirmed;
+
+  /// No description provided for @meetupsStepWaitingMeetup.
+  ///
+  /// In lo, this message translates to:
+  /// **'ລໍຖ້ານັດພົບ'**
+  String get meetupsStepWaitingMeetup;
+
+  /// No description provided for @meetupsStepInProgress.
+  ///
+  /// In lo, this message translates to:
+  /// **'ກຳລັງດຳເນີນ'**
+  String get meetupsStepInProgress;
+
+  /// No description provided for @meetupsStepWaitingConfirmation.
+  ///
+  /// In lo, this message translates to:
+  /// **'ລໍຢືນຢັນ'**
+  String get meetupsStepWaitingConfirmation;
+
+  /// No description provided for @meetupsStepMeetingUp.
+  ///
+  /// In lo, this message translates to:
+  /// **'ດຳເນີນນັດພົບ'**
+  String get meetupsStepMeetingUp;
+
+  /// No description provided for @meetupsStepCompleted.
+  ///
+  /// In lo, this message translates to:
+  /// **'ສຳເລັດ'**
+  String get meetupsStepCompleted;
+
+  /// No description provided for @meetupsStepCancelled.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຍົກເລີກ'**
+  String get meetupsStepCancelled;
+
+  /// No description provided for @meetupsStepRejected.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຖືກປະຕິເສດ'**
+  String get meetupsStepRejected;
+
+  /// No description provided for @meetupsStepDisputed.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຂໍ້ຂັດແຍ້ງ'**
+  String get meetupsStepDisputed;
+
+  /// No description provided for @meetupsCantLoadData.
+  ///
+  /// In lo, this message translates to:
+  /// **'ບໍ່ສາມາດໂຫຼດຂໍ້ມູນ'**
+  String get meetupsCantLoadData;
+
+  /// No description provided for @meetupsCantPerform.
+  ///
+  /// In lo, this message translates to:
+  /// **'ບໍ່ສາມາດດຳເນີນການໄດ້'**
+  String get meetupsCantPerform;
+
+  /// No description provided for @meetupsSectionDateTime.
+  ///
+  /// In lo, this message translates to:
+  /// **'ວັນທີ ແລະ ເວລາ'**
+  String get meetupsSectionDateTime;
+
+  /// No description provided for @meetupsSectionLocation.
+  ///
+  /// In lo, this message translates to:
+  /// **'ສະຖານທີ່ນັດພົບ'**
+  String get meetupsSectionLocation;
+
+  /// No description provided for @meetupsSectionServices.
+  ///
+  /// In lo, this message translates to:
+  /// **'ບໍລິການ'**
+  String get meetupsSectionServices;
+
+  /// No description provided for @meetupsMapLink.
+  ///
+  /// In lo, this message translates to:
+  /// **'ແຜນທີ່ ›'**
+  String get meetupsMapLink;
+
+  /// No description provided for @meetupsPriceSummary.
+  ///
+  /// In lo, this message translates to:
+  /// **'ສະຫຼຸບລາຄາ'**
+  String get meetupsPriceSummary;
+
+  /// No description provided for @meetupsPriceTotal.
+  ///
+  /// In lo, this message translates to:
+  /// **'ລວມທັງໝົດ'**
+  String get meetupsPriceTotal;
+
+  /// No description provided for @meetupsYourReview.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຄຳຕິຊົມຂອງທ່ານ'**
+  String get meetupsYourReview;
+
+  /// No description provided for @meetupsYouRated.
+  ///
+  /// In lo, this message translates to:
+  /// **'ທ່ານໃຫ້ຄະແນນ {name}'**
+  String meetupsYouRated(String name);
+
+  /// No description provided for @meetupsProgress.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຄວາມຄືບໜ້າ'**
+  String get meetupsProgress;
+
+  /// No description provided for @meetupsCancellationPolicy.
+  ///
+  /// In lo, this message translates to:
+  /// **'ນະໂຍບາຍຍົກເລີກ'**
+  String get meetupsCancellationPolicy;
+
+  /// No description provided for @meetupsCancelBefore.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຍົກເລີກກ່ອນ '**
+  String get meetupsCancelBefore;
+
+  /// No description provided for @meetupsWillRefund.
+  ///
+  /// In lo, this message translates to:
+  /// **' ຈະໄດ້ຄືນ '**
+  String get meetupsWillRefund;
+
+  /// No description provided for @meetupsWithin24h.
+  ///
+  /// In lo, this message translates to:
+  /// **' ພາຍໃນ 24 ຊ.ມ.'**
+  String get meetupsWithin24h;
+
+  /// No description provided for @meetupsActionMessage.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຂໍ້ຄວາມ'**
+  String get meetupsActionMessage;
+
+  /// No description provided for @meetupsActionCall.
+  ///
+  /// In lo, this message translates to:
+  /// **'ໂທ'**
+  String get meetupsActionCall;
+
+  /// No description provided for @meetupsActionCancel.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຍົກເລີກ'**
+  String get meetupsActionCancel;
+
+  /// No description provided for @meetupsActionShare.
+  ///
+  /// In lo, this message translates to:
+  /// **'ແຊຣ໌'**
+  String get meetupsActionShare;
+
+  /// No description provided for @meetupsActionReport.
+  ///
+  /// In lo, this message translates to:
+  /// **'ລາຍງານ'**
+  String get meetupsActionReport;
+
+  /// No description provided for @meetupsActionConfirmShort.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຢືນຢັນ'**
+  String get meetupsActionConfirmShort;
+
+  /// No description provided for @meetupsSnackPleaseTitle.
+  ///
+  /// In lo, this message translates to:
+  /// **'ກະລຸນາ'**
+  String get meetupsSnackPleaseTitle;
+
+  /// No description provided for @loginRoleCustomerLabel.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຜູ້ຈອງ'**
+  String get loginRoleCustomerLabel;
+
+  /// No description provided for @loginRoleCustomerSub.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຄົ້ນຫາ ແລະ ຈອງບໍລິການ'**
+  String get loginRoleCustomerSub;
+
+  /// No description provided for @loginRoleCompanionLabel.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຜູ້ໃຫ້ບໍລິການ'**
+  String get loginRoleCompanionLabel;
+
+  /// No description provided for @loginRoleCompanionSub.
+  ///
+  /// In lo, this message translates to:
+  /// **'ໂພສບໍລິການ ແລະ ຮັບການຈອງ'**
+  String get loginRoleCompanionSub;
+
+  /// No description provided for @forgotTitle.
+  ///
+  /// In lo, this message translates to:
+  /// **'ລືມລະຫັດຜ່ານ'**
+  String get forgotTitle;
+
+  /// No description provided for @forgotEnterRegistered.
+  ///
+  /// In lo, this message translates to:
+  /// **'ໃສ່ເບີໂທທີ່ລົງທະບຽນ'**
+  String get forgotEnterRegistered;
+
+  /// No description provided for @forgotOtpWillSendHere.
+  ///
+  /// In lo, this message translates to:
+  /// **'ລະຫັດ OTP ຈະຖືກສົ່ງໄປຫາເບີນີ້'**
+  String get forgotOtpWillSendHere;
+
+  /// No description provided for @forgotSendOtp.
+  ///
+  /// In lo, this message translates to:
+  /// **'ສົ່ງລະຫັດ OTP'**
+  String get forgotSendOtp;
+
+  /// No description provided for @forgotBackToLogin.
+  ///
+  /// In lo, this message translates to:
+  /// **'ກັບຄືນໜ້າເຂົ້າສູ່ລະບົບ'**
+  String get forgotBackToLogin;
+
+  /// No description provided for @forgotIdentityVerifyTitle.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຢືນຢັນຕົວຕົນ'**
+  String get forgotIdentityVerifyTitle;
+
+  /// No description provided for @forgotSetNewPasswordTitle.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຕັ້ງລະຫັດຜ່ານໃໝ່'**
+  String get forgotSetNewPasswordTitle;
+
+  /// No description provided for @forgotSetNewPasswordSubtitle.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຕັ້ງລະຫັດຜ່ານໃໝ່ທີ່ປອດໄພ'**
+  String get forgotSetNewPasswordSubtitle;
+
+  /// No description provided for @forgotSavePassword.
+  ///
+  /// In lo, this message translates to:
+  /// **'ບັນທຶກລະຫັດຜ່ານ'**
+  String get forgotSavePassword;
+
+  /// No description provided for @forgotStepPhone.
+  ///
+  /// In lo, this message translates to:
+  /// **'ໂທລະສັບ'**
+  String get forgotStepPhone;
+
+  /// No description provided for @forgotConfirmPassword.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຢືນຢັນລະຫັດຜ່ານ'**
+  String get forgotConfirmPassword;
+
+  /// No description provided for @feedbackTitle.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຄຳຕິຊົມ'**
+  String get feedbackTitle;
+
+  /// No description provided for @feedbackSubtitle.
+  ///
+  /// In lo, this message translates to:
+  /// **'ສົ່ງຄຳຄິດເຫັນ ຫຼື ລາຍງານບັນຫາ'**
+  String get feedbackSubtitle;
+
+  /// No description provided for @feedbackSendNew.
+  ///
+  /// In lo, this message translates to:
+  /// **'ສົ່ງຄຳຕິຊົມໃໝ່'**
+  String get feedbackSendNew;
+
+  /// No description provided for @feedbackMine.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຄຳຕິຊົມຂອງຂ້ອຍ'**
+  String get feedbackMine;
+
+  /// No description provided for @feedbackTypeLabel.
+  ///
+  /// In lo, this message translates to:
+  /// **'ປະເພດ'**
+  String get feedbackTypeLabel;
+
+  /// No description provided for @feedbackTypeHint.
+  ///
+  /// In lo, this message translates to:
+  /// **'ເລືອກປະເພດຄຳຕິຊົມ'**
+  String get feedbackTypeHint;
+
+  /// No description provided for @feedbackSubjectLabel.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຫົວຂໍ້'**
+  String get feedbackSubjectLabel;
+
+  /// No description provided for @feedbackSubjectHint.
+  ///
+  /// In lo, this message translates to:
+  /// **'ໃສ່ຫົວຂໍ້ຄຳຕິຊົມ...'**
+  String get feedbackSubjectHint;
+
+  /// No description provided for @feedbackDescLabel.
+  ///
+  /// In lo, this message translates to:
+  /// **'ລາຍລະອຽດ'**
+  String get feedbackDescLabel;
+
+  /// No description provided for @feedbackDescHint.
+  ///
+  /// In lo, this message translates to:
+  /// **'ອະທິບາຍລາຍລະອຽດເພີ່ມເຕີມ...'**
+  String get feedbackDescHint;
+
+  /// No description provided for @feedbackDescMinLength.
+  ///
+  /// In lo, this message translates to:
+  /// **'ກະລຸນາໃສ່ລາຍລະອຽດຢ່າງໜ້ອຍ 10 ຕົວອັກສອນ'**
+  String get feedbackDescMinLength;
+
+  /// No description provided for @feedbackSubmit.
+  ///
+  /// In lo, this message translates to:
+  /// **'ສົ່ງຄຳຕິຊົມ'**
+  String get feedbackSubmit;
+
+  /// No description provided for @feedbackSubmitFailed.
+  ///
+  /// In lo, this message translates to:
+  /// **'ສົ່ງຄຳຕິຊົມບໍ່ສຳເລັດ'**
+  String get feedbackSubmitFailed;
+
+  /// No description provided for @feedbackEmptyTitle.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຍັງບໍ່ມີຄຳຕິຊົມ'**
+  String get feedbackEmptyTitle;
+
+  /// No description provided for @feedbackEmptySubtitle.
+  ///
+  /// In lo, this message translates to:
+  /// **'ສົ່ງຄຳຕິຊົມຂອງທ່ານດ້ານເທິງ'**
+  String get feedbackEmptySubtitle;
+
+  /// No description provided for @feedbackStatusResolved.
+  ///
+  /// In lo, this message translates to:
+  /// **'ແກ້ໄຂແລ້ວ'**
+  String get feedbackStatusResolved;
+
+  /// No description provided for @feedbackTypeBug.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຂໍ້ຜິດພາດ (Bug)'**
+  String get feedbackTypeBug;
+
+  /// No description provided for @feedbackTypeFeature.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຂໍ້ສະເໜີ (Feature)'**
+  String get feedbackTypeFeature;
+
+  /// No description provided for @feedbackTypeGeneral.
+  ///
+  /// In lo, this message translates to:
+  /// **'ທົ່ວໄປ (General)'**
+  String get feedbackTypeGeneral;
+
+  /// No description provided for @feedbackTypePayment.
+  ///
+  /// In lo, this message translates to:
+  /// **'ບັນຫາການຊຳລະ (Payment)'**
+  String get feedbackTypePayment;
+
+  /// No description provided for @feedbackTypePerformance.
+  ///
+  /// In lo, this message translates to:
+  /// **'ປະສິດທິພາບ (Performance)'**
+  String get feedbackTypePerformance;
+
+  /// No description provided for @feedbackTypeOther.
+  ///
+  /// In lo, this message translates to:
+  /// **'ອື່ນໆ (Other)'**
+  String get feedbackTypeOther;
+
+  /// No description provided for @dashboardTabChat.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຄູ່ເເຊັດ'**
+  String get dashboardTabChat;
+
+  /// No description provided for @dashboardTabPosts.
+  ///
+  /// In lo, this message translates to:
+  /// **'ໂພສຫາຄູ່'**
+  String get dashboardTabPosts;
+
+  /// No description provided for @reviewRatingRequired.
+  ///
+  /// In lo, this message translates to:
+  /// **'ກະລຸນາໃຫ້ຄະແນນ'**
+  String get reviewRatingRequired;
+
+  /// No description provided for @reviewTextRequired.
+  ///
+  /// In lo, this message translates to:
+  /// **'ກະລຸນາຂຽນລີວິວ'**
+  String get reviewTextRequired;
+
+  /// No description provided for @reviewSubmitSuccess.
+  ///
+  /// In lo, this message translates to:
+  /// **'ສົ່ງລີວິວສຳເລັດ'**
+  String get reviewSubmitSuccess;
+
+  /// No description provided for @reviewSubmitFailed.
+  ///
+  /// In lo, this message translates to:
+  /// **'ສົ່ງລີວິວບໍ່ສຳເລັດ'**
+  String get reviewSubmitFailed;
+
+  /// No description provided for @reviewWriteTitle.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຂຽນລີວິວ'**
+  String get reviewWriteTitle;
+
+  /// No description provided for @reviewForCompanion.
+  ///
+  /// In lo, this message translates to:
+  /// **'ສຳລັບ {name}'**
+  String reviewForCompanion(String name);
+
+  /// No description provided for @reviewGiveRating.
+  ///
+  /// In lo, this message translates to:
+  /// **'ໃຫ້ຄະແນນ'**
+  String get reviewGiveRating;
+
+  /// No description provided for @reviewSubjectLabel.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຫົວຂໍ້ (ທາງເລືອກ)'**
+  String get reviewSubjectLabel;
+
+  /// No description provided for @reviewSubjectHint.
+  ///
+  /// In lo, this message translates to:
+  /// **'ໃສ່ຫົວຂໍ້ລີວິວ...'**
+  String get reviewSubjectHint;
+
+  /// No description provided for @reviewYourReview.
+  ///
+  /// In lo, this message translates to:
+  /// **'ລີວິວຂອງທ່ານ'**
+  String get reviewYourReview;
+
+  /// No description provided for @reviewShareHint.
+  ///
+  /// In lo, this message translates to:
+  /// **'ແບ່ງປັນປະສົບການຂອງທ່ານ...'**
+  String get reviewShareHint;
+
+  /// No description provided for @reviewSubmit.
+  ///
+  /// In lo, this message translates to:
+  /// **'ສົ່ງລີວິວ'**
+  String get reviewSubmit;
+
+  /// No description provided for @reviewRatingBad.
+  ///
+  /// In lo, this message translates to:
+  /// **'ບໍ່ດີ'**
+  String get reviewRatingBad;
+
+  /// No description provided for @reviewRatingOk.
+  ///
+  /// In lo, this message translates to:
+  /// **'ພໍໃຊ້ໄດ້'**
+  String get reviewRatingOk;
+
+  /// No description provided for @reviewRatingGood.
+  ///
+  /// In lo, this message translates to:
+  /// **'ດີ'**
+  String get reviewRatingGood;
+
+  /// No description provided for @reviewRatingVeryGood.
+  ///
+  /// In lo, this message translates to:
+  /// **'ດີຫຼາຍ'**
+  String get reviewRatingVeryGood;
+
+  /// No description provided for @reviewRatingExcellent.
+  ///
+  /// In lo, this message translates to:
+  /// **'ດີເລີດ!'**
+  String get reviewRatingExcellent;
+
+  /// No description provided for @reviewRatingPick.
+  ///
+  /// In lo, this message translates to:
+  /// **'ເລືອກຄະແນນ'**
+  String get reviewRatingPick;
+
+  /// No description provided for @cpRatingsSection.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຄະແນນ ແລະ ລີວິວ'**
+  String get cpRatingsSection;
+
+  /// No description provided for @cpStatusAvailable.
+  ///
+  /// In lo, this message translates to:
+  /// **'ໃຊ້ງານຢູ່'**
+  String get cpStatusAvailable;
+
+  /// No description provided for @cpStatusUnavailable.
+  ///
+  /// In lo, this message translates to:
+  /// **'ບໍ່ໄດ້ໃຊ້ງານ'**
+  String get cpStatusUnavailable;
+
+  /// No description provided for @cpStatusLabel.
+  ///
+  /// In lo, this message translates to:
+  /// **'ສະຖານະ'**
+  String get cpStatusLabel;
+
+  /// No description provided for @cpNoServicesNow.
+  ///
+  /// In lo, this message translates to:
+  /// **'ບໍ່ມີບໍລິການໃນຂະນະນີ້'**
+  String get cpNoServicesNow;
+
+  /// No description provided for @cpNoReviewsBeFirst.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຍັງບໍ່ມີລີວິວ ເປັນຄົນທຳອິດ!'**
+  String get cpNoReviewsBeFirst;
+
+  /// No description provided for @cpLoadMoreReviews.
+  ///
+  /// In lo, this message translates to:
+  /// **'ໂຫຼດລີວິວເພີ່ມ'**
+  String get cpLoadMoreReviews;
+
+  /// No description provided for @cpReviewsCount.
+  ///
+  /// In lo, this message translates to:
+  /// **'{count} ລີວິວ'**
+  String cpReviewsCount(int count);
+
+  /// No description provided for @cpOnline.
+  ///
+  /// In lo, this message translates to:
+  /// **'ອອນລາຍ'**
+  String get cpOnline;
+
+  /// No description provided for @cpStatReviews.
+  ///
+  /// In lo, this message translates to:
+  /// **'ລີວິວ'**
+  String get cpStatReviews;
+
+  /// No description provided for @cpStatFollowers.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຕິດຕາມ'**
+  String get cpStatFollowers;
+
+  /// No description provided for @cpAnonymous.
+  ///
+  /// In lo, this message translates to:
+  /// **'ນິລະນາມ'**
+  String get cpAnonymous;
+
+  /// No description provided for @cpBookNow.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຈອງດຽວນີ້'**
+  String get cpBookNow;
+
+  /// No description provided for @chatTitle.
+  ///
+  /// In lo, this message translates to:
+  /// **'ສົນທະນາ'**
+  String get chatTitle;
+
+  /// No description provided for @chatNewMessages.
+  ///
+  /// In lo, this message translates to:
+  /// **'{count} ຂໍ້ຄວາມໃໝ່'**
+  String chatNewMessages(int count);
+
+  /// No description provided for @chatSearchHint.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຄົ້ນຫາ...'**
+  String get chatSearchHint;
+
+  /// No description provided for @chatFallbackName.
+  ///
+  /// In lo, this message translates to:
+  /// **'ການສົນທະນານີ້'**
+  String get chatFallbackName;
+
+  /// No description provided for @chatDeleteConvTitle.
+  ///
+  /// In lo, this message translates to:
+  /// **'ລຶບການສົນທະນາ'**
+  String get chatDeleteConvTitle;
+
+  /// No description provided for @chatDeleteConvMessage.
+  ///
+  /// In lo, this message translates to:
+  /// **'ລຶບການສົນທະນາກັບ {name}?\nຂໍ້ຄວາມຍັງສາມາດເຫັນໄດ້ຈາກອີກຝ່າຍ'**
+  String chatDeleteConvMessage(String name);
+
+  /// No description provided for @chatCantEnter.
+  ///
+  /// In lo, this message translates to:
+  /// **'ບໍ່ສາມາດເຂົ້າໄດ້'**
+  String get chatCantEnter;
+
+  /// No description provided for @chatBlockedByYou.
+  ///
+  /// In lo, this message translates to:
+  /// **'ທ່ານໄດ້ບລັອກການສົນທະນານີ້'**
+  String get chatBlockedByYou;
+
+  /// No description provided for @chatBlockedByOther.
+  ///
+  /// In lo, this message translates to:
+  /// **'ການສົນທະນານີ້ຖືກບລັອກ'**
+  String get chatBlockedByOther;
+
+  /// No description provided for @chatUnblockName.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຍົກເລີກການບລັອກ {name}'**
+  String chatUnblockName(String name);
+
+  /// No description provided for @chatBlockName.
+  ///
+  /// In lo, this message translates to:
+  /// **'ບລັອກ {name}'**
+  String chatBlockName(String name);
+
+  /// No description provided for @chatUnblockConfirmMsg.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຍົກເລີກການບລັອກ ແລະ ສືບຕໍ່ສົນທະນາ?'**
+  String get chatUnblockConfirmMsg;
+
+  /// No description provided for @chatBlockConfirmMsg.
+  ///
+  /// In lo, this message translates to:
+  /// **'ທ່ານ ແລະ {name} ຈະບໍ່ສາມາດສົ່ງຂໍ້ຄວາມຫາກັນໄດ້'**
+  String chatBlockConfirmMsg(String name);
+
+  /// No description provided for @chatUnblock.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຍົກເລີກການບລັອກ'**
+  String get chatUnblock;
+
+  /// No description provided for @chatBlock.
+  ///
+  /// In lo, this message translates to:
+  /// **'ບລັອກ'**
+  String get chatBlock;
+
+  /// No description provided for @chatEmpty.
+  ///
+  /// In lo, this message translates to:
+  /// **'ບໍ່ພົບການສົນທະນາ'**
+  String get chatEmpty;
+
+  /// No description provided for @chatConversationBlocked.
+  ///
+  /// In lo, this message translates to:
+  /// **'ການສົນທະນາຖືກບລັອກ'**
+  String get chatConversationBlocked;
+
+  /// No description provided for @chatTyping.
+  ///
+  /// In lo, this message translates to:
+  /// **'ກຳລັງພິມ...'**
+  String get chatTyping;
+
+  /// No description provided for @chatOffline.
+  ///
+  /// In lo, this message translates to:
+  /// **'ອອຟລາຍ'**
+  String get chatOffline;
+
+  /// No description provided for @chatSelectedImage.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຮູບພາບທີ່ເລືອກ'**
+  String get chatSelectedImage;
+
+  /// No description provided for @chatInputHint.
+  ///
+  /// In lo, this message translates to:
+  /// **'ພິມຂໍ້ຄວາມ...'**
+  String get chatInputHint;
+
+  /// No description provided for @chatSendFailed.
+  ///
+  /// In lo, this message translates to:
+  /// **'ສົ່ງບໍ່ສຳເລັດ'**
+  String get chatSendFailed;
+
+  /// No description provided for @chatSendPleaseRetry.
+  ///
+  /// In lo, this message translates to:
+  /// **'ກະລຸນາລອງໃໝ່'**
+  String get chatSendPleaseRetry;
+
+  /// No description provided for @chatDateToday.
+  ///
+  /// In lo, this message translates to:
+  /// **'ມື້ນີ້'**
+  String get chatDateToday;
+
+  /// No description provided for @chatDeleteMsgTitle.
+  ///
+  /// In lo, this message translates to:
+  /// **'ລຶບຂໍ້ຄວາມ'**
+  String get chatDeleteMsgTitle;
+
+  /// No description provided for @chatDeleteMsgBody.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຂໍ້ຄວາມຈະຖືກລຶບອອກຈາກຝ່າຍຂອງທ່ານເທົ່ານັ້ນ\nອີກຝ່າຍຍັງສາມາດເຫັນຂໍ້ຄວາມໄດ້'**
+  String get chatDeleteMsgBody;
+
+  /// No description provided for @chatImagePrefix.
+  ///
+  /// In lo, this message translates to:
+  /// **'📷 ຮູບພາບ'**
+  String get chatImagePrefix;
+
+  /// No description provided for @bookingLabelDate.
+  ///
+  /// In lo, this message translates to:
+  /// **'ວັນທີ'**
+  String get bookingLabelDate;
+
+  /// No description provided for @bookingHoursCount.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຈຳນວນຊົ່ວໂມງ'**
+  String get bookingHoursCount;
+
+  /// No description provided for @bookingHoursValue.
+  ///
+  /// In lo, this message translates to:
+  /// **'{hours} ຊົ່ວໂມງ'**
+  String bookingHoursValue(int hours);
+
+  /// No description provided for @bookingHoursShortValue.
+  ///
+  /// In lo, this message translates to:
+  /// **'{hours} ຊມ'**
+  String bookingHoursShortValue(int hours);
+
+  /// No description provided for @bookingTotalPriceShort.
+  ///
+  /// In lo, this message translates to:
+  /// **'ລາຄາລວມ'**
+  String get bookingTotalPriceShort;
+
+  /// No description provided for @bookingGoToMeetups.
+  ///
+  /// In lo, this message translates to:
+  /// **'ໄປໜ້າການນັດພົບ'**
+  String get bookingGoToMeetups;
+
+  /// No description provided for @bookingSuccessTitle.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຈອງສຳເລັດ!'**
+  String get bookingSuccessTitle;
+
+  /// No description provided for @bookingSuccessBody.
+  ///
+  /// In lo, this message translates to:
+  /// **'ການຈອງຂອງທ່ານໄດ້ຖືກຮັບແລ້ວ'**
+  String get bookingSuccessBody;
+
+  /// No description provided for @bookingUnitNight.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຄືນ'**
+  String get bookingUnitNight;
+
+  /// No description provided for @bookingDateDeparture.
+  ///
+  /// In lo, this message translates to:
+  /// **'ວັນທີອອກເດີນທາງ'**
+  String get bookingDateDeparture;
+
+  /// No description provided for @bookingDateReturn.
+  ///
+  /// In lo, this message translates to:
+  /// **'ວັນທີກັບມາ'**
+  String get bookingDateReturn;
+
+  /// No description provided for @bookingDatePlaceholder.
+  ///
+  /// In lo, this message translates to:
+  /// **'ວັນ/ເດືອນ/ປີ'**
+  String get bookingDatePlaceholder;
+
+  /// No description provided for @bookingLocationHint.
+  ///
+  /// In lo, this message translates to:
+  /// **'ໃສ່ທີ່ຢູ່ ຫຼື ສະຖານທີ່...'**
+  String get bookingLocationHint;
+
+  /// No description provided for @bookingAttireLabel.
+  ///
+  /// In lo, this message translates to:
+  /// **'ການແຕ່ງກາຍທີ່ຕ້ອງການ'**
+  String get bookingAttireLabel;
+
+  /// No description provided for @bookingAttireHint.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຕົວຢ່າງ: ແຕ່ງຕົວເຊັກຊີ(ທາງເລືອກ)'**
+  String get bookingAttireHint;
+
+  /// No description provided for @bookingTipService.
+  ///
+  /// In lo, this message translates to:
+  /// **'ທິບ / ບໍລິການ'**
+  String get bookingTipService;
+
+  /// No description provided for @bookingAddTipTo.
+  ///
+  /// In lo, this message translates to:
+  /// **'ເພີ່ມທິບໃຫ້ {name}'**
+  String bookingAddTipTo(String name);
+
+  /// No description provided for @bookingRatePerUnit.
+  ///
+  /// In lo, this message translates to:
+  /// **'{rate} ກີບ / {unit}'**
+  String bookingRatePerUnit(String rate, String unit);
+
+  /// No description provided for @bookingRatePerHour.
+  ///
+  /// In lo, this message translates to:
+  /// **'{rate} ກີບ / ຊົ່ວໂມງ'**
+  String bookingRatePerHour(String rate);
+
+  /// No description provided for @bookingRatePerHourShort.
+  ///
+  /// In lo, this message translates to:
+  /// **'{rate} ກີບ / ຊມ'**
+  String bookingRatePerHourShort(String rate);
+
+  /// No description provided for @bookingCountUnit.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຈຳນວນ{unit}'**
+  String bookingCountUnit(String unit);
+
+  /// No description provided for @bookingSelectTime.
+  ///
+  /// In lo, this message translates to:
+  /// **'ເລືອກເວລາ'**
+  String get bookingSelectTime;
+
+  /// No description provided for @bookingSlotBooked.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຈອງແລ້ວ'**
+  String get bookingSlotBooked;
+
+  /// No description provided for @bookingSelectMassageType.
+  ///
+  /// In lo, this message translates to:
+  /// **'ເລືອກປະເພດນວດ'**
+  String get bookingSelectMassageType;
+
+  /// No description provided for @bookingVariantsCount.
+  ///
+  /// In lo, this message translates to:
+  /// **'{count} ປະເພດ'**
+  String bookingVariantsCount(int count);
+
+  /// No description provided for @bookingDateAppointment.
+  ///
+  /// In lo, this message translates to:
+  /// **'ວັນທີນັດໝາຍ'**
+  String get bookingDateAppointment;
+
+  /// No description provided for @bookingTimeMeeting.
+  ///
+  /// In lo, this message translates to:
+  /// **'ເວລາພົບກັນ'**
+  String get bookingTimeMeeting;
+
+  /// No description provided for @bookingTimeFormat.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຊົ່ວໂມງ:ນາທີ'**
+  String get bookingTimeFormat;
+
+  /// No description provided for @bookingSelectPlaceholder.
+  ///
+  /// In lo, this message translates to:
+  /// **'ເລືອກ'**
+  String get bookingSelectPlaceholder;
+
+  /// No description provided for @bookingMassageTypeLabel.
+  ///
+  /// In lo, this message translates to:
+  /// **'ປະເພດນວດ'**
+  String get bookingMassageTypeLabel;
+
+  /// No description provided for @bookingSelectVariant.
+  ///
+  /// In lo, this message translates to:
+  /// **'ເລືອກປະເພດ'**
+  String get bookingSelectVariant;
+
+  /// No description provided for @bookingCreationFailed.
+  ///
+  /// In lo, this message translates to:
+  /// **'ການຈອງລົ້ມເຫຼວ'**
+  String get bookingCreationFailed;
+
+  /// No description provided for @shareTitle.
+  ///
+  /// In lo, this message translates to:
+  /// **'ແນະນຳໝູ່'**
+  String get shareTitle;
+
+  /// No description provided for @shareAppbarSubtitle.
+  ///
+  /// In lo, this message translates to:
+  /// **'ແບ່ງປັນລິ້ງ ແລະ ເພີ່ມລາຍຮັບຂອງທ່ານ'**
+  String get shareAppbarSubtitle;
+
+  /// No description provided for @shareSubtitleGeneral.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຮັບ 10,000 ກີບ ຕໍ່ການແນະນຳ'**
+  String get shareSubtitleGeneral;
+
+  /// No description provided for @shareSubtitleCommission.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຮັບຄ່າຄອມມິສຊັນຈາກການແນະນຳ'**
+  String get shareSubtitleCommission;
+
+  /// No description provided for @shareTierGeneral.
+  ///
+  /// In lo, this message translates to:
+  /// **'ທົ່ວໄປ'**
+  String get shareTierGeneral;
+
+  /// No description provided for @shareTierSpecial.
+  ///
+  /// In lo, this message translates to:
+  /// **'ພິເສດ'**
+  String get shareTierSpecial;
+
+  /// No description provided for @shareTierPartner.
+  ///
+  /// In lo, this message translates to:
+  /// **'ພາກຮ່ວມ'**
+  String get shareTierPartner;
+
+  /// No description provided for @shareTierBadge.
+  ///
+  /// In lo, this message translates to:
+  /// **'ລະດັບ {tier}'**
+  String shareTierBadge(String tier);
+
+  /// No description provided for @shareTabModel.
+  ///
+  /// In lo, this message translates to:
+  /// **'ລິ້ງແນະນຳໂມເດວ'**
+  String get shareTabModel;
+
+  /// No description provided for @shareTabCustomer.
+  ///
+  /// In lo, this message translates to:
+  /// **'ລິ້ງແນະນຳລູກຄ້າ'**
+  String get shareTabCustomer;
+
+  /// No description provided for @shareLinkModelDesc.
+  ///
+  /// In lo, this message translates to:
+  /// **'ແບ່ງປັນລິ້ງນີ້ໃຫ້ໝູ່ທີ່ຢາກເປັນໂມເດວ'**
+  String get shareLinkModelDesc;
+
+  /// No description provided for @shareLinkCustomerDesc.
+  ///
+  /// In lo, this message translates to:
+  /// **'ແບ່ງປັນລິ້ງນີ້ໃຫ້ລູກຄ້າສະໝັກ'**
+  String get shareLinkCustomerDesc;
+
+  /// No description provided for @shareCopy.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຄັດລອກ'**
+  String get shareCopy;
+
+  /// No description provided for @shareCopied.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຄັດລອກແລ້ວ'**
+  String get shareCopied;
+
+  /// No description provided for @shareShareLink.
+  ///
+  /// In lo, this message translates to:
+  /// **'ແບ່ງປັນ'**
+  String get shareShareLink;
+
+  /// No description provided for @shareViewQr.
+  ///
+  /// In lo, this message translates to:
+  /// **'QR'**
+  String get shareViewQr;
+
+  /// No description provided for @shareStatsModels.
+  ///
+  /// In lo, this message translates to:
+  /// **'ໂມເດວທີ່ແນະນຳ'**
+  String get shareStatsModels;
+
+  /// No description provided for @shareStatsCustomers.
+  ///
+  /// In lo, this message translates to:
+  /// **'ລູກຄ້າທີ່ແນະນຳ'**
+  String get shareStatsCustomers;
+
+  /// No description provided for @shareStatsCommission.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຄ່າຄອມມິສຊັນ'**
+  String get shareStatsCommission;
+
+  /// No description provided for @shareStatsTotal.
+  ///
+  /// In lo, this message translates to:
+  /// **'ລາຍໄດ້ລວມ'**
+  String get shareStatsTotal;
+
+  /// No description provided for @shareCommissionsTitle.
+  ///
+  /// In lo, this message translates to:
+  /// **'ປະຫວັດຄ່າຄອມມິສຊັນ'**
+  String get shareCommissionsTitle;
+
+  /// No description provided for @shareCommissionsEmpty.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຍັງບໍ່ມີຄ່າຄອມມິສຊັນ'**
+  String get shareCommissionsEmpty;
+
+  /// No description provided for @shareCommissionsEmptySub.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຄ່າຄອມມິສຊັນຈາກລູກຄ້າ ຫຼື ໂມເດວທີ່ທ່ານແນະນຳ ຈະສະແດງທີ່ນີ້'**
+  String get shareCommissionsEmptySub;
+
+  /// No description provided for @shareLearnMore.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຮຽນຮູ້ເພີ່ມກ່ຽວກັບລະດັບ'**
+  String get shareLearnMore;
+
+  /// No description provided for @shareProgressToNext.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຄວາມຄືບໜ້າສູ່ລະດັບຕໍ່ໄປ'**
+  String get shareProgressToNext;
+
+  /// No description provided for @shareUpgradeToSpecialRemaining.
+  ///
+  /// In lo, this message translates to:
+  /// **'ອີກ {n} ຄົນ ຈຶ່ງໄດ້ລະດັບພິເສດ'**
+  String shareUpgradeToSpecialRemaining(int n);
+
+  /// No description provided for @shareUpgradeToPartnerRemainingModels.
+  ///
+  /// In lo, this message translates to:
+  /// **'ອີກ {n} ຄົນ ຈຶ່ງໄດ້ລະດັບພາກຮ່ວມ'**
+  String shareUpgradeToPartnerRemainingModels(int n);
+
+  /// No description provided for @shareUpgradeToPartnerRemainingEarnings.
+  ///
+  /// In lo, this message translates to:
+  /// **'ອີກ {amount} ກີບ ຈຶ່ງໄດ້ລະດັບພາກຮ່ວມ'**
+  String shareUpgradeToPartnerRemainingEarnings(String amount);
+
+  /// No description provided for @shareTierMaxed.
+  ///
+  /// In lo, this message translates to:
+  /// **'ທ່ານໄດ້ຮັບລະດັບສູງສຸດແລ້ວ'**
+  String get shareTierMaxed;
+
+  /// No description provided for @shareCurrentTier.
+  ///
+  /// In lo, this message translates to:
+  /// **'ລະດັບປັດຈຸບັນ'**
+  String get shareCurrentTier;
+
+  /// No description provided for @shareEarnPerReferral.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຮັບ {amount} ກີບ/ຄົນ'**
+  String shareEarnPerReferral(String amount);
+
+  /// No description provided for @shareInviteMessage.
+  ///
+  /// In lo, this message translates to:
+  /// **'ສະໝັກກັບ Xaosao ຜ່ານລິ້ງຂອງຂ້ອຍ!'**
+  String get shareInviteMessage;
+
+  /// No description provided for @shareInviteSubject.
+  ///
+  /// In lo, this message translates to:
+  /// **'ເຂົ້າຮ່ວມ Xaosao'**
+  String get shareInviteSubject;
+
+  /// No description provided for @shareCommissionReferral.
+  ///
+  /// In lo, this message translates to:
+  /// **'ການແນະນຳ'**
+  String get shareCommissionReferral;
+
+  /// No description provided for @shareQrBrandName.
+  ///
+  /// In lo, this message translates to:
+  /// **'xaosao — ເຊົ້າສາວ'**
+  String get shareQrBrandName;
+
+  /// No description provided for @shareQrBrandTagline.
+  ///
+  /// In lo, this message translates to:
+  /// **'ບ້ານພັກທີ່ລວບລວມນາງ-ສາວທີ່ໂດດ ແລະ ພ້ອມທີ່ຈະບ້ານຢູ່ທ່ານ.'**
+  String get shareQrBrandTagline;
+
+  /// No description provided for @shareQrDownload.
+  ///
+  /// In lo, this message translates to:
+  /// **'ດາວໂຫຼດ QR'**
+  String get shareQrDownload;
+
+  /// No description provided for @shareQrPermissionDenied.
+  ///
+  /// In lo, this message translates to:
+  /// **'ກະລຸນາອະນຸຍາດການເຂົ້າເຖິງຄັງຮູບ'**
+  String get shareQrPermissionDenied;
+
+  /// No description provided for @shareQrSaved.
+  ///
+  /// In lo, this message translates to:
+  /// **'ບັນທຶກ QR ລົງຄັງຮູບແລ້ວ'**
+  String get shareQrSaved;
+
+  /// No description provided for @shareQrSaveFailed.
+  ///
+  /// In lo, this message translates to:
+  /// **'ບໍ່ສາມາດບັນທຶກໄດ້ ກະລຸນາລອງໃໝ່'**
+  String get shareQrSaveFailed;
+
+  /// No description provided for @shareQrErrorGeneric.
+  ///
+  /// In lo, this message translates to:
+  /// **'ເກີດຂໍ້ຜິດພາດ ກະລຸນາລອງໃໝ່'**
+  String get shareQrErrorGeneric;
+
+  /// No description provided for @analyticsTitle.
+  ///
+  /// In lo, this message translates to:
+  /// **'ການວິເຄາະການແນະນຳ'**
+  String get analyticsTitle;
+
+  /// No description provided for @analyticsSubtitle.
+  ///
+  /// In lo, this message translates to:
+  /// **'ສະຖິຕິ ແລະ ລາຍໄດ້ຂອງທ່ານ'**
+  String get analyticsSubtitle;
+
+  /// No description provided for @analyticsLoadFailed.
+  ///
+  /// In lo, this message translates to:
+  /// **'ໂຫຼດຂໍ້ມູນບໍ່ສຳເລັດ'**
+  String get analyticsLoadFailed;
+
+  /// No description provided for @analyticsRetry.
+  ///
+  /// In lo, this message translates to:
+  /// **'ລອງໃໝ່'**
+  String get analyticsRetry;
+
+  /// No description provided for @analyticsReferralStats.
+  ///
+  /// In lo, this message translates to:
+  /// **'ສະຖິຕິການແນະນຳ'**
+  String get analyticsReferralStats;
+
+  /// No description provided for @analyticsReferrals.
+  ///
+  /// In lo, this message translates to:
+  /// **'ການແນະນຳ'**
+  String get analyticsReferrals;
+
+  /// No description provided for @analyticsEarnings.
+  ///
+  /// In lo, this message translates to:
+  /// **'ລາຍໄດ້'**
+  String get analyticsEarnings;
+
+  /// No description provided for @analyticsTierProgress.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຄວາມຄືບໜ້າລະດັບ'**
+  String get analyticsTierProgress;
+
+  /// No description provided for @analyticsModels.
+  ///
+  /// In lo, this message translates to:
+  /// **'ໂມເດວ'**
+  String get analyticsModels;
+
+  /// No description provided for @analyticsCustomers.
+  ///
+  /// In lo, this message translates to:
+  /// **'ລູກຄ້າ'**
+  String get analyticsCustomers;
+
+  /// No description provided for @analyticsBookings.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຈອງ'**
+  String get analyticsBookings;
+
+  /// No description provided for @analyticsSubscriptions.
+  ///
+  /// In lo, this message translates to:
+  /// **'ສະມາຊິກ'**
+  String get analyticsSubscriptions;
+
+  /// No description provided for @analyticsApproved.
+  ///
+  /// In lo, this message translates to:
+  /// **'ອະນຸມັດ'**
+  String get analyticsApproved;
+
+  /// No description provided for @analyticsPending.
+  ///
+  /// In lo, this message translates to:
+  /// **'ລໍຖ້າ'**
+  String get analyticsPending;
+
+  /// No description provided for @analyticsActive.
+  ///
+  /// In lo, this message translates to:
+  /// **'ໃຊ້ງານ'**
+  String get analyticsActive;
+
+  /// No description provided for @analyticsInactive.
+  ///
+  /// In lo, this message translates to:
+  /// **'ບໍ່ໃຊ້'**
+  String get analyticsInactive;
+
+  /// No description provided for @analyticsTotal.
+  ///
+  /// In lo, this message translates to:
+  /// **'ທັງໝົດ'**
+  String get analyticsTotal;
+
+  /// No description provided for @analyticsTotalEarnings.
+  ///
+  /// In lo, this message translates to:
+  /// **'ລາຍໄດ້ທັງໝົດ'**
+  String get analyticsTotalEarnings;
+
+  /// No description provided for @analyticsModelEarnings.
+  ///
+  /// In lo, this message translates to:
+  /// **'ລາຍໄດ້ໂມເດວ'**
+  String get analyticsModelEarnings;
+
+  /// No description provided for @analyticsCommission.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຄ່ານາຍໜ້າ'**
+  String get analyticsCommission;
+
+  /// No description provided for @analyticsEarningsByType.
+  ///
+  /// In lo, this message translates to:
+  /// **'ລາຍໄດ້ແຕ່ລະປະເພດ'**
+  String get analyticsEarningsByType;
+
+  /// No description provided for @analyticsAllModels.
+  ///
+  /// In lo, this message translates to:
+  /// **'ໂມເດວທັງໝົດ'**
+  String get analyticsAllModels;
+
+  /// No description provided for @analyticsApprovedModels.
+  ///
+  /// In lo, this message translates to:
+  /// **'ໂມເດວອະນຸມັດ'**
+  String get analyticsApprovedModels;
+
+  /// No description provided for @analyticsAllCustomers.
+  ///
+  /// In lo, this message translates to:
+  /// **'ລູກຄ້າທັງໝົດ'**
+  String get analyticsAllCustomers;
+
+  /// No description provided for @analyticsActiveCustomers.
+  ///
+  /// In lo, this message translates to:
+  /// **'ລູກຄ້າໃຊ້ງານ'**
+  String get analyticsActiveCustomers;
+
+  /// No description provided for @analyticsReady.
+  ///
+  /// In lo, this message translates to:
+  /// **'ພ້ອມແລ້ວ!'**
+  String get analyticsReady;
+
+  /// No description provided for @analyticsSpecialCondition.
+  ///
+  /// In lo, this message translates to:
+  /// **'ແນະນຳໂມເດວໃຫ້ຄົບ {n} ທ່ານ'**
+  String analyticsSpecialCondition(int n);
+
+  /// No description provided for @analyticsPartnerCondition.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຕ້ອງການທັງໂມເດວ ແລະ ລາຍໄດ້'**
+  String get analyticsPartnerCondition;
+
+  /// No description provided for @snackbarErrorTitle.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຜິດພາດ'**
+  String get snackbarErrorTitle;
+
+  /// No description provided for @snackbarSuccessTitle.
+  ///
+  /// In lo, this message translates to:
+  /// **'ສຳເລັດ'**
+  String get snackbarSuccessTitle;
+
+  /// No description provided for @snackbarInfoTitle.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຂໍ້ມູນ'**
+  String get snackbarInfoTitle;
+
+  /// No description provided for @qrLoadFailed.
+  ///
+  /// In lo, this message translates to:
+  /// **'ໂຫຼດ QR ບໍ່ສຳເລັດ'**
+  String get qrLoadFailed;
+
+  /// No description provided for @imagePickerTitle.
+  ///
+  /// In lo, this message translates to:
+  /// **'ເລືອກຮູບໂປຣໄຟ'**
+  String get imagePickerTitle;
+
+  /// No description provided for @imagePickerGallery.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຄັງຮູບ'**
+  String get imagePickerGallery;
+
+  /// No description provided for @imagePickerCamera.
+  ///
+  /// In lo, this message translates to:
+  /// **'ກ້ອງຖ່າຍຮູບ'**
+  String get imagePickerCamera;
+
+  /// No description provided for @serviceUnitHour.
+  ///
+  /// In lo, this message translates to:
+  /// **'/ຊົ່ວໂມງ'**
+  String get serviceUnitHour;
+
+  /// No description provided for @serviceUnitDay.
+  ///
+  /// In lo, this message translates to:
+  /// **'/ວັນ'**
+  String get serviceUnitDay;
+
+  /// No description provided for @serviceUnitNight.
+  ///
+  /// In lo, this message translates to:
+  /// **'/ຄືນ'**
+  String get serviceUnitNight;
+
+  /// No description provided for @serviceUnitOnce.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຄັ້ງດຽວ'**
+  String get serviceUnitOnce;
+
+  /// No description provided for @serviceUnitMinute.
+  ///
+  /// In lo, this message translates to:
+  /// **'/ນາທີ'**
+  String get serviceUnitMinute;
+
+  /// No description provided for @phoneRequired.
+  ///
+  /// In lo, this message translates to:
+  /// **'ກະລຸນາໃສ່ເບີໂທ'**
+  String get phoneRequired;
+
+  /// No description provided for @phoneMustStartWith20.
+  ///
+  /// In lo, this message translates to:
+  /// **'ເບີໂທຕ້ອງເລີ່ມດ້ວຍ 20'**
+  String get phoneMustStartWith20;
+
+  /// No description provided for @phonePrefixInvalid.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຕ້ອງເປັນ: 202, 205, 206, 207 ຫຼື 209'**
+  String get phonePrefixInvalid;
+
+  /// No description provided for @phoneLength.
+  ///
+  /// In lo, this message translates to:
+  /// **'ເບີໂທຕ້ອງມີ {n} ຕົວເລກ'**
+  String phoneLength(int n);
+
+  /// No description provided for @deepLinkShareSelf.
+  ///
+  /// In lo, this message translates to:
+  /// **'ມາເບິ່ງໂປຣໄຟລ໌ໃນ Xaosao'**
+  String get deepLinkShareSelf;
+
+  /// No description provided for @deepLinkShareOther.
+  ///
+  /// In lo, this message translates to:
+  /// **'ມາເບິ່ງໂປຣໄຟລ໌ຂອງ {name} ໃນ Xaosao'**
+  String deepLinkShareOther(String name);
+
+  /// No description provided for @dateToday.
+  ///
+  /// In lo, this message translates to:
+  /// **'ມື້ນີ້'**
+  String get dateToday;
+
+  /// No description provided for @dateYesterday.
+  ///
+  /// In lo, this message translates to:
+  /// **'ມື້ວານ'**
+  String get dateYesterday;
+
+  /// No description provided for @commonSearch.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຄົ້ນຫາ...'**
+  String get commonSearch;
+
+  /// No description provided for @commonPasswordHint.
+  ///
+  /// In lo, this message translates to:
+  /// **'ລະຫັດຜ່ານ'**
+  String get commonPasswordHint;
+
+  /// No description provided for @commonImageLoadFailed.
+  ///
+  /// In lo, this message translates to:
+  /// **'ໂຫຼດຮູບບໍ່ໄດ້'**
+  String get commonImageLoadFailed;
+
+  /// No description provided for @walletBalanceShort.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຍອດກະເປົ໋າ'**
+  String get walletBalanceShort;
+
+  /// No description provided for @updateRequiredTitle.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຈຳເປັນຕ້ອງອັບເດດແອັບ'**
+  String get updateRequiredTitle;
+
+  /// No description provided for @updateAvailableTitle.
+  ///
+  /// In lo, this message translates to:
+  /// **'ອັບເດດແອັບໃໝ່ພ້ອມແລ້ວ!'**
+  String get updateAvailableTitle;
+
+  /// No description provided for @updateRequiredBody.
+  ///
+  /// In lo, this message translates to:
+  /// **'ກະລຸນາອັບເດດເປັນເວີຊັນຫຼ້າສຸດ ເພື່ອສືບຕໍ່ໃຊ້ Xaosao'**
+  String get updateRequiredBody;
+
+  /// No description provided for @updateAvailableBody.
+  ///
+  /// In lo, this message translates to:
+  /// **'ພວກເຮົາໄດ້ປັບປຸງແອັບໃຫ້ດີຂຶ້ນ — ອັບເດດເລີຍເພື່ອປະສົບການທີ່ດີທີ່ສຸດ'**
+  String get updateAvailableBody;
+
+  /// No description provided for @updateNow.
+  ///
+  /// In lo, this message translates to:
+  /// **'ອັບເດດດຽວນີ້'**
+  String get updateNow;
+
+  /// No description provided for @updateLater.
+  ///
+  /// In lo, this message translates to:
+  /// **'ພາຍຫຼັງ'**
+  String get updateLater;
+
+  /// No description provided for @updateCurrentVersion.
+  ///
+  /// In lo, this message translates to:
+  /// **'ເວີຊັ່ນປັດຈຸບັນ'**
+  String get updateCurrentVersion;
+
+  /// No description provided for @updateNewVersion.
+  ///
+  /// In lo, this message translates to:
+  /// **'ເວີຊັ່ນໃໝ່'**
+  String get updateNewVersion;
+
+  /// No description provided for @updateWhatsNew.
+  ///
+  /// In lo, this message translates to:
+  /// **'ມີຫຍັງໃໝ່'**
+  String get updateWhatsNew;
+
+  /// No description provided for @giftSheetTitle.
+  ///
+  /// In lo, this message translates to:
+  /// **'🎁 ສົ່ງຂອງຂວັນ'**
+  String get giftSheetTitle;
+
+  /// No description provided for @giftSheetPickFor.
+  ///
+  /// In lo, this message translates to:
+  /// **'ເລືອກຂອງຂວັນໃຫ້ {name}'**
+  String giftSheetPickFor(String name);
+
+  /// No description provided for @giftEmpty.
+  ///
+  /// In lo, this message translates to:
+  /// **'ບໍ່ມີຂອງຂວັນໃນຂະນະນີ້'**
+  String get giftEmpty;
+
+  /// No description provided for @giftPickFirst.
+  ///
+  /// In lo, this message translates to:
+  /// **'ເລືອກຂອງຂວັນກ່ອນ'**
+  String get giftPickFirst;
+
+  /// No description provided for @giftSendFailed.
+  ///
+  /// In lo, this message translates to:
+  /// **'ສ່ງຂອງຂວັນບໍ່ສຳເລັດ'**
+  String get giftSendFailed;
+
+  /// No description provided for @giftSendSuccess.
+  ///
+  /// In lo, this message translates to:
+  /// **'ສ່ງຂອງຂວັນສຳເລັດ!'**
+  String get giftSendSuccess;
+
+  /// No description provided for @giftSendButton.
+  ///
+  /// In lo, this message translates to:
+  /// **'ສົ່ງ {name} · {price}'**
+  String giftSendButton(String name, String price);
+
+  /// No description provided for @tiersTitle.
+  ///
+  /// In lo, this message translates to:
+  /// **'ລະດັບ Referral ໂມເດວ'**
+  String get tiersTitle;
+
+  /// No description provided for @tiersSubtitle.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຮຽນຮູ້ວິທີການເພີ່ມລາຍໄດ້ຂອງທ່ານ'**
+  String get tiersSubtitle;
+
+  /// No description provided for @tiersOverview.
+  ///
+  /// In lo, this message translates to:
+  /// **'ໂຕແຊຣ໌ Referral link ຂອງໂມເດວ ຈະແບ່ງອອກເປັນ 3 ລະດັບ'**
+  String get tiersOverview;
+
+  /// No description provided for @tiersLevel1Title.
+  ///
+  /// In lo, this message translates to:
+  /// **'ລະດັບທົ່ວໄປ'**
+  String get tiersLevel1Title;
+
+  /// No description provided for @tiersLevel1Desc.
+  ///
+  /// In lo, this message translates to:
+  /// **'ສະແດງພຽງແຕ່ລິ້ງແນະນຳໃຫ້ກັບ ໂມເດວ ດ້ວຍກັນເທົ່ານັ້ນ ແລະ ໄດ້ຮັບສະເພາະເງີນແນະນຳ 10,000/ຄົນ (ບໍ່ມີເງື່ອນໄຂໃດໆ ທຸກຄົນທີ່ເປັນໂມເດວສາມາເຮັດໄດ້ໝົດ)'**
+  String get tiersLevel1Desc;
+
+  /// No description provided for @tiersLevel2Title.
+  ///
+  /// In lo, this message translates to:
+  /// **'ລະດັບພິເສດ'**
+  String get tiersLevel2Title;
+
+  /// No description provided for @tiersLevel2Condition.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຕ້ອງມີຜູ້ແນະນຳຫຼາຍກວ່າ 5 ຄົນ'**
+  String get tiersLevel2Condition;
+
+  /// No description provided for @tiersLevel2Links.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຈະມີລິ້ງແນະນຳ 2 ລິ້ງຄື: ລິ້ງແນະນຳລູກຄ້າ ແລະ ລິ້ງແນະນຳໂມເດວດ້ວຍກັນ'**
+  String get tiersLevel2Links;
+
+  /// No description provided for @tiersLevel2Benefit.
+  ///
+  /// In lo, this message translates to:
+  /// **'ບໍ່ໄດ້ຮັບເງີນ 10,000 ກີບ ແຕ່ຈະໄດ້ຮັບເປັນເປີເຊັນແທນເຊັ່ນ: 20% ຂອງເງີນທີ່ລູກຄ້າ subscription, 2% ຂອງໂມເດວທີ່ຕົວເອງແນະນຳເວລາມີຄົນຈອງ'**
+  String get tiersLevel2Benefit;
+
+  /// No description provided for @tiersLevel3Title.
+  ///
+  /// In lo, this message translates to:
+  /// **'ລະດັບພາກຮ່ວມ'**
+  String get tiersLevel3Title;
+
+  /// No description provided for @tiersLevel3Condition.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຕ້ອງມີຜູ້ແນະນຳຫຼາຍກວ່າ 5 ຄົນຂຶ້ນໄປ ແລະ ລາຍໄດ້ລວມຂອງຄ່າຄອມມິສຊັນທີ່ໄດ້ຈາກລູກຄ້າ sub ແລະ ລູກຄ້າຈອງໂມເດວທີ່ແນະນຳ 1,000,000 ກີບ'**
+  String get tiersLevel3Condition;
+
+  /// No description provided for @tiersLevel3Links.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຈະມີລິ້ງແນະນຳ 2 ລິ້ງຄື: ລິ້ງແນະນຳລູກຄ້າ ແລະ ລິ້ງແນະນຳໂມເດວດ້ວຍກັນ'**
+  String get tiersLevel3Links;
+
+  /// No description provided for @tiersLevel3Benefit.
+  ///
+  /// In lo, this message translates to:
+  /// **'ບໍ່ໄດ້ຮັບເງີນ 10,000 ກີບ ແຕ່ຈະໄດ້ຮັບເປັນເປີເຊັນແທນເຊັ່ນ: 40% ຂອງເງີນທີ່ລູກຄ້າ subscription, 4% ຂອງໂມເດວທີ່ຕົວເອງແນະນຳເວລາມີຄົນຈອງ'**
+  String get tiersLevel3Benefit;
+
+  /// No description provided for @tiersConditionLabel.
+  ///
+  /// In lo, this message translates to:
+  /// **'ເງື່ອນໄຂ'**
+  String get tiersConditionLabel;
+
+  /// No description provided for @tiersBenefitLabel.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຜົນປະໂຫຍດທີ່ຈະໄດ້ຮັບ'**
+  String get tiersBenefitLabel;
+
+  /// No description provided for @tiersLinksLabel.
+  ///
+  /// In lo, this message translates to:
+  /// **'ລິ້ງແນະນຳ'**
+  String get tiersLinksLabel;
+
+  /// No description provided for @tiersCurrentBadge.
+  ///
+  /// In lo, this message translates to:
+  /// **'ລະດັບປັດຈຸບັນຂອງທ່ານ'**
+  String get tiersCurrentBadge;
+
+  /// No description provided for @tiersLockedNote.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຍັງບໍ່ປົດລັອກ'**
+  String get tiersLockedNote;
 }
 
 class _AppLocalizationsDelegate

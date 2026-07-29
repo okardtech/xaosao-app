@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:xaosao/constants/app_color.dart';
+import 'package:xaosao/l10n/app_localizations.dart';
 import 'package:xaosao/widgets/app_button.dart';
 
 // ═══════════════════════════════════════════════════════════════
@@ -66,6 +67,7 @@ class _UpdateCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final notes = releaseNotes?.trim();
     final hasNotes = notes != null && notes.isNotEmpty;
 
@@ -121,7 +123,9 @@ class _UpdateCard extends StatelessWidget {
 
               // Title
               Text(
-                forceUpdate ? 'ຈຳເປັນຕ້ອງອັບເດດແອັບ' : 'ອັບເດດແອັບໃໝ່ພ້ອມແລ້ວ!',
+                forceUpdate
+                    ? l10n.updateRequiredTitle
+                    : l10n.updateAvailableTitle,
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 18.sp,
@@ -134,8 +138,8 @@ class _UpdateCard extends StatelessWidget {
               SizedBox(height: 8.h),
               Text(
                 forceUpdate
-                    ? 'ກະລຸນາອັບເດດເປັນເວີຊັນຫຼ້າສຸດ ເພື່ອສືບຕໍ່ໃຊ້ Xaosao'
-                    : 'ພວກເຮົາໄດ້ປັບປຸງແອັບໃຫ້ດີຂຶ້ນ — ອັບເດດເລີຍເພື່ອປະສົບການທີ່ດີທີ່ສຸດ',
+                    ? l10n.updateRequiredBody
+                    : l10n.updateAvailableBody,
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 13.sp,
@@ -160,7 +164,7 @@ class _UpdateCard extends StatelessWidget {
 
               // Primary CTA
               AppPrimaryButton(
-                label: 'ອັບເດດດຽວນີ້',
+                label: l10n.updateNow,
                 onTap: () => Navigator.pop(context, true),
                 gradient: const [AppColors.primary, AppColors.primary],
               ),
@@ -175,7 +179,7 @@ class _UpdateCard extends StatelessWidget {
                       minimumSize: Size(double.infinity, 44.h),
                     ),
                     child: Text(
-                      'ພາຍຫຼັງ',
+                      l10n.updateLater,
                       style: TextStyle(
                         fontSize: 13.sp,
                         fontWeight: FontWeight.w700,
@@ -202,6 +206,7 @@ class _VersionChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 12.h),
       decoration: BoxDecoration(
@@ -211,7 +216,7 @@ class _VersionChip extends StatelessWidget {
       child: Row(
         children: [
           _versionCol(
-            label: 'ເວີຊັ່ນປັດຈຸບັນ',
+            label: l10n.updateCurrentVersion,
             version: localVersion,
             color: AppColors.textHint,
             weight: FontWeight.w700,
@@ -224,7 +229,7 @@ class _VersionChip extends StatelessWidget {
           ),
           SizedBox(width: 10.w),
           _versionCol(
-            label: 'ເວີຊັ່ນໃໝ່',
+            label: l10n.updateNewVersion,
             version: storeVersion,
             color: AppColors.primary,
             weight: FontWeight.w900,
@@ -305,7 +310,7 @@ class _ReleaseNotes extends StatelessWidget {
               ),
               SizedBox(width: 6.w),
               Text(
-                'ມີຫຍັງໃໝ່',
+                AppLocalizations.of(context)!.updateWhatsNew,
                 style: TextStyle(
                   fontSize: 12.sp,
                   fontWeight: FontWeight.w800,

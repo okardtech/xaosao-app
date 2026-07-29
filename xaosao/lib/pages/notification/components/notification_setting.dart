@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:xaosao/constants/app_color.dart';
+import 'package:xaosao/l10n/app_localizations.dart';
 import 'package:xaosao/widgets/gradient_app_bar.dart';
 import '../getx/notification_setting_logic.dart';
 import '../getx/notification_setting_state.dart';
@@ -13,12 +14,13 @@ class NotificationSettingPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final logic = Get.find<NotifSettingLogic>();
+    final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
       backgroundColor: AppColors.bg,
       appBar: GradientAppBar(
-        title: 'ຕັ້ງຄ່າລະບົບ',
-        subtitle: 'ຈັດການການແຈ້ງເຕືອນຂອງທ່ານ',
+        title: l10n.notifSettingTitle,
+        subtitle: l10n.notifSettingSubtitle,
         expandedHeight: 80,
       ),
       body: Obx(() {
@@ -53,7 +55,7 @@ class NotificationSettingPage extends StatelessWidget {
                 ),
                 SizedBox(height: 12.h),
                 Text(
-                  'ໂຫຼດຂໍ້ມູນບໍ່ສຳເລັດ',
+                  l10n.commonLoadDataFailed,
                   style: TextStyle(
                     fontSize: 14.sp,
                     fontWeight: FontWeight.w700,
@@ -73,7 +75,7 @@ class NotificationSettingPage extends StatelessWidget {
                       borderRadius: BorderRadius.circular(20.r),
                     ),
                     child: Text(
-                      'ລອງໃໝ່',
+                      l10n.commonRetry,
                       style: TextStyle(
                         fontSize: 13.sp,
                         fontWeight: FontWeight.w700,
@@ -98,7 +100,7 @@ class NotificationSettingPage extends StatelessWidget {
               SizedBox(height: 20.h),
 
               // ── Section: ຊ່ອງທາງແຈ້ງເຕືອນ ─────────────
-              _SectionLabel('ຊ່ອງທາງການແຈ້ງເຕືອນ'),
+              _SectionLabel(l10n.notifSettingChannelsSection),
               SizedBox(height: 10.h),
               _NotifCard(
                 children: [
@@ -107,7 +109,7 @@ class NotificationSettingPage extends StatelessWidget {
                     iconBg: const Color(0xFFFFF0F6),
                     iconColor: AppColors.primary,
                     title: 'Push Notification',
-                    subtitle: 'ແຈ້ງເຕືອນໂດຍກົງໃສ່ໂທລະສັບ',
+                    subtitle: l10n.notifSettingPushSubtitle,
                     value: st.pushEnabled,
                     onChanged: logic.togglePush,
                   ),
@@ -127,7 +129,7 @@ class NotificationSettingPage extends StatelessWidget {
                     iconBg: const Color(0xFFEDFAF3),
                     iconColor: const Color(0xFF22C55E),
                     title: 'SMS',
-                    subtitle: 'ຮັບຂໍ້ຄວາມສັ້ນໃສ່ເບີໂທ',
+                    subtitle: l10n.notifSettingSmsSubtitle,
                     value: st.smsEnabled,
                     onChanged: logic.toggleSms,
                   ),
@@ -197,7 +199,7 @@ class _InfoBanner extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'ການຕັ້ງຄ່າການແຈ້ງເຕືອນ',
+                  AppLocalizations.of(context)!.notifSettingBannerTitle,
                   style: TextStyle(
                     fontSize: 14.sp,
                     fontWeight: FontWeight.w700,
@@ -206,7 +208,7 @@ class _InfoBanner extends StatelessWidget {
                 ),
                 SizedBox(height: 3.h),
                 Text(
-                  'ເລືອກຊ່ອງທາງທີ່ທ່ານຕ້ອງການຮັບຂໍ້ຄວາມ\nການປ່ຽນແປງຈະຖືກບັນທຶກໂດຍອັດຕະໂນມັດ',
+                  AppLocalizations.of(context)!.notifSettingBannerBody,
                   style: TextStyle(
                     fontSize: 12.sp,
                     color: AppColors.textHint,
@@ -366,7 +368,7 @@ class _FooterNote extends StatelessWidget {
         SizedBox(width: 6.w),
         Expanded(
           child: Text(
-            'ການປ່ຽນແປງຈະຖືກບັນທຶກທັນທີ. ທ່ານສາມາດປ່ຽນການຕັ້ງຄ່າໄດ້ຕະຫຼອດເວລາ.',
+            AppLocalizations.of(context)!.notifSettingFooterNote,
             style: TextStyle(
               fontSize: 12.sp,
               color: AppColors.textHint,

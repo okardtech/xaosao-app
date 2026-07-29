@@ -116,7 +116,7 @@ class HomeLogic extends GetxController {
           recommendedHasMore: newItems.length >= _pageSize,
         ));
       } else {
-        print('message ==>${res.message}');
+        // print('message ==>${res.message}');
         _updateState(state.copyWith(
           recommendedStatus:
               isFirstPage ? HomeStatus.failure : HomeStatus.success,
@@ -126,7 +126,7 @@ class HomeLogic extends GetxController {
         }
       }
     } catch (e) {
-      print('error ==>${e}');
+      // print('error ==>${e}');
       _updateState(state.copyWith(
         recommendedStatus:
             isFirstPage ? HomeStatus.failure : HomeStatus.success,

@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:xaosao/constants/app_color.dart';
+import 'package:xaosao/l10n/app_localizations.dart';
 import 'package:xaosao/models/customer_public_profile.dart';
 import 'package:xaosao/repository/review_repo.dart';
 import 'package:xaosao/services/storage_service.dart';
@@ -106,6 +107,7 @@ class _ModelDetailPageState extends State<ModelDetailPage> {
 
   // ── Error ─────────────────────────────────────────────────
   Widget _buildError(String? msg) {
+    final l10n = AppLocalizations.of(context)!;
     return SafeArea(
       child: Column(
         children: [
@@ -131,7 +133,7 @@ class _ModelDetailPageState extends State<ModelDetailPage> {
                   ),
                   SizedBox(height: 12.h),
                   Text(
-                    msg ?? 'ໂຫຼດຂໍ້ມູນບໍ່ສຳເລັດ',
+                    msg ?? l10n.commonLoadDataFailed,
                     style: TextStyle(
                       fontSize: 14.sp,
                       color: AppColors.textHint,
@@ -140,7 +142,7 @@ class _ModelDetailPageState extends State<ModelDetailPage> {
                   SizedBox(height: 16.h),
                   TextButton(
                     onPressed: _logic.fetch,
-                    child: const Text('ລອງໃໝ່'),
+                    child: Text(l10n.commonRetry),
                   ),
                 ],
               ),
@@ -153,6 +155,7 @@ class _ModelDetailPageState extends State<ModelDetailPage> {
 
   // ── Main content ──────────────────────────────────────────
   Widget _buildBody(CustomerPublicProfile profile) {
+    final l10n = AppLocalizations.of(context)!;
     return CustomScrollView(
       controller: _scrollCtrl,
       physics: const BouncingScrollPhysics(),
@@ -228,7 +231,10 @@ class _ModelDetailPageState extends State<ModelDetailPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               _buildActionRow(profile),
-              _Section(title: 'ຂໍ້ມູນສ່ວນຕົວ', child: _buildInfoGrid(profile)),
+              _Section(
+                title: l10n.detailPersonalInfo,
+                child: _buildInfoGrid(profile),
+              ),
               SizedBox(height: 32.h),
             ],
           ),
@@ -239,6 +245,7 @@ class _ModelDetailPageState extends State<ModelDetailPage> {
 
   // ── Action row: chat + friend ─────────────────────────────
   Widget _buildActionRow(CustomerPublicProfile profile) {
+    final l10n = AppLocalizations.of(context)!;
     return Padding(
       padding: EdgeInsets.fromLTRB(16.w, 14.h, 16.w, 0),
       child: Row(
@@ -292,7 +299,7 @@ class _ModelDetailPageState extends State<ModelDetailPage> {
                             ),
                             SizedBox(width: 6.w),
                             Text(
-                              'ເເຊັດ',
+                              l10n.bookingActionChat,
                               style: TextStyle(
                                 fontSize: 12.sp,
                                 fontWeight: FontWeight.w700,
@@ -360,6 +367,7 @@ class _ModelDetailPageState extends State<ModelDetailPage> {
 
   // ── Info grid ─────────────────────────────────────────────
   Widget _buildInfoGrid(CustomerPublicProfile profile) {
+    final l10n = AppLocalizations.of(context)!;
     final age = profile.age;
     final memberSince = profile.createdAt != null
         ? DateFormat('MMM yyyy').format(profile.createdAt!)
@@ -391,11 +399,21 @@ class _ModelDetailPageState extends State<ModelDetailPage> {
           IntrinsicHeight(
             child: Row(
               children: [
-                _StatStrip(label: 'ອາຍຸ', value: age > 0 ? '$age ປີ' : '—'),
+                _StatStrip(
+                  label: l10n.detailStatAge,
+                  value: age > 0 ? l10n.commonAgeYears(age) : '—',
+                ),
                 _StatStripDivider(),
-                _StatStrip(label: 'ສະມາຊິກຕັ້ງແຕ່', value: memberSince),
+                _StatStrip(
+                  label: l10n.detailStatMemberSince,
+                  value: memberSince,
+                ),
                 _StatStripDivider(),
-                _StatStrip(label: 'ລະດັບ', value: tier, valueColor: tierColor),
+                _StatStrip(
+                  label: l10n.detailStatTier,
+                  value: tier,
+                  valueColor: tierColor,
+                ),
               ],
             ),
           ),
@@ -421,7 +439,7 @@ class _ModelDetailPageState extends State<ModelDetailPage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'ທີ່ຢູ່',
+                        l10n.registerAddress,
                         style: TextStyle(
                           fontSize: 9.sp,
                           color: AppColors.textHint,
@@ -533,6 +551,7 @@ class _PhotoSliderState extends State<_PhotoSlider>
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return SizedBox(
       height: widget.height,
       child: Stack(
@@ -630,7 +649,7 @@ class _PhotoSliderState extends State<_PhotoSlider>
                   pulse: _pulseCtrl,
                   label: _count > 1
                       ? '${_current + 1} / $_count'
-                      : 'ດູຮູບ',
+                      : l10n.detailViewPhotos,
                 ),
               ),
             ),
@@ -745,6 +764,7 @@ class _ExpandAffordance extends StatelessWidget {
 class _TapHintChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 7.h),
       decoration: BoxDecoration(
@@ -761,7 +781,7 @@ class _TapHintChip extends StatelessWidget {
           Icon(Icons.touch_app_rounded, size: 13.r, color: Colors.white),
           SizedBox(width: 6.w),
           Text(
-            'ກົດທີ່ຮູບເພື່ອຂະຫຍາຍ',
+            l10n.detailTapPhotoToExpand,
             style: TextStyle(
               fontSize: 11.sp,
               fontWeight: FontWeight.w700,
@@ -902,6 +922,7 @@ class _StatsStrip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Container(
       decoration: BoxDecoration(
         color: Colors.white.withValues(alpha: 0.07),
@@ -926,28 +947,28 @@ class _StatsStrip extends StatelessWidget {
             icon: Icons.calendar_today_rounded,
             iconColor: AppColors.vipGold,
             value: _fmt(profile.bookingCount),
-            label: 'ຄະເເນນ',
+            label: l10n.detailStatRating,
           ),
           _vDivider(),
           _StatCell(
             icon: Icons.grid_view_rounded,
             iconColor: Colors.white.withValues(alpha: 0.70),
             value: _fmt(profile.postCount),
-            label: 'ໂພສ',
+            label: l10n.detailStatPosts,
           ),
           _vDivider(),
           _StatCell(
             icon: Icons.card_giftcard_rounded,
             iconColor: AppColors.primary,
             value: _fmt(profile.giftCount),
-            label: 'ຂອງຂວັນ',
+            label: l10n.detailStatGifts,
           ),
           _vDivider(),
           _StatCell(
             icon: Icons.monetization_on_rounded,
             iconColor: Colors.white.withValues(alpha: 0.70),
             value: _fmt(profile.giftAmount),
-            label: 'ຈໍານວນ',
+            label: l10n.detailStatCount,
           ),
         ],
       ),

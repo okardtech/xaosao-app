@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:xaosao/constants/app_color.dart';
+import 'package:xaosao/l10n/app_localizations.dart';
 import 'package:xaosao/pages/forgot_password/getx/forgot_logic.dart';
 import 'package:xaosao/pages/register/components/register_app_bar.dart';
 import 'package:xaosao/widgets/app_button.dart';
@@ -100,6 +101,7 @@ class _ForgotOtpPageState extends State<ForgotOtpPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       behavior: HitTestBehavior.opaque,
@@ -122,7 +124,7 @@ class _ForgotOtpPageState extends State<ForgotOtpPage> {
                   child: Column(
                     children: [
                       Text(
-                        'ກະລຸນາກວດເບິ່ງ SMS ຂອງທ່ານ\nລະຫັດໃຊ້ໄດ້ 5 ນາທີ ເທົ່ານັ້ນ',
+                        l10n.registerOtpSmsInfo,
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           fontSize: 14.sp,
@@ -141,7 +143,7 @@ class _ForgotOtpPageState extends State<ForgotOtpPage> {
                         mainAxisSize: MainAxisSize.max,
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         errorText: _hasError
-                            ? 'ລະຫັດ OTP ບໍ່ຖືກຕ້ອງ — ລອງໃໝ່'
+                            ? l10n.registerOtpInvalid
                             : null,
                         theme: MaterialPinTheme(
                           shape: MaterialPinShape.outlined,
@@ -179,7 +181,7 @@ class _ForgotOtpPageState extends State<ForgotOtpPage> {
                         child: Padding(
                           padding: EdgeInsets.only(bottom: 8.h),
                           child: Text(
-                            'ລະຫັດ OTP ບໍ່ຖືກຕ້ອງ ກະລຸນາລອງໃໝ່',
+                            l10n.registerOtpInvalidRetry,
                             style: TextStyle(
                               fontSize: 14.sp,
                               color: Colors.red.shade400,
@@ -195,7 +197,7 @@ class _ForgotOtpPageState extends State<ForgotOtpPage> {
                       ),
                       SizedBox(height: 22.h),
                       AppPrimaryButton(
-                        label: 'ຢືນຢັນ OTP',
+                        label: l10n.registerOtpVerify,
                         enabled: _otp.length == 6,
                         loading: _loading,
                         trailingIcon: Icons.check_rounded,
@@ -208,7 +210,7 @@ class _ForgotOtpPageState extends State<ForgotOtpPage> {
                           GestureDetector(
                             onTap: () => Navigator.pop(context),
                             child: Text(
-                              'ປ່ຽນເບີໂທລະສັບ',
+                              l10n.registerOtpChangePhone,
                               style: TextStyle(
                                 fontSize: 12.sp,
                                 fontWeight: FontWeight.w700,
@@ -243,6 +245,7 @@ class _ForgotOtpHero extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Container(
       width: double.infinity,
       decoration: const BoxDecoration(
@@ -311,7 +314,7 @@ class _ForgotOtpHero extends StatelessWidget {
                   ),
                   SizedBox(height: 12.h),
                   Text(
-                    'ຢືນຢັນຕົວຕົນ',
+                    l10n.forgotIdentityVerifyTitle,
                     style: TextStyle(
                       fontSize: 18.sp,
                       fontWeight: FontWeight.w900,
@@ -321,7 +324,7 @@ class _ForgotOtpHero extends StatelessWidget {
                   ),
                   SizedBox(height: 6.h),
                   Text(
-                    'ໃສ່ລະຫັດ 6 ໂຕທີ່ສົ່ງໄປຫາ',
+                    l10n.registerOtpEnter6Digits,
                     style: TextStyle(
                       fontSize: 14.sp,
                       color: Colors.white.withValues(alpha: 0.70),
@@ -339,12 +342,12 @@ class _ForgotOtpHero extends StatelessWidget {
                   SizedBox(height: 12.h),
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 20.w),
-                    child: const StepIndicatorRow(
+                    child: StepIndicatorRow(
                       currentStep: 2,
                       steps: [
-                        StepItem(label: 'ໂທລະສັບ'),
-                        StepItem(label: 'OTP'),
-                        StepItem(label: 'ລະຫັດໃໝ່'),
+                        StepItem(label: l10n.forgotStepPhone),
+                        StepItem(label: l10n.registerStepOtp),
+                        StepItem(label: l10n.changePasswordSectionNew),
                       ],
                     ),
                   ),
@@ -372,6 +375,7 @@ class _CountdownRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Column(
       children: [
         if (!canResend)
@@ -379,7 +383,7 @@ class _CountdownRow extends StatelessWidget {
             TextSpan(
               style: TextStyle(fontSize: 14.sp, color: AppColors.textHint),
               children: [
-                const TextSpan(text: 'ລະຫັດໝົດອາຍຸໃນ '),
+                TextSpan(text: l10n.registerOtpExpiresIn),
                 TextSpan(
                   text: timerLabel,
                   style: TextStyle(
@@ -393,7 +397,7 @@ class _CountdownRow extends StatelessWidget {
           )
         else
           Text(
-            'ລະຫັດໝົດອາຍຸແລ້ວ',
+            l10n.registerOtpExpired,
             style: TextStyle(fontSize: 14.sp, color: Colors.red.shade400),
           ),
         SizedBox(height: 6.h),
@@ -403,9 +407,9 @@ class _CountdownRow extends StatelessWidget {
             TextSpan(
               style: TextStyle(fontSize: 14.sp, color: AppColors.textHint),
               children: [
-                const TextSpan(text: 'ຍັງບໍ່ໄດ້ຮັບລະຫັດ? '),
+                TextSpan(text: l10n.registerOtpNotReceived),
                 TextSpan(
-                  text: 'ສົ່ງໃໝ່',
+                  text: l10n.registerOtpResend,
                   style: TextStyle(
                     fontSize: 14.sp,
                     fontWeight: FontWeight.w700,
