@@ -122,8 +122,20 @@ class AppsFlyerService extends GetxService {
       return;
     }
 
-    final code = _stringOrNull(data['code']) ??
-        _stringOrNull(data['deep_link_value']);
+    // Guard: skip if the canonical value looks like a profile-link
+    // type ("companion" / "model") — that means this attribution
+    // came from a profile share, not a referral share, and it would
+    // navigate to Register with a bogus code otherwise.
+    final rawCode = _stringOrNull(data['code']);
+    final rawDeepLinkValue = _stringOrNull(data['deep_link_value']);
+    String? code;
+    if (rawCode != null) {
+      code = rawCode; // explicit `code` param — always a referral
+    } else if (rawDeepLinkValue != null &&
+        DeepLinkType.tryParse(rawDeepLinkValue) == null) {
+      // Canonical fallback, only if it doesn't parse as a profile type.
+      code = rawDeepLinkValue;
+    }
     final target = _stringOrNull(data['target']) ??
         _stringOrNull(data['deep_link_sub1']);
 
@@ -154,22 +166,34 @@ class AppsFlyerService extends GetxService {
 
     final deepLink = Get.find<DeepLinkService>();
 
-    // ── 1. Referral link (?code=…&target=…) ──────────────────
-    // Referral links never double as profile deep links — if a code
-    // is present we hand off and return.
+    // ── 1. Profile deep link (?type=…&id=…) ──────────────────
+    // Checked FIRST because it's more specific: `type` (or its
+    // canonical `deep_link_value` mirror) must parse as a known
+    // [DeepLinkType] value ("companion" / "model"). Referral URLs
+    // never put those values there — their `deep_link_value` is a
+    // random alphanumeric referral code.
     //
-    // CRITICAL: on **deferred** deep links (install-then-open, no
-    // Universal / App Link match) AppsFlyer resolves the payload via
-    // probabilistic fingerprint matching. That path *only* preserves
-    // AppsFlyer's canonical keys — `deep_link_value` and
-    // `deep_link_sub1..sub10` — custom query params like `code` and
-    // `target` are dropped. Falling back to those keys lets the same
-    // link work whether it arrived via direct match (URL preserved)
-    // or via fingerprint match (only canonical keys preserved).
-    //
-    // URLs built by [buildShareLink] include *both* naming schemes so
-    // this fallback fires without any Custom Parameter Mapping being
-    // configured in the AppsFlyer console.
+    // Empirical: without this ordering, a profile URL like
+    //   ?type=model&id=X&deep_link_value=model&deep_link_sub1=X
+    // would be hijacked by Branch 2's `code ?? deep_link_value`
+    // fallback, which grabs "model" as if it were a referral code
+    // and navigates to Register instead of the profile page.
+    final rawType = link.getStringValue('type') ??
+        link.getStringValue('deep_link_value');
+    final parsedType = DeepLinkType.tryParse(rawType);
+    final id = link.getStringValue('id') ??
+        link.getStringValue('deep_link_sub1');
+    if (parsedType != null && id != null && id.isNotEmpty) {
+      // debugPrint('$_tag page deep-link type=${parsedType.wire} id=$id');
+      deepLink.handle(DeepLinkPayload(type: parsedType, id: id));
+      return;
+    }
+
+    // ── 2. Referral link (?code=…&target=…) ──────────────────
+    // Falls through to here when the URL is not a recognised profile
+    // deep link. `code` fallback to `deep_link_value` handles both
+    // direct match (URL preserved) and deferred / fingerprint match
+    // (only canonical keys preserved).
     final refCode = link.getStringValue('code') ??
         link.getStringValue('deep_link_value');
     final target = link.getStringValue('target') ??
@@ -178,20 +202,6 @@ class AppsFlyerService extends GetxService {
       // debugPrint('$_tag referral code=$refCode target=$target');
       incomingRefCode.value = refCode;
       deepLink.captureReferral(code: refCode, target: target);
-      return;
-    }
-
-    // ── 2. Profile deep link (?type=…&id=…) ──────────────────
-    // Same fallback pattern: prefer explicit keys, fall back to
-    // AppsFlyer canonical keys for deferred / fingerprint matches.
-    final rawType =
-        link.getStringValue('type') ?? link.getStringValue('deep_link_value');
-    final id =
-        link.getStringValue('id') ?? link.getStringValue('deep_link_sub1');
-    final parsedType = DeepLinkType.tryParse(rawType);
-    if (parsedType != null && id != null && id.isNotEmpty) {
-      // debugPrint('$_tag page deep-link type=${parsedType.wire} id=$id');
-      deepLink.handle(DeepLinkPayload(type: parsedType, id: id));
     }
   }
 
