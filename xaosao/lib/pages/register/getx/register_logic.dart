@@ -5,6 +5,7 @@ import 'package:xaosao/pages/register/getx/register_state.dart';
 import 'package:xaosao/repository/referral_repo.dart';
 import 'package:xaosao/repository/register_repo.dart';
 import 'package:xaosao/utils/app_snackbar.dart';
+import 'package:xaosao/services/deep_link_service.dart';
 import 'package:xaosao/utils/image_picker_util.dart';
 import 'package:xaosao/utils/l10n.dart';
 import 'package:xaosao/widgets/show_loading_alert.dart';
@@ -32,22 +33,28 @@ class RegisterLogic extends GetxController {
 
   void _updateState(RegisterState newState) => _state.value = newState;
 
-  void setRole(RegisterRole role) {
+  /// Called by RegisterPage.initState. When opened from a referral
+  /// deep link, [referralCode] is passed through from route arguments
+  /// (populated by [DeepLinkService]). Otherwise we fall back to
+  /// storage for legacy callers (e.g. login → sign-up button used
+  /// before DeepLinkService cleared the persistent copy).
+  ///
+  /// Both companion and customer flows resolve the referrer here so
+  /// the banner renders regardless of role.
+  void setRole(RegisterRole role, {String? referralCode}) {
     _updateState(state.copyWith(role: role));
-    savedServiceSelections = []; // fresh registration start — clear any prior selections
-    // Both flows can carry a pending referral now — customer signups from
-    // a customer OneLink also need the referrer resolved so the banner
-    // renders.
-    _loadAndValidateReferral();
+    savedServiceSelections = [];
+    final code = (referralCode != null && referralCode.isNotEmpty)
+        ? referralCode
+        : Get.find<StorageService>().read<String>('pending_ref_code');
+    if (code != null && code.isNotEmpty) _loadAndValidateReferral(code);
   }
 
   void saveServiceSelections(List<Map<String, dynamic>> data) {
     savedServiceSelections = data;
   }
 
-  Future<void> _loadAndValidateReferral() async {
-    final code = Get.find<StorageService>().read<String>('pending_ref_code');
-    if (code == null || code.isEmpty) return;
+  Future<void> _loadAndValidateReferral(String code) async {
     try {
       final res = await _referralRepo.referralValidate(code: code);
       if (res.success && res.data != null && res.data!.valid == true) {
@@ -240,10 +247,14 @@ class RegisterLogic extends GetxController {
         // Register FCM device token — fire-and-forget, non-critical
         loginLogic.saveFcmToken();
 
+        // Referral was fully honoured — clear both storage keys AND
+        // mark the code consumed so a re-fired AppsFlyer callback
+        // can't re-open register with the same link.
+        Get.find<DeepLinkService>().clearReferral();
+
         Get.offAllNamed(AppRoutes.dashboard);
       } else {
-        final storage = Get.find<StorageService>();
-        await storage.remove('pending_ref_code');
+        Get.find<DeepLinkService>().clearReferral();
         AppSnackbar.success(res.laMessage ?? l10n.registerSuccess);
         Get.offAllNamed(AppRoutes.login);
       }
@@ -291,7 +302,6 @@ class RegisterLogic extends GetxController {
     _pendingPassword = '';
     _pendingAddress = '';
     _pendingFilePath = '';
-    final storage = Get.find<StorageService>();
-    storage.remove('pending_ref_code');
+    Get.find<DeepLinkService>().clearReferral();
   }
 }

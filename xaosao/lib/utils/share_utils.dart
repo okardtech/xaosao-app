@@ -4,28 +4,52 @@ import 'package:xaosao/utils/l10n.dart';
 
 /// Which register flow a referral link is intended for.
 ///
-/// The distinction is carried on the URL via `?target=` for anyone reading
-/// the link directly, but AppsFlyer's OneLink routing still keys off the
-/// original `?code=` param (that's what opens the app).
+/// Carried on the URL via BOTH `?target=` (human-readable) and
+/// `?deep_link_sub1=` (AppsFlyer canonical). The canonical key is what
+/// survives probabilistic fingerprint matching on deferred deep links
+/// (install-then-open), so we always emit both.
 enum ReferralTarget { model, customer }
 
 class ShareUtils {
-  static const _onelinkBase = 'https://xaosao.onelink.me/TfaF/ieh44kax';
+  static const _onelinkBase = 'https://xaosao.onelink.me/TfaF/8oxhsd7d';
 
-  /// Legacy shape kept because OneLink is configured to open the app when
-  /// it sees `?code=`. Adding a `deep_link_value=` param broke that path
-  /// (clicks fell through to the web fallback), so we stay on this scheme.
-  static String buildReferralLink(String refCode) =>
-      '$_onelinkBase?code=$refCode';
+  /// Builds a OneLink referral URL that resolves on **both** direct
+  /// AND deferred install paths.
+  ///
+  /// URL includes ALL FOUR params on purpose:
+  ///
+  ///   • `deep_link_value` / `deep_link_sub1` — AppsFlyer canonical
+  ///     keys. Required for **deferred** deep links because
+  ///     probabilistic fingerprint matching only preserves these.
+  ///   • `code` / `target` — required for **direct** deep links on
+  ///     this OneLink template. Empirical: URLs with only canonical
+  ///     keys were NOT opening the app on installed devices — the
+  ///     `code` param appears to be what triggers the template's
+  ///     deep-linking behaviour (likely tied to the "Additional
+  ///     parameters" mapping in the AppsFlyer Console).
+  ///
+  /// Do NOT drop either pair without testing both:
+  ///   1. Installed device → tap link → app opens on register
+  ///   2. Fresh install → tap link → install → open → register
+  static String _build(String refCode, {String? target}) {
+    final buf = StringBuffer(
+      '$_onelinkBase?deep_link_value=$refCode&code=$refCode',
+    );
+    if (target != null && target.isNotEmpty) {
+      buf.write('&deep_link_sub1=$target&target=$target');
+    }
+    return buf.toString();
+  }
 
-  /// Model-facing referral link — same shape as [buildReferralLink] with
-  /// a `target=model` marker on the URL.
+  static String buildReferralLink(String refCode) => _build(refCode);
+
+  /// Model-facing referral link.
   static String buildModelReferralLink(String refCode) =>
-      '$_onelinkBase?code=$refCode&target=model';
+      _build(refCode, target: 'model');
 
   /// Customer-facing referral link.
   static String buildCustomerReferralLink(String refCode) =>
-      '$_onelinkBase?code=$refCode&target=customer';
+      _build(refCode, target: 'customer');
 
   static Future<void> shareReferralLink(String refCode) async {
     final link = buildReferralLink(refCode);

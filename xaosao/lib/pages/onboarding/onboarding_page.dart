@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -8,6 +9,7 @@ import 'package:xaosao/constants/app_image.dart';
 import 'package:xaosao/l10n/app_localizations.dart';
 import 'package:xaosao/pages/login/login_page.dart';
 import 'package:xaosao/pages/onboarding/components/companion_widget.dart';
+import 'package:xaosao/services/deep_link_service.dart';
 import 'package:xaosao/services/language_service.dart';
 import 'package:xaosao/widgets/app_network_image.dart';
 import 'package:xaosao/pages/onboarding/components/service_card_large.dart';
@@ -158,6 +160,12 @@ class _XaosaoHomePageState extends State<XaosaoHomePage>
               ],
             ),
             actions: [
+              // ── Debug: simulate a deferred deep-link referral ──
+              // Only shown in debug builds — auto-hidden in release.
+              // Lets us verify the whole splash → register + banner
+              // pipeline without needing Play Store install referrer.
+              if (kDebugMode) const _DebugReferralButton(),
+
               // ── Language switcher ──────────────────────────
               const _LanguageChip(),
               SizedBox(width: 10.w),
@@ -1028,5 +1036,69 @@ class _LanguageChip extends StatelessWidget {
         ),
       );
     });
+  }
+}
+
+// ══════════════════════════════════════════════════════════════════
+//  _DebugReferralButton — debug-only helper for testing the referral
+//  flow WITHOUT needing an AppsFlyer deep link. Simulates the exact
+//  callback that AppsFlyer would fire on a deferred install so we can
+//  verify: splash fast-path → register push → banner render → storage
+//  cleared → reopen goes to onboarding.
+//
+//  Auto-hidden in release builds via the `kDebugMode` guard at the
+//  call site — this widget file compiles in production too, it just
+//  never renders.
+// ══════════════════════════════════════════════════════════════════
+class _DebugReferralButton extends StatelessWidget {
+  const _DebugReferralButton();
+
+  static const _testCode = 'XSCC85AB7';
+
+  Future<void> _pick(BuildContext context) async {
+    final target = await showModalBottomSheet<String>(
+      context: context,
+      builder: (_) => SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              leading: const Icon(Icons.person),
+              title: const Text('Simulate: MODEL referral'),
+              onTap: () => Navigator.pop(context, 'model'),
+            ),
+            ListTile(
+              leading: const Icon(Icons.people),
+              title: const Text('Simulate: CUSTOMER referral'),
+              onTap: () => Navigator.pop(context, 'customer'),
+            ),
+            const Divider(height: 1),
+            ListTile(
+              leading: const Icon(Icons.cancel_outlined),
+              title: const Text('Cancel'),
+              onTap: () => Navigator.pop(context),
+            ),
+          ],
+        ),
+      ),
+    );
+    if (target == null) return;
+    Get.find<DeepLinkService>().captureReferral(
+      code: _testCode,
+      target: target,
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.only(right: 8.w),
+      child: IconButton(
+        tooltip: 'Simulate referral deep link',
+        icon: Icon(Icons.bug_report_rounded,
+            size: 22.r, color: Colors.redAccent),
+        onPressed: () => _pick(context),
+      ),
+    );
   }
 }

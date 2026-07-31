@@ -18,6 +18,7 @@ import 'package:xaosao/pages/profile/change_password/change_password_page.dart';
 import 'package:xaosao/pages/profile_detail/compoents/update_info_page.dart';
 import 'package:xaosao/pages/profile_detail/profile_detail_page.dart';
 import 'package:xaosao/pages/register/components/services_select.dart';
+import 'package:xaosao/services/deep_link_service.dart';
 import 'package:xaosao/pages/register/components/verify_otp.dart';
 import 'package:xaosao/pages/register/getx/register_state.dart';
 import 'package:xaosao/pages/register/register_page.dart';
@@ -105,8 +106,17 @@ class AppRoutes {
       case xaosaoHome:
         return _slideUp(const XaosaoHomePage());
       case register:
-        final role = settings.arguments as RegisterRole;
-        return _slideRight(RegisterPage(role: role));
+        // Accepts either a bare [RegisterRole] (legacy — used by login's
+        // "sign up" button) or a [RegisterArgs] carrying role + referral
+        // code (used by DeepLinkService for referral-link opens).
+        final args = settings.arguments;
+        if (args is RegisterArgs) {
+          return _slideRight(RegisterPage(
+            role: args.role,
+            referralCode: args.referralCode,
+          ));
+        }
+        return _slideRight(RegisterPage(role: args as RegisterRole));
       case verifyOtp:
         final otpModel = settings.arguments as RegisterModel;
         return _slideRight(OtpPage(model: otpModel));

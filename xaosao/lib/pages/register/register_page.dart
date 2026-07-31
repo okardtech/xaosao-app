@@ -14,7 +14,14 @@ import 'getx/register_logic.dart';
 
 class RegisterPage extends StatefulWidget {
   final RegisterRole role;
-  const RegisterPage({super.key, required this.role});
+
+  /// Referral code to seed the referrer banner with, without a
+  /// storage lookup. Populated by [DeepLinkService] when the page
+  /// is opened from an AppsFlyer referral link; null when the user
+  /// navigated here manually (e.g. from login → sign up).
+  final String? referralCode;
+
+  const RegisterPage({super.key, required this.role, this.referralCode});
 
   @override
   State<RegisterPage> createState() => _RegisterPageState();
@@ -67,7 +74,10 @@ class _RegisterPageState extends State<RegisterPage> {
   @override
   void initState() {
     super.initState();
-    Get.find<RegisterLogic>().setRole(widget.role);
+    Get.find<RegisterLogic>().setRole(
+      widget.role,
+      referralCode: widget.referralCode,
+    );
     SystemChrome.setSystemUIOverlayStyle(
       const SystemUiOverlayStyle(
         statusBarColor: Colors.white,

@@ -14,7 +14,7 @@ class DeepLinkShare {
   DeepLinkShare._();
 
   // Same OneLink template as the existing referral flow.
-  static const String _oneLinkBase = 'https://xaosao.onelink.me/TfaF/ieh44kax';
+  static const String _oneLinkBase = 'https://xaosao.onelink.me/TfaF/8oxhsd7d';
 
   /// Build a sharable OneLink that — when opened on a device with the
   /// app installed — deep-links to the matching in-app page.
