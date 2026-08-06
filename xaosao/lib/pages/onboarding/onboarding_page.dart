@@ -1095,8 +1095,11 @@ class _DebugReferralButton extends StatelessWidget {
       padding: EdgeInsets.only(right: 8.w),
       child: IconButton(
         tooltip: 'Simulate referral deep link',
-        icon: Icon(Icons.bug_report_rounded,
-            size: 22.r, color: Colors.redAccent),
+        icon: Icon(
+          Icons.bug_report_rounded,
+          size: 22.r,
+          color: Colors.redAccent,
+        ),
         onPressed: () => _pick(context),
       ),
     );
