@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:xaosao/constants/app_color.dart';
+import 'package:xaosao/l10n/app_localizations.dart';
 
 class ImagePickerUtil {
   ImagePickerUtil._();
@@ -53,6 +54,7 @@ class _SourceSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return SafeArea(
       top: false,
       child: Container(
@@ -74,13 +76,13 @@ class _SourceSheet extends StatelessWidget {
                 borderRadius: BorderRadius.circular(2),
               ),
             ),
-      
+
             // Title
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 20),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Text(
-                'ເລືອກຮູບໂປຣໄຟ',
-                style: TextStyle(
+                l10n.imagePickerTitle,
+                style: const TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w700,
                   color: AppColors.textPrimary,
@@ -88,7 +90,7 @@ class _SourceSheet extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 18),
-      
+
             // Gallery + Camera tiles
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -97,7 +99,7 @@ class _SourceSheet extends StatelessWidget {
                   Expanded(
                     child: _OptionTile(
                       icon: Icons.photo_library_outlined,
-                      label: 'ຄັງຮູບ',
+                      label: l10n.imagePickerGallery,
                       onTap: () => Navigator.pop(context, ImageSource.gallery),
                     ),
                   ),
@@ -105,7 +107,7 @@ class _SourceSheet extends StatelessWidget {
                   Expanded(
                     child: _OptionTile(
                       icon: Icons.camera_alt_outlined,
-                      label: 'ກ້ອງຖ່າຍຮູບ',
+                      label: l10n.imagePickerCamera,
                       onTap: () => Navigator.pop(context, ImageSource.camera),
                     ),
                   ),

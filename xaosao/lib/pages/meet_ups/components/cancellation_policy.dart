@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:xaosao/constants/app_color.dart';
+import 'package:xaosao/l10n/app_localizations.dart';
 
 // ═══════════════════════════════════════════════════════════════
 //  CancellationPolicyBanner
@@ -101,6 +102,7 @@ class _CancellationPolicyBannerState extends State<CancellationPolicyBanner>
 
   // ── Header row (always visible) ─────────────────────────────
   Widget _buildHeader() {
+    final l10n = AppLocalizations.of(context)!;
     return GestureDetector(
       onTap: _toggle,
       behavior: HitTestBehavior.opaque,
@@ -127,7 +129,7 @@ class _CancellationPolicyBannerState extends State<CancellationPolicyBanner>
             // Title
             Expanded(
               child: Text(
-                'ນະໂຍບາຍຍົກເລີກ & ຄືນເງິນ',
+                l10n.cancellationPolicyTitle,
                 style: TextStyle(
                   fontSize: 12.sp,
                   fontWeight: FontWeight.w800,
@@ -138,7 +140,9 @@ class _CancellationPolicyBannerState extends State<CancellationPolicyBanner>
 
             // Toggle label + chevron
             Text(
-              _isExpanded ? 'ຫຍໍ້' : 'ດູເພີ່ມ',
+              _isExpanded
+                  ? l10n.cancellationPolicyCollapse
+                  : l10n.cancellationPolicyExpand,
               style: TextStyle(
                 fontSize: 12.sp,
                 fontWeight: FontWeight.w600,
@@ -162,6 +166,7 @@ class _CancellationPolicyBannerState extends State<CancellationPolicyBanner>
 
   // ── Body: rules + note ─────────────────────────────────────
   Widget _buildBody() {
+    final l10n = AppLocalizations.of(context)!;
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -177,8 +182,8 @@ class _CancellationPolicyBannerState extends State<CancellationPolicyBanner>
           iconBg: const Color(0xFFEDFAF3),
           icon: Icons.check_rounded,
           iconColor: const Color(0xFF22C55E),
-          title: 'ຍົກເລີກກ່ອນ 30 ນາທີ',
-          subtitle: 'ຄືນເງິນທັນທີ ພາຍໃນ 24 ຊົ່ວໂມງ',
+          title: l10n.cancellationTier1Title,
+          subtitle: l10n.cancellationTier1Subtitle,
           badge: '100%',
           badgeBg: const Color(0xFFEDFAF3),
           badgeFg: const Color(0xFF15803D),
@@ -190,8 +195,8 @@ class _CancellationPolicyBannerState extends State<CancellationPolicyBanner>
           iconBg: const Color(0xFFFFFBEB),
           icon: Icons.warning_amber_rounded,
           iconColor: const Color(0xFFF59E0B),
-          title: 'ຍົກເລີກຫຼັງ 30 ນາທີ',
-          subtitle: 'ຄືນເງິນພາຍໃນ 24 ຊົ່ວໂມງ',
+          title: l10n.cancellationTier2Title,
+          subtitle: l10n.cancellationTier2Subtitle,
           badge: '50%',
           badgeBg: const Color(0xFFFFFBEB),
           badgeFg: const Color(0xFF92400E),
@@ -203,8 +208,8 @@ class _CancellationPolicyBannerState extends State<CancellationPolicyBanner>
           iconBg: const Color(0xFFFEF2F2),
           icon: Icons.close_rounded,
           iconColor: const Color(0xFFB91C1C),
-          title: 'ຍົກເລີກຫຼັງເລີ່ມນັດ',
-          subtitle: 'ບໍ່ສາມາດຄືນເງິນໄດ້',
+          title: l10n.cancellationTier3Title,
+          subtitle: l10n.cancellationTier3Subtitle,
           badge: '0%',
           badgeBg: const Color(0xFFFEF2F2),
           badgeFg: const Color(0xFFB91C1C),
@@ -235,7 +240,7 @@ class _CancellationPolicyBannerState extends State<CancellationPolicyBanner>
           SizedBox(width: 6.w),
           Expanded(
             child: Text(
-              'ເງິນຈະຖືກໂອນຄືນໄປຍັງຊ່ອງທາງທີ່ທ່ານຊຳລະ ພາຍໃນ 24 ຊົ່ວໂມງ',
+              AppLocalizations.of(context)!.cancellationRefundInfo,
               style: TextStyle(
                 fontSize: 10.sp,
                 color: const Color(0xFF6B6B80),

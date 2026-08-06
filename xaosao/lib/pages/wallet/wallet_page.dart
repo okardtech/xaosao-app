@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:xaosao/constants/app_color.dart';
+import 'package:xaosao/l10n/app_localizations.dart';
 import 'package:xaosao/pages/wallet/components/transaction_card.dart';
 import 'package:xaosao/pages/wallet/components/wallet_card.dart';
 import 'package:xaosao/pages/wallet/components/wallet_shimmer.dart';
@@ -22,12 +23,13 @@ class _WalletPageState extends State<WalletPage> {
   late final WalletLogic _logic;
   late final ScrollController _scrollCtrl;
 
-  static const _chips = <(String, String?)>[
-    ('ທັງໝົດ', null),
-    ('ລໍຖ້າອະນຸມດ', 'pending'),
-    ('ສຳເລັດເເລ້ວ', 'approved'),
-    ('ຍົກເລີກເເລ້ວ', 'rejected'),
-  ];
+  // Filter chips are built at build time so labels follow the current locale.
+  List<(String, String?)> _buildChips(AppLocalizations l10n) => [
+        (l10n.walletFilterAll, null),
+        (l10n.walletFilterPending, 'pending'),
+        (l10n.walletFilterApproved, 'approved'),
+        (l10n.walletFilterRejected, 'rejected'),
+      ];
 
   @override
   void initState() {
@@ -53,9 +55,14 @@ class _WalletPageState extends State<WalletPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final chips = _buildChips(l10n);
     return Scaffold(
       backgroundColor: AppColors.bg,
-      appBar: GradientAppBar(title: 'ກະເປົ໋າເງິນ', subtitle: 'ຍອດ ແລະ ປະຫວັດ'),
+      appBar: GradientAppBar(
+        title: l10n.walletTitle,
+        subtitle: l10n.walletSubtitle,
+      ),
       body: Obx(() {
         final st = _logic.state;
         return RefreshIndicator(
@@ -89,7 +96,7 @@ class _WalletPageState extends State<WalletPage> {
                 child: Padding(
                   padding: EdgeInsets.fromLTRB(16.w, 14.h, 16.w, 8.h),
                   child: Text(
-                    'ປະຫວັດການເຕີມ',
+                    l10n.walletRechargeHistory,
                     style: TextStyle(
                       fontSize: 14.sp,
                       fontWeight: FontWeight.w700,
@@ -104,7 +111,7 @@ class _WalletPageState extends State<WalletPage> {
                 pinned: true,
                 delegate: _ChipsDelegate(
                   filter: st.filter,
-                  chips: _chips,
+                  chips: chips,
                   onSelect: _logic.setFilter,
                   height: 42,
                 ),
@@ -120,8 +127,8 @@ class _WalletPageState extends State<WalletPage> {
                   hasScrollBody: false,
                   child: AppEmptyState(
                     icon: Icons.receipt_long_outlined,
-                    title: 'ຍັງບໍ່ມີລາຍການ',
-                    subtitle: 'ລາຍການເຕີມເງິນຂອງທ່ານ\nຈະສະແດງຢູ່ທີ່ນີ້',
+                    title: l10n.walletEmptyTitle,
+                    subtitle: l10n.walletEmptySubtitle,
                   ),
                 ),
 

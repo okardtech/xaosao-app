@@ -4,7 +4,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:xaosao/constants/app_color.dart';
 import 'package:xaosao/constants/app_routes.dart';
+import 'package:xaosao/l10n/app_localizations.dart';
 import 'package:xaosao/models/notification_item_model.dart';
+import 'package:xaosao/utils/l10n.dart' as g;
 
 class WelcomeNotificationPage extends StatefulWidget {
   final NotificationItemModel? notification;
@@ -90,12 +92,12 @@ class _WelcomeNotificationPageState extends State<WelcomeNotificationPage>
   String get _notifTitle =>
       widget.notification?.laTitle ??
       widget.notification?.title ??
-      'ຍິນດີຕ້ອນຮັບ!';
+      g.l10n.welcomeTitle;
 
   String get _notifMessage =>
       widget.notification?.laMessage ??
       widget.notification?.message ??
-      'ບັນຊີຂອງທ່ານສ້າງສຳເລັດແລ້ວ.\nຂໍໃຫ້ທ່ານມີຄວາມສຸກໃນການໃຊ້ງານ!';
+      g.l10n.welcomeBody;
 
   @override
   Widget build(BuildContext context) {
@@ -340,6 +342,7 @@ class _BottomCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Container(
       margin: EdgeInsets.fromLTRB(16.w, 0, 16.w, 0),
       padding: EdgeInsets.fromLTRB(20.w, 22.h, 20.w, 0),
@@ -367,7 +370,7 @@ class _BottomCard extends StatelessWidget {
           Row(
             children: [
               Text(
-                'ສິ່ງທີ່ທ່ານສາມາດເຮັດໄດ້',
+                l10n.welcomeCanDoTitle,
                 style: TextStyle(
                   fontSize: 14.sp,
                   fontWeight: FontWeight.w800,
@@ -383,19 +386,19 @@ class _BottomCard extends StatelessWidget {
             children: [
               _FeatureTile(
                 emoji: '💬',
-                label: 'ສົນທະນາ',
+                label: l10n.welcomeChat,
                 color: const Color(0xFFF06292),
               ),
               SizedBox(width: 10.w),
               _FeatureTile(
                 emoji: '📅',
-                label: 'ຈອງ',
+                label: l10n.welcomeBook,
                 color: const Color(0xFF7C3AED),
               ),
               SizedBox(width: 10.w),
               _FeatureTile(
                 emoji: '🌟',
-                label: 'ຄົ້ນຫາ',
+                label: l10n.welcomeExplore,
                 color: const Color(0xFFF59E0B),
               ),
             ],
@@ -524,7 +527,7 @@ class _StartButton extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  'ເລີ່ມໃຊ້ງານເລີຍ',
+                  AppLocalizations.of(context)!.welcomeGetStartedCta,
                   style: TextStyle(
                     fontSize: 15.sp,
                     fontWeight: FontWeight.w800,

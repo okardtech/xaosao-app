@@ -6,6 +6,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:xaosao/constants/app_color.dart';
 import 'package:xaosao/constants/app_data_config.dart';
 import 'package:xaosao/constants/app_routes.dart';
+import 'package:xaosao/l10n/app_localizations.dart';
 import 'package:xaosao/utils/phone_validate.dart';
 import 'package:xaosao/utils/picker_date.dart';
 import '../../login/getx/login_state.dart';
@@ -501,6 +502,7 @@ class TermsCheckbox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -541,23 +543,23 @@ class TermsCheckbox extends StatelessWidget {
                   height: 1.55,
                 ),
                 children: [
-                  const TextSpan(text: 'ຂ້ອຍໄດ້ອ່ານ ແລະ ຍອມຮັບ '),
+                  TextSpan(text: l10n.registerTermsPrefix),
                   TextSpan(
-                    text: 'ຂໍ້ກຳນົດການໃຊ້ງານ',
+                    text: l10n.registerTermsOfUse,
                     style: TextStyle(
                       fontWeight: FontWeight.w700,
                       color: AppColors.primary,
                     ),
                   ),
-                  const TextSpan(text: ' ແລະ '),
+                  TextSpan(text: l10n.registerTermsAnd),
                   TextSpan(
-                    text: 'ນະໂຍບາຍຄວາມເປັນສ່ວນຕົວ',
+                    text: l10n.registerPrivacyPolicy,
                     style: TextStyle(
                       fontWeight: FontWeight.w700,
                       color: AppColors.primary,
                     ),
                   ),
-                  const TextSpan(text: ' ຂອງ XAOSAO'),
+                  TextSpan(text: l10n.registerTermsSuffix),
                 ],
               ),
             ),
@@ -616,7 +618,7 @@ class RegButton extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
-                "ສ້າງບັນຊື",
+                AppLocalizations.of(context)!.registerCta,
                 style: TextStyle(
                   fontSize: 14.sp,
                   fontWeight: FontWeight.w700,

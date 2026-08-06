@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:xaosao/constants/app_color.dart';
+import 'package:xaosao/l10n/app_localizations.dart';
 import 'package:xaosao/models/gallerys_model.dart';
 import '../gallery_page.dart';
 
@@ -30,6 +31,7 @@ class GalleryPreview extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     if (photos.isEmpty && !isOwner) {
       return Container(
         height: 88.h,
@@ -41,17 +43,17 @@ class GalleryPreview extends StatelessWidget {
         ),
         child: Center(
           child: Text(
-            'ຍັງບໍ່ມີຮູບ',
+            l10n.profileNoPhotos,
             style: TextStyle(fontSize: 13.sp, color: AppColors.textHint),
           ),
         ),
       );
     }
 
-    return _buildRow();
+    return _buildRow(l10n);
   }
 
-  Widget _buildRow() {
+  Widget _buildRow(AppLocalizations l10n) {
     final overflow =
         photos.length > _maxVisible ? photos.length - _maxVisible : 0;
     final tiles = <Widget>[];
@@ -66,7 +68,7 @@ class GalleryPreview extends StatelessWidget {
         final isOverflow = i == _maxVisible - 1 && overflow > 0;
         content = _photoContent(i, isOverflow ? '+$overflow' : null);
       } else if (i == photos.length && isOwner && photos.length < maxPhotos) {
-        content = _addContent();
+        content = _addContent(l10n);
       } else {
         content = _emptyContent();
       }
@@ -142,7 +144,7 @@ class GalleryPreview extends StatelessWidget {
     );
   }
 
-  Widget _addContent() {
+  Widget _addContent(AppLocalizations l10n) {
     return GestureDetector(
       onTap: _openGallery,
       child: Container(
@@ -165,7 +167,7 @@ class GalleryPreview extends StatelessWidget {
             Icon(Icons.add_photo_alternate_outlined,
                 size: 24.r, color: AppColors.textHint),
             SizedBox(height: 6.h),
-            Text('ເພີ່ມ',
+            Text(l10n.commonAdd,
                 style: TextStyle(fontSize: 11.sp, color: AppColors.textHint)),
           ],
         ),

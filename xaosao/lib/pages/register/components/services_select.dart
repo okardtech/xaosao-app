@@ -3,7 +3,9 @@ import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:xaosao/constants/app_color.dart';
+import 'package:xaosao/l10n/app_localizations.dart';
 import 'package:xaosao/models/service_model.dart';
+import 'package:xaosao/utils/l10n.dart' as g;
 import 'package:xaosao/utils/service_helper.dart';
 import 'package:xaosao/pages/register/getx/register_logic.dart';
 import 'package:xaosao/pages/register/getx/register_state.dart';
@@ -137,9 +139,9 @@ class _ServiceEntry {
   String? get priceError {
     if (!selected || priceCtrl.text.isEmpty) return null;
     final p = parsedPrice;
-    if (p == null) return 'ກະລຸນາໃສ່ລາຄາ';
+    if (p == null) return g.l10n.registerPriceRequired;
     final base = service.baseRate ?? 0;
-    if (p < base) return 'ລາຄາຕ່ຳສຸດ ${_fmtInt(base.toInt())} ກີບ';
+    if (p < base) return g.l10n.registerMinPrice(_fmtInt(base.toInt()));
     return null;
   }
 
@@ -283,14 +285,15 @@ class _ServicesSelectState extends State<ServicesSelect> {
   @override
   Widget build(BuildContext context) {
     final logic = Get.find<RegisterLogic>();
+    final l10n = AppLocalizations.of(context)!;
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       behavior: HitTestBehavior.opaque,
       child: Scaffold(
         backgroundColor: AppColors.bg,
         appBar: GradientAppBar(
-          title: "ເລືອກບໍລິການ",
-          subtitle: 'ກຳນົດປະເພດ ແລະ ລາຄາບໍລິການຂອງທ່ານ',
+          title: l10n.registerServicesTitle,
+          subtitle: l10n.registerServicesSubtitle,
         ),
         body: SafeArea(
           child: Column(
@@ -315,7 +318,7 @@ class _ServicesSelectState extends State<ServicesSelect> {
                   if (_entries.isEmpty) {
                     return Center(
                       child: Text(
-                        'ບໍ່ມີບໍລິການ',
+                        l10n.registerNoServices,
                         style: TextStyle(
                           fontSize: 14.sp,
                           color: AppColors.textHint,
@@ -331,9 +334,9 @@ class _ServicesSelectState extends State<ServicesSelect> {
                         ..._entries.asMap().entries.map((mapEntry) {
                           final idx = mapEntry.key;
                           final entry = mapEntry.value;
-                          print(
-                            'Rendering service card for ${entry.service.name}, selected: ${entry.selected}, price: ${entry.priceCtrl.text}, variants: ${entry.variants.length}',
-                          );
+                          // print(
+                          //   'Rendering service card for ${entry.service.name}, selected: ${entry.selected}, price: ${entry.priceCtrl.text}, variants: ${entry.variants.length}',
+                          // );
                           return Padding(
                             padding: EdgeInsets.only(
                               bottom: idx < _entries.length - 1 ? 12.h : 0,
@@ -433,33 +436,38 @@ class _InfoBanner extends StatelessWidget {
           ),
           SizedBox(width: 8.w),
           Expanded(
-            child: Text.rich(
-              TextSpan(
-                style: TextStyle(
-                  fontSize: 13.sp,
-                  color: AppColors.textSecondary,
-                  height: 1.5,
-                ),
-                children: const [
-                  TextSpan(text: 'ກະລຸນາດຳເນີນການ'),
+            child: Builder(
+              builder: (ctx) {
+                final l10n = AppLocalizations.of(ctx)!;
+                return Text.rich(
                   TextSpan(
-                    text: 'ເລືອກບໍລິການ',
                     style: TextStyle(
-                      fontWeight: FontWeight.w700,
-                      color: AppColors.primary,
+                      fontSize: 13.sp,
+                      color: AppColors.textSecondary,
+                      height: 1.5,
                     ),
+                    children: [
+                      TextSpan(text: l10n.registerServicesInfoPrefix),
+                      TextSpan(
+                        text: l10n.registerServicesInfoSelect,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.w700,
+                          color: AppColors.primary,
+                        ),
+                      ),
+                      TextSpan(text: l10n.registerServicesInfoMid),
+                      TextSpan(
+                        text: l10n.registerServicesInfoSetPrice,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.w700,
+                          color: AppColors.primary,
+                        ),
+                      ),
+                      TextSpan(text: l10n.registerServicesInfoDot),
+                    ],
                   ),
-                  TextSpan(text: ' ທີ່ທ່ານຕ້ອງການ ແລະ '),
-                  TextSpan(
-                    text: 'ຕັ້ງລາຄາ',
-                    style: TextStyle(
-                      fontWeight: FontWeight.w700,
-                      color: AppColors.primary,
-                    ),
-                  ),
-                  TextSpan(text: '.'),
-                ],
-              ),
+                );
+              },
             ),
           ),
         ],
@@ -612,7 +620,7 @@ class _ServiceCard extends StatelessWidget {
                             Row(
                               children: [
                                 Text(
-                                  'ລາຄາ (ກີບ/ຊົ່ວໂມງ) *',
+                                  AppLocalizations.of(context)!.registerPricePerHourLabel,
                                   style: TextStyle(
                                     fontSize: 12.sp,
                                     fontWeight: FontWeight.w600,
@@ -622,7 +630,7 @@ class _ServiceCard extends StatelessWidget {
                                 if (baseRate != null) ...[
                                   SizedBox(width: 6.w),
                                   Text(
-                                    'ຕ່ຳສຸດ ${_fmtInt(baseRate!.toInt())} ກີບ',
+                                    AppLocalizations.of(context)!.registerMinPriceKip(_fmtInt(baseRate!.toInt())),
                                     style: TextStyle(
                                       fontSize: 11.sp,
                                       color: AppColors.textHint,
@@ -764,7 +772,7 @@ class _MassageServiceCard extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        'ເພີ່ມໄດ້ທຸກປະເພດ',
+                        AppLocalizations.of(context)!.registerAllVariants,
                         style: TextStyle(
                           fontSize: 11.sp,
                           color: AppColors.textHint,
@@ -821,6 +829,7 @@ class _MassageVariantsSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -832,7 +841,7 @@ class _MassageVariantsSection extends StatelessWidget {
             children: [
               // ── Service location input ───────────────────────
               Text(
-                'ສະຖານທີ່ໃຫ້ບໍລິການ *',
+                l10n.registerServiceLocation,
                 style: TextStyle(
                   fontSize: 12.sp,
                   fontWeight: FontWeight.w600,
@@ -842,7 +851,7 @@ class _MassageVariantsSection extends StatelessWidget {
               SizedBox(height: 8.h),
               _MiniTextField(
                 ctrl: locationCtrl,
-                hint: 'ເຊັ່ນ: ເຮືອນ, ໂຮງແຮມ, ສະຖານທີ່ລູກຄ້າ',
+                hint: l10n.registerServiceLocationHint,
                 hasError: false,
                 isNumber: false,
                 onChanged: onChanged,
@@ -852,7 +861,7 @@ class _MassageVariantsSection extends StatelessWidget {
               Row(
                 children: [
                   Text(
-                    'ປະເພດ ແລະ ລາຄາ (ກີບ/ຊົ່ວໂມງ) *',
+                    l10n.registerVariantsPriceLabel,
                     style: TextStyle(
                       fontSize: 12.sp,
                       fontWeight: FontWeight.w600,
@@ -862,7 +871,7 @@ class _MassageVariantsSection extends StatelessWidget {
                   if (baseRate != null) ...[
                     SizedBox(width: 6.w),
                     Text(
-                      'ຕ່ຳສຸດ ${_fmtInt(baseRate!.toInt())} ກີບ',
+                      l10n.registerMinPriceKip(_fmtInt(baseRate!.toInt())),
                       style: TextStyle(
                         fontSize: 11.sp,
                         color: AppColors.textHint,
@@ -899,7 +908,7 @@ class _MassageVariantsSection extends StatelessWidget {
                       ),
                       SizedBox(width: 6.w),
                       Text(
-                        'ເພີ່ມປະເພດ',
+                        l10n.servicesManageAddVariant,
                         style: TextStyle(
                           fontSize: 13.sp,
                           fontWeight: FontWeight.w600,
@@ -951,7 +960,7 @@ class _VariantRowWidget extends StatelessWidget {
           flex: 5,
           child: _MiniTextField(
             ctrl: row.nameCtrl,
-            hint: 'ຊື່ປະເພດ',
+            hint: AppLocalizations.of(context)!.servicesManageVariantName,
             hasError: false,
             isNumber: false,
             onChanged: onChanged,
@@ -1152,7 +1161,7 @@ class _PriceSuffixField extends StatelessWidget {
             padding: EdgeInsets.symmetric(horizontal: 12.w),
             child: Center(
               child: Text(
-                'ກີບ/ຊມ',
+                AppLocalizations.of(context)!.registerCurrencyPerHour,
                 style: TextStyle(fontSize: 12.sp, color: AppColors.textHint),
               ),
             ),
@@ -1201,7 +1210,7 @@ class _ContinueButton extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
-                'ດຳເນີນການຕໍ່',
+                AppLocalizations.of(context)!.registerContinueCta,
                 style: TextStyle(
                   fontSize: 14.sp,
                   fontWeight: FontWeight.w700,

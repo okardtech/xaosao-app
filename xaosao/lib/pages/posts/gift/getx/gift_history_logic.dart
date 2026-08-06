@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 import 'package:xaosao/pages/posts/gift/getx/gift_history_state.dart';
 import 'package:xaosao/repository/gift_repo.dart';
+import 'package:xaosao/utils/l10n.dart';
 
 class GiftHistoryLogic extends GetxController {
   final _repo = GiftRepo();
@@ -27,13 +28,13 @@ class GiftHistoryLogic extends GetxController {
       } else {
         _state.value = GiftHistoryState(
           status: GiftHistoryStatus.failure,
-          error: res.laMessage ?? 'ໂຫຼດຂໍ້ມູນບໍ່ສຳເລັດ',
+          error: res.laMessage ?? l10n.commonLoadDataFailed,
         );
       }
     } catch (_) {
-      _state.value = const GiftHistoryState(
+      _state.value = GiftHistoryState(
         status: GiftHistoryStatus.failure,
-        error: 'ມີຂໍ້ຜິດພາດເກີດຂຶ້ນ',
+        error: l10n.commonErrorOccurred,
       );
     }
   }

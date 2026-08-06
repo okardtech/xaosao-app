@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:xaosao/constants/app_color.dart';
+import 'package:xaosao/utils/l10n.dart';
 import 'package:xaosao/widgets/app_button.dart';
 import 'package:xaosao/widgets/app_svg_icon.dart';
 
@@ -15,7 +16,7 @@ class ConfirmSheet {
     required String icon,
     Color? iconColor,
     bool isDanger = false,
-    String cancelLabel = 'ຍົກເລີກ',
+    String? cancelLabel,
   }) {
     return showModalBottomSheet<bool>(
       context: context,
@@ -31,7 +32,7 @@ class ConfirmSheet {
             iconColor ??
             (isDanger ? const Color(0xFFDC2626) : AppColors.primary),
         isDanger: isDanger,
-        cancelLabel: cancelLabel,
+        cancelLabel: cancelLabel ?? l10n.commonCancel,
       ),
     );
   }

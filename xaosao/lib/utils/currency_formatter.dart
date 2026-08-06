@@ -1,12 +1,16 @@
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
+import 'package:xaosao/utils/l10n.dart';
 
 class CurrFormatter {
   static final _fmt = NumberFormat('#,###', 'en_US');
 
   static String format(num amount) => _fmt.format(amount);
 
-  static String kip(num amount) => '${_fmt.format(amount)} ກີບ';
+  /// Formats [amount] with the localized "KIP" suffix. The suffix comes
+  /// from `commonCurrencyKip` so it follows the app language.
+  static String kip(num amount) =>
+      '${_fmt.format(amount)} ${l10n.commonCurrencyKip}';
 }
 
 /// Live-formats a numeric text field with thousands separators (e.g. 100,000).

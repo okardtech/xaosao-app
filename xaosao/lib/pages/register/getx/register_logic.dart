@@ -5,7 +5,9 @@ import 'package:xaosao/pages/register/getx/register_state.dart';
 import 'package:xaosao/repository/referral_repo.dart';
 import 'package:xaosao/repository/register_repo.dart';
 import 'package:xaosao/utils/app_snackbar.dart';
+import 'package:xaosao/services/deep_link_service.dart';
 import 'package:xaosao/utils/image_picker_util.dart';
+import 'package:xaosao/utils/l10n.dart';
 import 'package:xaosao/widgets/show_loading_alert.dart';
 import '../../../services/storage_service.dart';
 import '../../login/getx/login_state.dart';
@@ -31,19 +33,28 @@ class RegisterLogic extends GetxController {
 
   void _updateState(RegisterState newState) => _state.value = newState;
 
-  void setRole(RegisterRole role) {
+  /// Called by RegisterPage.initState. When opened from a referral
+  /// deep link, [referralCode] is passed through from route arguments
+  /// (populated by [DeepLinkService]). Otherwise we fall back to
+  /// storage for legacy callers (e.g. login → sign-up button used
+  /// before DeepLinkService cleared the persistent copy).
+  ///
+  /// Both companion and customer flows resolve the referrer here so
+  /// the banner renders regardless of role.
+  void setRole(RegisterRole role, {String? referralCode}) {
     _updateState(state.copyWith(role: role));
-    savedServiceSelections = []; // fresh registration start — clear any prior selections
-    if (role == RegisterRole.companion) _loadAndValidateReferral();
+    savedServiceSelections = [];
+    final code = (referralCode != null && referralCode.isNotEmpty)
+        ? referralCode
+        : Get.find<StorageService>().read<String>('pending_ref_code');
+    if (code != null && code.isNotEmpty) _loadAndValidateReferral(code);
   }
 
   void saveServiceSelections(List<Map<String, dynamic>> data) {
     savedServiceSelections = data;
   }
 
-  Future<void> _loadAndValidateReferral() async {
-    final code = Get.find<StorageService>().read<String>('pending_ref_code');
-    if (code == null || code.isEmpty) return;
+  Future<void> _loadAndValidateReferral(String code) async {
     try {
       final res = await _referralRepo.referralValidate(code: code);
       if (res.success && res.data != null && res.data!.valid == true) {
@@ -77,11 +88,11 @@ class RegisterLogic extends GetxController {
         );
       } else {
         _updateState(state.copyWith(servicesStatus: RegisterStatus.failure));
-        AppSnackbar.error(res.laMessage ?? 'ໂຫຼດບໍລິການບໍ່ສຳເລັດ');
+        AppSnackbar.error(res.laMessage ?? l10n.registerLoadServicesFailed);
       }
     } catch (e) {
       _updateState(state.copyWith(servicesStatus: RegisterStatus.failure));
-      AppSnackbar.error('ໂຫຼດບໍລິການບໍ່ສຳເລັດ');
+      AppSnackbar.error(l10n.registerLoadServicesFailed);
     }
   }
 
@@ -94,7 +105,7 @@ class RegisterLogic extends GetxController {
     String? address,
   }) async {
     if (state.avatarFile == null) {
-      AppSnackbar.error('ກະລຸນາເລືອກຮູບໂປຮໄຟລ໌');
+      AppSnackbar.error(l10n.registerSelectProfilePhoto);
       return;
     }
     _updateState(state.copyWith(status: RegisterStatus.loading));
@@ -135,7 +146,7 @@ class RegisterLogic extends GetxController {
         );
         hideLoadingDialog();
         if (!res.success) {
-          AppSnackbar.error(res.laMessage ?? 'ລົງທະບຽນບໍ່ສຳເລັດ');
+          AppSnackbar.error(res.laMessage ?? l10n.registerFailed);
           return;
         }
         Get.toNamed(
@@ -144,10 +155,10 @@ class RegisterLogic extends GetxController {
         );
       }
     } catch (e) {
-      print('error ==>${e}');
+      // print('error ==>${e}');
       _updateState(state.copyWith(status: RegisterStatus.failure));
       hideLoadingDialog();
-      AppSnackbar.error('ລົງທະບຽນບໍ່ສຳເລັດ');
+      AppSnackbar.error(l10n.registerFailed);
     }
   }
 
@@ -179,7 +190,7 @@ class RegisterLogic extends GetxController {
       );
       hideLoadingDialog();
       if (!res.success) {
-        AppSnackbar.error(res.laMessage ?? 'ລົງທະບຽນບໍ່ສຳເລັດ');
+        AppSnackbar.error(res.laMessage ?? l10n.registerFailed);
         return;
       }
       Get.toNamed(
@@ -189,7 +200,7 @@ class RegisterLogic extends GetxController {
     } catch (e) {
       _updateState(state.copyWith(status: RegisterStatus.failure));
       hideLoadingDialog();
-      AppSnackbar.error('ລົງທະບຽນບໍ່ສຳເລັດ');
+      AppSnackbar.error(l10n.registerFailed);
     }
   }
 
@@ -214,7 +225,7 @@ class RegisterLogic extends GetxController {
       );
       hideLoadingDialog();
       if (!res.success || res.data == null) {
-        AppSnackbar.error(res.laMessage ?? 'OTP ບໍ່ຖືກຕ້ອງ');
+        AppSnackbar.error(res.laMessage ?? l10n.registerInvalidOtp);
         return false;
       }
       if (isCustomer) {
@@ -236,17 +247,22 @@ class RegisterLogic extends GetxController {
         // Register FCM device token — fire-and-forget, non-critical
         loginLogic.saveFcmToken();
 
+        // Referral was fully honoured — clear both storage keys AND
+        // mark the code consumed so a re-fired AppsFlyer callback
+        // can't re-open register with the same link.
+        Get.find<DeepLinkService>().clearReferral();
+
         Get.offAllNamed(AppRoutes.dashboard);
       } else {
-        await Get.find<StorageService>().remove('pending_ref_code');
-        AppSnackbar.success(res.laMessage ?? 'ການລົງທະບຽນສຳເລັດເເລ້ວ');
+        Get.find<DeepLinkService>().clearReferral();
+        AppSnackbar.success(res.laMessage ?? l10n.registerSuccess);
         Get.offAllNamed(AppRoutes.login);
       }
       return true;
     } catch (e) {
       _updateState(state.copyWith(status: RegisterStatus.failure));
       hideLoadingDialog();
-      AppSnackbar.error('ກວດສອບ OTP ບໍ່ສຳເລັດ');
+      AppSnackbar.error(l10n.registerVerifyOtpFailed);
       return false;
     }
   }
@@ -260,14 +276,14 @@ class RegisterLogic extends GetxController {
       final res = await _repo.resendOtp(phone: phone, isCustomer: isCustomer);
       hideLoadingDialog();
       if (!res.success) {
-        AppSnackbar.error(res.laMessage ?? 'ສົ່ງ OTP ໃໝ່ບໍ່ສຳເລັດ');
+        AppSnackbar.error(res.laMessage ?? l10n.registerResendOtpFailed);
         return false;
       }
-      AppSnackbar.success('ສົ່ງລະຫັດ OTP ໃໝ່ແລ້ວ');
+      AppSnackbar.success(l10n.registerResendOtpSuccess);
       return true;
     } catch (e) {
       hideLoadingDialog();
-      AppSnackbar.error('ສົ່ງ OTP ໃໝ່ບໍ່ສຳເລັດ');
+      AppSnackbar.error(l10n.registerResendOtpFailed);
       return false;
     }
   }
@@ -286,6 +302,6 @@ class RegisterLogic extends GetxController {
     _pendingPassword = '';
     _pendingAddress = '';
     _pendingFilePath = '';
-    Get.find<StorageService>().remove('pending_ref_code');
+    Get.find<DeepLinkService>().clearReferral();
   }
 }

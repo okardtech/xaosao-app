@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 import 'package:xaosao/pages/posts/gift/getx/gifted_posts_state.dart';
 import 'package:xaosao/repository/chat_repo.dart';
+import 'package:xaosao/utils/l10n.dart';
 
 class GiftedPostsLogic extends GetxController {
   final String postId;
@@ -28,15 +29,15 @@ class GiftedPostsLogic extends GetxController {
           data: res.data,
         );
       } else {
-        _state.value = const GiftedPostsState(
+        _state.value = GiftedPostsState(
           status: GiftedPostsStatus.failure,
-          error: 'ບໍ່ສາມາດໂຫຼດຂໍ້ມູນໄດ້',
+          error: l10n.commonCantLoadData,
         );
       }
     } catch (_) {
-      _state.value = const GiftedPostsState(
+      _state.value = GiftedPostsState(
         status: GiftedPostsStatus.failure,
-        error: 'ມີຂໍ້ຜິດພາດເກີດຂຶ້ນ',
+        error: l10n.commonErrorOccurred,
       );
     }
   }

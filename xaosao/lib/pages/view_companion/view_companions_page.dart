@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:xaosao/constants/app_color.dart';
+import 'package:xaosao/l10n/app_localizations.dart';
 import 'package:xaosao/models/Recommended_model.dart';
 import 'package:xaosao/pages/view_companion/components/companion_discover_card.dart';
 import 'package:xaosao/pages/view_companion/components/companion_discover_shimmer.dart';
@@ -22,16 +23,16 @@ class _ViewAllCompanionsPageState extends State<ViewAllCompanionsPage> {
   final TextEditingController _searchCtrl = TextEditingController();
   final ScrollController _scrollCtrl = ScrollController();
 
-  // label → API filter value (null = all)
-  static const _filters = <(String, String?)>[
-    ('ທັງໝົດ', 'all'),
-    ('★ VIP', 'vip'),
-    ('ຂ້ອຍ Like', 'liked-by-me'),
-    ('Like ຂ້ອຍ', 'who-liked-me'),
-    ('ໃກ້ຂ້ອຍ', 'nearby'),
-    ('ໃໝ່', 'new'),
-    ('ນິຍົມ', 'popular'),
-  ];
+  // label → API filter value. Built at build-time so labels follow locale.
+  List<(String, String?)> _buildFilters(AppLocalizations l10n) => [
+        (l10n.commonAll, 'all'),
+        ('★ VIP', 'vip'),
+        (l10n.viewCompanionFilterLikedByMe, 'liked-by-me'),
+        (l10n.viewCompanionFilterWhoLikedMe, 'who-liked-me'),
+        (l10n.viewCompanionFilterNearby, 'nearby'),
+        (l10n.viewCompanionFilterNew, 'new'),
+        (l10n.viewCompanionFilterPopular, 'popular'),
+      ];
 
   @override
   void initState() {
@@ -84,22 +85,24 @@ class _ViewAllCompanionsPageState extends State<ViewAllCompanionsPage> {
 
                   if (state.status == ViewCompanionStatus.failure &&
                       list.isEmpty) {
+                    final l10n = AppLocalizations.of(context)!;
                     return AppEmptyState(
                       icon: Icons.wifi_off_rounded,
-                      title: 'ບໍ່ສາມາດໂຫຼດຂໍ້ມູນ',
-                      subtitle: state.error ?? 'ກະລຸນາລອງໃໝ່ອີກຄັ້ງ',
+                      title: l10n.commonLoadDataFailed,
+                      subtitle: state.error ?? l10n.commonPleaseRetry,
                       iconColor: AppColors.primary,
-                      actionLabel: 'ລອງໃໝ່',
+                      actionLabel: l10n.commonRetry,
                       onAction: _logic.retry,
                     );
                   }
 
                   if (state.status == ViewCompanionStatus.success &&
                       list.isEmpty) {
-                    return const AppEmptyState(
+                    final l10n = AppLocalizations.of(context)!;
+                    return AppEmptyState(
                       icon: Icons.search_off_rounded,
-                      title: 'ບໍ່ພົບຂໍ້ມູນ',
-                      subtitle: 'ລອງປ່ຽນ filter ຫຼືຄົ້ນຫາໃໝ່',
+                      title: l10n.viewCompanionEmptyTitle,
+                      subtitle: l10n.viewCompanionEmptySubtitle,
                       iconColor: AppColors.primary,
                     );
                   }
@@ -137,7 +140,7 @@ class _ViewAllCompanionsPageState extends State<ViewAllCompanionsPage> {
           ),
           SizedBox(width: 12.w),
           Text(
-            'ທັງໝົດ',
+            AppLocalizations.of(context)!.viewCompanionPageTitle,
             style: TextStyle(
               fontSize: 17.sp,
               fontWeight: FontWeight.w800,
@@ -186,7 +189,7 @@ class _ViewAllCompanionsPageState extends State<ViewAllCompanionsPage> {
                 decoration: InputDecoration(
                   isDense: true,
                   border: InputBorder.none,
-                  hintText: 'ຄົ້ນຫາຊື່...',
+                  hintText: AppLocalizations.of(context)!.viewCompanionSearchHint,
                   hintStyle: TextStyle(
                       fontSize: 13.sp, color: AppColors.textDisabled),
                   contentPadding: EdgeInsets.zero,
@@ -210,6 +213,7 @@ class _ViewAllCompanionsPageState extends State<ViewAllCompanionsPage> {
 
   // ── Filter chips ───────────────────────────────────────
   Widget _buildFilterChips() {
+    final filters = _buildFilters(AppLocalizations.of(context)!);
     return Obx(() {
       final selected = _logic.state.filter;
       return SizedBox(
@@ -218,10 +222,10 @@ class _ViewAllCompanionsPageState extends State<ViewAllCompanionsPage> {
           scrollDirection: Axis.horizontal,
           physics: const BouncingScrollPhysics(),
           padding: EdgeInsets.symmetric(horizontal: 20.w),
-          itemCount: _filters.length,
+          itemCount: filters.length,
           separatorBuilder: (_, __) => SizedBox(width: 7.w),
           itemBuilder: (_, i) {
-            final (label, value) = _filters[i];
+            final (label, value) = filters[i];
             final isActive = selected == value;
             return GestureDetector(
               onTap: () => _logic.filterBy(value),

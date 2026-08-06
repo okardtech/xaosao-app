@@ -32,14 +32,20 @@
 import 'package:appsflyer_sdk/appsflyer_sdk.dart';
 import 'package:get/get.dart';
 import 'deep_link_service.dart';
-import 'storage_service.dart';
 
+/// Thin adapter over [AppsflyerSdk] — its ONLY job is to translate
+/// `onDeepLinking` events into calls on [DeepLinkService]. All routing,
+/// dedup and persistence lives there so the AppsFlyer SDK stays a
+/// leaf dependency.
 class AppsFlyerService extends GetxService {
   static const _devKey = 's9xWA3UhoYsAmq2ovtVsLo';
-  static const _iosAppId = 'YOUR_IOS_APP_ID';
+  static const _iosAppId = '6792675259';
 
-  late AppsflyerSdk _sdk;
+  late final AppsflyerSdk _sdk;
 
+  /// Exposed for legacy callers (e.g. `Obx` listeners that need to react
+  /// to an incoming referral outside the deep-link nav flow). Not used
+  /// by the routing pipeline itself.
   final Rx<String?> incomingRefCode = Rx<String?>(null);
 
   Future<AppsFlyerService> init() async {
@@ -52,45 +58,171 @@ class AppsFlyerService extends GetxService {
 
     _sdk = AppsflyerSdk(options);
 
-    _sdk.onDeepLinking((DeepLinkResult res) {
-      if (res.status != Status.FOUND) return;
-      final link = res.deepLink;
-      if (link == null) return;
+    // Register the callbacks BEFORE initSdk so we never miss a fast
+    // cold-start payload. All handlers ultimately funnel through
+    // [DeepLinkService.captureReferral] whose `_consumedRefCodes` set
+    // guarantees exactly-once navigation even if the same referral is
+    // delivered via multiple channels.
+    //
+    // Two channels are needed because AppsFlyer delivers the payload
+    // on different callbacks depending on the install path:
+    //
+    //   • `onDeepLinking` (UDL)          — fires on every direct deep
+    //                                      link (installed app tap).
+    //                                      Also fires on some deferred
+    //                                      installs but NOT reliably —
+    //                                      especially on Android when
+    //                                      App Links aren't set up.
+    //   • `onInstallConversionData`      — fires ONCE, on first launch
+    //                                      after install, with the
+    //                                      attribution payload. Our
+    //                                      second-channel recovery for
+    //                                      deferred deep links that UDL
+    //                                      dropped.
+    _sdk.onDeepLinking(_onDeepLink);
+    _sdk.onInstallConversionData(_onInstallConversionData);
 
-      // ── Legacy: referral code ─────────────────────────────────
-      final refCode = link.getStringValue('code');
-      if (refCode != null && refCode.isNotEmpty) {
-        incomingRefCode.value = refCode;
-        Get.find<StorageService>().write('pending_ref_code', refCode);
-      }
-
-      // ── Page deep link: type + id ─────────────────────────────
-      // Fall back to AppsFlyer's canonical OneLink keys when our own
-      // `type`/`id` params aren't present (so links built by either
-      // convention resolve correctly).
-      final rawType =
-          link.getStringValue('type') ?? link.getStringValue('deep_link_value');
-      final id =
-          link.getStringValue('id') ?? link.getStringValue('deep_link_sub1');
-      final parsedType = DeepLinkType.tryParse(rawType);
-      if (parsedType != null && id != null && id.isNotEmpty) {
-        Get.find<DeepLinkService>().handle(
-          DeepLinkPayload(type: parsedType, id: id),
-        );
-      }
-    });
-
+    // `onDeepLinking` (UDL) already covers every attribution event we
+    // care about post-install — leaving `onAppOpenAttribution` on would
+    // fire a second callback for the same link. Not a correctness bug
+    // (dedup lives in DeepLinkService) but it's noise in logs.
     await _sdk.initSdk(
       registerConversionDataCallback: true,
-      registerOnAppOpenAttributionCallback: true,
+      registerOnAppOpenAttributionCallback: false,
       registerOnDeepLinkingCallback: true,
     );
 
     return this;
   }
 
-  static String buildShareLink(String refCode) =>
-      'https://xaosao.onelink.me/TfaF/ieh44kax?code=$refCode';
+  /// Fires once on first launch after install with the attribution
+  /// payload. On a fresh-install referral tap this is often the ONLY
+  /// callback that carries the code (UDL may not fire until second
+  /// launch on some Android configurations), so we mirror the same
+  /// referral extraction as [_onDeepLink].
+  ///
+  /// The `data` map matches the raw AppsFlyer conversion payload —
+  /// keys of interest:
+  ///   • `af_status`         — "Organic" / "Non-organic"
+  ///   • `media_source`      — attribution channel
+  ///   • `deep_link_value`   — canonical referral code (survives
+  ///                            probabilistic fingerprint matching)
+  ///   • `deep_link_sub1`    — canonical target (model/customer)
+  ///   • `code` / `target`   — custom params on the OneLink URL
+  ///                            (kept in the map when direct match
+  ///                            preserves the URL query string)
+  void _onInstallConversionData(dynamic data) {
+    // debugPrint('$_tag onInstallConversionData: $data');
+    if (data is! Map) return;
+
+    // Only act on non-organic installs — organic ones have no referrer.
+    final status = data['af_status']?.toString();
+    if (status != null && status.toLowerCase() == 'organic') {
+      // debugPrint('$_tag conversion data organic — no referral to extract');
+      return;
+    }
+
+    // Guard: skip if the canonical value looks like a profile-link
+    // type ("companion" / "model") — that means this attribution
+    // came from a profile share, not a referral share, and it would
+    // navigate to Register with a bogus code otherwise.
+    final rawCode = _stringOrNull(data['code']);
+    final rawDeepLinkValue = _stringOrNull(data['deep_link_value']);
+    String? code;
+    if (rawCode != null) {
+      code = rawCode; // explicit `code` param — always a referral
+    } else if (rawDeepLinkValue != null &&
+        DeepLinkType.tryParse(rawDeepLinkValue) == null) {
+      // Canonical fallback, only if it doesn't parse as a profile type.
+      code = rawDeepLinkValue;
+    }
+    final target = _stringOrNull(data['target']) ??
+        _stringOrNull(data['deep_link_sub1']);
+
+    if (code == null || code.isEmpty) {
+      // debugPrint('$_tag conversion data: no referral code');
+      return;
+    }
+
+    // debugPrint('$_tag conversion referral code=$code target=$target');
+    incomingRefCode.value = code;
+    Get.find<DeepLinkService>().captureReferral(code: code, target: target);
+  }
+
+  static String? _stringOrNull(dynamic v) {
+    if (v == null) return null;
+    final s = v.toString().trim();
+    return s.isEmpty ? null : s;
+  }
+
+  void _onDeepLink(DeepLinkResult res) {
+    // debugPrint('$_tag onDeepLinking status=${res.status}');
+    if (res.status != Status.FOUND) return;
+    final link = res.deepLink;
+    if (link == null) {
+      // debugPrint('$_tag deepLink payload is null');
+      return;
+    }
+
+    final deepLink = Get.find<DeepLinkService>();
+
+    // ── 1. Profile deep link (?type=…&id=…) ──────────────────
+    // Checked FIRST because it's more specific: `type` (or its
+    // canonical `deep_link_value` mirror) must parse as a known
+    // [DeepLinkType] value ("companion" / "model"). Referral URLs
+    // never put those values there — their `deep_link_value` is a
+    // random alphanumeric referral code.
+    //
+    // Empirical: without this ordering, a profile URL like
+    //   ?type=model&id=X&deep_link_value=model&deep_link_sub1=X
+    // would be hijacked by Branch 2's `code ?? deep_link_value`
+    // fallback, which grabs "model" as if it were a referral code
+    // and navigates to Register instead of the profile page.
+    final rawType = link.getStringValue('type') ??
+        link.getStringValue('deep_link_value');
+    final parsedType = DeepLinkType.tryParse(rawType);
+    final id = link.getStringValue('id') ??
+        link.getStringValue('deep_link_sub1');
+    if (parsedType != null && id != null && id.isNotEmpty) {
+      // debugPrint('$_tag page deep-link type=${parsedType.wire} id=$id');
+      deepLink.handle(DeepLinkPayload(type: parsedType, id: id));
+      return;
+    }
+
+    // ── 2. Referral link (?code=…&target=…) ──────────────────
+    // Falls through to here when the URL is not a recognised profile
+    // deep link. `code` fallback to `deep_link_value` handles both
+    // direct match (URL preserved) and deferred / fingerprint match
+    // (only canonical keys preserved).
+    final refCode = link.getStringValue('code') ??
+        link.getStringValue('deep_link_value');
+    final target = link.getStringValue('target') ??
+        link.getStringValue('deep_link_sub1');
+    if (refCode != null && refCode.isNotEmpty) {
+      // debugPrint('$_tag referral code=$refCode target=$target');
+      incomingRefCode.value = refCode;
+      deepLink.captureReferral(code: refCode, target: target);
+    }
+  }
+
+  /// Builds a OneLink URL that resolves on both direct and deferred
+  /// install paths. Includes all four params (canonical + custom)
+  /// because empirically direct match on this template requires
+  /// `code` / `target` while deferred requires `deep_link_value` /
+  /// `deep_link_sub1`.
+  ///
+  /// See [ShareUtils._build] for the full rationale.
+  static String buildShareLink(String refCode, {String? target}) {
+    final buf = StringBuffer(
+      'https://xaosao.onelink.me/TfaF/8oxhsd7d'
+      '?deep_link_value=$refCode'
+      '&code=$refCode',
+    );
+    if (target != null && target.isNotEmpty) {
+      buf.write('&deep_link_sub1=$target&target=$target');
+    }
+    return buf.toString();
+  }
 }
 
 // a6fc87a0-bc3b-4990-b595-10ca1ad1abe1

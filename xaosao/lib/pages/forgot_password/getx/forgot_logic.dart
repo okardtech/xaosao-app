@@ -4,6 +4,7 @@ import 'package:xaosao/constants/app_routes.dart';
 import 'package:xaosao/pages/forgot_password/getx/forgot_state.dart';
 import '../../../repository/forgot_pass_repo.dart';
 import '../../../utils/app_snackbar.dart';
+import '../../../utils/l10n.dart';
 import '../../../widgets/show_loading_alert.dart';
 
 class ForgotLogic extends GetxController {
@@ -28,14 +29,14 @@ class ForgotLogic extends GetxController {
       );
       hideLoadingDialog();
       if (!res.success || res.data == null) {
-        AppSnackbar.error(res.laMessage ?? 'ເກີດຂໍ້ຜິດພາດ! ກະລຸນາລອງໃໝ່ອີກຄັ້ງ');
+        AppSnackbar.error(res.laMessage ?? l10n.commonGenericError);
         return;
       }
       _updateState(state.copyWith(forgotPhone: res.data, isCustomer: isCustomer));
       Get.toNamed(AppRoutes.forgotOtp, arguments: phone);
     } catch (e) {
       hideLoadingDialog();
-      AppSnackbar.error('ເກີດຂໍ້ຜິດພາດ! ກະລຸນາລອງໃໝ່ອີກຄັ້ງ');
+      AppSnackbar.error(l10n.commonGenericError);
     }
   }
 
@@ -52,13 +53,13 @@ class ForgotLogic extends GetxController {
       );
       hideLoadingDialog();
       if (!res.success || res.data == null) {
-        AppSnackbar.error(res.laMessage ?? 'ເກີດຂໍ້ຜິດພາດ! ກະລຸນາລອງໃໝ່ອີກຄັ້ງ');
+        AppSnackbar.error(res.laMessage ?? l10n.commonGenericError);
         return;
       }
       _updateState(state.copyWith(forgotPhone: res.data));
     } catch (e) {
       hideLoadingDialog();
-      AppSnackbar.error('ເກີດຂໍ້ຜິດພາດ! ກະລຸນາລອງໃໝ່ອີກຄັ້ງ');
+      AppSnackbar.error(l10n.commonGenericError);
     }
   }
 
@@ -77,14 +78,14 @@ class ForgotLogic extends GetxController {
       );
       hideLoadingDialog();
       if (!res.success) {
-        AppSnackbar.error(res.laMessage ?? 'ເກີດຂໍ້ຜິດພາດ! ກະລຸນາລອງໃໝ່ອີກຄັ້ງ');
+        AppSnackbar.error(res.laMessage ?? l10n.commonGenericError);
         return false;
       }
       Get.toNamed(AppRoutes.forgotNewPassword, arguments: phone);
       return true;
     } catch (e) {
       hideLoadingDialog();
-      AppSnackbar.error('ເກີດຂໍ້ຜິດພາດ! ກະລຸນາລອງໃໝ່ອີກຄັ້ງ');
+      AppSnackbar.error(l10n.commonGenericError);
       return false;
     }
   }
@@ -104,13 +105,13 @@ class ForgotLogic extends GetxController {
       );
       hideLoadingDialog();
       if (!res.success || res.data == null) {
-        AppSnackbar.error(res.laMessage ?? 'ເກີດຂໍ້ຜິດພາດ! ກະລຸນາລອງໃໝ່ອີກຄັ້ງ');
+        AppSnackbar.error(res.laMessage ?? l10n.commonGenericError);
         return;
       }
       Get.offAllNamed(AppRoutes.login);
     } catch (e) {
       hideLoadingDialog();
-      AppSnackbar.error('ເກີດຂໍ້ຜິດພາດ! ກະລຸນາລອງໃໝ່ອີກຄັ້ງ');
+      AppSnackbar.error(l10n.commonGenericError);
     }
   }
 }

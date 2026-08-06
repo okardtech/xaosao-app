@@ -8,6 +8,8 @@ import 'package:xaosao/pages/login/getx/login_logic.dart';
 import 'package:xaosao/pages/posts/getx/comment_logic.dart';
 import 'package:xaosao/pages/posts/getx/comment_state.dart';
 import 'package:xaosao/widgets/app_network_image.dart';
+import 'package:xaosao/l10n/app_localizations.dart';
+import 'package:xaosao/utils/l10n.dart' as g;
 
 // ─── Local constants ─────────────────────────────────────────────
 const _divider = Color(0x0D000000);
@@ -19,11 +21,11 @@ const _replyLine = Color(0xFFE0E0E0);
 String _ago(DateTime? dt) {
   if (dt == null) return '';
   final d = DateTime.now().difference(dt);
-  if (d.inSeconds < 60) return 'ໃໝ່ໆ';
-  if (d.inMinutes < 60) return '${d.inMinutes}ນາທີ';
-  if (d.inHours < 24) return '${d.inHours}ຊົ່ວໂມງ';
-  if (d.inDays < 7) return '${d.inDays}ວັນ';
-  return '${(d.inDays / 7).floor()}ອາທິດ';
+  if (d.inSeconds < 60) return g.l10n.timeJustNow;
+  if (d.inMinutes < 60) return g.l10n.timeMinutesShort(d.inMinutes);
+  if (d.inHours < 24) return g.l10n.timeHoursShort(d.inHours);
+  if (d.inDays < 7) return g.l10n.timeDaysShort(d.inDays);
+  return g.l10n.timeWeeksShort((d.inDays / 7).floor());
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -187,13 +189,14 @@ class _CommentSheetBodyState extends State<_CommentSheetBody> {
 
   // ── Header ────────────────────────────────────────────────
   Widget _buildHeader() => Obx(() {
+    final l10n = AppLocalizations.of(context)!;
     final count = _logic.commentCount.value;
     return Padding(
       padding: EdgeInsets.fromLTRB(20.w, 6.h, 12.w, 12.h),
       child: Row(
         children: [
           Text(
-            'ຄໍາເຫັນ',
+            l10n.commentsTitle,
             style: TextStyle(
               fontSize: 16.sp,
               fontWeight: FontWeight.w800,
@@ -297,40 +300,43 @@ class _CommentSheetBodyState extends State<_CommentSheetBody> {
   }
 
   // ── Empty state ───────────────────────────────────────────
-  Widget _buildEmpty() => Center(
-    child: Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Container(
-          width: 64.r,
-          height: 64.r,
-          decoration: BoxDecoration(
-            color: AppColors.primary.withValues(alpha: 0.07),
-            shape: BoxShape.circle,
+  Widget _buildEmpty() {
+    final l10n = AppLocalizations.of(context)!;
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
+            width: 64.r,
+            height: 64.r,
+            decoration: BoxDecoration(
+              color: AppColors.primary.withValues(alpha: 0.07),
+              shape: BoxShape.circle,
+            ),
+            child: Icon(
+              Icons.chat_bubble_outline_rounded,
+              size: 28.r,
+              color: AppColors.primary.withValues(alpha: 0.5),
+            ),
           ),
-          child: Icon(
-            Icons.chat_bubble_outline_rounded,
-            size: 28.r,
-            color: AppColors.primary.withValues(alpha: 0.5),
+          SizedBox(height: 14.h),
+          Text(
+            l10n.commentsEmptyTitle,
+            style: TextStyle(
+              fontSize: 14.sp,
+              fontWeight: FontWeight.w700,
+              color: AppColors.textPrimary,
+            ),
           ),
-        ),
-        SizedBox(height: 14.h),
-        Text(
-          'ຍັງບໍ່ມີຄໍາເຫັນ',
-          style: TextStyle(
-            fontSize: 14.sp,
-            fontWeight: FontWeight.w700,
-            color: AppColors.textPrimary,
+          SizedBox(height: 4.h),
+          Text(
+            l10n.commentsEmptySubtitle,
+            style: TextStyle(fontSize: 12.sp, color: AppColors.textHint),
           ),
-        ),
-        SizedBox(height: 4.h),
-        Text(
-          'ເປັນຄົນທໍາອິດທີ່ຄອມເມັນ!',
-          style: TextStyle(fontSize: 12.sp, color: AppColors.textHint),
-        ),
-      ],
-    ),
-  );
+        ],
+      ),
+    );
+  }
 
   // ── Comment item ──────────────────────────────────────────
   Widget _buildCommentItem(
@@ -339,11 +345,12 @@ class _CommentSheetBodyState extends State<_CommentSheetBody> {
     required Set<String> expandedIds,
     required Set<String> loadingRepliesIds,
   }) {
+    final l10n = AppLocalizations.of(context)!;
     final isExpanded = expandedIds.contains(comment.id);
     final replies = repliesMap[comment.id] ?? [];
     final isLoadingReplies = loadingRepliesIds.contains(comment.id);
     final hasReplies = comment.replyCount > 0 || replies.isNotEmpty;
-    final authorName = comment.author?.displayName ?? 'ຜູ້ໃຊ້';
+    final authorName = comment.author?.displayName ?? l10n.commonUser;
 
     return Padding(
       padding: EdgeInsets.fromLTRB(16.w, 0, 16.w, 0),
@@ -413,7 +420,7 @@ class _CommentSheetBodyState extends State<_CommentSheetBody> {
                               ),
                               SizedBox(width: 3.w),
                               Text(
-                                'ຕອບກັບ',
+                                l10n.commentReply,
                                 style: TextStyle(
                                   fontSize: 12.sp,
                                   fontWeight: FontWeight.w600,
@@ -450,8 +457,12 @@ class _CommentSheetBodyState extends State<_CommentSheetBody> {
                                 SizedBox(width: 3.w),
                                 Text(
                                   isExpanded
-                                      ? 'ຫຍໍ້ຄໍາຕອບ'
-                                      : 'ເບິ່ງ ${comment.replyCount > 0 ? comment.replyCount : replies.length} ຄໍາຕອບ',
+                                      ? l10n.commentCollapseReplies
+                                      : l10n.commentViewReplies(
+                                          comment.replyCount > 0
+                                              ? comment.replyCount
+                                              : replies.length,
+                                        ),
                                   style: TextStyle(
                                     fontSize: 12.sp,
                                     fontWeight: FontWeight.w600,
@@ -483,7 +494,8 @@ class _CommentSheetBodyState extends State<_CommentSheetBody> {
 
   // ── Reply item ────────────────────────────────────────────
   Widget _buildReplyItem(CommentModel reply, String parentCommentId) {
-    final authorName = reply.author?.displayName ?? 'ຜູ້ໃຊ້';
+    final l10n = AppLocalizations.of(context)!;
+    final authorName = reply.author?.displayName ?? l10n.commonUser;
     return Padding(
       padding: EdgeInsets.only(left: 46.w, bottom: 10.h),
       child: Row(
@@ -557,7 +569,7 @@ class _CommentSheetBodyState extends State<_CommentSheetBody> {
                       ),
                       SizedBox(width: 2.w),
                       Text(
-                        'ຕອບກັບ',
+                        l10n.commentReply,
                         style: TextStyle(
                           fontSize: 12.sp,
                           fontWeight: FontWeight.w600,
@@ -577,6 +589,7 @@ class _CommentSheetBodyState extends State<_CommentSheetBody> {
 
   // ── Input bar ─────────────────────────────────────────────
   Widget _buildInputBar() {
+    final l10n = AppLocalizations.of(context)!;
     return SafeArea(
       child: Container(
         padding: EdgeInsets.fromLTRB(12.w, 10.h, 12.w, 12.h),
@@ -594,8 +607,8 @@ class _CommentSheetBodyState extends State<_CommentSheetBody> {
             Expanded(
               child: Obx(() {
                 final hint = _logic.replyToCommentId.value != null
-                    ? 'ຕອບ ${_logic.replyToName.value ?? ''}...'
-                    : 'ຂຽນຄໍາເຫັນ...';
+                    ? l10n.commentReplyToHint(_logic.replyToName.value ?? '')
+                    : l10n.commentWriteHint;
                 return Container(
                   constraints: BoxConstraints(maxHeight: 60.h),
                   decoration: BoxDecoration(

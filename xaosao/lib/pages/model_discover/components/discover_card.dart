@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:xaosao/constants/app_color.dart';
+import 'package:xaosao/l10n/app_localizations.dart';
 import 'package:xaosao/models/Recommended_model.dart';
 import 'package:xaosao/services/location_manager.dart';
 import 'package:xaosao/utils/age_formatter.dart';
@@ -139,7 +140,7 @@ class _DiscoverCardState extends State<DiscoverCard>
                     Text(
                       m.dob != null
                           ? '${m.firstName ?? ''}, $age'
-                          : (m.firstName ?? 'ຜູ້ໃຊ້'),
+                          : (m.firstName ?? AppLocalizations.of(context)!.commonUser),
                       style: TextStyle(
                         fontSize: 14.sp,
                         fontWeight: FontWeight.w800,

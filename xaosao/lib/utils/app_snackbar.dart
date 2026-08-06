@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:xaosao/utils/l10n.dart';
 
 class AppSnackbar {
   AppSnackbar._();
 
-  static void error(String message, {String title = 'ຜິດພາດ'}) {
+  static void error(String message, {String? title}) {
     _show(
-      title: title,
+      title: title ?? l10n.snackbarErrorTitle,
       message: message,
       bgColor: Colors.red.shade50,
       textColor: Colors.red.shade700,
@@ -15,9 +16,9 @@ class AppSnackbar {
     );
   }
 
-  static void success(String message, {String title = 'ສຳເລັດ'}) {
+  static void success(String message, {String? title}) {
     _show(
-      title: title,
+      title: title ?? l10n.snackbarSuccessTitle,
       message: message,
       bgColor: Colors.green.shade50,
       textColor: Colors.green.shade700,
@@ -26,9 +27,9 @@ class AppSnackbar {
     );
   }
 
-  static void info(String message, {String title = 'ຂໍ້ມູນ'}) {
+  static void info(String message, {String? title}) {
     _show(
-      title: title,
+      title: title ?? l10n.snackbarInfoTitle,
       message: message,
       bgColor: Colors.blue.shade50,
       textColor: Colors.blue.shade700,

@@ -175,5 +175,11 @@
             <action android:name="android.intent.action.DIAL"/>
             <data android:scheme="tel"/>
         </intent>
+        <!-- Android 11+ package visibility: AppsFlyer SDK needs to see
+             the Play Store package to fetch install referrer via the
+             Play Install Referrer API. Without this, `getInstallReferrer`
+             silently returns null on Android 11+ devices — meaning
+             deferred deep links don't get their referral params. -->
+        <package android:name="com.android.vending" />
     </queries>
 </manifest>

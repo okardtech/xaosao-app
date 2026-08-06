@@ -5,6 +5,7 @@ import 'package:xaosao/pages/package/components/subscription_banner.dart';
 import 'package:xaosao/repository/package_repo.dart';
 import 'package:xaosao/services/storage_service.dart';
 import 'package:xaosao/utils/app_snackbar.dart';
+import 'package:xaosao/utils/l10n.dart';
 import 'package:xaosao/widgets/show_loading_alert.dart';
 
 class PackageLogic extends GetxController {
@@ -30,9 +31,9 @@ class PackageLogic extends GetxController {
     } else {
       _state.value = PackageState(
         status: PackageStatus.failure,
-        error: res.message ?? 'ໂຫຼດຂໍ້ມູນບໍ່ສຳເລັດ',
+        error: res.message ?? l10n.commonLoadDataFailed,
       );
-      AppSnackbar.error(res.laMessage ?? 'ໂຫຼດຂໍ້ມູນບໍ່ສຳເລັດ');
+      AppSnackbar.error(res.laMessage ?? l10n.commonLoadDataFailed);
     }
   }
 
@@ -76,7 +77,7 @@ class PackageLogic extends GetxController {
       fetchPackages();
       return true;
     }
-    AppSnackbar.error(res.laMessage ?? 'ການຊື້ບໍ່ສຳເລັດ');
+    AppSnackbar.error(res.laMessage ?? l10n.packagePurchaseFailed);
     return false;
   }
 
@@ -96,7 +97,7 @@ class PackageLogic extends GetxController {
       fetchPackages();
       return true;
     }
-    AppSnackbar.error(res.laMessage ?? 'ການຊື້ບໍ່ສຳເລັດ');
+    AppSnackbar.error(res.laMessage ?? l10n.packagePurchaseFailed);
     return false;
   }
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:xaosao/constants/app_color.dart';
+import 'package:xaosao/l10n/app_localizations.dart';
 import 'package:xaosao/pages/profile/change_password/getx/change_password_logic.dart';
 import 'package:xaosao/widgets/app_button.dart';
 import 'package:xaosao/widgets/app_text_field.dart';
@@ -81,14 +82,15 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       behavior: HitTestBehavior.opaque,
       child: Scaffold(
         backgroundColor: AppColors.bg,
-        appBar: const GradientAppBar(
-          title: 'ປ່ຽນລະຫັດຜ່ານ',
-          subtitle: 'ຕ້ອງໃສ່ລະຫັດທຳກ່ອນ',
+        appBar: GradientAppBar(
+          title: l10n.changePasswordTitle,
+          subtitle: l10n.changePasswordSubtitle,
         ),
         bottomNavigationBar: _buildBottomBar(),
         body: SafeArea(
@@ -102,21 +104,21 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                 SizedBox(height: 20.h),
 
                 // ── ລະຫັດຜ່ານປັດຈຸບັນ ────────────────────────────
-                _SectionSep('ລະຫັດຜ່ານ'),
+                _SectionSep(l10n.changePasswordSectionCurrent),
                 SizedBox(height: 12.h),
-                AppFieldLabel('ລະຫັດຜ່ານປັດຈຸບັນ'),
+                AppFieldLabel(l10n.changePasswordCurrentLabel),
                 SizedBox(height: 5.h),
                 AppPasswordField(
                   controller: _currentCtrl,
                   focusNode: _currentFocus,
                   accent: AppColors.primary,
-                  hint: 'ລະຫັດຜ່ານປັດຈຸບັນ',
+                  hint: l10n.changePasswordCurrentLabel,
                   action: TextInputAction.next,
                 ),
                 if (_currentPass.isNotEmpty && !_currentOk) ...[
                   SizedBox(height: 6.h),
                   Text(
-                    'ລະຫັດຜ່ານຕ້ອງຢ່າງໜ້ອຍ 6 ໂຕ',
+                    l10n.changePasswordMin6,
                     style: TextStyle(
                       fontSize: 12.sp,
                       color: Colors.red.shade400,
@@ -126,15 +128,15 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                 SizedBox(height: 20.h),
 
                 // ── ລະຫັດໃໝ່ ─────────────────────────────────────
-                _SectionSep('ລະຫັດໃໝ່'),
+                _SectionSep(l10n.changePasswordSectionNew),
                 SizedBox(height: 12.h),
-                AppFieldLabel('ລະຫັດຜ່ານໃໝ່',),
+                AppFieldLabel(l10n.changePasswordNewLabel),
                 SizedBox(height: 5.h),
                 AppPasswordField(
                   controller: _newCtrl,
                   focusNode: _newFocus,
                   accent: AppColors.primary,
-                  hint: 'ໃສ່ລະຫັດໃໝ່',
+                  hint: l10n.changePasswordNewHint,
                   action: TextInputAction.next,
                 ),
                 if (_newPass.isNotEmpty) ...[
@@ -142,7 +144,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                   _PasswordStrengthBar(strength: _strength),
                   SizedBox(height: 4.h),
                   Text(
-                    _strength.label,
+                    _strength.label(l10n),
                     style: TextStyle(
                       fontSize: 12.sp,
                       fontWeight: FontWeight.w600,
@@ -154,7 +156,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                   SizedBox(height: 14.h),
 
                 // ── ຢືນຢັນ ───────────────────────────────────────
-                AppFieldLabel('ຢືນຢັນລະຫັດໃໝ່'),
+                AppFieldLabel(l10n.changePasswordConfirmLabel),
                 SizedBox(height: 5.h),
                 AppPasswordField(
                   controller: _confirmCtrl,
@@ -162,14 +164,14 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                   accent: _confirmPass.isNotEmpty && _confirmOk
                       ? AppColors.online
                       : AppColors.primary,
-                  hint: 'ຢືນຢັນລະຫັດໃໝ່',
+                  hint: l10n.changePasswordConfirmLabel,
                   action: TextInputAction.done,
                   onSubmit: _submit,
                 ),
                 if (_confirmPass.isNotEmpty && !_confirmOk) ...[
                   SizedBox(height: 6.h),
                   Text(
-                    'ລະຫັດຜ່ານບໍ່ກົງກັນ',
+                    l10n.changePasswordMismatch,
                     style: TextStyle(
                       fontSize: 12.sp,
                       color: Colors.red.shade400,
@@ -202,7 +204,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
         final isLoading =
             _logic.status.value == ChangePasswordStatus.loading;
         return AppPrimaryButton(
-          label: 'ບັນທຶກລະຫັດໃໝ່',
+          label: AppLocalizations.of(context)!.changePasswordSave,
           leadingIcon: Icons.lock_outline_rounded,
           enabled: _canSubmit,
           loading: isLoading,
@@ -220,6 +222,7 @@ class _SecurityInfoCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Container(
       padding: EdgeInsets.all(14.r),
       decoration: BoxDecoration(
@@ -258,7 +261,7 @@ class _SecurityInfoCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'ຄວາມປອດໄພ',
+                  l10n.changePasswordSecurityTitle,
                   style: TextStyle(
                     fontSize: 14.sp,
                     fontWeight: FontWeight.w700,
@@ -267,8 +270,7 @@ class _SecurityInfoCard extends StatelessWidget {
                 ),
                 SizedBox(height: 3.h),
                 Text(
-                  'ລະຫັດຜ່ານຕ້ອງຢ່າງໜ້ອຍ 8 ໂຕ, '
-                  'ລວມທັງຕົວໃຫຍ່, ຕົວເລກ ແລະ ສັນຍາລັກ',
+                  l10n.changePasswordSecurityRule,
                   style: TextStyle(
                     fontSize: 11.sp,
                     color: AppColors.textHint,
@@ -321,11 +323,11 @@ class _SectionSep extends StatelessWidget {
 enum _PwStrength { weak, fair, strong }
 
 extension _PwStrengthX on _PwStrength {
-  String get label {
+  String label(AppLocalizations l10n) {
     switch (this) {
-      case _PwStrength.weak:   return 'ອ່ອນ';
-      case _PwStrength.fair:   return 'ປານກາງ';
-      case _PwStrength.strong: return 'ແຂງແຮງ';
+      case _PwStrength.weak:   return l10n.changePasswordStrengthWeak;
+      case _PwStrength.fair:   return l10n.changePasswordStrengthFair;
+      case _PwStrength.strong: return l10n.changePasswordStrengthStrong;
     }
   }
 

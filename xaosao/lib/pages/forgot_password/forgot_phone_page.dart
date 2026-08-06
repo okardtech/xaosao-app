@@ -2,6 +2,7 @@
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:xaosao/constants/app_color.dart';
+import 'package:xaosao/l10n/app_localizations.dart';
 import 'package:xaosao/pages/forgot_password/getx/forgot_logic.dart';
 import 'package:xaosao/pages/login/getx/login_logic.dart';
 import 'package:xaosao/pages/register/components/register_app_bar.dart';
@@ -49,6 +50,7 @@ class _ForgotPhonePageState extends State<ForgotPhonePage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       behavior: HitTestBehavior.opaque,
@@ -72,7 +74,7 @@ class _ForgotPhonePageState extends State<ForgotPhonePage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       SizedBox(height: 4.h),
-                      const AppFieldLabel('ເບີໂທລະສັບ', required: true),
+                      AppFieldLabel(l10n.registerPhone, required: true),
                       SizedBox(height: 6.h),
                       AppPhoneField(
                         controller: _phoneCtrl,
@@ -81,7 +83,7 @@ class _ForgotPhonePageState extends State<ForgotPhonePage> {
                       ),
                       SizedBox(height: 8.h),
                       Text(
-                        'ລະຫັດ OTP ຈະຖືກສົ່ງໄປຫາເບີນີ້',
+                        l10n.forgotOtpWillSendHere,
                         style: TextStyle(
                           fontSize: 12.sp,
                           color: AppColors.textHint,
@@ -89,7 +91,7 @@ class _ForgotPhonePageState extends State<ForgotPhonePage> {
                       ),
                       SizedBox(height: 28.h),
                       AppPrimaryButton(
-                        label: 'ສົ່ງລະຫັດ OTP',
+                        label: l10n.forgotSendOtp,
                         enabled: _canSubmit,
                         loading: _loading,
                         trailingIcon: Icons.send_rounded,
@@ -97,7 +99,7 @@ class _ForgotPhonePageState extends State<ForgotPhonePage> {
                       ),
                       SizedBox(height: 14.h),
                       AppOutlineButton(
-                        label: 'ກັບຄືນໜ້າເຂົ້າສູ່ລະບົບ',
+                        label: l10n.forgotBackToLogin,
                         leadingIcon: Icons.arrow_back_rounded,
                         onTap: () => Navigator.pop(context),
                       ),
@@ -119,6 +121,7 @@ class _ForgotPhoneHero extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Container(
       width: double.infinity,
       decoration: const BoxDecoration(
@@ -187,7 +190,7 @@ class _ForgotPhoneHero extends StatelessWidget {
                   ),
                   SizedBox(height: 12.h),
                   Text(
-                    'ລືມລະຫັດຜ່ານ',
+                    l10n.forgotTitle,
                     style: TextStyle(
                       fontSize: 18.sp,
                       fontWeight: FontWeight.w900,
@@ -197,7 +200,7 @@ class _ForgotPhoneHero extends StatelessWidget {
                   ),
                   SizedBox(height: 6.h),
                   Text(
-                    'ໃສ່ເບີໂທທີ່ລົງທະບຽນ',
+                    l10n.forgotEnterRegistered,
                     style: TextStyle(
                       fontSize: 14.sp,
                       color: Colors.white.withValues(alpha: 0.70),
@@ -206,12 +209,12 @@ class _ForgotPhoneHero extends StatelessWidget {
                   SizedBox(height: 12.h),
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 20.w),
-                    child: const StepIndicatorRow(
+                    child: StepIndicatorRow(
                       currentStep: 1,
                       steps: [
-                        StepItem(label: 'ໂທລະສັບ'),
-                        StepItem(label: 'OTP'),
-                        StepItem(label: 'ລະຫັດໃໝ່'),
+                        StepItem(label: l10n.forgotStepPhone),
+                        StepItem(label: l10n.registerStepOtp),
+                        StepItem(label: l10n.changePasswordSectionNew),
                       ],
                     ),
                   ),

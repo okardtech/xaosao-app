@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:xaosao/constants/app_color.dart';
+import 'package:xaosao/l10n/app_localizations.dart';
 import 'package:xaosao/models/package_model.dart';
 import 'package:xaosao/pages/package/getx/package_logic.dart';
 import 'package:xaosao/pages/wallet/getx/wallet_logic.dart';
 import 'package:xaosao/utils/app_snackbar.dart';
 import 'package:xaosao/utils/currency_formatter.dart';
+import 'package:xaosao/utils/l10n.dart' as g;
 import 'package:xaosao/widgets/app_button.dart';
 import 'package:xaosao/widgets/gradient_app_bar.dart';
 import 'package:xaosao/widgets/show_loading_alert.dart';
@@ -39,12 +41,12 @@ class SubscriptionCheckoutPage extends StatelessWidget {
 
   String _durationLabel(int? days) {
     if (days == null || days == 0) return '—';
-    if (days == 1) return '1 ວັນ';
-    if (days == 7) return '1 ອາທິດ';
-    if (days == 30) return '1 ເດືອນ';
-    if (days == 90) return '3 ເດືອນ';
-    if (days == 365) return '1 ປີ';
-    return '$days ວັນ';
+    if (days == 1) return g.l10n.subscriptionDuration1Day;
+    if (days == 7) return g.l10n.subscriptionDuration1Week;
+    if (days == 30) return g.l10n.subscriptionDuration1Month;
+    if (days == 90) return g.l10n.subscriptionDuration3Months;
+    if (days == 365) return g.l10n.subscriptionDuration1Year;
+    return g.l10n.subscriptionDurationDays(days);
   }
 
   Future<void> _confirm(BuildContext context) async {
@@ -53,13 +55,14 @@ class SubscriptionCheckoutPage extends StatelessWidget {
     hideLoadingDialog();
     if (ok && context.mounted) {
       Get.back();
-      AppSnackbar.success('ຊື້ Package ສຳເລັດ');
+      AppSnackbar.success(g.l10n.checkoutPurchaseSuccess);
     }
   }
 
   @override
   Widget build(BuildContext context) {
     final walletLogic = Get.find<WalletLogic>();
+    final l10n = AppLocalizations.of(context)!;
 
     return Obx(() {
       final balance = walletLogic.state.wallet?.availableBalance ?? 0;
@@ -71,8 +74,8 @@ class SubscriptionCheckoutPage extends StatelessWidget {
       return Scaffold(
         backgroundColor: AppColors.bg,
         appBar: GradientAppBar(
-          title: 'ການອັບເກຣດ',
-          subtitle: 'ກວດສອບ ແລະ ຢືນຢັນການຊຳລະ',
+          title: l10n.checkoutUpgradeTitle,
+          subtitle: l10n.checkoutUpgradeSubtitle,
         ),
         body: SafeArea(
           child: Column(
@@ -110,7 +113,7 @@ class SubscriptionCheckoutPage extends StatelessWidget {
                   ),
                 ),
                 child: AppPrimaryButton(
-                  label: 'ດຳເນີນການຊຳລະ',
+                  label: l10n.checkoutProcessPayment,
                   leadingIcon: Icons.bolt_rounded,
                   enabled: canPay,
                   onTap: () => _confirm(context),
@@ -131,6 +134,7 @@ class _CurrentPlanCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Container(
       padding: EdgeInsets.all(14.r),
       decoration: BoxDecoration(
@@ -159,7 +163,7 @@ class _CurrentPlanCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'ສະໝັກ Package ຢູ່ແລ້ວ',
+                  l10n.checkoutAlreadySubscribed,
                   style: TextStyle(
                     fontSize: 14.sp,
                     fontWeight: FontWeight.w800,
@@ -169,16 +173,16 @@ class _CurrentPlanCard extends StatelessWidget {
                 SizedBox(height: 6.h),
                 Row(
                   children: [
-                    if (plan.name != null) _Pill(label: 'ແຜນ ${plan.name}'),
+                    if (plan.name != null) _Pill(label: l10n.checkoutPillPlan(plan.name!)),
                     if (plan.daysRemaining != null && plan.daysRemaining! > 0) ...[
                       SizedBox(width: 6.w),
-                      _Pill(label: 'ເຫຼືອ ${plan.daysRemaining} ວັນ'),
+                      _Pill(label: l10n.checkoutPillRemainingDays(plan.daysRemaining!)),
                     ],
                   ],
                 ),
                 SizedBox(height: 7.h),
                 Text(
-                  'ການຊຳລະໃໝ່ຈະເລີ່ມຕໍ່ຈາກ Package ປັດຈຸບັນ ແລະ ວັນທີ່ຍັງເຫຼືອຈະຖືກນຳໃສ່ Package ໃໝ່.',
+                  l10n.checkoutUpgradeInfo,
                   style: TextStyle(
                     fontSize: 12.sp,
                     color: const Color(0xFF92400E),
@@ -240,6 +244,7 @@ class _CheckoutSummaryCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final canPay = balance >= price;
     final remaining = balance - price;
     final remainingColor = canPay ? AppColors.online : const Color(0xFFEF4444);
@@ -301,7 +306,7 @@ class _CheckoutSummaryCard extends StatelessWidget {
                         borderRadius: BorderRadius.circular(20.r),
                       ),
                       child: Text(
-                        planDays > 0 ? '$planDays ວັນ' : durationLabel,
+                        planDays > 0 ? l10n.subscriptionDurationDays(planDays) : durationLabel,
                         style: TextStyle(
                           fontSize: 11.sp,
                           fontWeight: FontWeight.w700,
@@ -329,7 +334,7 @@ class _CheckoutSummaryCard extends StatelessWidget {
           SizedBox(height: 14.h),
 
           // ── Duration breakdown ─────────────────────────────
-          _SectionLabel('ໄລຍະ Package'),
+          _SectionLabel(l10n.checkoutPackageDuration),
           SizedBox(height: 10.h),
           Container(
             padding: EdgeInsets.all(14.r),
@@ -342,16 +347,16 @@ class _CheckoutSummaryCard extends StatelessWidget {
                 _DataRow(
                   icon: Icons.calendar_today_outlined,
                   iconColor: AppColors.textHint,
-                  label: 'ໄລຍະ Package ໃໝ່',
-                  value: planDays > 0 ? '$planDays ວັນ' : durationLabel,
+                  label: l10n.checkoutNewPackageDuration,
+                  value: planDays > 0 ? l10n.subscriptionDurationDays(planDays) : durationLabel,
                 ),
                 if (bonus > 0) ...[
                   SizedBox(height: 10.h),
                   _DataRow(
                     icon: Icons.card_giftcard_outlined,
                     iconColor: AppColors.online,
-                    label: '+ ໂບນັດ (Package ເດີມ)',
-                    value: '$bonus ວັນ',
+                    label: l10n.checkoutBonusFromOld,
+                    value: l10n.subscriptionDurationDays(bonus),
                     valueColor: AppColors.online,
                     bold: true,
                   ),
@@ -362,8 +367,8 @@ class _CheckoutSummaryCard extends StatelessWidget {
                   _DataRow(
                     icon: Icons.timelapse_rounded,
                     iconColor: AppColors.primary,
-                    label: 'ໄລຍະທັງໝົດ',
-                    value: '$totalDays ວັນ',
+                    label: l10n.checkoutTotalDuration,
+                    value: l10n.subscriptionDurationDays(totalDays),
                     valueColor: AppColors.primary,
                     bold: true,
                   ),
@@ -377,12 +382,12 @@ class _CheckoutSummaryCard extends StatelessWidget {
           SizedBox(height: 14.h),
 
           // ── Payment breakdown ──────────────────────────────
-          _SectionLabel('ສະຫຼຸບການຊຳລະ'),
+          _SectionLabel(l10n.checkoutPaymentSummary),
           SizedBox(height: 10.h),
-          _SummaryRow(label: 'ຍອດ Wallet', value: CurrFormatter.kip(balance)),
+          _SummaryRow(label: l10n.checkoutWalletBalance, value: CurrFormatter.kip(balance)),
           SizedBox(height: 8.h),
           _SummaryRow(
-            label: 'ລາຄາ Package',
+            label: l10n.checkoutPackagePrice,
             value: '− ${CurrFormatter.kip(price)}',
             valueColor: AppColors.primary,
           ),
@@ -391,8 +396,8 @@ class _CheckoutSummaryCard extends StatelessWidget {
             child: Divider(height: 0, thickness: 0.5, color: AppColors.borderMedium),
           ),
           _SummaryRow(
-            label: 'ຍອດຄົງເຫຼືອ',
-            value: CurrFormatter.kip(remaining.abs()) + (remaining < 0 ? ' (ຂາດ)' : ''),
+            label: l10n.checkoutRemaining,
+            value: CurrFormatter.kip(remaining.abs()) + (remaining < 0 ? l10n.checkoutShortfallSuffix : ''),
             valueColor: remainingColor,
             bold: true,
           ),
@@ -409,7 +414,7 @@ class _CheckoutSummaryCard extends StatelessWidget {
               SizedBox(width: 6.w),
               Expanded(
                 child: Text(
-                  'ຍອດ Wallet ຈະຖືກຕັດທັນທີ. Package ຈະເປີດໃຊ້ງານຫຼັງຈາກການຊຳລະສຳເລັດ.',
+                  l10n.checkoutWalletDeductInfo,
                   style: TextStyle(
                     fontSize: 12.sp,
                     color: AppColors.textHint,

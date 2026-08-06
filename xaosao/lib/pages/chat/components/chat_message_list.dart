@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:xaosao/constants/app_icons.dart';
+import 'package:xaosao/l10n/app_localizations.dart';
 import 'package:xaosao/pages/chat/components/chat_bubbles.dart';
 import 'package:xaosao/pages/chat/getx/chat_detail_controller.dart';
 import 'package:xaosao/pages/chat/getx/chat_state.dart';
@@ -15,6 +16,7 @@ class ChatMessageList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Obx(() {
       final ms = ctrl.msgState;
 
@@ -42,7 +44,7 @@ class ChatMessageList extends StatelessWidget {
           final msgListIdx = isTyping ? i - 1 : i;
 
           if (msgListIdx == msgCount) {
-            return const ChatDateDivider(label: 'ມື້ນີ້');
+            return ChatDateDivider(label: l10n.chatDateToday);
           }
 
           final msg = ms.messages[msgCount - 1 - msgListIdx];
@@ -64,12 +66,12 @@ class ChatMessageList extends StatelessWidget {
   }
 
   Future<void> _confirmDelete(BuildContext context, String messageId) async {
+    final l10n = AppLocalizations.of(context)!;
     final confirmed = await ConfirmSheet.show(
       context,
-      title: 'ລຶບຂໍ້ຄວາມ',
-      message:
-          'ຂໍ້ຄວາມຈະຖືກລຶບອອກຈາກຝ່າຍຂອງທ່ານເທົ່ານັ້ນ\nອີກຝ່າຍຍັງສາມາດເຫັນຂໍ້ຄວາມໄດ້',
-      confirmLabel: 'ລຶບ',
+      title: l10n.chatDeleteMsgTitle,
+      message: l10n.chatDeleteMsgBody,
+      confirmLabel: l10n.commonDelete,
       icon: AppIcons.delete,
       isDanger: true,
     );

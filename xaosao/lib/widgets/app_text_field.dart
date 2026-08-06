@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:xaosao/constants/app_color.dart';
+import 'package:xaosao/l10n/app_localizations.dart';
 
 // ═══════════════════════════════════════════════════════════════
 //  utils/app_text_field.dart
@@ -321,7 +322,7 @@ class AppPasswordField extends StatefulWidget {
   final TextEditingController controller;
   final FocusNode focusNode;
   final Color accent;
-  final String hint;
+  final String? hint;
   final TextInputAction action;
   final VoidCallback? onSubmit;
   final void Function(String)? onChanged;
@@ -331,7 +332,7 @@ class AppPasswordField extends StatefulWidget {
     required this.controller,
     required this.focusNode,
     required this.accent,
-    this.hint = 'ລະຫັດຜ່ານ',
+    this.hint,
     this.action = TextInputAction.done,
     this.onSubmit,
     this.onChanged,
@@ -381,7 +382,8 @@ class _AppPasswordFieldState extends State<AppPasswordField> {
           onChanged: widget.onChanged,
           onSubmitted: (_) => widget.onSubmit?.call(),
           decoration: InputDecoration(
-            hintText: widget.hint,
+            hintText: widget.hint ??
+                AppLocalizations.of(context)!.commonPasswordHint,
             hintStyle: TextStyle(
                 fontSize: AppFieldStyle.textSize.sp,
                 color: AppFieldStyle.hint),

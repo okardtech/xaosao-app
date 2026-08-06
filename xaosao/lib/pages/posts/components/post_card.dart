@@ -8,6 +8,8 @@ import 'package:xaosao/models/my_post_model.dart';
 import 'package:xaosao/utils/service_helper.dart';
 import 'package:xaosao/widgets/app_network_image.dart';
 import 'package:xaosao/widgets/app_svg_icon.dart';
+import 'package:xaosao/l10n/app_localizations.dart';
+import 'package:xaosao/utils/l10n.dart' as g;
 
 import '../../../widgets/app_image_preview.dart';
 
@@ -46,11 +48,11 @@ String _fmtCount(int n) {
 String _ago(DateTime? dt) {
   if (dt == null) return '';
   final d = DateTime.now().difference(dt);
-  if (d.inSeconds < 60) return 'ໃໝ່ໆ';
-  if (d.inMinutes < 60) return '${d.inMinutes} ນາທີກ່ອນ';
-  if (d.inHours < 24) return '${d.inHours} ຊົ່ວໂມງກ່ອນ';
-  if (d.inDays < 7) return '${d.inDays} ວັນ';
-  return '${(d.inDays / 7).floor()} ອາທິດ';
+  if (d.inSeconds < 60) return g.l10n.timeJustNow;
+  if (d.inMinutes < 60) return g.l10n.timeMinutesAgo(d.inMinutes);
+  if (d.inHours < 24) return g.l10n.timeHoursAgo(d.inHours);
+  if (d.inDays < 7) return g.l10n.timeDaysShortSpaced(d.inDays);
+  return g.l10n.timeWeeksShortSpaced((d.inDays / 7).floor());
 }
 
 (Color fg, Color bg) _serviceChip(String? name) {
@@ -64,10 +66,10 @@ String _ago(DateTime? dt) {
 }
 
 String _statusLabel(String? s) => switch (s) {
-  'active' => 'ກຳລັງໃຊ້',
-  'expired' => 'ໝົດອາຍຸ',
-  'hidden' => 'ຊ່ອນ',
-  'fulfilled' => 'ປິດໃຊ້ງານເເລ້ວ',
+  'active' => g.l10n.postStatusActive,
+  'expired' => g.l10n.postStatusExpired,
+  'hidden' => g.l10n.postStatusHidden,
+  'fulfilled' => g.l10n.postStatusFulfilled,
   _ => s ?? '',
 };
 
@@ -142,7 +144,7 @@ class PostCard extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _buildHeader(authorName),
+              _buildHeader(context, authorName),
               _buildBody(),
               if (imageUrl != null) _buildImage(context, imageUrl),
               _buildFooter(),
@@ -154,7 +156,8 @@ class PostCard extends StatelessWidget {
   }
 
   // ── Header: avatar · name+status · time (clean — no button) ──
-  Widget _buildHeader(String authorName) {
+  Widget _buildHeader(BuildContext context, String authorName) {
+    final l10n = AppLocalizations.of(context)!;
     final status = post.status;
     final statusColor = status != null
         ? _statusColor(status)
@@ -176,7 +179,7 @@ class PostCard extends StatelessWidget {
                   children: [
                     Expanded(
                       child: Text(
-                        authorName.isEmpty ? 'ຜູ້ໂພສ' : authorName,
+                        authorName.isEmpty ? l10n.postsAuthorFallback : authorName,
                         style: TextStyle(
                           fontSize: 14.sp,
                           fontWeight: FontWeight.w800,
@@ -372,11 +375,11 @@ class PostCard extends StatelessWidget {
   }
 }
 
-String _genderLabel(String? g) => switch (g) {
-  'male' => 'ຊາຍ',
-  'female' => 'ຍິງ',
-  'any' => 'ທຸກເພດ',
-  _ => g ?? '',
+String _genderLabel(String? gender) => switch (gender) {
+  'male' => g.l10n.genderMaleShort,
+  'female' => g.l10n.genderFemaleShort,
+  'any' => g.l10n.postsGenderAny,
+  _ => gender ?? '',
 };
 
 // ═══════════════════════════════════════════════════════════════
@@ -749,6 +752,7 @@ class _TipBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 2.h),
       decoration: BoxDecoration(
@@ -765,7 +769,7 @@ class _TipBadge extends StatelessWidget {
           ),
           SizedBox(width: 3.w),
           Text(
-            'ມີທິບພ້ອມ',
+            l10n.bookingTipReady,
             style: TextStyle(
               fontSize: 10.sp,
               fontWeight: FontWeight.w400,
@@ -1049,6 +1053,7 @@ class _BookBtnState extends State<_BookBtn>
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return GestureDetector(
       onTap: _onTap,
       child: ScaleTransition(
@@ -1081,7 +1086,7 @@ class _BookBtnState extends State<_BookBtn>
               ),
               SizedBox(width: 5.w),
               Text(
-                'ຈອງ',
+                l10n.postActionBook,
                 style: TextStyle(
                   fontSize: 11.sp,
                   fontWeight: FontWeight.w700,
@@ -1103,6 +1108,7 @@ class _ChatBtn extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -1126,7 +1132,7 @@ class _ChatBtn extends StatelessWidget {
             ),
             SizedBox(width: 5.w),
             Text(
-              'ແຊັດ',
+              l10n.postActionChat,
               style: TextStyle(
                 fontSize: 11.sp,
                 fontWeight: FontWeight.w700,

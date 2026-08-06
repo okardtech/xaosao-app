@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 import 'package:xaosao/pages/posts/post_detail/getx/post_detail_state.dart';
 import 'package:xaosao/repository/post_repo.dart';
+import 'package:xaosao/utils/l10n.dart';
 
 class PostDetailLogic extends GetxController {
   final String postId;
@@ -28,15 +29,15 @@ class PostDetailLogic extends GetxController {
           data: res.data,
         );
       } else {
-        _state.value = const PostDetailState(
+        _state.value = PostDetailState(
           status: PostDetailStatus.failure,
-          error: 'ບໍ່ສາມາດໂຫຼດຂໍ້ມູນໄດ້',
+          error: l10n.commonCantLoadData,
         );
       }
     } catch (_) {
-      _state.value = const PostDetailState(
+      _state.value = PostDetailState(
         status: PostDetailStatus.failure,
-        error: 'ມີຂໍ້ຜິດພາດເກີດຂຶ້ນ',
+        error: l10n.commonErrorOccurred,
       );
     }
   }

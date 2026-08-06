@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:xaosao/constants/app_color.dart';
+import 'package:xaosao/l10n/app_localizations.dart';
 import 'package:xaosao/models/bank_account_model.dart';
 import 'package:xaosao/utils/image_picker_util.dart';
 import 'package:xaosao/widgets/app_network_image.dart';
@@ -44,11 +45,12 @@ class _QrManagementPageState extends State<QrManagementPage> {
   }
 
   Future<void> _confirmDelete(String id) async {
+    final l10n = AppLocalizations.of(context)!;
     final confirmed = await ConfirmSheet.show(
       context,
-      title: 'ລຶບ QR Code',
-      message: 'ທ່ານແນ່ໃຈບໍ່ວ່າຕ້ອງການລຶບ QR Code ນີ້?',
-      confirmLabel: 'ລຶບ',
+      title: l10n.qrDeleteTitle,
+      message: l10n.qrDeleteMessage,
+      confirmLabel: l10n.commonDelete,
       icon: AppIcons.delete,
       isDanger: true,
     );
@@ -57,11 +59,12 @@ class _QrManagementPageState extends State<QrManagementPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       backgroundColor: AppColors.bg,
       appBar: GradientAppBar(
-        title: 'QR ໂອນເງິນ',
-        subtitle: 'ຈັດການ QR Code ຂອງຂ້ອຍ',
+        title: l10n.qrTitle,
+        subtitle: l10n.qrSubtitle,
       ),
       body: Obx(() => _buildBody(_logic.state)),
     );
@@ -144,6 +147,7 @@ class QrCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final isDefault = account.isDefault == true;
     return Container(
       decoration: BoxDecoration(
@@ -178,9 +182,9 @@ class QrCard extends StatelessWidget {
                 ),
               ),
             // ── Header: name + action icons ────────────────────
-            _buildHeader(isDefault),
+            _buildHeader(isDefault, l10n),
             // ── QR image hero ──────────────────────────────────
-            _buildQrContent(),
+            _buildQrContent(l10n),
             // ── Set-primary footer ─────────────────────────────
             if (onSetPrimary != null) ...[
               Container(
@@ -195,7 +199,7 @@ class QrCard extends StatelessWidget {
     );
   }
 
-  Widget _buildHeader(bool isDefault) {
+  Widget _buildHeader(bool isDefault, AppLocalizations l10n) {
     return Padding(
       padding: EdgeInsets.fromLTRB(14.w, 14.h, 10.w, 14.h),
       child: Row(
@@ -221,7 +225,7 @@ class QrCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  account.bankAccountName ?? 'ທະນາຄານ',
+                  account.bankAccountName ?? l10n.commonBank,
                   style: TextStyle(
                     fontSize: 14.sp,
                     fontWeight: FontWeight.w700,
@@ -239,7 +243,7 @@ class QrCard extends StatelessWidget {
                       ),
                       SizedBox(width: 3.w),
                       Text(
-                        'ບັນຊີຫຼັກ',
+                        l10n.qrDefaultLabel,
                         style: TextStyle(
                           fontSize: 10.sp,
                           fontWeight: FontWeight.w600,
@@ -259,7 +263,7 @@ class QrCard extends StatelessWidget {
                 icon: Icons.edit_outlined,
                 iconColor: AppColors.primary,
                 bgColor: AppColors.primary.withValues(alpha: 0.08),
-                tooltip: 'ແກ້ໄຂ',
+                tooltip: l10n.commonEdit,
                 onTap: onEdit,
               ),
               if (onDelete != null) ...[
@@ -268,7 +272,7 @@ class QrCard extends StatelessWidget {
                   icon: Icons.delete_outline_rounded,
                   iconColor: const Color(0xFFEF4444),
                   bgColor: const Color(0xFFFEF2F2),
-                  tooltip: 'ລຶບ',
+                  tooltip: l10n.commonDelete,
                   onTap: onDelete!,
                 ),
               ],
@@ -279,7 +283,7 @@ class QrCard extends StatelessWidget {
     );
   }
 
-  Widget _buildQrContent() {
+  Widget _buildQrContent(AppLocalizations l10n) {
     final url = account.qrCode;
     final isDefault = account.isDefault == true;
     final imageSize = isDefault ? 200.w : 170.w;
@@ -313,14 +317,14 @@ class QrCard extends StatelessWidget {
                       width: imageSize,
                       height: imageSize,
                       fit: BoxFit.cover,
-                      errorWidget: _qrPlaceholder(imageSize),
+                      errorWidget: _qrPlaceholder(imageSize, l10n),
                     ),
                   )
-                : _qrPlaceholder(imageSize),
+                : _qrPlaceholder(imageSize, l10n),
           ),
           SizedBox(height: 10.h),
           Text(
-            'ໃຫ້ລູກຄ້າສະແກນ QR ນີ້ເພື່ອໂອນເງິນ',
+            l10n.qrScanHint,
             style: TextStyle(fontSize: 11.sp, color: AppColors.textHint),
             textAlign: TextAlign.center,
           ),
@@ -329,7 +333,7 @@ class QrCard extends StatelessWidget {
     );
   }
 
-  Widget _qrPlaceholder(double size) {
+  Widget _qrPlaceholder(double size, AppLocalizations l10n) {
     return SizedBox(
       width: size,
       height: size,
@@ -339,7 +343,7 @@ class QrCard extends StatelessWidget {
           Icon(Icons.qr_code_2_rounded, size: 48.r, color: AppColors.textDisabled),
           SizedBox(height: 8.h),
           Text(
-            'ຍັງບໍ່ມີ QR Code',
+            l10n.qrEmptyTitle,
             style: TextStyle(fontSize: 11.sp, color: AppColors.textHint),
           ),
         ],
@@ -415,7 +419,7 @@ class _SetPrimaryRow extends StatelessWidget {
             ),
             SizedBox(width: 9.w),
             Text(
-              'ຕັ້ງເປັນ QR ຫຼັກ',
+              AppLocalizations.of(context)!.qrSetPrimary,
               style: TextStyle(
                 fontSize: 12.sp,
                 fontWeight: FontWeight.w600,
@@ -444,6 +448,7 @@ class _EmptyState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return SingleChildScrollView(
       padding: EdgeInsets.all(16.r),
       child: Column(
@@ -494,7 +499,7 @@ class _EmptyState extends StatelessWidget {
                 ),
                 SizedBox(height: 16.h),
                 Text(
-                  'ຍັງບໍ່ມີ QR Code',
+                  l10n.qrEmptyTitle,
                   style: TextStyle(
                     fontSize: 16.sp,
                     fontWeight: FontWeight.w900,
@@ -503,7 +508,7 @@ class _EmptyState extends StatelessWidget {
                 ),
                 SizedBox(height: 6.h),
                 Text(
-                  'ເພີ່ມ QR Code ທະນາຄານຂອງທ່ານ\nເພື່ອຮັບເງິນຈາກລູກຄ້າ',
+                  l10n.qrEmptySubtitle,
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 12.sp,
@@ -513,7 +518,7 @@ class _EmptyState extends StatelessWidget {
                 ),
                 SizedBox(height: 22.h),
                 AppPrimaryButton(
-                  label: 'ເພີ່ມ QR Code ທຳອິດ',
+                  label: l10n.qrEmptyAddFirst,
                   leadingIcon: Icons.add_rounded,
                   height: 48,
                   onTap: onAdd,
@@ -536,6 +541,7 @@ class _ErrorState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Center(
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -543,7 +549,7 @@ class _ErrorState extends StatelessWidget {
           Icon(Icons.wifi_off_rounded, size: 48.r, color: AppColors.textDisabled),
           SizedBox(height: 12.h),
           Text(
-            'ໂຫຼດຂໍ້ມູນບໍ່ໄດ້',
+            l10n.commonLoadDataFailed,
             style: TextStyle(
               fontSize: 15.sp,
               fontWeight: FontWeight.w700,
@@ -552,13 +558,13 @@ class _ErrorState extends StatelessWidget {
           ),
           SizedBox(height: 6.h),
           Text(
-            'ກວດສອບການເຊື່ອມຕໍ່ແລ້ວລອງໃໝ່',
+            l10n.commonConnectionRetry,
             style: TextStyle(fontSize: 12.sp, color: AppColors.textHint),
           ),
           SizedBox(height: 20.h),
           SizedBox(
             width: 140.w,
-            child: AppPrimaryButton(label: 'ລອງໃໝ່', height: 42, onTap: onRetry),
+            child: AppPrimaryButton(label: l10n.commonRetry, height: 42, onTap: onRetry),
           ),
         ],
       ),
@@ -591,8 +597,7 @@ class _InfoBanner extends StatelessWidget {
           SizedBox(width: 9.w),
           Expanded(
             child: Text(
-              'QR ທີ່ຕັ້ງເປັນ ຫຼັກ ຈະໂຊໃນໜ້າ Profile ຂອງທ່ານ '
-              'ເພື່ອໃຫ້ລູກຄ້າສາມາດສະແກນໂອນເງິນໄດ້ທັນທີ.',
+              AppLocalizations.of(context)!.qrInfoBanner,
               style: TextStyle(
                 fontSize: 12.sp,
                 color: AppColors.primary,
@@ -641,7 +646,7 @@ class _AddQrButton extends StatelessWidget {
             ),
             SizedBox(width: 8.w),
             Text(
-              'ເພີ່ມ QR ໃໝ່',
+              AppLocalizations.of(context)!.qrAddNew,
               style: TextStyle(
                 fontSize: 13.sp,
                 fontWeight: FontWeight.w600,

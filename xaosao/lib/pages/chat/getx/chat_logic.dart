@@ -10,6 +10,7 @@ import 'package:xaosao/repository/chat_repo.dart';
 import 'package:xaosao/services/chat_socket_service.dart';
 import 'package:xaosao/services/notification_service.dart';
 import 'package:xaosao/services/storage_service.dart';
+import 'package:xaosao/utils/l10n.dart';
 
 import '../../../utils/api_date_parser.dart';
 
@@ -213,7 +214,7 @@ class ChatLogic extends GetxController {
         data['message_text']?.toString() ??
         data['body']?.toString();
 
-    final lastText = msgType == 'image' ? '📷 ຮູບພາບ' : msgText;
+    final lastText = msgType == 'image' ? l10n.chatImagePrefix : msgText;
 
     final senderId = msgMap?['sender']?.toString() ??
         (data['sender'] is Map ? data['sender']['id']?.toString() : null);
@@ -415,7 +416,7 @@ class ChatLogic extends GetxController {
         _patchConversationPreview(
           convId: conversationId,
           lastMessageText:
-              msg.messageType == 'image' ? '📷 ຮູບພາບ' : msg.messageText,
+              msg.messageType == 'image' ? l10n.chatImagePrefix : msg.messageText,
           lastMessageType: msg.messageType,
           lastMessageSenderId: msg.sender,
           lastMessageAt: msg.displayTime,

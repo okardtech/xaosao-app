@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:xaosao/constants/app_color.dart';
+import 'package:xaosao/l10n/app_localizations.dart';
 import 'package:xaosao/pages/chat/getx/chat_detail_controller.dart';
 import 'package:xaosao/pages/package/components/subscription_banner.dart';
 import 'package:xaosao/repository/package_repo.dart';
 import 'package:xaosao/services/storage_service.dart';
+import 'package:xaosao/utils/l10n.dart' as g;
 
 class ChatInputBar extends StatelessWidget {
   final ChatDetailController ctrl;
@@ -49,6 +51,7 @@ class _PendingImagePreview extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Padding(
       padding: EdgeInsets.only(bottom: 8.h),
       child: Row(
@@ -88,7 +91,7 @@ class _PendingImagePreview extends StatelessWidget {
           ),
           SizedBox(width: 8.w),
           Text(
-            'ຮູບພາບທີ່ເລືອກ',
+            l10n.chatSelectedImage,
             style: TextStyle(fontSize: 11.sp, color: AppColors.textHint),
           ),
         ],
@@ -156,6 +159,7 @@ class _TextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Expanded(
       child: Container(
         constraints: BoxConstraints(minHeight: 36.h),
@@ -177,7 +181,7 @@ class _TextField extends StatelessWidget {
           decoration: InputDecoration(
             isDense: true,
             border: InputBorder.none,
-            hintText: 'ພິມຂໍ້ຄວາມ...',
+            hintText: l10n.chatInputHint,
             hintStyle: TextStyle(
               fontSize: 12.5.sp,
               color: AppColors.textDisabled,
@@ -229,8 +233,8 @@ class _SendButton extends StatelessWidget {
       );
     } else {
       Get.snackbar(
-        'ສົ່ງບໍ່ສຳເລັດ',
-        'ກະລຸນາລອງໃໝ່',
+        g.l10n.chatSendFailed,
+        g.l10n.chatSendPleaseRetry,
         snackPosition: SnackPosition.BOTTOM,
         backgroundColor: Colors.red.shade50,
         colorText: Colors.red.shade700,

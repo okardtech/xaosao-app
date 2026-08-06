@@ -6,6 +6,7 @@ import 'package:xaosao/repository/booking_repo.dart';
 import 'package:xaosao/services/notification_service.dart';
 import 'package:xaosao/services/storage_service.dart';
 import 'package:xaosao/utils/app_snackbar.dart';
+import 'package:xaosao/utils/l10n.dart';
 import 'package:xaosao/widgets/show_loading_alert.dart';
 
 class MeetUpLogic extends GetxController {
@@ -191,7 +192,7 @@ class MeetUpLogic extends GetxController {
     } catch (e) {
       _state.value = MeetUpState(
         status: MeetUpStatus.failure,
-        error: 'ມີຂໍ້ຜິດພາດ: $e',
+        error: l10n.commonErrorDetail(e.toString()),
         selectedStatus: status,
         bookingDetail: _state.value.bookingDetail,
         bookingDetailLoading: _state.value.bookingDetailLoading,
@@ -230,7 +231,7 @@ class MeetUpLogic extends GetxController {
     } catch (e) {
       _state.value = state.copyWith(
         status: MeetUpStatus.failure,
-        error: 'ມີຂໍ້ຜິດພາດ: $e',
+        error: l10n.commonErrorDetail(e.toString()),
       );
     }
   }
@@ -258,14 +259,14 @@ class MeetUpLogic extends GetxController {
       } else if (!silent) {
         _state.value = _state.value.withDetail(
           bookingDetailLoading: false,
-          bookingDetailError: res.message ?? 'ບໍ່ສາມາດໂຫຼດຂໍ້ມູນ',
+          bookingDetailError: res.message ?? l10n.commonLoadDataFailed,
         );
       }
     } catch (e) {
       if (!silent) {
         _state.value = _state.value.withDetail(
           bookingDetailLoading: false,
-          bookingDetailError: 'ມີຂໍ້ຜິດພາດ: $e',
+          bookingDetailError: l10n.commonErrorDetail(e.toString()),
         );
       }
     }
@@ -282,7 +283,7 @@ class MeetUpLogic extends GetxController {
       if (res.data != null) {
         await filterBy(state.selectedStatus);
         _refreshDashboardBadges();
-        AppSnackbar.success('ຍົກເລີກການຈອງສຳເລັດ');
+        AppSnackbar.success(l10n.meetUpsCancelSuccess);
         return true;
       }
       _showError(res.message);
@@ -303,7 +304,7 @@ class MeetUpLogic extends GetxController {
       if (res.data != null) {
         await filterBy(state.selectedStatus);
         _refreshDashboardBadges();
-        AppSnackbar.success('ປ່ອຍເງີນສຳເລັດ');
+        AppSnackbar.success(l10n.meetUpsReleasePaymentSuccess);
         return true;
       }
       _showError(res.message);
@@ -324,7 +325,7 @@ class MeetUpLogic extends GetxController {
       if (res.data != null) {
         await filterBy(state.selectedStatus);
         _refreshDashboardBadges();
-        AppSnackbar.success('ສົ່ງຄຳຮ້ອງຂໍສຳເລັດ');
+        AppSnackbar.success(l10n.meetUpsDisputeSuccess);
         return true;
       }
       _showError(res.message);
@@ -345,7 +346,7 @@ class MeetUpLogic extends GetxController {
       if (res.data != null) {
         await filterBy(state.selectedStatus);
         _refreshDashboardBadges();
-        AppSnackbar.success('ຢືນຢັນການຈອງສຳເລັດ');
+        AppSnackbar.success(l10n.meetUpsConfirmSuccess);
         return true;
       }
       _showError(res.message);
@@ -366,7 +367,7 @@ class MeetUpLogic extends GetxController {
       if (res.data != null) {
         await filterBy(state.selectedStatus);
         _refreshDashboardBadges();
-        AppSnackbar.success('ປະຕິເສດການຈອງສຳເລັດ');
+        AppSnackbar.success(l10n.meetUpsRejectSuccess);
         return true;
       }
       _showError(res.message);
@@ -387,7 +388,7 @@ class MeetUpLogic extends GetxController {
       if (res.data != null) {
         await filterBy(state.selectedStatus);
         _refreshDashboardBadges();
-        AppSnackbar.success('ຮັບເງີນສຳເລັດ');
+        AppSnackbar.success(l10n.meetUpsReceiveMoneySuccess);
         return true;
       }
       _showError(res.message);
@@ -408,7 +409,7 @@ class MeetUpLogic extends GetxController {
       if (res.data != null) {
         await filterBy(state.selectedStatus);
         _refreshDashboardBadges();
-        AppSnackbar.success('ລຶບລາຍການສຳເລັດ');
+        AppSnackbar.success(l10n.meetUpsDeleteSuccess);
         return true;
       }
       _showError(res.message);
@@ -425,6 +426,6 @@ class MeetUpLogic extends GetxController {
   }
 
   void _showError(String? msg) {
-    AppSnackbar.error(msg ?? 'ບໍ່ສາມາດດຳເນີນການໄດ້');
+    AppSnackbar.error(msg ?? l10n.commonActionFailed);
   }
 }

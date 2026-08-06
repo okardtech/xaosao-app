@@ -2,6 +2,7 @@ import 'package:get/get.dart';
 import 'package:xaosao/pages/login/getx/login_logic.dart';
 import 'package:xaosao/repository/login_repo.dart';
 import 'package:xaosao/utils/app_snackbar.dart';
+import 'package:xaosao/utils/l10n.dart';
 import 'package:xaosao/widgets/show_loading_alert.dart';
 
 enum ProfileUpdateStatus { initial, loading, success, failure }
@@ -34,15 +35,15 @@ class ProfileDetailLogic extends GetxController {
         status.value = ProfileUpdateStatus.success;
         await Get.find<LoginLogic>().fetchProfile(isCustomer: isClient);
         Get.back();
-        AppSnackbar.success('ອັບເດດຂໍ້ມູນສຳເລັດ');
+        AppSnackbar.success(l10n.profileUpdateSuccess);
       } else {
         status.value = ProfileUpdateStatus.failure;
-        AppSnackbar.error(res.laMessage ?? 'ອັບເດດຂໍ້ມູນບໍ່ສຳເລັດ');
+        AppSnackbar.error(res.laMessage ?? l10n.profileUpdateFailed);
       }
     } catch (e) {
       hideLoadingDialog();
       status.value = ProfileUpdateStatus.failure;
-      AppSnackbar.error('ອັບເດດຂໍ້ມູນບໍ່ສຳເລັດ');
+      AppSnackbar.error(l10n.profileUpdateFailed);
     }
   }
 }

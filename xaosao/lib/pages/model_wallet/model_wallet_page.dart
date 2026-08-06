@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:xaosao/constants/app_color.dart';
 import 'package:xaosao/constants/app_routes.dart';
+import 'package:xaosao/l10n/app_localizations.dart';
 import 'package:xaosao/pages/model_wallet/components/model_wallet_card.dart';
 import 'package:xaosao/pages/model_wallet/components/model_wallet_shimmer.dart';
 import 'package:xaosao/pages/model_wallet/getx/model_wallet_logic.dart';
@@ -22,11 +23,11 @@ class _ModelWalletPageState extends State<ModelWalletPage> {
   bool _amountsVisible = false;
   late final ModelWalletLogic _logic;
 
-  static const _chips = <(String, String?)>[
-    ('ທັງໝົດ', null),
-    ('ລໍຖ້າອະນຸມັດ', 'pending'),
-    ('ສຳເລັດເເລ້ວ', 'approved'),
-    ('ຍົກເລີກເເລ້ວ', 'rejected'),
+  List<(String, String?)> _buildChips(AppLocalizations l10n) => [
+    (l10n.walletFilterAll, null),
+    (l10n.walletFilterPending, 'pending'),
+    (l10n.walletFilterApproved, 'approved'),
+    (l10n.walletFilterRejected, 'rejected'),
   ];
 
   @override
@@ -37,9 +38,11 @@ class _ModelWalletPageState extends State<ModelWalletPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final chips = _buildChips(l10n);
     return Scaffold(
       backgroundColor: AppColors.bg,
-      appBar: GradientAppBar(title: 'ກະເປົ໋າເງິນ', subtitle: 'ຍອດ ແລະ ປະຫວັດ'),
+      appBar: GradientAppBar(title: l10n.walletTitle, subtitle: l10n.walletSubtitle),
       body: Obx(() {
         final st = _logic.state;
         return RefreshIndicator(
@@ -73,7 +76,7 @@ class _ModelWalletPageState extends State<ModelWalletPage> {
                 child: Padding(
                   padding: EdgeInsets.fromLTRB(16.w, 14.h, 16.w, 8.h),
                   child: Text(
-                    'ປະຫວັດລາຍຮັບ',
+                    l10n.modelWalletIncomeHistory,
                     style: TextStyle(
                       fontSize: 14.sp,
                       fontWeight: FontWeight.w700,
@@ -88,7 +91,7 @@ class _ModelWalletPageState extends State<ModelWalletPage> {
                 pinned: true,
                 delegate: _ChipsDelegate(
                   filter: st.filter,
-                  chips: _chips,
+                  chips: chips,
                   onSelect: _logic.setFilter,
                   height: 42,
                 ),
@@ -104,8 +107,8 @@ class _ModelWalletPageState extends State<ModelWalletPage> {
                   hasScrollBody: false,
                   child: AppEmptyState(
                     icon: Icons.receipt_long_outlined,
-                    title: 'ຍັງບໍ່ມີລາຍການ',
-                    subtitle: 'ລາຍການລາຍຮັບຂອງທ່ານ\nຈະສະແດງຢູ່ທີ່ນີ້',
+                    title: l10n.modelWalletEmptyTitle,
+                    subtitle: l10n.modelWalletEmptySubtitle,
                   ),
                 ),
 

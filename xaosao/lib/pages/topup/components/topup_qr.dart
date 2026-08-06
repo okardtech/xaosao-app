@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:xaosao/constants/app_color.dart';
 import 'package:xaosao/constants/app_routes.dart';
+import 'package:xaosao/l10n/app_localizations.dart';
 import 'package:xaosao/pages/topup/components/topup_constant.dart';
 import 'package:xaosao/pages/topup/getx/topup_logic.dart';
 import 'package:xaosao/utils/qr_saver.dart';
@@ -29,11 +30,12 @@ class _TopUpQRPageState extends State<TopUpQRPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       backgroundColor: AppColors.bg,
       appBar: GradientAppBar(
-        title: 'ສະແກນ QR',
-        subtitle: 'ຊຳລະຜ່ານ app ທະນາຄານ',
+        title: l10n.topupQrTitle,
+        subtitle: l10n.topupQrSubtitle,
         actions: [const TopUpStepBadge('2')],
       ),
       body: SafeArea(
@@ -101,7 +103,7 @@ class _TopUpQRPageState extends State<TopUpQRPage> {
             Padding(
               padding: EdgeInsets.fromLTRB(16.w, 0, 16.w, 16.h),
               child: AppPrimaryButton(
-                label: 'ຊຳລະແລ້ວ — ອັບ slip',
+                label: l10n.topupQrPaidUploadSlip,
                 trailingIcon: Icons.arrow_forward_ios_rounded,
                 onTap: () => Get.toNamed(AppRoutes.topupUpload),
               ),
@@ -166,6 +168,7 @@ class _QrCardState extends State<_QrCard> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final amountKip = widget.amountKip;
     final qrUrl = widget.qrUrl;
     return Container(
@@ -271,7 +274,7 @@ class _QrCardState extends State<_QrCard> {
                   ),
                   SizedBox(height: 16.h),
                   Text(
-                    'ຈຳນວນທີ່ຕ້ອງຊຳລະ',
+                    l10n.topupQrAmountToPay,
                     style: TextStyle(
                       fontSize: 11.sp,
                       fontWeight: FontWeight.w700,
@@ -334,7 +337,7 @@ class _QrCardState extends State<_QrCard> {
                   ),
                   SizedBox(height: 18.h),
                   Text(
-                    'ສະແກນ QR ດ້ວຍ app ທະນາຄານ\nຈາກນັ້ນກົດ "ຊຳລະແລ້ວ" ເພື່ອອັບ slip',
+                    l10n.topupQrInstructions,
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: 12.sp,
@@ -392,7 +395,7 @@ class _QrCardState extends State<_QrCard> {
                             ),
                           SizedBox(width: 6.w),
                           Text(
-                            _saving ? 'ກຳລັງບັນທຶກ...' : 'ດາວໂຫຼດ QR',
+                            _saving ? l10n.topupQrSaving : l10n.topupQrDownload,
                             style: TextStyle(
                               fontSize: 11.sp,
                               fontWeight: FontWeight.w700,
@@ -426,7 +429,7 @@ class _QrError extends StatelessWidget {
           Icon(Icons.qr_code_2_rounded, size: 48.r, color: AppColors.textHint),
           SizedBox(height: 8.h),
           Text(
-            'ບໍ່ສາມາດໂຫຼດ QR',
+            AppLocalizations.of(context)!.topupQrLoadFailed,
             style: TextStyle(fontSize: 12.sp, color: AppColors.textHint),
           ),
         ],

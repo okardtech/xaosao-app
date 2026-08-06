@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 import 'package:xaosao/repository/feedback_repo.dart';
 import 'package:xaosao/utils/app_snackbar.dart';
+import 'package:xaosao/utils/l10n.dart';
 import 'package:xaosao/widgets/show_loading_alert.dart';
 import 'feedback_state.dart';
 
@@ -45,11 +46,11 @@ class FeedbackLogic extends GetxController {
         await loadFeedbacks();
         return true;
       }
-      AppSnackbar.error(res.laMessage ?? 'ສົ່ງຄຳຕິຊົມບໍ່ສຳເລັດ');
+      AppSnackbar.error(res.laMessage ?? l10n.feedbackSubmitFailed);
       return false;
     } catch (_) {
       hideLoadingDialog();
-      AppSnackbar.error('ສົ່ງຄຳຕິຊົມບໍ່ສຳເລັດ');
+      AppSnackbar.error(l10n.feedbackSubmitFailed);
       return false;
     } finally {
       _busy = false;

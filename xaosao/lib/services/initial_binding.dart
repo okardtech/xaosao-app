@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 import 'package:xaosao/pages/chat/getx/chat_logic.dart';
 import 'package:xaosao/pages/referral_analytics/getx/referral_analytics_logic.dart';
+import 'package:xaosao/services/language_service.dart';
 import 'package:xaosao/services/location_manager.dart';
 import 'package:xaosao/pages/forgot_password/getx/forgot_logic.dart';
 import 'package:xaosao/services/chat_socket_service.dart';
@@ -34,6 +35,7 @@ class InitialBinding extends Bindings {
     Get.putAsync<ApiService>(() => ApiService().init(), permanent: true);
     // DeepLinkService must be registered BEFORE AppsFlyerService so the
     // SDK's onDeepLinking callback can resolve it via Get.find().
+    Get.lazyPut<LanguageService>(() => LanguageService(), fenix: true);
     Get.put<DeepLinkService>(DeepLinkService(), permanent: true);
     Get.putAsync<AppsFlyerService>(() => AppsFlyerService().init(), permanent: true);
     Get.putAsync<ChatSocketService>(() => ChatSocketService().init(), permanent: true);

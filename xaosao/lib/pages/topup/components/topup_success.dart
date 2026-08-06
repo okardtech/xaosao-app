@@ -3,8 +3,10 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:xaosao/constants/app_color.dart';
 import 'package:xaosao/constants/app_routes.dart';
+import 'package:xaosao/l10n/app_localizations.dart';
 import 'package:xaosao/pages/topup/components/topup_constant.dart';
 import 'package:xaosao/pages/topup/getx/topup_logic.dart';
+import 'package:xaosao/utils/l10n.dart';
 import 'package:xaosao/widgets/app_button.dart';
 
 class TopUpSuccessPage extends StatefulWidget {
@@ -40,20 +42,12 @@ class _TopUpSuccessPageState extends State<TopUpSuccessPage>
 
   String _buildDate() {
     final now = DateTime.now();
-    const months = [
+    final months = <String>[
       '',
-      'ມ.ກ',
-      'ກ.ພ',
-      'ມ.ນ',
-      'ມ.ສ',
-      'ພ.ພ',
-      'ມ.ຖ',
-      'ກ.ລ',
-      'ສ.ຫ',
-      'ກ.ຍ',
-      'ຕ.ລ',
-      'ພ.ຈ',
-      'ທ.ວ',
+      l10n.monthShortJan, l10n.monthShortFeb, l10n.monthShortMar,
+      l10n.monthShortApr, l10n.monthShortMay, l10n.monthShortJun,
+      l10n.monthShortJul, l10n.monthShortAug, l10n.monthShortSep,
+      l10n.monthShortOct, l10n.monthShortNov, l10n.monthShortDec,
     ];
     final h = now.hour.toString().padLeft(2, '0');
     final min = now.minute.toString().padLeft(2, '0');
@@ -86,7 +80,7 @@ class _TopUpSuccessPageState extends State<TopUpSuccessPage>
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 20.w),
               child: AppPrimaryButton(
-                label: 'ກັບໜ້າກະເປົ໋າ',
+                label: AppLocalizations.of(context)!.topupBackToWallet,
                 leadingIcon: Icons.account_balance_wallet_outlined,
                 onTap: () {
                   Get.until((route) =>
@@ -116,6 +110,7 @@ class _Hero extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Container(
       width: double.infinity,
       padding: EdgeInsets.fromLTRB(0, 48.h, 0, 36.h),
@@ -148,7 +143,7 @@ class _Hero extends StatelessWidget {
             ),
             SizedBox(height: 16.h),
             Text(
-              'ເຕີມສຳເລັດ!',
+              l10n.topupSuccessTitle,
               style: TextStyle(
                 fontSize: 22.sp,
                 fontWeight: FontWeight.w900,
@@ -158,7 +153,7 @@ class _Hero extends StatelessWidget {
             ),
             SizedBox(height: 6.h),
             Text(
-              'ກຳລັງລໍຖ້າການກວດສອບຈາກ Admin',
+              l10n.topupSuccessSubtitle,
               style: TextStyle(
                 fontSize: 13.sp,
                 color: Colors.white.withValues(alpha: 0.75),
@@ -212,6 +207,7 @@ class _ReceiptCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
@@ -228,7 +224,7 @@ class _ReceiptCard extends StatelessWidget {
         children: [
           _DetailRow(
             icon: Icons.payments_outlined,
-            label: 'ຈຳນວນ',
+            label: l10n.commonAmount,
             value: fmtKip(amount),
             valueColor: AppColors.primary,
             valueBold: true,
@@ -242,7 +238,7 @@ class _ReceiptCard extends StatelessWidget {
           ),
           _DetailRow(
             icon: Icons.calendar_today_rounded,
-            label: 'ວັນທີ',
+            label: l10n.commonDate,
             value: date,
           ),
           Divider(
@@ -268,7 +264,7 @@ class _ReceiptCard extends StatelessWidget {
                 ),
                 SizedBox(width: 6.w),
                 Text(
-                  'ລໍຖ້າການກວດສອບ',
+                  l10n.topupWaitingReview,
                   style: TextStyle(
                     fontSize: 12.sp,
                     fontWeight: FontWeight.w600,

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:xaosao/utils/l10n.dart';
 
 // ═══════════════════════════════════════════════════════
 //  Service type enum
@@ -8,9 +9,9 @@ enum ServiceType { social, massage, travel }
 extension ServiceTypeExt on ServiceType {
   String get label {
     switch (this) {
-      case ServiceType.social:   return 'ສັງຄົມ';
-      case ServiceType.massage:  return 'ນວດ';
-      case ServiceType.travel:   return 'ທ່ຽວ';
+      case ServiceType.social:   return l10n.serviceTypeSocial;
+      case ServiceType.massage:  return l10n.serviceTypeMassage;
+      case ServiceType.travel:   return l10n.serviceTypeTravel;
     }
   }
 

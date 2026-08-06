@@ -14,6 +14,8 @@ import 'package:xaosao/services/storage_service.dart';
 import 'package:xaosao/widgets/app_network_image.dart';
 import 'package:xaosao/constants/app_routes.dart';
 import 'package:xaosao/widgets/gradient_app_bar.dart';
+import 'package:xaosao/l10n/app_localizations.dart';
+import 'package:xaosao/utils/l10n.dart' as g;
 
 import '../../constants/app_icons.dart';
 import '../../widgets/app_svg_icon.dart';
@@ -87,11 +89,12 @@ class _PostInterestPageState extends State<PostInterestPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       backgroundColor: const Color(0xFFF8F8FC),
       appBar: GradientAppBar(
-        title: 'ຜູ້ສົນໃຈ',
-        subtitle: 'ລາຍຊື່ຜູ້ທີ່ສົນໃຈໂພສຂອງທ່ານ',
+        title: l10n.interestTitle,
+        subtitle: l10n.interestSubtitle,
       ),
       body: SafeArea(top: false, child: Obx(() => _buildBody(_logic.state))),
     );
@@ -172,15 +175,16 @@ class _InterestTile extends StatelessWidget {
   String _ago(DateTime? dt) {
     if (dt == null) return '';
     final d = DateTime.now().difference(dt);
-    if (d.inSeconds < 60) return 'ໃໝ່ໆ';
-    if (d.inMinutes < 60) return '${d.inMinutes} ນາທີກ່ອນ';
-    if (d.inHours < 24) return '${d.inHours} ຊົ່ວໂມງກ່ອນ';
-    if (d.inDays < 7) return '${d.inDays} ວັນກ່ອນ';
-    return '${(d.inDays / 7).floor()} ອາທິດກ່ອນ';
+    if (d.inSeconds < 60) return g.l10n.timeJustNow;
+    if (d.inMinutes < 60) return g.l10n.timeMinutesAgo(d.inMinutes);
+    if (d.inHours < 24) return g.l10n.timeHoursAgo(d.inHours);
+    if (d.inDays < 7) return g.l10n.timeDaysAgo(d.inDays);
+    return g.l10n.timeWeeksAgo((d.inDays / 7).floor());
   }
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final user = item.user;
     final fullName = [
       user?.firstName,
@@ -262,7 +266,7 @@ class _InterestTile extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    fullName.isEmpty ? 'ຜູ້ໃຊ້' : fullName,
+                    fullName.isEmpty ? l10n.commonUser : fullName,
                     style: TextStyle(
                       fontSize: 14.sp,
                       fontWeight: FontWeight.w800,
@@ -318,7 +322,7 @@ class _InterestTile extends StatelessWidget {
                     ),
                     SizedBox(width: 5.w),
                     Text(
-                      'ແຊັດ',
+                      l10n.postActionChat,
                       style: TextStyle(
                         fontSize: 11.sp,
                         fontWeight: FontWeight.w700,
@@ -403,6 +407,7 @@ class _FailureSliver extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return SliverFillRemaining(
       hasScrollBody: false,
       child: Center(
@@ -412,7 +417,7 @@ class _FailureSliver extends StatelessWidget {
             Icon(Icons.wifi_off_rounded, size: 40.r, color: AppColors.textHint),
             SizedBox(height: 14.h),
             Text(
-              'ໂຫຼດຂໍ້ມູນບໍ່ສຳເລັດ',
+              l10n.commonLoadDataFailed,
               style: TextStyle(
                 fontSize: 15.sp,
                 fontWeight: FontWeight.w700,
@@ -429,7 +434,7 @@ class _FailureSliver extends StatelessWidget {
                   borderRadius: BorderRadius.circular(12.r),
                 ),
                 child: Text(
-                  'ລອງໃໝ່',
+                  l10n.commonRetry,
                   style: TextStyle(
                     fontSize: 13.sp,
                     fontWeight: FontWeight.w700,
@@ -449,6 +454,7 @@ class _FailureSliver extends StatelessWidget {
 class _EmptySliver extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return SliverFillRemaining(
       hasScrollBody: false,
       child: Center(
@@ -470,7 +476,7 @@ class _EmptySliver extends StatelessWidget {
             ),
             SizedBox(height: 16.h),
             Text(
-              'ຍັງບໍ່ມີຜູ້ສົນໃຈ',
+              l10n.interestEmptyTitle,
               style: TextStyle(
                 fontSize: 16.sp,
                 fontWeight: FontWeight.w700,
@@ -479,7 +485,7 @@ class _EmptySliver extends StatelessWidget {
             ),
             SizedBox(height: 6.h),
             Text(
-              'ເມື່ອມີຜູ້ກົດໃຈໂພສນີ້,\nຊື່ຂອງພວກເຂົາຈະສະແດງຢູ່ນີ້',
+              l10n.interestEmptySubtitle,
               style: TextStyle(
                 fontSize: 13.sp,
                 color: AppColors.textHint,

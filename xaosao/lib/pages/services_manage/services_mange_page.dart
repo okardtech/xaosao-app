@@ -5,12 +5,14 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:xaosao/constants/app_color.dart';
 import 'package:xaosao/constants/app_icons.dart';
+import 'package:xaosao/l10n/app_localizations.dart';
 import 'package:xaosao/models/profile_model.dart';
 import 'package:xaosao/models/service_model.dart';
 import 'package:xaosao/pages/login/getx/login_logic.dart';
 import 'package:xaosao/pages/services_manage/getx/service_logic.dart';
 import 'package:xaosao/pages/services_manage/getx/service_state.dart';
 import 'package:xaosao/utils/currency_formatter.dart';
+import 'package:xaosao/utils/l10n.dart' as g;
 import 'package:xaosao/widgets/app_button.dart';
 import 'package:xaosao/widgets/confirm_sheet.dart';
 
@@ -26,12 +28,13 @@ class ServiceManagementPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final logic = Get.find<ServiceLogic>();
+    final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
       backgroundColor: AppColors.bg,
       appBar: GradientAppBar(
-        title: "ບໍລິການຂອງຂ້ອຍ",
-        subtitle: "ຈັດການ ແລະ ຕັ້ງລາຄາບໍລິການ",
+        title: l10n.profileMyServices,
+        subtitle: l10n.servicesManageSubtitle,
       ),
       body: Obx(() {
         // Watch both controllers so cards rebuild after profile refresh
@@ -163,11 +166,12 @@ class ServiceManagementPage extends StatelessWidget {
     ServiceModel svc,
     ModelService profileSvc,
   ) async {
+    final l10n = AppLocalizations.of(context)!;
     final confirmed = await ConfirmSheet.show(
       context,
-      title: 'ລຶບ ${ServiceHelper.serviceOriginalName(svc.name)}',
-      message: 'ທ່ານຕ້ອງການລຶບບໍລິການນີ້ອອກຈາກໂປຣໄຟຂອງທ່ານແທ້ບໍ່?',
-      confirmLabel: 'ລຶບ',
+      title: l10n.servicesManageDeleteTitle(ServiceHelper.serviceOriginalName(svc.name)),
+      message: l10n.servicesManageDeleteMessage,
+      confirmLabel: l10n.commonDelete,
       icon: AppIcons.delete,
       isDanger: true,
     );
@@ -265,6 +269,7 @@ class _CardHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Container(
       padding: EdgeInsets.all(16.r),
       decoration: BoxDecoration(
@@ -318,7 +323,7 @@ class _CardHeader extends StatelessWidget {
                           borderRadius: BorderRadius.circular(6.r),
                         ),
                         child: Text(
-                          'ເປີດໃຊ້',
+                          l10n.commonEnable,
                           style: TextStyle(
                             fontSize: 9.sp,
                             fontWeight: FontWeight.w700,
@@ -347,7 +352,7 @@ class _CardHeader extends StatelessWidget {
               icon: Icons.edit_outlined,
               color: AppColors.primary,
               bgColor: AppColors.primary.withValues(alpha: 0.10),
-              tooltip: 'ອັບເດດ',
+              tooltip: l10n.commonUpdate,
               onTap: onEdit!,
             ),
             SizedBox(width: 6.w),
@@ -355,7 +360,7 @@ class _CardHeader extends StatelessWidget {
               icon: Icons.delete_outline_rounded,
               color: const Color(0xFFEF4444),
               bgColor: const Color(0xFFEF4444).withValues(alpha: 0.08),
-              tooltip: 'ລຶບ',
+              tooltip: l10n.commonDelete,
               onTap: onDelete!,
             ),
           ],
@@ -415,6 +420,7 @@ class _OwnedBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final rate = profileService.effectiveRate ?? 0;
     final commission = service.commission ?? 0;
     final net = rate * (1 - commission / 100);
@@ -429,14 +435,14 @@ class _OwnedBody extends StatelessWidget {
 
         // Rate rows
         _DetailRow(
-          label: 'ລາຄາທ່ານກຳນົດ',
-          value: '${CurrFormatter.format(rate)} ກີບ$suffix',
+          label: l10n.servicesManageYourRate,
+          value: '${CurrFormatter.format(rate)} ${l10n.commonCurrencyKip}$suffix',
           valueColor: AppColors.primary,
           bold: true,
         ),
         SizedBox(height: 6.h),
         _DetailRow(
-          label: 'ຄ່າບໍລິການ/ຄັ້ງ',
+          label: l10n.servicesManageFeePerSession,
           value: '${commission.toStringAsFixed(commission % 1 == 0 ? 0 : 1)}%',
         ),
         if (profileService.serviceLocation != null &&
@@ -477,8 +483,8 @@ class _OwnedBody extends StatelessWidget {
 
         // Net earnings
         _DetailRow(
-          label: 'ເງິນທີ່ໄດ້ຮັບຕົວຈິງ',
-          value: '${CurrFormatter.format(net)} ກີບ$suffix',
+          label: l10n.servicesManageActualEarnings,
+          value: '${CurrFormatter.format(net)} ${l10n.commonCurrencyKip}$suffix',
           valueColor: AppColors.primary,
           bold: true,
           labelBold: true,
@@ -504,6 +510,7 @@ class _MassageOwnedBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final variants = profileService.variants ?? [];
     final commission = service.commission ?? 0;
 
@@ -516,7 +523,7 @@ class _MassageOwnedBody extends StatelessWidget {
         // ── Variants list ─────────────────────────────────
         if (variants.isNotEmpty) ...[
           Text(
-            'ລາຍການລາຄາ',
+            l10n.servicesManagePriceList,
             style: TextStyle(
               fontSize: 12.sp,
               fontWeight: FontWeight.w600,
@@ -548,7 +555,9 @@ class _MassageOwnedBody extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  '${CurrFormatter.format(v.pricePerHour ?? 0)} ກີບ/ຊມ',
+                  l10n.servicesManagePriceKipPerHourShort(
+                    CurrFormatter.format(v.pricePerHour ?? 0),
+                  ),
                   style: TextStyle(
                     fontSize: 13.sp,
                     fontWeight: FontWeight.w700,
@@ -563,7 +572,7 @@ class _MassageOwnedBody extends StatelessWidget {
 
         // ── Commission ────────────────────────────────────
         _DetailRow(
-          label: 'ຄ່ານາຍໜ້າ/ຄັ້ງ',
+          label: l10n.servicesManageCommissionPerSession,
           value: '${commission.toStringAsFixed(commission % 1 == 0 ? 0 : 1)}%',
         ),
         if (profileService.serviceLocation != null &&
@@ -710,7 +719,7 @@ class _MassageVariantsSheetState extends State<_MassageVariantsSheet> {
   void _submit() {
     if (!_canSubmit) return;
     if (_locationCtrl.text.trim().isEmpty) {
-      setState(() => _locationError = 'ກະລຸນາໃສ່ທີ່ຢູ່/ສະຖານທີ່');
+      setState(() => _locationError = g.l10n.servicesManageLocationRequired);
       return;
     }
     HapticFeedback.lightImpact();
@@ -726,6 +735,7 @@ class _MassageVariantsSheetState extends State<_MassageVariantsSheet> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final isUpdate = widget.initialVariants != null;
 
     return Padding(
@@ -778,7 +788,9 @@ class _MassageVariantsSheetState extends State<_MassageVariantsSheet> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            isUpdate ? 'ອັບເດດລາຄານວດ' : 'ເພີ່ມລາຄານວດ',
+                            isUpdate
+                                ? l10n.servicesManageUpdateMassageRate
+                                : l10n.servicesManageAddMassageRate,
                             style: TextStyle(
                               fontSize: 16.sp,
                               fontWeight: FontWeight.w800,
@@ -801,7 +813,7 @@ class _MassageVariantsSheetState extends State<_MassageVariantsSheet> {
                       Expanded(
                         flex: 5,
                         child: Text(
-                          'ຊື່ປະເພດ',
+                          l10n.servicesManageVariantName,
                           style: TextStyle(
                             fontSize: 12.sp,
                             fontWeight: FontWeight.w600,
@@ -815,7 +827,7 @@ class _MassageVariantsSheetState extends State<_MassageVariantsSheet> {
                         child: Row(
                           children: [
                             Text(
-                              'ລາຄາ (ກີບ/ຊມ)',
+                              l10n.servicesManagePriceKipPerHour,
                               style: TextStyle(
                                 fontSize: 12.sp,
                                 fontWeight: FontWeight.w600,
@@ -825,7 +837,9 @@ class _MassageVariantsSheetState extends State<_MassageVariantsSheet> {
                             if (widget.baseRate != null) ...[
                               SizedBox(width: 4.w),
                               Text(
-                                'ຕ່ຳສຸດ ${_fmtInt(widget.baseRate!.toInt())}',
+                                l10n.servicesManageMinimum(
+                                  _fmtInt(widget.baseRate!.toInt()),
+                                ),
                                 style: TextStyle(fontSize: 10.sp, color: AppColors.textHint),
                               ),
                             ],
@@ -863,7 +877,7 @@ class _MassageVariantsSheetState extends State<_MassageVariantsSheet> {
                           Icon(Icons.add_circle_outline_rounded, size: 16.r, color: AppColors.primary),
                           SizedBox(width: 6.w),
                           Text(
-                            'ເພີ່ມປະເພດ',
+                            l10n.servicesManageAddVariant,
                             style: TextStyle(
                               fontSize: 13.sp,
                               fontWeight: FontWeight.w600,
@@ -878,7 +892,7 @@ class _MassageVariantsSheetState extends State<_MassageVariantsSheet> {
 
                   // Location
                   Text(
-                    'ທີ່ຢູ່/ສະຖານທີ່',
+                    l10n.servicesManageAddressLabel,
                     style: TextStyle(
                       fontSize: 13.sp,
                       fontWeight: FontWeight.w700,
@@ -893,7 +907,7 @@ class _MassageVariantsSheetState extends State<_MassageVariantsSheet> {
                       if (_locationError != null) setState(() => _locationError = null);
                     },
                     decoration: InputDecoration(
-                      hintText: 'ເຊັ່ນ: ນະຄອນຫຼວງວຽງຈັນ, ສີສັດຕະນາກ',
+                      hintText: l10n.servicesManageAddressHint,
                       hintStyle: TextStyle(color: AppColors.textDisabled, fontSize: 13.sp),
                       prefixIcon: Icon(Icons.location_on_outlined, size: 18.r, color: AppColors.textHint),
                       errorText: _locationError,
@@ -927,7 +941,7 @@ class _MassageVariantsSheetState extends State<_MassageVariantsSheet> {
 
                   // Submit
                   AppPrimaryButton(
-                    label: isUpdate ? 'ອັບເດດ' : 'ເພີ່ມ',
+                    label: isUpdate ? l10n.commonUpdate : l10n.commonAdd,
                     height: 50,
                     onTap: _submit,
                   ),
@@ -967,13 +981,14 @@ class _ManageVariantRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Row(
       children: [
         Expanded(
           flex: 5,
           child: _ManageMiniTextField(
             ctrl: row.nameCtrl,
-            hint: 'ຊື່ປະເພດ',
+            hint: l10n.servicesManageVariantName,
             hasError: false,
             isNumber: false,
             onChanged: onChanged,
@@ -1106,6 +1121,7 @@ class _UnownedBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final commission = service.commission;
     final baseRate = service.baseRate ?? 0.0;
     final suffix = _billingLabel(service.billingType);
@@ -1118,7 +1134,7 @@ class _UnownedBody extends StatelessWidget {
 
         if (commission != null)
           _DetailRow(
-            label: 'ຄ່ານາຍໜ້າ',
+            label: l10n.servicesManageCommission,
             value:
                 '${commission.toStringAsFixed(commission % 1 == 0 ? 0 : 1)}%',
           ),
@@ -1126,8 +1142,8 @@ class _UnownedBody extends StatelessWidget {
         if (baseRate != null) ...[
           SizedBox(height: 6.h),
           _DetailRow(
-            label: 'ລາຄາພື້ນຖານ',
-            value: '${CurrFormatter.format(baseRate)} ກີບ$suffix',
+            label: l10n.servicesManageBaseRate,
+            value: '${CurrFormatter.format(baseRate)} ${l10n.commonCurrencyKip}$suffix',
           ),
         ],
 
@@ -1152,7 +1168,7 @@ class _UnownedBody extends StatelessWidget {
                 Icon(Icons.add_circle_outline_rounded, size: 16.r, color: AppColors.primary),
                 SizedBox(width: 6.w),
                 Text(
-                  'ເພີ່ມບໍລິການນີ້',
+                  l10n.servicesManageAddThis,
                   style: TextStyle(
                     fontSize: 13.sp,
                     fontWeight: FontWeight.w700,
@@ -1239,8 +1255,7 @@ class _InfoBanner extends StatelessWidget {
           SizedBox(width: 9.w),
           Expanded(
             child: Text(
-              'ເລືອກເພີ່ມບໍລິການທີ່ທ່ານສາມາດໃຫ້ໄດ້ ແລະ ຕັ້ງລາຄາຂອງທ່ານເອງ. '
-              'ລູກຄ້າຈະເຫັນລາຍການທີ່ທ່ານເປີດໃຊ້ເທົ່ານັ້ນ.',
+              AppLocalizations.of(context)!.servicesManageInstructions,
               style: TextStyle(
                 fontSize: 12.sp,
                 color: AppColors.primary,
@@ -1263,6 +1278,7 @@ class _ErrorView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Center(
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -1270,7 +1286,7 @@ class _ErrorView extends StatelessWidget {
           Icon(Icons.cloud_off_outlined, size: 48.r, color: AppColors.textHint),
           SizedBox(height: 12.h),
           Text(
-            'ໂຫຼດຂໍ້ມູນບໍ່ສຳເລັດ',
+            l10n.commonLoadDataFailed,
             style: TextStyle(
               fontSize: 14.sp,
               fontWeight: FontWeight.w700,
@@ -1281,7 +1297,7 @@ class _ErrorView extends StatelessWidget {
           SizedBox(
             width: 140.w,
             child: AppPrimaryButton(
-              label: 'ລອງໃໝ່',
+              label: l10n.commonRetry,
               height: 42,
               onTap: onRetry,
             ),
@@ -1299,7 +1315,7 @@ class _EmptyView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       child: Text(
-        'ບໍ່ມີຂໍ້ມູນບໍລິການ',
+        AppLocalizations.of(context)!.servicesManageNoData,
         style: TextStyle(fontSize: 14.sp, color: AppColors.textHint),
       ),
     );
@@ -1381,12 +1397,14 @@ class _RateInputSheetState extends State<_RateInputSheet> {
     final raw = _ctrl.text.replaceAll(',', '').trim();
     final val = double.tryParse(raw);
     if (val == null || val <= 0) {
-      setState(() { _errorMsg = 'ກະລຸນາໃສ່ລາຄາທີ່ຖືກຕ້ອງ'; });
+      setState(() { _errorMsg = g.l10n.servicesManageValidRateRequired; });
       return;
     }
     if (widget.baseRate != null && val < widget.baseRate!) {
       setState(() {
-        _errorMsg = 'ລາຄາຕ່ຳສຸດ: ${CurrFormatter.format(widget.baseRate!)} ກີບ';
+        _errorMsg = g.l10n.servicesManageMinRate(
+          CurrFormatter.format(widget.baseRate!),
+        );
       });
       return;
     }
@@ -1395,6 +1413,7 @@ class _RateInputSheetState extends State<_RateInputSheet> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final isUpdate = widget.initialRate != null;
 
     return Padding(
@@ -1449,7 +1468,9 @@ class _RateInputSheetState extends State<_RateInputSheet> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        isUpdate ? 'ອັບເດດລາຄາ' : 'ເພີ່ມບໍລິການ',
+                        isUpdate
+                            ? l10n.servicesManageUpdatePrice
+                            : l10n.servicesManageAddService,
                         style: TextStyle(
                           fontSize: 16.sp,
                           fontWeight: FontWeight.w800,
@@ -1471,7 +1492,7 @@ class _RateInputSheetState extends State<_RateInputSheet> {
 
               // Rate label
               Text(
-                'ລາຄາ${widget.billingLabel} (ກີບ)',
+                l10n.servicesManagePriceWithBilling(widget.billingLabel),
                 style: TextStyle(
                   fontSize: 13.sp,
                   fontWeight: FontWeight.w700,
@@ -1495,7 +1516,7 @@ class _RateInputSheetState extends State<_RateInputSheet> {
                     color: AppColors.textDisabled,
                     fontSize: 16.sp,
                   ),
-                  suffixText: 'ກີບ',
+                  suffixText: l10n.commonCurrencyKip,
                   suffixStyle: TextStyle(
                     fontSize: 14.sp,
                     fontWeight: FontWeight.w600,
@@ -1554,7 +1575,7 @@ class _RateInputSheetState extends State<_RateInputSheet> {
 
               // Submit
               AppPrimaryButton(
-                label: isUpdate ? 'ອັບເດດ' : 'ເພີ່ມ',
+                label: isUpdate ? l10n.commonUpdate : l10n.commonAdd,
                 height: 50,
                 onTap: _submit,
               ),
@@ -1608,16 +1629,16 @@ IconData _iconFor(String name) {
 String _billingLabel(String? type) {
   switch (type) {
     case 'per_hour':
-      return '/ຊ.ມ';
+      return g.l10n.billingPerHourShort;
     case 'per_day':
-      return '/ມື້';
+      return g.l10n.billingPerDayShort;
     case 'per_night':
-      return '/ຄືນ';
+      return g.l10n.billingPerNightShort;
     case 'one_time':
-      return '/ຄັ້ງ';
+      return g.l10n.billingPerSession;
     case 'per_minute':
-      return '/ນາທີ';
+      return g.l10n.billingPerMinute;
     default:
-      return '/ຊ.ມ';
+      return g.l10n.billingPerHourShort;
   }
 }

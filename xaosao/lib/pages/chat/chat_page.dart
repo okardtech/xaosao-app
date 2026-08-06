@@ -5,9 +5,11 @@ import 'package:get/get.dart';
 import 'package:xaosao/constants/app_color.dart';
 import 'package:xaosao/constants/app_icons.dart';
 import 'package:xaosao/constants/app_routes.dart';
+import 'package:xaosao/l10n/app_localizations.dart';
 import 'package:xaosao/models/conversation_model.dart';
 import 'package:xaosao/pages/chat/getx/chat_logic.dart';
 import 'package:xaosao/utils/date_time_formatter.dart';
+import 'package:xaosao/widgets/app_network_image.dart';
 import 'package:xaosao/widgets/confirm_sheet.dart';
 import 'package:xaosao/widgets/notif_badge.dart';
 
@@ -87,6 +89,7 @@ class _ChatListPageState extends State<ChatListPage> {
 
   // ── Header ─────────────────────────────────────────────────
   Widget _buildHeader() {
+    final l10n = AppLocalizations.of(context)!;
     return Obx(() {
       final total = _logic.totalUnread;
       return Padding(
@@ -98,7 +101,7 @@ class _ChatListPageState extends State<ChatListPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'ສົນທະນາ',
+                    l10n.chatTitle,
                     style: TextStyle(
                       fontSize: 24.sp,
                       fontWeight: FontWeight.w900,
@@ -108,7 +111,7 @@ class _ChatListPageState extends State<ChatListPage> {
                   ),
                   if (total > 0)
                     Text(
-                      '$total ຂໍ້ຄວາມໃໝ່',
+                      l10n.chatNewMessages(total.toInt()),
                       style: TextStyle(
                         fontSize: 11.sp,
                         color: AppColors.textHint,
@@ -147,6 +150,7 @@ class _ChatListPageState extends State<ChatListPage> {
 
   // ── Search bar ─────────────────────────────────────────────
   Widget _buildSearch() {
+    final l10n = AppLocalizations.of(context)!;
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 18.w),
       child: Container(
@@ -174,7 +178,7 @@ class _ChatListPageState extends State<ChatListPage> {
                 decoration: InputDecoration(
                   isDense: true,
                   border: InputBorder.none,
-                  hintText: 'ຄົ້ນຫາ...',
+                  hintText: l10n.chatSearchHint,
                   hintStyle: TextStyle(
                     fontSize: 12.sp,
                     color: AppColors.textDisabled,
@@ -200,6 +204,7 @@ class _ChatListPageState extends State<ChatListPage> {
 
   // ── Chat list ───────────────────────────────────────────────
   Widget _buildList() {
+    final l10n = AppLocalizations.of(context)!;
     return Obx(() {
       final s = _logic.state;
 
@@ -230,7 +235,7 @@ class _ChatListPageState extends State<ChatListPage> {
           itemBuilder: (_, i) {
             final conv = list[i];
             final other = conv.otherParticipant(_logic.myRole);
-            final name = other?.displayName ?? 'ການສົນທະນານີ້';
+            final name = other?.displayName ?? l10n.chatFallbackName;
             return Dismissible(
               key: ValueKey(conv.id),
               direction: DismissDirection.endToStart,
@@ -248,7 +253,7 @@ class _ChatListPageState extends State<ChatListPage> {
                     ),
                     SizedBox(height: 4.h),
                     Text(
-                      'ລຶບ',
+                      l10n.commonDelete,
                       style: TextStyle(
                         fontSize: 10.sp,
                         color: Colors.white,
@@ -260,10 +265,9 @@ class _ChatListPageState extends State<ChatListPage> {
               ),
               confirmDismiss: (_) => ConfirmSheet.show(
                 context,
-                title: 'ລຶບການສົນທະນາ',
-                message:
-                    'ລຶບການສົນທະນາກັບ $name?\nຂໍ້ຄວາມຍັງສາມາດເຫັນໄດ້ຈາກອີກຝ່າຍ',
-                confirmLabel: 'ລຶບ',
+                title: l10n.chatDeleteConvTitle,
+                message: l10n.chatDeleteConvMessage(name),
+                confirmLabel: l10n.commonDelete,
                 icon: AppIcons.delete,
                 isDanger: true,
               ),
@@ -274,10 +278,10 @@ class _ChatListPageState extends State<ChatListPage> {
                 onTap: () {
                   if (conv.isBlocked) {
                     Get.snackbar(
-                      'ບໍ່ສາມາດເຂົ້າໄດ້',
+                      l10n.chatCantEnter,
                       conv.iBlockedThis(_logic.myRole)
-                          ? 'ທ່ານໄດ້ບລັອກການສົນທະນານີ້'
-                          : 'ການສົນທະນານີ້ຖືກບລັອກ',
+                          ? l10n.chatBlockedByYou
+                          : l10n.chatBlockedByOther,
                       snackPosition: SnackPosition.TOP,
                       duration: const Duration(seconds: 2),
                       backgroundColor: const Color(0xFF1A1A2E),
@@ -296,11 +300,13 @@ class _ChatListPageState extends State<ChatListPage> {
                   final iBlocked = conv.iBlockedThis(_logic.myRole);
                   final confirmed = await ConfirmSheet.show(
                     context,
-                    title: iBlocked ? 'ຍົກເລີກການບລັອກ $name' : 'ບລັອກ $name',
+                    title: iBlocked
+                        ? l10n.chatUnblockName(name)
+                        : l10n.chatBlockName(name),
                     message: iBlocked
-                        ? 'ຍົກເລີກການບລັອກ ແລະ ສືບຕໍ່ສົນທະນາ?'
-                        : 'ທ່ານ ແລະ $name ຈະບໍ່ສາມາດສົ່ງຂໍ້ຄວາມຫາກັນໄດ້',
-                    confirmLabel: iBlocked ? 'ຍົກເລີກການບລັອກ' : 'ບລັອກ',
+                        ? l10n.chatUnblockConfirmMsg
+                        : l10n.chatBlockConfirmMsg(name),
+                    confirmLabel: iBlocked ? l10n.chatUnblock : l10n.chatBlock,
                     icon: iBlocked ? AppIcons.lockOpen : AppIcons.block,
                     iconColor: const Color(0xFFF59E0B),
                     isDanger: !iBlocked,
@@ -321,6 +327,7 @@ class _ChatListPageState extends State<ChatListPage> {
   }
 
   Widget _buildEmpty() {
+    final l10n = AppLocalizations.of(context)!;
     return Center(
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -332,7 +339,7 @@ class _ChatListPageState extends State<ChatListPage> {
           ),
           SizedBox(height: 12.h),
           Text(
-            'ບໍ່ພົບການສົນທະນາ',
+            l10n.chatEmpty,
             style: TextStyle(
               fontSize: 14.sp,
               fontWeight: FontWeight.w700,
@@ -345,6 +352,7 @@ class _ChatListPageState extends State<ChatListPage> {
   }
 
   Widget _buildError() {
+    final l10n = AppLocalizations.of(context)!;
     return Center(
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -356,7 +364,7 @@ class _ChatListPageState extends State<ChatListPage> {
           ),
           SizedBox(height: 12.h),
           Text(
-            'ໂຫຼດບໍ່ສຳເລັດ',
+            l10n.packageLoadFailedShort,
             style: TextStyle(
               fontSize: 14.sp,
               fontWeight: FontWeight.w700,
@@ -367,7 +375,7 @@ class _ChatListPageState extends State<ChatListPage> {
           GestureDetector(
             onTap: _logic.fetchConversations,
             child: Text(
-              'ລອງໃໝ່',
+              l10n.commonRetry,
               style: TextStyle(
                 fontSize: 12.sp,
                 color: AppColors.primary,
@@ -412,6 +420,7 @@ class _ChatRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final other = conv.otherParticipant(myRole);
     final name = other?.displayName ?? 'Unknown';
     final imageUrl = other?.profileImage;
@@ -484,7 +493,7 @@ class _ChatRow extends StatelessWidget {
                       children: [
                         Expanded(
                           child: Text(
-                            isBlocked ? 'ການສົນທະນາຖືກບລັອກ' : lastMsg,
+                            isBlocked ? l10n.chatConversationBlocked : lastMsg,
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                             style: TextStyle(
@@ -556,19 +565,23 @@ class _ConvAvatar extends StatelessWidget {
           height: 50.r,
           decoration: BoxDecoration(
             shape: BoxShape.circle,
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: gradient,
-            ),
+            // gradient: LinearGradient(
+            //   begin: Alignment.topLeft,
+            //   end: Alignment.bottomRight,
+            //   colors: gradient,
+            // ),
           ),
           child: imageUrl != null && imageUrl!.isNotEmpty
-              ? ClipOval(
-                  child: Image.network(
-                    imageUrl!,
-                    fit: BoxFit.cover,
-                    errorBuilder: (_, __, ___) => _Initials(name: name),
-                  ),
+              ? AppNetworkImage(
+                  imageUrl: imageUrl!,
+                  width: 50.r,
+                  height: 50.r,
+                  borderRadius: BorderRadius.circular(25.r),
+                  // Both placeholders fall back to the tinted initials
+                  // circle so a slow network / dead URL never leaves an
+                  // empty grey disk.
+                  loadingPlaceholder: _Initials(name: name),
+                  errorWidget: _Initials(name: name),
                 )
               : _Initials(name: name),
         ),

@@ -5,7 +5,9 @@ import 'package:shimmer/shimmer.dart';
 import 'package:xaosao/constants/app_color.dart';
 import 'package:xaosao/constants/app_image.dart';
 import 'package:xaosao/constants/app_routes.dart';
+import 'package:xaosao/l10n/app_localizations.dart';
 import 'package:xaosao/models/notification_item_model.dart';
+import 'package:xaosao/utils/l10n.dart' as g;
 import 'package:xaosao/widgets/empty_state.dart';
 import 'package:xaosao/widgets/gradient_app_bar.dart';
 
@@ -50,11 +52,12 @@ class _NotificationPageState extends State<NotificationPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       backgroundColor: AppColors.bg,
       appBar: GradientAppBar(
-        title: 'ການແຈ້ງເຕືອນ',
-        subtitle: 'ລາຍການແຈ້ງເຕືອນທັງໝົດຂອງທ່ານ',
+        title: l10n.notifListTitle,
+        subtitle: l10n.notifListSubtitle,
         expandedHeight: 88,
         actions: [
           // Unread count chip + mark-all-read button (reactive)
@@ -120,7 +123,7 @@ class _NotificationPageState extends State<NotificationPage> {
                     ),
                     SizedBox(width: 5.w),
                     Text(
-                      'ອ່ານທັງໝົດ',
+                      l10n.notifListMarkAllRead,
                       style: TextStyle(
                         fontSize: 11.sp,
                         fontWeight: FontWeight.w700,
@@ -174,10 +177,10 @@ class _NotificationPageState extends State<NotificationPage> {
         if (st.status == NotifListStatus.failure && st.items.isEmpty) {
           return AppEmptyState(
             icon: Icons.wifi_off_rounded,
-            title: 'ໂຫຼດຂໍ້ມູນບໍ່ສຳເລັດ',
-            subtitle: 'ກະລຸນາລອງໃໝ່ອີກຄັ້ງ',
+            title: l10n.commonLoadDataFailed,
+            subtitle: l10n.postsPleaseRetry,
             iconColor: AppColors.primary,
-            actionLabel: 'ລອງໃໝ່',
+            actionLabel: l10n.commonRetry,
             onAction: () => _logic.fetchNotifications(refresh: true),
           );
         }
@@ -185,8 +188,8 @@ class _NotificationPageState extends State<NotificationPage> {
         if (st.status == NotifListStatus.success && st.items.isEmpty) {
           return AppEmptyState(
             icon: Icons.notifications_none_rounded,
-            title: 'ຍັງບໍ່ມີການແຈ້ງເຕືອນ',
-            subtitle: 'ການແຈ້ງເຕືອນຈະສະແດງທີ່ນີ້',
+            title: l10n.notifListEmptyTitle,
+            subtitle: l10n.notifListEmptySubtitle,
             iconColor: AppColors.primary,
           );
         }
@@ -551,11 +554,11 @@ Color _colorForType(String type) {
 String _relativeTime(DateTime? dt) {
   if (dt == null) return '';
   final diff = DateTime.now().difference(dt);
-  if (diff.inSeconds < 60) return 'ຫາກໍ່ນີ້';
-  if (diff.inMinutes < 60) return '${diff.inMinutes} ນາທີ';
-  if (diff.inHours < 24) return '${diff.inHours} ຊົ່ວໂມງ';
-  if (diff.inDays == 1) return 'ມື້ວານ';
-  if (diff.inDays < 7) return '${diff.inDays} ມື້ກ່ອນ';
-  if (diff.inDays < 30) return '${(diff.inDays / 7).floor()} ອາທິດຜ່ານມາ';
-  return '${(diff.inDays / 30).floor()} ເດືອນກ່ອນ';
+  if (diff.inSeconds < 60) return g.l10n.notifTimeJustNow;
+  if (diff.inMinutes < 60) return g.l10n.notifTimeMinutes(diff.inMinutes);
+  if (diff.inHours < 24) return g.l10n.notifTimeHours(diff.inHours);
+  if (diff.inDays == 1) return g.l10n.notifTimeYesterday;
+  if (diff.inDays < 7) return g.l10n.notifTimeDaysAgo(diff.inDays);
+  if (diff.inDays < 30) return g.l10n.notifTimeWeeksAgo((diff.inDays / 7).floor());
+  return g.l10n.notifTimeMonthsAgo((diff.inDays / 30).floor());
 }

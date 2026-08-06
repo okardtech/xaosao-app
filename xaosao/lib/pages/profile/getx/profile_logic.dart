@@ -9,6 +9,7 @@ import 'package:xaosao/repository/login_repo.dart';
 import 'package:xaosao/services/storage_service.dart';
 import 'package:xaosao/utils/app_snackbar.dart';
 import 'package:xaosao/utils/image_picker_util.dart';
+import 'package:xaosao/utils/l10n.dart';
 
 import '../../../constants/app_routes.dart';
 import '../../../repository/register_repo.dart';
@@ -71,11 +72,11 @@ class ProfileLogic extends GetxController {
         Get.find<LoginLogic>().updateModelProfileHidden(newHidden);
       } else {
         _updateState(state.copyWith(hidden: !newHidden));
-        AppSnackbar.error(res.laMessage ?? 'ປ່ຽນສະຖານະບໍ່ສຳເລັດ');
+        AppSnackbar.error(res.laMessage ?? l10n.profileToggleStatusFailed);
       }
     } catch (_) {
       _updateState(state.copyWith(hidden: !newHidden));
-      AppSnackbar.error('ປ່ຽນສະຖານະບໍ່ສຳເລັດ');
+      AppSnackbar.error(l10n.profileToggleStatusFailed);
     } finally {
       _togglingHidden = false;
     }
@@ -104,7 +105,7 @@ class ProfileLogic extends GetxController {
           _updateState(state.copyWith(photos: updated, uploadingIndex: -1));
         } else {
           _updateState(state.copyWith(uploadingIndex: -1));
-          AppSnackbar.error(res.laMessage ?? 'ອັບໂຫຼດບໍ່ສຳເລັດ');
+          AppSnackbar.error(res.laMessage ?? l10n.commonUploadFailed);
         }
       } else {
         final res = await _galleryRepo.addPhoto(
@@ -121,12 +122,12 @@ class ProfileLogic extends GetxController {
           _updateState(state.copyWith(photos: updated, uploadingIndex: -1));
         } else {
           _updateState(state.copyWith(uploadingIndex: -1));
-          AppSnackbar.error(res.laMessage ?? 'ອັບໂຫຼດບໍ່ສຳເລັດ');
+          AppSnackbar.error(res.laMessage ?? l10n.commonUploadFailed);
         }
       }
     } catch (_) {
       _updateState(state.copyWith(uploadingIndex: -1));
-      AppSnackbar.error('ອັບໂຫຼດບໍ່ສຳເລັດ');
+      AppSnackbar.error(l10n.commonUploadFailed);
     }
   }
 
@@ -144,10 +145,10 @@ class ProfileLogic extends GetxController {
       if (res.success && res.data?.url != null) {
         Get.find<LoginLogic>().updateProfileUrl(res.data!.url!, _isClient);
       } else {
-        AppSnackbar.error(res.laMessage ?? 'ອັບໂຫຼດຮູບໂປຣໄຟບໍ່ສຳເລັດ');
+        AppSnackbar.error(res.laMessage ?? l10n.profileUploadPhotoFailed);
       }
     } catch (_) {
-      AppSnackbar.error('ອັບໂຫຼດຮູບໂປຣໄຟບໍ່ສຳເລັດ');
+      AppSnackbar.error(l10n.profileUploadPhotoFailed);
     } finally {
       _updateState(state.copyWith(profileImageUploading: false));
     }
@@ -174,11 +175,11 @@ class ProfileLogic extends GetxController {
         _updateState(state.copyWith(photos: updated, deletingIndex: -1));
       } else {
         _updateState(state.copyWith(deletingIndex: -1));
-        AppSnackbar.error(res.laMessage ?? 'ລຶບບໍ່ສຳເລັດ');
+        AppSnackbar.error(res.laMessage ?? l10n.commonDeleteFailed);
       }
     } catch (_) {
       _updateState(state.copyWith(deletingIndex: -1));
-      AppSnackbar.error('ລຶບບໍ່ສຳເລັດ');
+      AppSnackbar.error(l10n.commonDeleteFailed);
     }
   }
 
@@ -199,7 +200,7 @@ class ProfileLogic extends GetxController {
       final res = await _registerRepo.deleteAccount(isCustomer: isCustomer);
       hideLoadingDialog();
       if (!res.success || res.data == null) {
-        AppSnackbar.error(res.laMessage ?? 'ເກີດຂໍ້ຜິດພາດ! ກະລຸນາລອງໃໝ່ອີກຄັ້ງ');
+        AppSnackbar.error(res.laMessage ?? l10n.commonErrorTryAgain);
         return;
       }
       final storage = Get.find<StorageService>();
@@ -209,7 +210,7 @@ class ProfileLogic extends GetxController {
       Get.offAllNamed(AppRoutes.login);
     } catch (e) {
       hideLoadingDialog();
-      AppSnackbar.error('ເກີດຂໍ້ຜິດພາດ! ກະລຸນາລອງໃໝ່ອີກຄັ້ງ');
+      AppSnackbar.error(l10n.commonErrorTryAgain);
     }
   }
 }

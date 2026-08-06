@@ -13,6 +13,8 @@ import 'package:xaosao/widgets/app_svg_icon.dart';
 import 'package:xaosao/widgets/empty_state.dart';
 import 'package:xaosao/constants/app_routes.dart';
 import 'package:xaosao/widgets/gradient_app_bar.dart';
+import 'package:xaosao/l10n/app_localizations.dart';
+import 'package:xaosao/utils/l10n.dart' as g;
 
 import '../../../widgets/app_image_preview.dart';
 
@@ -41,14 +43,16 @@ class _PostDetailPageState extends State<PostDetailPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       backgroundColor: AppColors.bg,
-      appBar: const GradientAppBar(title: 'ລາຍລະອຽດໂພສ'),
-      body: Obx(() => _buildBody(_logic.state)),
+      appBar: GradientAppBar(title: l10n.postDetailTitle),
+      body: Obx(() => _buildBody(context, _logic.state)),
     );
   }
 
-  Widget _buildBody(PostDetailState state) {
+  Widget _buildBody(BuildContext context, PostDetailState state) {
+    final l10n = AppLocalizations.of(context)!;
     switch (state.status) {
       case PostDetailStatus.initial:
       case PostDetailStatus.loading:
@@ -57,10 +61,10 @@ class _PostDetailPageState extends State<PostDetailPage> {
       case PostDetailStatus.failure:
         return AppEmptyState(
           icon: Icons.wifi_off_rounded,
-          title: 'ບໍ່ສາມາດໂຫຼດຂໍ້ມູນ',
-          subtitle: state.error ?? 'ກະລຸນາລອງໃໝ່ອີກຄັ້ງ',
+          title: l10n.postsCantLoad,
+          subtitle: state.error ?? l10n.postsPleaseRetry,
           iconColor: AppColors.primary,
-          actionLabel: 'ລອງໃໝ່',
+          actionLabel: l10n.commonRetry,
           onAction: _logic.fetch,
         );
 
@@ -166,15 +170,16 @@ class _PostCardState extends State<_PostCard> {
   String _timeAgo(DateTime? dt) {
     if (dt == null) return '';
     final d = DateTime.now().difference(dt);
-    if (d.inMinutes < 1) return 'ໃໝ່ໆ';
-    if (d.inHours < 1) return '${d.inMinutes} ນາທີກ່ອນ';
-    if (d.inDays < 1) return '${d.inHours} ຊົ່ວໂມງກ່ອນ';
-    if (d.inDays < 30) return '${d.inDays} ວັນກ່ອນ';
+    if (d.inMinutes < 1) return g.l10n.timeJustNow;
+    if (d.inHours < 1) return g.l10n.timeMinutesAgo(d.inMinutes);
+    if (d.inDays < 1) return g.l10n.timeHoursAgo(d.inHours);
+    if (d.inDays < 30) return g.l10n.timeDaysAgo(d.inDays);
     return DateFormat('dd MMM yyyy').format(dt);
   }
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final author = widget.author;
     final post = widget.post;
     final hasProfile = (author?.profile ?? '').isNotEmpty;
@@ -264,7 +269,7 @@ class _PostCardState extends State<_PostCard> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              name.isEmpty ? 'ຜູ້ໃຊ້' : name,
+                              name.isEmpty ? l10n.commonUser : name,
                               style: TextStyle(
                                 fontSize: 15.sp,
                                 fontWeight: FontWeight.w700,
@@ -299,7 +304,7 @@ class _PostCardState extends State<_PostCard> {
                             borderRadius: BorderRadius.circular(20.r),
                           ),
                           child: Text(
-                            isActive ? 'ກຳລັງເປີດ' : 'ປິດເເລ້ວ',
+                            isActive ? l10n.postDetailActive : l10n.postDetailClosed,
                             style: TextStyle(
                               fontSize: 12.sp,
                               fontWeight: FontWeight.w600,
@@ -337,7 +342,7 @@ class _PostCardState extends State<_PostCard> {
                           GestureDetector(
                             onTap: () => setState(() => _expanded = !_expanded),
                             child: Text(
-                              _expanded ? 'ຫຍໍ້ລົງ' : 'ອ່ານເພີ່ມ',
+                              _expanded ? l10n.postDetailCollapse : l10n.postDetailReadMore,
                               style: TextStyle(
                                 fontSize: 13.sp,
                                 fontWeight: FontWeight.w600,
@@ -390,7 +395,7 @@ class _PostCardState extends State<_PostCard> {
                                 ),
                                 SizedBox(width: 5.w),
                                 Text(
-                                  'ມີທິບໃຫ້ພ້ອມ',
+                                  l10n.bookingTipReady,
                                   style: TextStyle(
                                     fontSize: 12.sp,
                                     fontWeight: FontWeight.w600,
@@ -422,7 +427,7 @@ class _PostCardState extends State<_PostCard> {
                         icon: Icons.favorite_rounded,
                         color: AppColors.primary,
                         count: widget.interestedCount,
-                        label: 'ສົນໃຈ',
+                        label: l10n.postDetailInterested,
                       ),
                     ),
                     Container(
@@ -435,7 +440,7 @@ class _PostCardState extends State<_PostCard> {
                         icon: Icons.card_giftcard_rounded,
                         color: const Color(0xFFFF9800),
                         count: widget.giftCount,
-                        label: 'ຂອງຂວັນ',
+                        label: l10n.postDetailGift,
                         iconName: AppIcons.gift,
                       ),
                     ),
@@ -453,7 +458,7 @@ class _PostCardState extends State<_PostCard> {
                           color: Colors.blue,
                           count: widget.commentCount,
                           iconName: AppIcons.comment,
-                          label: 'ຄຳເຫັນ',
+                          label: l10n.postDetailComment,
                         ),
                       ),
                     ),

@@ -9,6 +9,7 @@ import 'package:xaosao/pages/wallet/getx/wallet_logic.dart';
 import 'package:xaosao/repository/booking_repo.dart';
 import 'package:xaosao/utils/picker_date.dart' as pickers;
 import 'package:xaosao/utils/app_snackbar.dart';
+import 'package:xaosao/utils/l10n.dart';
 import 'package:xaosao/widgets/show_loading_alert.dart';
 
 class BookingLogic extends GetxController {
@@ -224,7 +225,7 @@ class BookingLogic extends GetxController {
         duration: const Duration(milliseconds: 400),
       );
     } else {
-      AppSnackbar.error(res.laMessage ?? 'ກະລຸນາລອງໃໝ່ອີກຄັ້ງ', title: 'ການຈອງລົ້ມເຫຼວ');
+      AppSnackbar.error(res.laMessage ?? l10n.postsPleaseRetry, title: l10n.bookingCreationFailed);
     }
   }
 

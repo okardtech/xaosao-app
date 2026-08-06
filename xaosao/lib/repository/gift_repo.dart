@@ -7,7 +7,7 @@ import '../services/base_repo.dart';
 class GiftRepo extends BaseRepository {
   Future<ApiResponse<List<GiftModel>>> getGifts() {
     return safeCall(
-      () => api.get('${ApiConstants.gift}'),
+      () => api.get(ApiConstants.gift),
       fromJson: (json) => (json as List)
           .map((item) => GiftModel.fromJson(item as Map<String, dynamic>))
           .toList(),

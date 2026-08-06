@@ -18,6 +18,8 @@ import 'package:xaosao/widgets/app_network_image.dart';
 import 'package:xaosao/widgets/app_svg_icon.dart';
 import 'package:xaosao/widgets/empty_state.dart';
 import 'package:xaosao/widgets/gradient_app_bar.dart';
+import 'package:xaosao/l10n/app_localizations.dart';
+import 'package:xaosao/utils/l10n.dart' as g;
 
 class GiftedPostsPage extends StatefulWidget {
   final String postId;
@@ -85,17 +87,22 @@ class _GiftedPostsPageState extends State<GiftedPostsPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       backgroundColor: AppColors.bg,
       appBar: GradientAppBar(
-        title: 'ຂອງຂວັນ',
-        subtitle: 'ຂອງຂວັນທີ່ທ່ານໄດ້ຮັບ',
+        title: l10n.giftReceivedTitle,
+        subtitle: l10n.giftReceivedSubtitle,
       ),
-      body: SafeArea(top: false, child: Obx(() => _buildBody(_logic.state))),
+      body: SafeArea(
+        top: false,
+        child: Obx(() => _buildBody(context, _logic.state)),
+      ),
     );
   }
 
-  Widget _buildBody(GiftedPostsState state) {
+  Widget _buildBody(BuildContext context, GiftedPostsState state) {
+    final l10n = AppLocalizations.of(context)!;
     switch (state.status) {
       case GiftedPostsStatus.initial:
       case GiftedPostsStatus.loading:
@@ -104,10 +111,10 @@ class _GiftedPostsPageState extends State<GiftedPostsPage> {
       case GiftedPostsStatus.failure:
         return AppEmptyState(
           icon: Icons.wifi_off_rounded,
-          title: 'ບໍ່ສາມາດໂຫຼດຂໍ້ມູນ',
-          subtitle: state.error ?? 'ກະລຸນາລອງໃໝ່ອີກຄັ້ງ',
+          title: l10n.postsCantLoad,
+          subtitle: state.error ?? l10n.postsPleaseRetry,
           iconColor: AppColors.primary,
-          actionLabel: 'ລອງໃໝ່',
+          actionLabel: l10n.commonRetry,
           onAction: _logic.fetch,
         );
 
@@ -116,8 +123,8 @@ class _GiftedPostsPageState extends State<GiftedPostsPage> {
         if (gifts.isEmpty) {
           return AppEmptyState(
             icon: Icons.card_giftcard_rounded,
-            title: 'ຍັງບໍ່ມີຂອງຂວັນ',
-            subtitle: 'ຂອງຂວັນທີ່ຄົນສົ່ງໃຫ້ຈະສະແດງທີ່ນີ້',
+            title: l10n.giftEmptyReceivedTitle,
+            subtitle: l10n.giftEmptyReceivedSubtitle,
             iconColor: AppColors.primary,
           );
         }
@@ -146,6 +153,7 @@ class _GiftedPostsPageState extends State<GiftedPostsPage> {
   }
 
   Widget _buildContent(GiftedPostsState state) {
+    final l10n = AppLocalizations.of(context)!;
     final total = state.data?.totalGifts ?? 0;
     final gifts = state.data?.gifts ?? [];
 
@@ -179,7 +187,7 @@ class _GiftedPostsPageState extends State<GiftedPostsPage> {
                   ),
                   SizedBox(width: 8.w),
                   Text(
-                    'ຜູ້ສົ່ງຂອງຂວັນ',
+                    l10n.giftSenderLabel,
                     style: TextStyle(
                       fontSize: 14.sp,
                       fontWeight: FontWeight.w800,
@@ -222,6 +230,7 @@ class _GiftHeroBanner extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Padding(
       padding: EdgeInsets.fromLTRB(16.w, 20.h, 16.w, 20.h),
       child: Container(
@@ -271,7 +280,7 @@ class _GiftHeroBanner extends StatelessWidget {
                   ),
                   SizedBox(height: 5.h),
                   Text(
-                    'ຂອງຂວັນທີ່ໄດ້ຮັບທັງໝົດ',
+                    l10n.giftReceivedTotal,
                     style: TextStyle(
                       fontSize: 13.sp,
                       fontWeight: FontWeight.w500,
@@ -306,15 +315,16 @@ class _GiftCard extends StatelessWidget {
 
   const _GiftCard({required this.element, this.onChat, this.onProfile});
 
-  String _fmtLak(int v) => '${NumberFormat('#,##0', 'en_US').format(v)} ກີບ';
+  String _fmtLak(int v) =>
+      '${NumberFormat('#,##0', 'en_US').format(v)} ${g.l10n.commonCurrencyKip}';
 
   String _ago(DateTime? dt) {
     if (dt == null) return '';
     final diff = DateTime.now().difference(dt);
-    if (diff.inMinutes < 1) return 'ຫາກໍ່';
-    if (diff.inHours < 1) return '${diff.inMinutes} ນາທີກ່ອນ';
-    if (diff.inDays < 1) return '${diff.inHours} ຊົ່ວໂມງກ່ອນ';
-    if (diff.inDays < 30) return '${diff.inDays} ວັນກ່ອນ';
+    if (diff.inMinutes < 1) return g.l10n.timeJustNowShort;
+    if (diff.inHours < 1) return g.l10n.timeMinutesAgo(diff.inMinutes);
+    if (diff.inDays < 1) return g.l10n.timeHoursAgo(diff.inHours);
+    if (diff.inDays < 30) return g.l10n.timeDaysAgo(diff.inDays);
     return DateFormat('dd MMM').format(dt);
   }
 
@@ -379,6 +389,7 @@ class _GifterHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final fullName = [
       customer?.firstName,
       customer?.lastName,
@@ -440,7 +451,7 @@ class _GifterHeader extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          fullName.isEmpty ? 'ຜູ້ໃຊ້' : fullName,
+                          fullName.isEmpty ? l10n.commonUser : fullName,
                           style: TextStyle(
                             fontSize: 14.sp,
                             fontWeight: FontWeight.w800,
@@ -490,7 +501,7 @@ class _GifterHeader extends StatelessWidget {
                   ),
                   SizedBox(width: 5.w),
                   Text(
-                    'ແຊັດ',
+                    l10n.postActionChat,
                     style: TextStyle(
                       fontSize: 11.sp,
                       fontWeight: FontWeight.w800,
@@ -516,6 +527,7 @@ class _GiftDetailRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final hasImage = (gift?.image ?? '').isNotEmpty;
 
     return Padding(
@@ -557,7 +569,7 @@ class _GiftDetailRow extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'ຂອງຂວັນ',
+                  l10n.giftFallback,
                   style: TextStyle(
                     fontSize: 10.sp,
                     fontWeight: FontWeight.w600,
@@ -567,7 +579,7 @@ class _GiftDetailRow extends StatelessWidget {
                 ),
                 SizedBox(height: 2.h),
                 Text(
-                  gift?.name ?? 'ຂອງຂວັນ',
+                  gift?.name ?? l10n.giftFallback,
                   style: TextStyle(
                     fontSize: 14.sp,
                     fontWeight: FontWeight.w700,

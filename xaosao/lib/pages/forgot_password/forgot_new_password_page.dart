@@ -2,6 +2,7 @@
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:xaosao/constants/app_color.dart';
+import 'package:xaosao/l10n/app_localizations.dart';
 import 'package:xaosao/pages/forgot_password/getx/forgot_logic.dart';
 import 'package:xaosao/pages/register/components/register_app_bar.dart';
 import 'package:xaosao/widgets/app_button.dart';
@@ -61,6 +62,7 @@ class _ForgotNewPasswordPageState extends State<ForgotNewPasswordPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       behavior: HitTestBehavior.opaque,
@@ -83,13 +85,13 @@ class _ForgotNewPasswordPageState extends State<ForgotNewPasswordPage> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const AppFieldLabel('ລະຫັດຜ່ານໃໝ່', required: true),
+                      AppFieldLabel(l10n.changePasswordNewLabel, required: true),
                       SizedBox(height: 6.h),
                       AppPasswordField(
                         controller: _pwCtrl,
                         focusNode: _pwFocus,
                         accent: AppColors.primary,
-                        hint: 'ລະຫັດຜ່ານໃໝ່',
+                        hint: l10n.changePasswordNewLabel,
                         action: TextInputAction.next,
                         onChanged: (_) {},
                       ),
@@ -98,7 +100,7 @@ class _ForgotNewPasswordPageState extends State<ForgotNewPasswordPage> {
                         _PasswordStrengthBar(strength: _strength),
                         SizedBox(height: 4.h),
                         Text(
-                          _strength.label,
+                          _strength.label(l10n),
                           style: TextStyle(
                             fontSize: 12.sp,
                             fontWeight: FontWeight.w600,
@@ -108,7 +110,7 @@ class _ForgotNewPasswordPageState extends State<ForgotNewPasswordPage> {
                         SizedBox(height: 16.h),
                       ] else
                         SizedBox(height: 16.h),
-                      const AppFieldLabel('ຢືນຢັນລະຫັດຜ່ານ', required: true),
+                      AppFieldLabel(l10n.forgotConfirmPassword, required: true),
                       SizedBox(height: 6.h),
                       AppPasswordField(
                         controller: _confirmCtrl,
@@ -116,14 +118,14 @@ class _ForgotNewPasswordPageState extends State<ForgotNewPasswordPage> {
                         accent: _confirmCtrl.text.isNotEmpty && _passwordsMatch
                             ? AppColors.online
                             : AppColors.primary,
-                        hint: 'ຢືນຢັນລະຫັດຜ່ານ',
+                        hint: l10n.forgotConfirmPassword,
                         action: TextInputAction.done,
                         onSubmit: _save,
                       ),
                       if (_confirmCtrl.text.isNotEmpty && !_passwordsMatch) ...[
                         SizedBox(height: 6.h),
                         Text(
-                          'ລະຫັດຜ່ານບໍ່ກົງກັນ',
+                          l10n.changePasswordMismatch,
                           style: TextStyle(
                             fontSize: 12.sp,
                             color: Colors.red.shade400,
@@ -132,7 +134,7 @@ class _ForgotNewPasswordPageState extends State<ForgotNewPasswordPage> {
                       ],
                       SizedBox(height: 32.h),
                       AppPrimaryButton(
-                        label: 'ບັນທຶກລະຫັດຜ່ານ',
+                        label: l10n.forgotSavePassword,
                         enabled: _canSubmit,
                         loading: _loading,
                         trailingIcon: Icons.check_circle_outline_rounded,
@@ -155,14 +157,14 @@ class _ForgotNewPasswordPageState extends State<ForgotNewPasswordPage> {
 enum _PwStrength { weak, fair, strong }
 
 extension _PwStrengthX on _PwStrength {
-  String get label {
+  String label(AppLocalizations l10n) {
     switch (this) {
       case _PwStrength.weak:
-        return 'ອ່ອນ';
+        return l10n.changePasswordStrengthWeak;
       case _PwStrength.fair:
-        return 'ປານກາງ';
+        return l10n.changePasswordStrengthFair;
       case _PwStrength.strong:
-        return 'ແຂງແຮງ';
+        return l10n.changePasswordStrengthStrong;
     }
   }
 
@@ -225,6 +227,7 @@ class _ForgotNewPasswordHero extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Container(
       width: double.infinity,
       decoration: const BoxDecoration(
@@ -293,7 +296,7 @@ class _ForgotNewPasswordHero extends StatelessWidget {
                   ),
                   SizedBox(height: 12.h),
                   Text(
-                    'ຕັ້ງລະຫັດຜ່ານໃໝ່',
+                    l10n.forgotSetNewPasswordTitle,
                     style: TextStyle(
                       fontSize: 18.sp,
                       fontWeight: FontWeight.w900,
@@ -303,7 +306,7 @@ class _ForgotNewPasswordHero extends StatelessWidget {
                   ),
                   SizedBox(height: 6.h),
                   Text(
-                    'ຕັ້ງລະຫັດຜ່ານໃໝ່ທີ່ປອດໄພ',
+                    l10n.forgotSetNewPasswordSubtitle,
                     style: TextStyle(
                       fontSize: 14.sp,
                       color: Colors.white.withValues(alpha: 0.70),
@@ -312,12 +315,12 @@ class _ForgotNewPasswordHero extends StatelessWidget {
                   SizedBox(height: 12.h),
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 20.w),
-                    child: const StepIndicatorRow(
+                    child: StepIndicatorRow(
                       currentStep: 3,
                       steps: [
-                        StepItem(label: 'ໂທລະສັບ'),
-                        StepItem(label: 'OTP'),
-                        StepItem(label: 'ລະຫັດໃໝ່'),
+                        StepItem(label: l10n.forgotStepPhone),
+                        StepItem(label: l10n.registerStepOtp),
+                        StepItem(label: l10n.changePasswordSectionNew),
                       ],
                     ),
                   ),

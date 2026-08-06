@@ -2,6 +2,7 @@
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 import 'package:xaosao/constants/app_color.dart';
+import 'package:xaosao/l10n/app_localizations.dart';
 import 'package:xaosao/models/customer_wallet_model.dart';
 
 class WalletCard extends StatelessWidget {
@@ -18,15 +19,17 @@ class WalletCard extends StatelessWidget {
     required this.onTopUp,
   });
 
-  String _fmt(int? n) => '${NumberFormat.decimalPattern().format(n ?? 0)} ກີບ';
+  String _fmt(int? n, AppLocalizations l10n) =>
+      '${NumberFormat.decimalPattern().format(n ?? 0)} ${l10n.commonCurrencyKip}';
 
   static const String _masked = '••••••';
 
   @override
   Widget build(BuildContext context) {
-    final balance = _fmt(wallet.availableBalance);
-    final spend = _fmt(wallet.totalSpend);
-    final pending = _fmt(wallet.pendingBalance);
+    final l10n = AppLocalizations.of(context)!;
+    final balance = _fmt(wallet.availableBalance, l10n);
+    final spend = _fmt(wallet.totalSpend, l10n);
+    final pending = _fmt(wallet.pendingBalance, l10n);
 
     return Container(
       width: double.infinity,
@@ -82,7 +85,9 @@ class WalletCard extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      'ຍອດຄົງເຫຼືອ, ອັບເດດ ${DateFormat("HH:mm").format(DateTime.now())}',
+                      l10n.walletBalanceUpdated(
+                        DateFormat('HH:mm').format(DateTime.now()),
+                      ),
                       style: TextStyle(
                         fontSize: 14.sp,
                         fontWeight: FontWeight.w600,
@@ -149,14 +154,14 @@ class WalletCard extends StatelessWidget {
                   children: [
                     Expanded(
                       child: _StatPill(
-                        label: 'ໃຊ້ໄປແລ້ວ',
+                        label: l10n.walletUsed,
                         value: amountsVisible ? spend : _masked,
                       ),
                     ),
                     SizedBox(width: 8.w),
                     Expanded(
                       child: _StatPill(
-                        label: 'ລໍຖ້າ',
+                        label: l10n.walletTxStatusPending,
                         value: amountsVisible ? pending : _masked,
                         valueColor: amountsVisible ? AppColors.star : null,
                       ),
@@ -200,7 +205,7 @@ class WalletCard extends StatelessWidget {
                         ),
                         SizedBox(width: 6.w),
                         Text(
-                          'ເຕີມເງິນ',
+                          l10n.walletTopup,
                           style: TextStyle(
                             fontSize: 14.sp,
                             fontWeight: FontWeight.w800,

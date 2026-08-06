@@ -2,7 +2,9 @@
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:xaosao/constants/app_color.dart';
+import 'package:xaosao/l10n/app_localizations.dart';
 import 'package:xaosao/utils/app_snackbar.dart';
+import 'package:xaosao/utils/l10n.dart' as g;
 import 'package:xaosao/widgets/gradient_app_bar.dart';
 import 'getx/companion_logic.dart';
 
@@ -36,13 +38,14 @@ class _AddReviewPageState extends State<AddReviewPage> {
   }
 
   Future<void> _submit() async {
+    final l10n = AppLocalizations.of(context)!;
     if (_rating == 0) {
-      AppSnackbar.error('ກະລຸນາໃຫ້ຄະແນນ');
+      AppSnackbar.error(l10n.reviewRatingRequired);
       return;
     }
     final desc = _descCtrl.text.trim();
     if (desc.isEmpty) {
-      AppSnackbar.error('ກະລຸນາຂຽນລີວິວ');
+      AppSnackbar.error(l10n.reviewTextRequired);
       return;
     }
 
@@ -56,12 +59,12 @@ class _AddReviewPageState extends State<AddReviewPage> {
       );
       if (ok) {
         Get.back();
-        AppSnackbar.success('ສົ່ງລີວິວສຳເລັດ');
+        AppSnackbar.success(l10n.reviewSubmitSuccess);
       } else {
-        AppSnackbar.error('ສົ່ງລີວິວບໍ່ສຳເລັດ');
+        AppSnackbar.error(l10n.reviewSubmitFailed);
       }
     } catch (_) {
-      AppSnackbar.error('ເກີດຂໍ້ຜິດພາດ ກະລຸນາລອງໃໝ່');
+      AppSnackbar.error(l10n.commonError);
     } finally {
       if (mounted) setState(() => _submitting = false);
     }
@@ -69,12 +72,13 @@ class _AddReviewPageState extends State<AddReviewPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       backgroundColor: const Color(0xFFF8F8FC),
       appBar: GradientAppBar(
-        title: 'ຂຽນລີວິວ',
+        title: l10n.reviewWriteTitle,
         subtitle: widget.companionName.isNotEmpty
-            ? 'ສຳລັບ ${widget.companionName}'
+            ? l10n.reviewForCompanion(widget.companionName)
             : null,
       ),
       body: SingleChildScrollView(
@@ -83,7 +87,7 @@ class _AddReviewPageState extends State<AddReviewPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Star rating
-            _SectionLabel('ໃຫ້ຄະແນນ'),
+            _SectionLabel(l10n.reviewGiveRating),
             SizedBox(height: 10.h),
             _StarSelector(
               rating: _rating,
@@ -92,21 +96,21 @@ class _AddReviewPageState extends State<AddReviewPage> {
             SizedBox(height: 24.h),
 
             // Title input
-            _SectionLabel('ຫົວຂໍ້ (ທາງເລືອກ)'),
+            _SectionLabel(l10n.reviewSubjectLabel),
             SizedBox(height: 8.h),
             _InputField(
               controller: _titleCtrl,
-              hint: 'ໃສ່ຫົວຂໍ້ລີວິວ...',
+              hint: l10n.reviewSubjectHint,
               maxLines: 1,
             ),
             SizedBox(height: 20.h),
 
             // Description input
-            _SectionLabel('ລີວິວຂອງທ່ານ'),
+            _SectionLabel(l10n.reviewYourReview),
             SizedBox(height: 8.h),
             _InputField(
               controller: _descCtrl,
-              hint: 'ແບ່ງປັນປະສົບການຂອງທ່ານ...',
+              hint: l10n.reviewShareHint,
               maxLines: 5,
             ),
             SizedBox(height: 32.h),
@@ -158,7 +162,7 @@ class _AddReviewPageState extends State<AddReviewPage> {
                             ),
                             SizedBox(width: 8.w),
                             Text(
-                              'ສົ່ງລີວິວ',
+                              l10n.reviewSubmit,
                               style: TextStyle(
                                 fontSize: 15.sp,
                                 fontWeight: FontWeight.w800,
@@ -248,17 +252,17 @@ class _StarSelector extends StatelessWidget {
   String _label(int r) {
     switch (r) {
       case 1:
-        return 'ບໍ່ດີ';
+        return g.l10n.reviewRatingBad;
       case 2:
-        return 'ພໍໃຊ້ໄດ້';
+        return g.l10n.reviewRatingOk;
       case 3:
-        return 'ດີ';
+        return g.l10n.reviewRatingGood;
       case 4:
-        return 'ດີຫຼາຍ';
+        return g.l10n.reviewRatingVeryGood;
       case 5:
-        return 'ດີເລີດ!';
+        return g.l10n.reviewRatingExcellent;
       default:
-        return 'ເລືອກຄະແນນ';
+        return g.l10n.reviewRatingPick;
     }
   }
 }

@@ -3,10 +3,13 @@ import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:xaosao/l10n/app_localizations.dart';
 import 'package:xaosao/models/gift_model.dart';
 import 'package:xaosao/pages/wallet/getx/wallet_logic.dart';
 import 'package:xaosao/repository/gift_repo.dart';
 import 'package:xaosao/utils/app_snackbar.dart';
+import 'package:xaosao/utils/currency_formatter.dart';
+import 'package:xaosao/utils/l10n.dart' as g;
 import 'package:xaosao/widgets/app_network_image.dart';
 
 // ═══════════════════════════════════════════════════════════════
@@ -25,17 +28,9 @@ import 'package:xaosao/widgets/app_network_image.dart';
 // ═══════════════════════════════════════════════════════════════
 
 // ── Price formatter ────────────────────────────────────────────
-String _fmtKip(double? price) {
-  if (price == null) return '0 ກີບ';
-  final n = price.toInt();
-  final s = n.toString();
-  final b = StringBuffer();
-  for (int i = 0; i < s.length; i++) {
-    if (i > 0 && (s.length - i) % 3 == 0) b.write(',');
-    b.write(s[i]);
-  }
-  return '${b.toString()} ກີບ';
-}
+// Thin wrapper around [CurrFormatter.kip] so the currency suffix
+// stays in sync with the app locale.
+String _fmtKip(double? price) => CurrFormatter.kip((price ?? 0).toInt());
 
 // ═══════════════════════════════════════════════════════════════
 //  GiftSheet — static entry point
@@ -113,15 +108,7 @@ class _GiftSheetContentState extends State<_GiftSheetContent> {
     });
   }
 
-  String _fmt(int n) {
-    final s = n.toString();
-    final b = StringBuffer();
-    for (int i = 0; i < s.length; i++) {
-      if (i > 0 && (s.length - i) % 3 == 0) b.write(',');
-      b.write(s[i]);
-    }
-    return '${b.toString()} ກີບ';
-  }
+  String _fmt(int n) => CurrFormatter.kip(n);
 
   // ── Send gift via API ─────────────────────────────────────
   Future<void> _send() async {
@@ -141,10 +128,10 @@ class _GiftSheetContentState extends State<_GiftSheetContent> {
         Navigator.pop(context);
         widget.onSent?.call(gift);
       } else {
-        AppSnackbar.error(res.laMessage ?? 'ສ່ງຂອງຂວັນບໍ່ສຳເລັດ');
+        AppSnackbar.error(res.laMessage ?? g.l10n.giftSendFailed);
       }
     } catch (_) {
-      if (mounted) AppSnackbar.error('ສ່ງຂອງຂວັນບໍ່ສຳເລັດ');
+      if (mounted) AppSnackbar.error(g.l10n.giftSendFailed);
     } finally {
       if (mounted) setState(() => _sending = false);
     }
@@ -152,6 +139,7 @@ class _GiftSheetContentState extends State<_GiftSheetContent> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Padding(
       padding: EdgeInsets.only(
         bottom: MediaQuery.of(context).viewInsets.bottom,
@@ -188,7 +176,7 @@ class _GiftSheetContentState extends State<_GiftSheetContent> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        '🎁 ສົ່ງຂອງຂວັນ',
+                        l10n.giftSheetTitle,
                         style: TextStyle(
                           fontSize: 16.sp,
                           fontWeight: FontWeight.w900,
@@ -196,24 +184,7 @@ class _GiftSheetContentState extends State<_GiftSheetContent> {
                         ),
                       ),
                       SizedBox(height: 2.h),
-                      Text.rich(
-                        TextSpan(
-                          style: TextStyle(
-                            fontSize: 12.sp,
-                            color: const Color(0xFF9B9BAD),
-                          ),
-                          children: [
-                            const TextSpan(text: 'ເລືອກຂອງຂວັນໃຫ້ '),
-                            TextSpan(
-                              text: widget.companionName,
-                              style: const TextStyle(
-                                fontWeight: FontWeight.w800,
-                                color: Color(0xFF1A1A2E),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
+                      _PickForLine(companionName: widget.companionName),
                     ],
                   ),
                 ),
@@ -276,7 +247,7 @@ class _GiftSheetContentState extends State<_GiftSheetContent> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'ຍອດກະເປົ໋າ',
+                        l10n.walletBalanceShort,
                         style: TextStyle(
                           fontSize: 10.sp,
                           color: const Color(0xFF9B9BAD),
@@ -312,7 +283,7 @@ class _GiftSheetContentState extends State<_GiftSheetContent> {
                         ),
                       ),
                       child: Text(
-                        '+ ເຕີມເງິນ',
+                        '+ ${l10n.walletTopup}',
                         style: TextStyle(
                           fontSize: 12.sp,
                           fontWeight: FontWeight.w700,
@@ -337,7 +308,7 @@ class _GiftSheetContentState extends State<_GiftSheetContent> {
                         padding: EdgeInsets.symmetric(vertical: 20.h),
                         child: Center(
                           child: Text(
-                            'ບໍ່ມີຂອງຂວັນໃນຂະນະນີ້',
+                            l10n.giftEmpty,
                             style: TextStyle(
                               fontSize: 13.sp,
                               color: const Color(0xFF9B9BAD),
@@ -563,6 +534,7 @@ class _SendButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return GestureDetector(
       onTap: _active ? onTap : null,
       child: AnimatedContainer(
@@ -610,7 +582,7 @@ class _SendButton extends StatelessWidget {
                         ),
                         SizedBox(width: 6.w),
                         Text(
-                          'ເລືອກຂອງຂວັນກ່ອນ',
+                          l10n.giftPickFirst,
                           style: TextStyle(
                             fontSize: 13.sp,
                             fontWeight: FontWeight.w700,
@@ -626,7 +598,10 @@ class _SendButton extends StatelessWidget {
                             size: 15.r, color: Colors.white),
                         SizedBox(width: 7.w),
                         Text(
-                          'ສົ່ງ ${selected!.name ?? ''} · ${_fmtKip(selected!.price)}',
+                          l10n.giftSendButton(
+                            selected!.name ?? '',
+                            _fmtKip(selected!.price),
+                          ),
                           style: TextStyle(
                             fontSize: 13.sp,
                             fontWeight: FontWeight.w800,
@@ -642,7 +617,49 @@ class _SendButton extends StatelessWidget {
 }
 
 // ═══════════════════════════════════════════════════════════════
-//  GiftSentSnackbar — ສະແດງຫຼັງສ່ງສຳເລັດ
+//  _PickForLine
+//  Renders the localized "Choose a gift for {name}" line with the
+//  companion name bolded. We build the surrounding text from the ARB
+//  template and split on the {name} substring so the bold treatment
+//  falls on the right span in every locale.
+// ═══════════════════════════════════════════════════════════════
+class _PickForLine extends StatelessWidget {
+  final String companionName;
+  const _PickForLine({required this.companionName});
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final full = l10n.giftSheetPickFor(companionName);
+    final idx = full.indexOf(companionName);
+    final baseStyle = TextStyle(
+      fontSize: 12.sp,
+      color: const Color(0xFF9B9BAD),
+    );
+    const nameStyle = TextStyle(
+      fontWeight: FontWeight.w800,
+      color: Color(0xFF1A1A2E),
+    );
+
+    // Fallback: name substring not found (e.g. translator dropped it) —
+    // just render the whole line in the base style.
+    if (idx < 0) return Text(full, style: baseStyle);
+
+    return Text.rich(
+      TextSpan(
+        style: baseStyle,
+        children: [
+          TextSpan(text: full.substring(0, idx)),
+          TextSpan(text: companionName, style: nameStyle),
+          TextSpan(text: full.substring(idx + companionName.length)),
+        ],
+      ),
+    );
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  GiftSentSnackbar — shown after a successful send
 // ═══════════════════════════════════════════════════════════════
 class GiftSentSnackbar {
   GiftSentSnackbar._();
@@ -650,7 +667,7 @@ class GiftSentSnackbar {
   static void show({required GiftModel gift}) {
     AppSnackbar.success(
       '${gift.name ?? ''} · ${_fmtKip(gift.price)}',
-      title: 'ສ່ງຂອງຂວັນສຳເລັດ!',
+      title: g.l10n.giftSendSuccess,
     );
   }
 

@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:xaosao/l10n/app_localizations.dart';
 import 'package:xaosao/pages/feedback/getx/feedback_logic.dart';
 import 'package:xaosao/pages/home/getx/home_logic.dart';
 import 'package:xaosao/pages/login/getx/login_logic.dart';
@@ -10,7 +11,9 @@ import 'package:xaosao/pages/notification/getx/notification_setting_logic.dart';
 import 'package:xaosao/pages/package/getx/package_logic.dart';
 import 'package:xaosao/pages/services_manage/getx/service_logic.dart';
 import 'package:xaosao/pages/profile/components/amberwarning.dart';
+import 'package:xaosao/services/language_service.dart';
 import 'package:xaosao/widgets/confirm_sheet.dart';
+import 'package:xaosao/widgets/language_selector_sheet.dart';
 import 'package:xaosao/pages/profile/components/gallery_preview.dart';
 import 'package:xaosao/pages/profile/components/qr_row.dart';
 import 'package:xaosao/pages/profile/components/services_section.dart';
@@ -62,6 +65,8 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
     final logic = Get.find<LoginLogic>();
+    final l10n = AppLocalizations.of(context)!;
+    final langService = Get.find<LanguageService>();
     return Scaffold(
       backgroundColor: AppColors.bg,
       body: SafeArea(
@@ -80,14 +85,14 @@ class _ProfilePageState extends State<ProfilePage> {
                 child: Column(
                   children: [
                     _MenuSection(
-                      label: 'ຂໍ້ມູນ',
+                      label: l10n.profileInfoSection,
                       items: [
                         _MenuItem(
                           iconBg: AppColors.surfaceSecondary,
                           icon: Icons.person_outline_rounded,
                           iconColor: AppColors.textPrimary,
-                          label: 'ຂໍ້ມູນສ່ວນຕົວ',
-                          subtitle: 'ຊື່, ນາມສະກຸນ, ວັນເດືອນປີເກີດ',
+                          label: l10n.profilePersonalInfo,
+                          subtitle: l10n.profilePersonalInfoSubtitle,
                           onTap: () => Get.toNamed(
                             AppRoutes.profileDetail,
                             arguments: false,
@@ -97,8 +102,8 @@ class _ProfilePageState extends State<ProfilePage> {
                           iconBg: AppColors.surfaceSecondary,
                           icon: Icons.payment_outlined,
                           iconColor: AppColors.textPrimary,
-                          label: 'ຂໍ້ມູນທາງການເງິນ',
-                          subtitle: 'ບັນຊີເງິນ, ບັດເຄຣດິດ, ການໂອນເງິນ',
+                          label: l10n.profileFinance,
+                          subtitle: l10n.profileFinanceSubtitle,
                           onTap: () => Get.toNamed(AppRoutes.modelWallet),
                         ),
                       ],
@@ -106,22 +111,22 @@ class _ProfilePageState extends State<ProfilePage> {
                     SizedBox(height: 10.h),
 
                     _MenuSection(
-                      label: 'ຄວາມປອດໄພ',
+                      label: l10n.profileSecuritySection,
                       items: [
                         _MenuItem(
                           iconBg: const Color(0xFFEDFAF3),
                           icon: Icons.lock_outline_rounded,
                           iconColor: AppColors.online,
-                          label: 'ປ່ຽນລະຫັດຜ່ານ',
+                          label: l10n.profileChangePassword,
                           onTap: () => Get.toNamed(AppRoutes.changePassword),
                         ),
                         _MenuItem(
                           iconBg: const Color(0xFFEFF6FF),
                           icon: Icons.phone_outlined,
                           iconColor: const Color(0xFF3B82F6),
-                          label: 'ຢືນຢັນເບີໂທ',
+                          label: l10n.profileVerifyPhone,
                           subtitle: '+856 20 1234 5678',
-                          badge: 'ຢືນຢັນແລ້ວ',
+                          badge: l10n.profileVerifiedBadge,
                           badgeBg: const Color(0xFFEDFAF3),
                           badgeFg: const Color(0xFF15803D),
                           onTap: () {},
@@ -131,22 +136,22 @@ class _ProfilePageState extends State<ProfilePage> {
                     SizedBox(height: 10.h),
 
                     _MenuSection(
-                      label: 'ຕັ້ງຄ່າ',
+                      label: l10n.profileSettingsSection,
                       items: [
                         _MenuItem(
                           iconBg: AppColors.surfaceSecondary,
                           icon: Icons.language_rounded,
                           iconColor: AppColors.textPrimary,
-                          label: 'ພາສາ',
-                          subtitle: 'ລາວ (ພາສາຫຼັກ)',
-                          onTap: () {},
+                          label: l10n.profileLanguage,
+                          subtitle: langService.languageName,
+                          onTap: () => LanguageSelectorSheet.show(context),
                         ),
                         _MenuItem(
                           iconBg: const Color(0xFFFFFBEB),
                           icon: Icons.notifications_outlined,
                           iconColor: const Color(0xFFF59E0B),
-                          label: 'ການແຈ້ງເຕືອນ',
-                          subtitle: 'Push, ອີເມລ, SMS, WhatsApp',
+                          label: l10n.profileNotifications,
+                          subtitle: l10n.profileNotificationsSubtitle,
                           onTap: () =>
                               Get.toNamed(AppRoutes.notificationSettings),
                         ),
@@ -155,28 +160,28 @@ class _ProfilePageState extends State<ProfilePage> {
                     SizedBox(height: 10.h),
 
                     _MenuSection(
-                      label: 'ຊ່ວຍເຫຼືອ',
+                      label: l10n.profileHelpSection,
                       items: [
                         _MenuItem(
                           iconBg: AppColors.surfaceSecondary,
                           icon: Icons.help_outline_rounded,
                           iconColor: AppColors.textPrimary,
-                          label: 'ຊ່ວຍເຫຼືອ / FAQ',
+                          label: l10n.profileHelpFaq,
                           onTap: () => Get.toNamed(AppRoutes.helperCenter),
                         ),
                         _MenuItem(
                           iconBg: AppColors.primary.withValues(alpha: 0.10),
                           icon: Icons.forum_outlined,
                           iconColor: AppColors.primary,
-                          label: 'ຄຳຕິຊົມ',
-                          subtitle: 'ລາຍງານບັນຫາ ຫຼື ສົ່ງຄຳຄິດເຫັນ',
+                          label: l10n.profileFeedback,
+                          subtitle: l10n.profileFeedbackSubtitle,
                           onTap: () => Get.toNamed(AppRoutes.feedback),
                         ),
                         _MenuItem(
                           iconBg: AppColors.surfaceSecondary,
                           icon: Icons.description_outlined,
                           iconColor: AppColors.textPrimary,
-                          label: 'ຂໍ້ກຳນົດ ແລະ ນະໂຍບາຍ',
+                          label: l10n.profileTerms,
                           onTap: () => Get.toNamed(AppRoutes.companionPolicyPrivacy),
                         ),
                       ],
@@ -190,8 +195,8 @@ class _ProfilePageState extends State<ProfilePage> {
                           iconBg: const Color(0xFFFEF2F2),
                           icon: Icons.delete_outline_rounded,
                           iconColor: const Color(0xFFDC2626),
-                          label: 'ລຶບບັນຊີ',
-                          subtitle: 'ການດຳເນີນການນີ້ບໍ່ສາມາດຍ້ອນໄດ້',
+                          label: l10n.profileDeleteAccount,
+                          subtitle: l10n.profileDeleteAccountSubtitle,
                           subtitleColor: const Color(0xFFFCA5A5),
                           labelColor: const Color(0xFFDC2626),
                           onTap: () => _confirmDelete(context),
@@ -209,10 +214,13 @@ class _ProfilePageState extends State<ProfilePage> {
                 padding: EdgeInsets.fromLTRB(16.w, 10.h, 16.w, 32.h),
                 child: Column(
                   children: [
-                    _LogoutButton(onTap: () => _confirmLogout(context)),
+                    _LogoutButton(
+                      label: l10n.profileLogout,
+                      onTap: () => _confirmLogout(context),
+                    ),
                     SizedBox(height: 14.h),
                     Text(
-                      'XAOSAO v1.0.0',
+                      l10n.profileAppVersion('1.0.4'),
                       style: TextStyle(
                         fontSize: 10.sp,
                         fontWeight: FontWeight.w600,
@@ -230,11 +238,13 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   Future<void> _confirmLogout(BuildContext context) async {
+    final l10n = AppLocalizations.of(context)!;
     final confirmed = await ConfirmSheet.show(
       context,
-      title: 'ອອກຈາກລະບົບ',
-      message: 'ທ່ານຕ້ອງການອອກຈາກລະບົບແທ້ບໍ່?',
-      confirmLabel: 'ອອກ',
+      title: l10n.confirmLogoutTitle,
+      message: l10n.confirmLogoutMessage,
+      confirmLabel: l10n.confirmLogoutConfirm,
+      cancelLabel: l10n.commonCancel,
       icon: AppIcons.logout,
       isDanger: true,
     );
@@ -260,12 +270,13 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   Future<void> _confirmDelete(BuildContext context) async {
+    final l10n = AppLocalizations.of(context)!;
     final confirmed = await ConfirmSheet.show(
       context,
-      title: 'ລຶບບັນຊີ',
-      message:
-          'ທ່ານແນ່ໃຈບໍ່ທີ່ຕ້ອງການລຶບບັນຊີ?\nຂໍ້ມູນທັງໝົດຈະຖືກລຶບຖາວອນ ແລະ ບໍ່ສາມາດຍ້ອນໄດ້.',
-      confirmLabel: 'ລຶບ',
+      title: l10n.confirmDeleteTitle,
+      message: l10n.confirmDeleteMessage,
+      confirmLabel: l10n.commonDelete,
+      cancelLabel: l10n.commonCancel,
       icon: AppIcons.delete,
       isDanger: true,
     );
@@ -275,6 +286,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
   // ── Hero section ────────────────────────────────────────────
   Widget _buildHero(ModelProfileModel? model) {
+    final l10n = AppLocalizations.of(context)!;
     return Padding(
       padding: EdgeInsets.fromLTRB(16.w, 18.h, 16.w, 0),
       child: Column(
@@ -434,7 +446,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                     ),
                                     SizedBox(width: 4.w),
                                     Text(
-                                      'ຢືນຢັນຕົວຕົນແລ້ວ',
+                                      l10n.profileVerifiedIdentity,
                                       style: TextStyle(
                                         fontSize: 10.sp,
                                         fontWeight: FontWeight.w700,
@@ -464,20 +476,20 @@ class _ProfilePageState extends State<ProfilePage> {
                     children: [
                       StatCell(
                         value: '${model?.counts?.totalLikes ?? 0}',
-                        label: 'ຖືກໃຈ',
+                        label: l10n.profileStatLikes,
                         isBorder: false,
                       ),
                       StatCell(
                         value: '${model?.counts?.totalFriends ?? 0}',
-                        label: 'ໝູ່',
+                        label: l10n.profileStatFriends,
                       ),
                       StatCell(
                         value: '${model?.totalReferredCustomers  ?? 0}★',
-                        label: 'ຄໍາລິຊົມ',
+                        label: l10n.profileStatReferrals,
                       ),
                       StatCell(
                         value: '${model?.counts?.totalBookings ?? 0}',
-                        label: 'ຈອງ',
+                        label: l10n.profileStatBookings,
                       ),
                     ],
                   ),
@@ -505,8 +517,8 @@ class _ProfilePageState extends State<ProfilePage> {
                   },
                   onToggle: _profileLogic.toggleHidden,
                   enableDesc: st.hidden
-                      ? 'ໂປຣໄຟຂອງທ່ານຖືກຊ່ອນຢູ່ — ລູກຄ້າບໍ່ສາມາດເຫັນທ່ານໄດ້'
-                      : 'ເຊື່ອງໂປຣໄຟຂອງທ່ານບໍ່ໃຫ້ລູກຄ້າເຫັນ. ທ່ານສາມາດເປີດ-ປີດໄດ້ຕະຫຼອດເວລາ.',
+                      ? l10n.profileHiddenEnabled
+                      : l10n.profileHiddenDisabled,
                   enableDescColor:
                       st.hidden ? const Color(0xFFE65100) : null,
                 ),
@@ -514,7 +526,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Text(
-                      'ຮູບພາບ (${st.photos.length}/$_maxPhotos)',
+                      l10n.profilePhotosCount(st.photos.length, _maxPhotos),
                       style: TextStyle(
                         fontSize: 14.sp,
                         fontWeight: FontWeight.w700,
@@ -524,9 +536,10 @@ class _ProfilePageState extends State<ProfilePage> {
                     ),
                     if (st.photos.length < _maxPhotos) ...[
                       AmberWarning(
-                        text:
-                            'ຕ້ອງເພີ່ມຄົບ $_maxPhotos ຮູບ '
-                            '— ຍັງຂາດ ${_maxPhotos - st.photos.length} ຮູບ',
+                        text: l10n.profilePhotosMissingWarning(
+                          _maxPhotos,
+                          _maxPhotos - st.photos.length,
+                        ),
                       ),
                     ],
                   ],
@@ -545,7 +558,7 @@ class _ProfilePageState extends State<ProfilePage> {
           Row(
             children: [
               Text(
-                'ບໍລິການຂອງຂ້ອຍ',
+                l10n.profileMyServices,
                 style: TextStyle(
                   fontSize: 14.sp,
                   fontWeight: FontWeight.w700,
@@ -571,7 +584,7 @@ class _ProfilePageState extends State<ProfilePage> {
           Row(
             children: [
               Text(
-                'QR ຂອງຂ້ອຍ',
+                l10n.profileMyQr,
                 style: TextStyle(
                   fontSize: 14.sp,
                   fontWeight: FontWeight.w700,
@@ -784,7 +797,8 @@ class _MenuItem extends StatelessWidget {
 // ═══════════════════════════════════════════════════════════════
 class _LogoutButton extends StatelessWidget {
   final VoidCallback onTap;
-  const _LogoutButton({required this.onTap});
+  final String label;
+  const _LogoutButton({required this.onTap, required this.label});
 
   @override
   Widget build(BuildContext context) {
@@ -820,7 +834,7 @@ class _LogoutButton extends StatelessWidget {
             ),
             SizedBox(width: 7.w),
             Text(
-              'ອອກຈາກລະບົບ',
+              label,
               style: TextStyle(
                 fontSize: 13.sp,
                 fontWeight: FontWeight.w700,

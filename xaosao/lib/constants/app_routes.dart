@@ -18,6 +18,7 @@ import 'package:xaosao/pages/profile/change_password/change_password_page.dart';
 import 'package:xaosao/pages/profile_detail/compoents/update_info_page.dart';
 import 'package:xaosao/pages/profile_detail/profile_detail_page.dart';
 import 'package:xaosao/pages/register/components/services_select.dart';
+import 'package:xaosao/services/deep_link_service.dart';
 import 'package:xaosao/pages/register/components/verify_otp.dart';
 import 'package:xaosao/pages/register/getx/register_state.dart';
 import 'package:xaosao/pages/register/register_page.dart';
@@ -38,6 +39,7 @@ import '../pages/booking/booking_args.dart';
 import '../pages/booking/booking_page.dart';
 import '../pages/meet_ups/booking_detail_loader_page.dart';
 import '../pages/share_linked/share_linked_page.dart';
+import '../pages/share_linked/referral_tiers_page.dart';
 import '../pages/referral_analytics/referral_analytics_page.dart';
 import '../pages/setting/companion_policy_privacy.dart';
 import '../pages/setting/customer_policy_privacy.dart';
@@ -81,6 +83,7 @@ class AppRoutes {
   static const String bookingDetail = '/booking-detail';
   static const String chatDetail = '/chat-detail';
   static const String shareLink = '/share-link';
+  static const String referralTiers = '/referral-tiers';
   static const String referralAnalytics = '/referral-analytics';
   static const String companionPolicyPrivacy = '/companion-policy-privacy';
   static const String customerPolicyPrivacy = '/customer-policy-privacy';
@@ -103,8 +106,17 @@ class AppRoutes {
       case xaosaoHome:
         return _slideUp(const XaosaoHomePage());
       case register:
-        final role = settings.arguments as RegisterRole;
-        return _slideRight(RegisterPage(role: role));
+        // Accepts either a bare [RegisterRole] (legacy — used by login's
+        // "sign up" button) or a [RegisterArgs] carrying role + referral
+        // code (used by DeepLinkService for referral-link opens).
+        final args = settings.arguments;
+        if (args is RegisterArgs) {
+          return _slideRight(RegisterPage(
+            role: args.role,
+            referralCode: args.referralCode,
+          ));
+        }
+        return _slideRight(RegisterPage(role: args as RegisterRole));
       case verifyOtp:
         final otpModel = settings.arguments as RegisterModel;
         return _slideRight(OtpPage(model: otpModel));
@@ -192,6 +204,8 @@ class AppRoutes {
       case shareLink:
         final model = settings.arguments as ModelProfileModel;
         return _slideRight(ShareLinkedPage(model: model));
+      case referralTiers:
+        return _slideRight(const ReferralTiersPage());
       case referralAnalytics:
         return _slideRight(const ReferralAnalyticsPage());
       case companionPolicyPrivacy:

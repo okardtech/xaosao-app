@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:xaosao/pages/model_wallet/getx/model_wallet_logic.dart';
 import 'package:xaosao/repository/bank_repo.dart';
 import 'package:xaosao/utils/app_snackbar.dart';
+import 'package:xaosao/utils/l10n.dart';
 import 'package:xaosao/widgets/show_loading_alert.dart';
 import 'qr_state.dart';
 
@@ -39,7 +40,7 @@ class QrLogic extends GetxController {
       await loadAccounts();
       _syncWithdrawBanks();
     } else {
-      AppSnackbar.error(res.laMessage ?? 'ເພີ່ມ QR ບໍ່ສຳເລັດ');
+      AppSnackbar.error(res.laMessage ?? l10n.qrAddFailed);
     }
   }
 
@@ -51,7 +52,7 @@ class QrLogic extends GetxController {
       await loadAccounts();
       _syncWithdrawBanks();
     } else {
-      AppSnackbar.error(res.laMessage ?? 'ອັບເດດ QR ບໍ່ສຳເລັດ');
+      AppSnackbar.error(res.laMessage ?? l10n.qrUpdateFailed);
     }
   }
 
@@ -63,7 +64,7 @@ class QrLogic extends GetxController {
       await loadAccounts();
       _syncWithdrawBanks();
     } else {
-      AppSnackbar.error(res.laMessage ?? 'ລຶບ QR ບໍ່ສຳເລັດ');
+      AppSnackbar.error(res.laMessage ?? l10n.qrDeleteFailed);
     }
   }
 
@@ -79,7 +80,7 @@ class QrLogic extends GetxController {
       _syncWithdrawBanks();
     } else {
       await loadAccounts();
-      AppSnackbar.error(res.laMessage ?? 'ຕັ້ງ QR ຫຼັກບໍ່ສຳເລັດ');
+      AppSnackbar.error(res.laMessage ?? l10n.qrSetDefaultFailed);
     }
   }
 

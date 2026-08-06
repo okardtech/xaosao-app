@@ -6,6 +6,7 @@ import 'package:xaosao/pages/model_discover/getx/customer_detail_state.dart';
 import 'package:xaosao/repository/discover_repo.dart';
 import 'package:xaosao/repository/review_repo.dart';
 import 'package:xaosao/services/storage_service.dart';
+import 'package:xaosao/utils/l10n.dart';
 
 class CustomerDetailLogic extends GetxController {
   final String customerId;
@@ -38,13 +39,13 @@ class CustomerDetailLogic extends GetxController {
       } else {
         _state.value = CustomerDetailState(
           status: CustomerDetailStatus.failure,
-          error: res.laMessage ?? 'ໂຫຼດຂໍ້ມູນບໍ່ສຳເລັດ',
+          error: res.laMessage ?? l10n.commonLoadDataFailed,
         );
       }
     } catch (_) {
-      _state.value = const CustomerDetailState(
+      _state.value = CustomerDetailState(
         status: CustomerDetailStatus.failure,
-        error: 'ມີຂໍ້ຜິດພາດເກີດຂຶ້ນ',
+        error: l10n.commonErrorOccurred,
       );
     }
   }

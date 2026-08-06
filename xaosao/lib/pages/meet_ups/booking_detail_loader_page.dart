@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:xaosao/constants/app_color.dart';
+import 'package:xaosao/l10n/app_localizations.dart';
 import 'package:xaosao/pages/meet_ups/getx/meet_ups_logic.dart';
 import 'package:xaosao/widgets/gradient_app_bar.dart';
 import 'booking_detail_page.dart';
@@ -78,7 +79,7 @@ class _BookingDetailLoaderPageState extends State<BookingDetailLoaderPage> {
                 TextButton(
                   onPressed: () => _logic.loadBookingDetail(widget.bookingId),
                   child: Text(
-                    'ລອງໃໝ່',
+                    AppLocalizations.of(context)!.commonRetry,
                     style: TextStyle(
                       color: AppColors.primary,
                       fontWeight: FontWeight.w700,
@@ -110,7 +111,7 @@ class _BookingDetailShimmer extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: const Color(0xFFF8F8FC),
-      appBar: GradientAppBar(title: 'ລາຍລະອຽດການຈອງ'),
+      appBar: GradientAppBar(title: AppLocalizations.of(context)!.bookingDetailTitle),
       body: Padding(
         padding:  EdgeInsets.only(top: 20.h),
         child: Shimmer.fromColors(
