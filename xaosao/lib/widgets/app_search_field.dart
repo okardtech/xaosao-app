@@ -1,30 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:xaosao/constants/app_color.dart';
+import 'package:xaosao/l10n/app_localizations.dart';
 
 class AppSearchField extends StatelessWidget {
   final TextEditingController controller;
   final ValueChanged<String>? onChanged;
-  final String hintText;
+  final String? hintText;
   final bool autofocus;
 
   const AppSearchField({
     super.key,
     required this.controller,
     this.onChanged,
-    this.hintText = 'ຄົ້ນຫາ...',
+    this.hintText,
     this.autofocus = false,
   });
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return TextField(
       controller: controller,
       autofocus: autofocus,
       onChanged: onChanged,
       style: TextStyle(fontSize: 13.sp, color: AppColors.textPrimary),
       decoration: InputDecoration(
-        hintText: hintText,
+        hintText: hintText ?? l10n.commonSearch,
         hintStyle: TextStyle(fontSize: 13.sp, color: AppColors.textHint),
         prefixIcon: Icon(
           Icons.search_rounded,

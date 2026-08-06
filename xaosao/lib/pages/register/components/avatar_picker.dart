@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:xaosao/l10n/app_localizations.dart';
 import '../../../constants/app_color.dart';
 import '../getx/register_logic.dart';
 
@@ -100,7 +101,9 @@ class AvatarPicker extends StatelessWidget {
           SizedBox(height: 7.h),
           // Hint text below
           Text(
-            hasImage ? 'ກົດເພື່ອປ່ຽນຮູບ' : 'ກົດເພື່ອເລືອກຮູບ',
+            hasImage
+                ? AppLocalizations.of(context)!.registerAvatarChange
+                : AppLocalizations.of(context)!.registerAvatarPick,
             style: TextStyle(
               fontSize: 12.sp,
               color: AppColors.textPrimary,

@@ -2,6 +2,7 @@
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 import 'package:xaosao/constants/app_color.dart';
+import 'package:xaosao/l10n/app_localizations.dart';
 import 'package:xaosao/models/model_wallet_model.dart';
 
 class ModelWalletCard extends StatelessWidget {
@@ -18,17 +19,18 @@ class ModelWalletCard extends StatelessWidget {
     required this.onWithdraw,
   });
 
-  String _fmt(num? n) =>
-      '${NumberFormat.decimalPattern().format(n ?? 0)} ກີບ';
+  String _fmt(num? n, AppLocalizations l10n) =>
+      '${NumberFormat.decimalPattern().format(n ?? 0)} ${l10n.commonCurrencyKip}';
 
   static const String _masked = '••••••';
 
   @override
   Widget build(BuildContext context) {
-    final balance = _fmt(wallet.withdrawableBalance);
-    final pending = _fmt(wallet.pendingWithdrawals);
-    final withdrawn = _fmt(wallet.totalWithdraw);
-    final income = _fmt(wallet.totalIncome);
+    final l10n = AppLocalizations.of(context)!;
+    final balance = _fmt(wallet.withdrawableBalance, l10n);
+    final pending = _fmt(wallet.pendingWithdrawals, l10n);
+    final withdrawn = _fmt(wallet.totalWithdraw, l10n);
+    final income = _fmt(wallet.totalIncome, l10n);
 
     return Container(
       width: double.infinity,
@@ -83,7 +85,7 @@ class ModelWalletCard extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      'ຍອດເງິນສາມາດຖອນໄດ້',
+                      l10n.modelWalletAvailableBalance,
                       style: TextStyle(
                         fontSize: 14.sp,
                         fontWeight: FontWeight.w600,
@@ -150,7 +152,7 @@ class ModelWalletCard extends StatelessWidget {
                   children: [
                     Expanded(
                       child: _StatPill(
-                        label: 'ລໍຖ້າ',
+                        label: l10n.modelWalletStatPending,
                         value: amountsVisible ? pending : _masked,
                         valueColor: amountsVisible ? AppColors.star : null,
                       ),
@@ -158,14 +160,14 @@ class ModelWalletCard extends StatelessWidget {
                     SizedBox(width: 6.w),
                     Expanded(
                       child: _StatPill(
-                        label: 'ຖອນແລ້ວ',
+                        label: l10n.modelWalletStatWithdrawn,
                         value: amountsVisible ? withdrawn : _masked,
                       ),
                     ),
                     SizedBox(width: 6.w),
                     Expanded(
                       child: _StatPill(
-                        label: 'ລາຍຮັບທັງໝົດ',
+                        label: l10n.modelWalletStatTotalIncome,
                         value: amountsVisible ? income : _masked,
                       ),
                     ),
@@ -208,7 +210,7 @@ class ModelWalletCard extends StatelessWidget {
                         ),
                         SizedBox(width: 6.w),
                         Text(
-                          'ຖອນເງິນ',
+                          l10n.modelWalletWithdrawBtn,
                           style: TextStyle(
                             fontSize: 14.sp,
                             fontWeight: FontWeight.w800,

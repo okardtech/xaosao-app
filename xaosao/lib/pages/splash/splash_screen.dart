@@ -7,6 +7,7 @@ import 'package:xaosao/constants/app_routes.dart';
 import 'package:xaosao/pages/login/getx/login_logic.dart';
 import 'package:xaosao/services/deep_link_service.dart';
 import 'package:xaosao/services/storage_service.dart';
+import 'package:xaosao/utils/att_helper.dart';
 
 // ═══════════════════════════════════════════════════════════════
 //  SplashPage — Variant C · Full Gradient
@@ -42,29 +43,42 @@ class _SplashPageState extends State<SplashPage> {
         statusBarBrightness: Brightness.dark,
       ),
     );
+    // iOS 14.5+ App Tracking Transparency — fire-and-forget so it
+    // doesn't block the splash → auth-check flow. AppsFlyer's SDK is
+    // configured to wait up to 15s (`timeToWaitForATTUserAuthorization`)
+    // for the ATT decision before finalising attribution, so as long as
+    // the user answers within the splash + auth-check window we're fine.
+    // No-op on Android.
+    AttHelper.ensureRequested();
     Future.delayed(const Duration(seconds: 2), _checkAuthAndNavigate);
   }
 
-  // ── Auth check: token → dashboard | no token → onboarding ────
+  // ── Auth check ──────────────────────────────────────────────
+  // Unauthenticated + queued referral → [DeepLinkService] pushes
+  // register (single push path — no duplicate).
+  // Unauthenticated + no referral    → onboarding.
+  // Authenticated                     → verify profile, then dashboard/login.
   Future<void> _checkAuthAndNavigate() async {
     if (!mounted) return;
 
     final storage = Get.find<StorageService>();
     final token = storage.read<String>('token');
+    final hasSession = token != null && token.isNotEmpty;
 
-    // No token → show onboarding
-    if (token == null || token.isEmpty) {
-      _goTo(AppRoutes.xaosaoHome);
+    if (!hasSession) {
+      // The service owns the entire register-push flow. It reads
+      // storage, dedups, mounts onboarding + register, and returns
+      // true iff it navigated. On false we fall back to onboarding.
+      final consumed =
+          Get.find<DeepLinkService>().consumeReferralIfPresent();
+      if (!consumed) _goTo(AppRoutes.xaosaoHome);
       return;
     }
 
-    // Token found → verify it by fetching profile
     final isClient = (storage.read<String>('role') ?? 'customer') != 'model';
     await Get.find<LoginLogic>().fetchProfile(isCustomer: isClient);
 
-    // If 401 occurred: AuthInterceptor already cleared the token
-    // and called Get.offAllNamed('/login'), so this widget is likely
-    // unmounted. The mounted check below handles that safely.
+    // 401 → AuthInterceptor already re-routed; guard against unmount.
     if (!mounted) return;
 
     final state = Get.find<LoginLogic>().state;
@@ -72,15 +86,15 @@ class _SplashPageState extends State<SplashPage> {
         ? state.customerProfile != null
         : state.modelProfile != null;
 
-    // Profile loaded → go to dashboard; otherwise → login
     _goTo(profileLoaded ? AppRoutes.dashboard : AppRoutes.login);
   }
 
   void _goTo(String route) {
     if (!mounted) return;
     Navigator.pushNamedAndRemoveUntil(context, route, (_) => false);
-    // Once the user lands on the dashboard, any deep link that arrived
-    // during cold start is safe to dispatch.
+    // Profile deep links (type + id) only make sense post-dashboard.
+    // The referral flow is handled by consumeReferralIfPresent above,
+    // so no markSessionResolved() call is needed here.
     if (route == AppRoutes.dashboard) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         Get.find<DeepLinkService>().markNavigatorReady();
@@ -181,7 +195,7 @@ class _SplashPageState extends State<SplashPage> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 // Logo circle
-                Container(
+                SizedBox(
                   width: 100.r,
                   height: 100.r,
                   child: Image.asset(AppImage.xaosaoNoBack, fit: BoxFit.cover),
@@ -217,7 +231,7 @@ class _SplashPageState extends State<SplashPage> {
                 const _LoadingDots(),
                 SizedBox(height: 10.h),
                 Text(
-                  'v1.0.0',
+                  'v1.0.4',
                   style: TextStyle(
                     fontSize: 12.sp,
                     color: Colors.white.withOpacity(0.28),

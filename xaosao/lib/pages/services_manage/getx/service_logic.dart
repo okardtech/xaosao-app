@@ -4,6 +4,7 @@ import 'package:xaosao/pages/login/getx/login_logic.dart';
 import 'package:xaosao/pages/services_manage/getx/service_state.dart';
 import 'package:xaosao/repository/setting_repo.dart';
 import 'package:xaosao/utils/app_snackbar.dart';
+import 'package:xaosao/utils/l10n.dart';
 import 'package:xaosao/widgets/show_loading_alert.dart';
 
 class ServiceLogic extends GetxController {
@@ -45,11 +46,11 @@ class ServiceLogic extends GetxController {
         ));
       } else {
         _updateState(state.copyWith(status: ServiceStatus.failure));
-        AppSnackbar.error(res.laMessage ?? 'ໂຫຼດຂໍ້ມູນບໍ່ສຳເລັດ');
+        AppSnackbar.error(res.laMessage ?? l10n.commonLoadDataFailed);
       }
     } catch (_) {
       _updateState(state.copyWith(status: ServiceStatus.failure));
-      AppSnackbar.error('ໂຫຼດຂໍ້ມູນບໍ່ສຳເລັດ');
+      AppSnackbar.error(l10n.commonLoadDataFailed);
     }
   }
 
@@ -72,11 +73,11 @@ class ServiceLogic extends GetxController {
         await _refreshProfile();
         return true;
       }
-      AppSnackbar.error(res.laMessage ?? 'ເພີ່ມບໍ່ສຳເລັດ');
+      AppSnackbar.error(res.laMessage ?? l10n.commonAddFailed);
       return false;
     } catch (_) {
       hideLoadingDialog();
-      AppSnackbar.error('ເພີ່ມບໍ່ສຳເລັດ');
+      AppSnackbar.error(l10n.commonAddFailed);
       return false;
     } finally {
       _busy = false;
@@ -102,11 +103,11 @@ class ServiceLogic extends GetxController {
         await _refreshProfile();
         return true;
       }
-      AppSnackbar.error(res.laMessage ?? 'ອັບເດດບໍ່ສຳເລັດ');
+      AppSnackbar.error(res.laMessage ?? l10n.commonUpdateFailed);
       return false;
     } catch (_) {
       hideLoadingDialog();
-      AppSnackbar.error('ອັບເດດບໍ່ສຳເລັດ');
+      AppSnackbar.error(l10n.commonUpdateFailed);
       return false;
     } finally {
       _busy = false;
@@ -132,11 +133,11 @@ class ServiceLogic extends GetxController {
         await _refreshProfile();
         return true;
       }
-      AppSnackbar.error(res.laMessage ?? 'ເພີ່ມບໍ່ສຳເລັດ');
+      AppSnackbar.error(res.laMessage ?? l10n.commonAddFailed);
       return false;
     } catch (_) {
       hideLoadingDialog();
-      AppSnackbar.error('ເພີ່ມບໍ່ສຳເລັດ');
+      AppSnackbar.error(l10n.commonAddFailed);
       return false;
     } finally {
       _busy = false;
@@ -162,11 +163,11 @@ class ServiceLogic extends GetxController {
         await _refreshProfile();
         return true;
       }
-      AppSnackbar.error(res.laMessage ?? 'ອັບເດດບໍ່ສຳເລັດ');
+      AppSnackbar.error(res.laMessage ?? l10n.commonUpdateFailed);
       return false;
     } catch (_) {
       hideLoadingDialog();
-      AppSnackbar.error('ອັບເດດບໍ່ສຳເລັດ');
+      AppSnackbar.error(l10n.commonUpdateFailed);
       return false;
     } finally {
       _busy = false;
@@ -184,11 +185,11 @@ class ServiceLogic extends GetxController {
         await _refreshProfile();
         return true;
       }
-      AppSnackbar.error(res.laMessage ?? 'ລຶບບໍ່ສຳເລັດ');
+      AppSnackbar.error(res.laMessage ?? l10n.commonDeleteFailed);
       return false;
     } catch (_) {
       hideLoadingDialog();
-      AppSnackbar.error('ລຶບບໍ່ສຳເລັດ');
+      AppSnackbar.error(l10n.commonDeleteFailed);
       return false;
     } finally {
       _busy = false;

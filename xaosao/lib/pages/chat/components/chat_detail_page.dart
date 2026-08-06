@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:xaosao/constants/app_color.dart';
+import 'package:xaosao/l10n/app_localizations.dart';
 import 'package:xaosao/models/conversation_model.dart';
 import 'package:xaosao/pages/chat/components/chat_bubbles.dart';
 import 'package:xaosao/pages/chat/components/chat_input_bar.dart';
@@ -84,6 +85,7 @@ class _ChatAppBarTitle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Row(children: [
       Stack(children: [
         Container(
@@ -141,8 +143,8 @@ class _ChatAppBarTitle extends StatelessWidget {
             Obx(() {
               final ms = ctrl.msgState;
               final label = ms.isPartnerTyping
-                  ? 'ກຳລັງພິມ...'
-                  : (ctrl.isOnline ? 'ອອນລາຍ' : 'ອອຟລາຍ');
+                  ? l10n.chatTyping
+                  : (ctrl.isOnline ? l10n.cpOnline : l10n.chatOffline);
               return Text(
                 label,
                 style: TextStyle(

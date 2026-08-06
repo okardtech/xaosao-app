@@ -9,6 +9,8 @@ import 'package:xaosao/models/package_hour_model.dart';
 import 'package:xaosao/pages/package/getx/package_logic.dart';
 import 'package:xaosao/pages/package/subscription_checkout_page.dart';
 import 'package:xaosao/pages/wallet/getx/wallet_logic.dart';
+import 'package:xaosao/l10n/app_localizations.dart';
+import 'package:xaosao/utils/l10n.dart' as g;
 
 const _kAdminPhone = '+85620XXXXXXXX';
 
@@ -36,6 +38,7 @@ class _SubscriptionDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final plan = pkg.plan;
     final walletBalance =
         Get.find<WalletLogic>().state.wallet?.availableBalance ?? 0;
@@ -67,7 +70,7 @@ class _SubscriptionDialog extends StatelessWidget {
                       children: [
                         Expanded(
                           child: _InfoTile(
-                            label: 'ລາຄາ',
+                            label: l10n.subscriptionPrice,
                             value: '${_fmtKip(price)} KIP',
                             valueColor: AppColors.primary,
                             icon: Icons.sell_outlined,
@@ -76,7 +79,7 @@ class _SubscriptionDialog extends StatelessWidget {
                         SizedBox(width: 10.w),
                         Expanded(
                           child: _InfoTile(
-                            label: 'ໄລຍະເວລາ',
+                            label: l10n.subscriptionDuration,
                             value: _duration(plan?.durationDays),
                             valueColor: AppColors.textPrimary,
                             icon: Icons.access_time_rounded,
@@ -89,7 +92,7 @@ class _SubscriptionDialog extends StatelessWidget {
                     // Features
                     if (_hasFeatures(plan?.features)) ...[
                       Text(
-                        'ສິ່ງທີ່ທ່ານຈະໄດ້ຮັບ:',
+                        l10n.subscriptionBenefits,
                         style: TextStyle(
                           fontSize: 13.sp,
                           fontWeight: FontWeight.w800,
@@ -120,7 +123,7 @@ class _SubscriptionDialog extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
-                            'ເບິ່ງແພັກທັງໝົດ',
+                            l10n.subscriptionViewAll,
                             style: TextStyle(
                               fontSize: 12.sp,
                               fontWeight: FontWeight.w700,
@@ -157,7 +160,7 @@ class _SubscriptionDialog extends StatelessWidget {
                               ),
                               child: Center(
                                 child: Text(
-                                  'ປິດ',
+                                  l10n.subscriptionClose,
                                   style: TextStyle(
                                     fontSize: 14.sp,
                                     fontWeight: FontWeight.w700,
@@ -232,7 +235,7 @@ class _SubscriptionDialog extends StatelessWidget {
                                   ),
                                   SizedBox(width: 6.w),
                                   Text(
-                                    hasBalance ? 'ຊື້ເລີຍ' : 'ຕື່ມເງິນ',
+                                    hasBalance ? l10n.subscriptionBuyNow : l10n.subscriptionTopUp,
                                     style: TextStyle(
                                       fontSize: 14.sp,
                                       fontWeight: FontWeight.w800,
@@ -260,13 +263,13 @@ class _SubscriptionDialog extends StatelessWidget {
   String _duration(int? days) {
     if (days == null) return '—';
     if (days == 0) return pkg.plan?.name ?? '—';
-    if (days < 1) return '${(days * 24).round()} ຊ.ມ';
-    if (days == 1) return '1 ວັນ';
-    if (days == 7) return '1 ອາທິດ';
-    if (days == 30) return '1 ເດືອນ';
-    if (days == 90) return '3 ເດືອນ';
-    if (days == 365) return '1 ປີ';
-    return '$days ວັນ';
+    if (days < 1) return g.l10n.subscriptionDurationHours((days * 24).round());
+    if (days == 1) return g.l10n.subscriptionDuration1Day;
+    if (days == 7) return g.l10n.subscriptionDuration1Week;
+    if (days == 30) return g.l10n.subscriptionDuration1Month;
+    if (days == 90) return g.l10n.subscriptionDuration3Months;
+    if (days == 365) return g.l10n.subscriptionDuration1Year;
+    return g.l10n.subscriptionDurationDays(days);
   }
 
   bool _hasFeatures(Features? f) =>
@@ -323,6 +326,7 @@ class _GradientHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Container(
       width: double.infinity,
       decoration: const BoxDecoration(
@@ -416,7 +420,7 @@ class _GradientHeader extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        plan?.name ?? 'ແພັກພິເສດ',
+                        plan?.name ?? l10n.subscriptionSpecialPack,
                         style: TextStyle(
                           fontSize: 16.sp,
                           fontWeight: FontWeight.w900,
@@ -515,6 +519,7 @@ class _WalletTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final bg = hasBalance ? const Color(0xFFEDFAF3) : const Color(0xFFFFFBEB);
     final iconColor = hasBalance ? AppColors.online : const Color(0xFFF59E0B);
 
@@ -545,7 +550,7 @@ class _WalletTile extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'ຍອດເງິນຂອງທ່ານ',
+                  l10n.subscriptionYourBalance,
                   style: TextStyle(fontSize: 10.sp, color: AppColors.textHint),
                 ),
                 SizedBox(height: 1.h),
@@ -569,7 +574,7 @@ class _WalletTile extends StatelessWidget {
                 borderRadius: BorderRadius.circular(20.r),
               ),
               child: Text(
-                'ຕ້ອງການ +${_fmtKip(shortfall)} KIP',
+                l10n.subscriptionNeedMore(_fmtKip(shortfall)),
                 style: TextStyle(
                   fontSize: 10.sp,
                   fontWeight: FontWeight.w800,
@@ -585,7 +590,7 @@ class _WalletTile extends StatelessWidget {
                 borderRadius: BorderRadius.circular(20.r),
               ),
               child: Text(
-                'ຊຳລະໄດ້ເລີຍ',
+                l10n.subscriptionCanPay,
                 style: TextStyle(
                   fontSize: 10.sp,
                   fontWeight: FontWeight.w800,
@@ -614,6 +619,7 @@ class _NoSubscriptionDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Dialog(
       backgroundColor: Colors.transparent,
       insetPadding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 40.h),
@@ -650,7 +656,7 @@ class _NoSubscriptionDialog extends StatelessWidget {
                           SizedBox(width: 8.w),
                           Expanded(
                             child: Text(
-                              'ກະລຸນາຊື້ Package ກ່ອນ ຈຶ່ງສາມາດຈອງບໍລິການໄດ້. Package ຈະໃຫ້ທ່ານສິດໃນການຈອງ ແລະ ໃຊ້ງານຕ່າງໆ.',
+                              l10n.subscriptionNeedPackageBody,
                               style: TextStyle(
                                 fontSize: 14.sp,
                                 color: AppColors.textSecondary,
@@ -679,7 +685,7 @@ class _NoSubscriptionDialog extends StatelessWidget {
                               ),
                               child: Center(
                                 child: Text(
-                                  'ປິດ',
+                                  l10n.subscriptionClose,
                                   style: TextStyle(
                                     fontSize: 14.sp,
                                     fontWeight: FontWeight.w700,
@@ -725,7 +731,7 @@ class _NoSubscriptionDialog extends StatelessWidget {
                                   ),
                                   SizedBox(width: 6.w),
                                   Text(
-                                    'ເບິ່ງ Package',
+                                    l10n.subscriptionViewPackage,
                                     style: TextStyle(
                                       fontSize: 14.sp,
                                       fontWeight: FontWeight.w800,
@@ -754,6 +760,7 @@ class _NoSubscriptionDialog extends StatelessWidget {
 class _NoSubHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Container(
       width: double.infinity,
       decoration: const BoxDecoration(
@@ -824,7 +831,7 @@ class _NoSubHeader extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'ຕ້ອງການ Package',
+                        l10n.subscriptionNeedPackage,
                         style: TextStyle(
                           fontSize: 16.sp,
                           fontWeight: FontWeight.w900,
@@ -834,7 +841,7 @@ class _NoSubHeader extends StatelessWidget {
                       ),
                       SizedBox(height: 3.h),
                       Text(
-                        'ທ່ານຍັງບໍ່ທັນສະໝັກ Package ໃດ',
+                        l10n.subscriptionNoActive,
                         style: TextStyle(
                           fontSize: 12.sp,
                           color: Colors.white.withValues(alpha: 0.75),
@@ -881,6 +888,7 @@ class _InsufficientWalletDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final shortage = serviceRate - walletBalance;
     final topupAmount = shortage.ceil().toInt();
 
@@ -901,7 +909,7 @@ class _InsufficientWalletDialog extends StatelessWidget {
                   children: [
                     // Balance rows
                     _BalanceRow(
-                      label: 'ຍອດເງິນຂອງທ່ານ',
+                      label: l10n.subscriptionYourBalance,
                       value: walletBalance.toInt(),
                       icon: Icons.account_balance_wallet_outlined,
                       iconColor: AppColors.textHint,
@@ -909,7 +917,7 @@ class _InsufficientWalletDialog extends StatelessWidget {
                     ),
                     SizedBox(height: 8.h),
                     _BalanceRow(
-                      label: 'ລາຄາບໍລິການ',
+                      label: l10n.subscriptionServicePrice,
                       value: serviceRate.toInt(),
                       icon: Icons.sell_outlined,
                       iconColor: AppColors.primary,
@@ -917,7 +925,7 @@ class _InsufficientWalletDialog extends StatelessWidget {
                     ),
                     SizedBox(height: 8.h),
                     _BalanceRow(
-                      label: 'ຂາດຢູ່',
+                      label: l10n.subscriptionShortfall,
                       value: topupAmount,
                       icon: Icons.remove_circle_outline_rounded,
                       iconColor: const Color(0xFFEF4444),
@@ -942,7 +950,7 @@ class _InsufficientWalletDialog extends StatelessWidget {
                               ),
                               child: Center(
                                 child: Text(
-                                  'ປິດ',
+                                  l10n.subscriptionClose,
                                   style: TextStyle(
                                     fontSize: 14.sp,
                                     fontWeight: FontWeight.w700,
@@ -991,7 +999,7 @@ class _InsufficientWalletDialog extends StatelessWidget {
                                   ),
                                   SizedBox(width: 6.w),
                                   Text(
-                                    'ຕື່ມ ${_fmtKip(topupAmount)} KIP',
+                                    l10n.subscriptionTopUpAmount(_fmtKip(topupAmount)),
                                     style: TextStyle(
                                       fontSize: 13.sp,
                                       fontWeight: FontWeight.w800,
@@ -1020,6 +1028,7 @@ class _InsufficientWalletDialog extends StatelessWidget {
 class _InsufficientHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Container(
       width: double.infinity,
       decoration: const BoxDecoration(
@@ -1090,7 +1099,7 @@ class _InsufficientHeader extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'ຍອດເງິນບໍ່ພຽງພໍ',
+                        l10n.subscriptionInsufficient,
                         style: TextStyle(
                           fontSize: 16.sp,
                           fontWeight: FontWeight.w900,
@@ -1100,7 +1109,7 @@ class _InsufficientHeader extends StatelessWidget {
                       ),
                       SizedBox(height: 3.h),
                       Text(
-                        'ກະລຸນາຕື່ມເງິນກ່ອນຈອງ',
+                        l10n.subscriptionPleaseTopup,
                         style: TextStyle(
                           fontSize: 12.sp,
                           color: Colors.white.withValues(alpha: 0.75),
@@ -1196,6 +1205,7 @@ class _PendingSubscriptionDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Dialog(
       backgroundColor: Colors.transparent,
       insetPadding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 40.h),
@@ -1243,7 +1253,7 @@ class _PendingSubscriptionDialog extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  'ລໍຖ້າການຢືນຢັນ',
+                                  l10n.subscriptionPendingVerification,
                                   style: TextStyle(
                                     fontSize: 14.sp,
                                     fontWeight: FontWeight.w800,
@@ -1252,7 +1262,7 @@ class _PendingSubscriptionDialog extends StatelessWidget {
                                 ),
                                 SizedBox(height: 3.h),
                                 Text(
-                                  'ທ່ານໄດ້ສະໝັກ Package ແລ້ວ',
+                                  l10n.subscriptionAlreadySubscribed,
                                   style: TextStyle(
                                     fontSize: 12.sp,
                                     color: const Color(0xFFB45309),
@@ -1273,7 +1283,7 @@ class _PendingSubscriptionDialog extends StatelessWidget {
                               borderRadius: BorderRadius.circular(20.r),
                             ),
                             child: Text(
-                              'ລໍຖ້າ',
+                              l10n.subscriptionPendingBadge,
                               style: TextStyle(
                                 fontSize: 10.sp,
                                 fontWeight: FontWeight.w800,
@@ -1302,7 +1312,7 @@ class _PendingSubscriptionDialog extends StatelessWidget {
                           SizedBox(width: 8.w),
                           Expanded(
                             child: Text(
-                              'Package ຂອງທ່ານກຳລັງລໍຖ້າການຢືນຢັນຈາກ Admin. ກະລຸນາລໍຖ້າ ຫຼື ຕິດຕໍ່ Admin ເພື່ອຢືນຢັນໂດຍໄວ.',
+                              l10n.subscriptionPendingBody,
                               style: TextStyle(
                                 fontSize: 12.sp,
                                 color: AppColors.textSecondary,
@@ -1340,7 +1350,7 @@ class _PendingSubscriptionDialog extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  'ເບີໂທ Admin',
+                                  l10n.subscriptionAdminPhone,
                                   style: TextStyle(
                                     fontSize: 10.sp,
                                     color: AppColors.textHint,
@@ -1380,7 +1390,7 @@ class _PendingSubscriptionDialog extends StatelessWidget {
                               ),
                               child: Center(
                                 child: Text(
-                                  'ປິດ',
+                                  l10n.subscriptionClose,
                                   style: TextStyle(
                                     fontSize: 14.sp,
                                     fontWeight: FontWeight.w700,
@@ -1433,7 +1443,7 @@ class _PendingSubscriptionDialog extends StatelessWidget {
                                   ),
                                   SizedBox(width: 6.w),
                                   Text(
-                                    'ໂທຫາ Admin',
+                                    l10n.subscriptionCallAdmin,
                                     style: TextStyle(
                                       fontSize: 14.sp,
                                       fontWeight: FontWeight.w800,
@@ -1462,6 +1472,7 @@ class _PendingSubscriptionDialog extends StatelessWidget {
 class _PendingHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Container(
       width: double.infinity,
       decoration: const BoxDecoration(
@@ -1552,7 +1563,7 @@ class _PendingHeader extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'ກຳລັງລໍຖ້າການຢືນຢັນ',
+                        l10n.subscriptionWaitingVerification,
                         style: TextStyle(
                           fontSize: 16.sp,
                           fontWeight: FontWeight.w900,
@@ -1562,7 +1573,7 @@ class _PendingHeader extends StatelessWidget {
                       ),
                       SizedBox(height: 3.h),
                       Text(
-                        'Package ຂອງທ່ານລໍຖ້າ Admin ກວດສອບ',
+                        l10n.subscriptionAdminChecking,
                         style: TextStyle(
                           fontSize: 12.sp,
                           color: Colors.white.withValues(alpha: 0.75),

@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:xaosao/constants/app_color.dart';
 import 'package:xaosao/constants/app_routes.dart';
+import 'package:xaosao/l10n/app_localizations.dart';
 import 'package:xaosao/pages/topup/components/topup_constant.dart';
 import 'package:xaosao/pages/topup/getx/topup_logic.dart';
 import 'package:xaosao/widgets/app_button.dart';
@@ -81,11 +82,12 @@ class _TopUpAmountPageState extends State<TopUpAmountPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       backgroundColor: AppColors.bg,
       appBar: GradientAppBar(
-        title: 'ເຕີມເງິນ',
-        subtitle: 'ເລືອກ ຫຼື ປ້ອນຈຳນວນ',
+        title: l10n.walletTopup,
+        subtitle: l10n.topupAmountSubtitle,
         actions: [const TopUpStepBadge('1')],
       ),
       body: SafeArea(
@@ -107,14 +109,14 @@ class _TopUpAmountPageState extends State<TopUpAmountPage> {
                         ..._presets.map(
                           (v) => _PresetChip(
                             label: fmtNum(v),
-                            sub: 'ກີບ',
+                            sub: l10n.commonCurrencyKip,
                             selected: !_custom && _selected == v,
                             onTap: () => _pick(v),
                           ),
                         ),
                         _PresetChip(
-                          label: 'ອື່ນໆ',
-                          sub: 'ກຳນົດເອງ',
+                          label: l10n.topupOther,
+                          sub: l10n.topupCustomAmount,
                           selected: _custom,
                           onTap: () {
                             setState(() {
@@ -128,17 +130,17 @@ class _TopUpAmountPageState extends State<TopUpAmountPage> {
                     ),
                     SizedBox(height: 14.h),
 
-                    _TopUpDivider(label: 'ຫຼື ປ້ອນເອງ'),
+                    _TopUpDivider(label: l10n.topupOrEnterYourself),
                     SizedBox(height: 10.h),
 
                     // ── Amount input ─────────────────────────────
                     AppTextField(
                       controller: _ctrl,
                       focusNode: _focus,
-                      hint: 'ປ້ອນຈຳນວນ',
+                      hint: l10n.topupEnterAmount,
                       accent: AppColors.primary,
                       prefixIcon: Icons.attach_money_rounded,
-                      suffixLabel: 'ກີບ',
+                      suffixLabel: l10n.commonCurrencyKip,
                       keyboardType: TextInputType.number,
                       formatters: [ThousandsSeparatorFormatter()],
                       action: TextInputAction.done,
@@ -151,7 +153,7 @@ class _TopUpAmountPageState extends State<TopUpAmountPage> {
 
                     // ── CTA ──────────────────────────────────────
                     AppPrimaryButton(
-                      label: 'ຕໍ່ໄປ',
+                      label: l10n.commonNext,
                       trailingIcon: Icons.arrow_forward_ios_rounded,
                       enabled: _amount >= 10000,
                       onTap: _next,

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:xaosao/constants/app_color.dart';
+import 'package:xaosao/l10n/app_localizations.dart';
 import 'package:xaosao/models/gallerys_model.dart';
 import 'package:xaosao/pages/profile/getx/profile_logic.dart';
 import 'package:xaosao/widgets/app_image_preview.dart';
@@ -23,11 +24,12 @@ class GalleryPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final logic = Get.find<ProfileLogic>();
+    final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
       backgroundColor: AppColors.bg,
       appBar: GradientAppBar(
-        title: 'ຮູບພາບທັງໝົດ',
+        title: l10n.profileGalleryTitle,
         titleWidget: Obx(() {
           final count = logic.state.photos.length;
           return Column(
@@ -35,7 +37,7 @@ class GalleryPage extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
-                'ຮູບພາບທັງໝົດ',
+                l10n.profileGalleryTitle,
                 style: TextStyle(
                   fontSize: 18.sp,
                   fontWeight: FontWeight.w700,
@@ -44,7 +46,7 @@ class GalleryPage extends StatelessWidget {
                 ),
               ),
               Text(
-                '$count / $maxPhotos ຮູບ',
+                l10n.profileGalleryCount(count, maxPhotos),
                 style: TextStyle(
                   fontSize: 12.sp,
                   color: Colors.white.withValues(alpha: 0.85),
@@ -67,7 +69,7 @@ class GalleryPage extends StatelessWidget {
                     size: 48.r, color: AppColors.textDisabled),
                 SizedBox(height: 12.h),
                 Text(
-                  'ຍັງບໍ່ມີຮູບ',
+                  l10n.profileNoPhotos,
                   style: TextStyle(fontSize: 14.sp, color: AppColors.textHint),
                 ),
               ],
@@ -158,11 +160,12 @@ class GalleryPage extends StatelessWidget {
                   right: 7,
                   child: GestureDetector(
                     onTap: () async {
+                      final l10n = AppLocalizations.of(context)!;
                       final confirmed = await ConfirmSheet.show(
                         context,
-                        title: 'ລຶບຮູບ',
-                        message: 'ທ່ານຕ້ອງການລຶບຮູບນີ້ແທ້ບໍ່?',
-                        confirmLabel: 'ລຶບ',
+                        title: l10n.profileDeletePhotoTitle,
+                        message: l10n.profileDeletePhotoMessage,
+                        confirmLabel: l10n.commonDelete,
                         icon: AppIcons.delete,
                         isDanger: true,
                       );
@@ -219,7 +222,7 @@ class GalleryPage extends StatelessWidget {
             ),
             SizedBox(height: 8.h),
             Text(
-              'ເພີ່ມຮູບ',
+              AppLocalizations.of(context)!.profileAddPhoto,
               style: TextStyle(
                 fontSize: 12.sp,
                 fontWeight: FontWeight.w600,

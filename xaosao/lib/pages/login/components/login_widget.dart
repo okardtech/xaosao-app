@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:xaosao/constants/app_color.dart';
 import 'package:xaosao/constants/app_image.dart';
 import 'package:xaosao/pages/register/getx/register_logic.dart';
+import 'package:xaosao/utils/l10n.dart';
 import '../../register/register_page.dart';
 import '../getx/login_state.dart';
 
@@ -37,7 +38,7 @@ class LoginHero extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Container(
+          SizedBox(
             width: 80.r,
             height: 80.r,
             child: Image.asset(AppImage.xaosaoNoBack),
@@ -49,7 +50,7 @@ class LoginHero extends StatelessWidget {
           ),
           SizedBox(height: 4.h),
           Text(
-            'ເພື່ອນຄູ່ໃຈ ທຸກທີ່ ທຸກເວລາ',
+            l10n.authTagline,
             style: TextStyle(
               fontSize: 12.sp,
               color: Colors.white.withOpacity(0.70),
@@ -81,14 +82,14 @@ class RoleTabs extends StatelessWidget {
       child: Row(
         children: [
           _RoleTab(
-            label: 'ລູກຄ້າ',
+            label: l10n.authRoleCustomer,
             icon: Icons.person_outline_rounded,
             role: RegisterRole.customer,
             selected: selected,
             onTap: onSelect,
           ),
           _RoleTab(
-            label: 'Companion',
+            label: l10n.authRoleCompanion,
             icon: Icons.groups_outlined,
             role: RegisterRole.companion,
             selected: selected,
@@ -231,7 +232,7 @@ class _PhoneFieldState extends State<PhoneField> {
 
   @override
   Widget build(BuildContext context) {
-    print('values: ${widget.ctrl.text}: ${widget.focus.hasFocus}');
+    // print('values: ${widget.ctrl.text}: ${widget.focus.hasFocus}');
     return AnimatedContainer(
       duration: const Duration(milliseconds: 180),
       height: 48.h,
@@ -394,7 +395,7 @@ class _PasswordFieldState extends State<PasswordField> {
               obscureText: widget.obscure,
               textInputAction: TextInputAction.done,
               decoration: InputDecoration(
-                hintText: 'ລະຫັດຜ່ານ',
+                hintText: l10n.authHintPassword,
                 hintStyle: TextStyle(
                   fontSize: 13.sp,
                   color: const Color(0xFFC4C4D0),
@@ -472,7 +473,7 @@ class LoginButton extends StatelessWidget {
         ),
         child: Center(
           child: Text(
-            'ເຂົ້າສູ່ລະບົບ',
+            l10n.authLoginButton,
             style: TextStyle(
               fontSize: 15.sp,
               fontWeight: FontWeight.w600,
@@ -496,7 +497,9 @@ class RegisterLink extends StatelessWidget {
   Widget build(BuildContext context) {
     final isCustomer = role == RegisterRole.customer;
     final color = isCustomer ? AppColors.primary : AppColors.primaryVariant;
-    final label = isCustomer ? 'ສ້າງບັນຊີ ລູກຄ້າ' : 'ສ້າງບັນຊີ ຜູ້ຮັບຈອງ';
+    final label = isCustomer
+        ? l10n.authCreateCustomerAccount
+        : l10n.authCreateCompanionAccount;
 
     return Center(
       child: GestureDetector(

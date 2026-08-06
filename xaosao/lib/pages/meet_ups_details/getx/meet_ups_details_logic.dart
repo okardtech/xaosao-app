@@ -2,6 +2,7 @@ import 'package:get/get.dart';
 import 'package:xaosao/pages/dashboard/getx/dashboard_logic.dart';
 import 'package:xaosao/repository/booking_repo.dart';
 import 'package:xaosao/utils/app_snackbar.dart';
+import 'package:xaosao/utils/l10n.dart';
 import 'package:xaosao/widgets/show_loading_alert.dart';
 import 'meet_ups_details_state.dart';
 
@@ -32,7 +33,7 @@ class MeetUpsDetailsLogic extends GetxController {
     } else {
       _state.value = MeetUpsDetailsState(
         status: MeetUpsDetailsStatus.failure,
-        error: res.message ?? 'ບໍ່ສາມາດໂຫຼດຂໍ້ມູນ',
+        error: res.message ?? l10n.meetupsCantLoadData,
       );
     }
   }
@@ -82,11 +83,11 @@ class MeetUpsDetailsLogic extends GetxController {
         return true;
       }
       AppSnackbar.error(
-          (res.message as String?) ?? 'ບໍ່ສາມາດດຳເນີນການໄດ້');
+          (res.message as String?) ?? l10n.meetupsCantPerform);
       return false;
     } catch (_) {
       hideLoadingDialog();
-      AppSnackbar.error('ບໍ່ສາມາດດຳເນີນການໄດ້');
+      AppSnackbar.error(l10n.meetupsCantPerform);
       return false;
     }
   }

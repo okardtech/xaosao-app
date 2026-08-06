@@ -9,6 +9,7 @@ import 'package:xaosao/pages/meet_ups/getx/meet_ups_logic.dart';
 import 'package:xaosao/utils/app_snackbar.dart';
 import 'package:xaosao/utils/currency_formatter.dart';
 import 'package:xaosao/utils/date_time_formatter.dart';
+import 'package:xaosao/utils/l10n.dart' as g;
 import 'package:xaosao/utils/service_helper.dart';
 import 'package:xaosao/widgets/app_button.dart';
 import 'package:xaosao/widgets/app_network_image.dart';
@@ -108,14 +109,14 @@ class BookingCard extends StatelessWidget {
   }
 
   static String _statusLabel(String? s) => switch (s) {
-    'pending' => 'ລໍຖ້າ',
-    'confirmed' => 'ຢືນຢັນ',
-    'in_progress' => 'ກຳລັງດຳເນີນ',
-    'awaiting_confirmation' => 'ລໍຢືນຢັນ',
-    'completed' => 'ສຳເລັດເເລ້ວ',
-    'cancelled' => 'ຍົກເລີກເເລ້ວ',
-    'rejected' => 'ຖືກປະຕິເສດ',
-    'disputed' => 'ຂໍ້ຂັດແຍ້ງ',
+    'pending' => g.l10n.walletTxStatusPending,
+    'confirmed' => g.l10n.bookingStatusConfirmed,
+    'in_progress' => g.l10n.bookingStatusInProgress,
+    'awaiting_confirmation' => g.l10n.bookingStatusAwaitingConfirmation,
+    'completed' => g.l10n.bookingStatusCompletedFull,
+    'cancelled' => g.l10n.bookingStatusCancelledFull,
+    'rejected' => g.l10n.bookingStatusRejected,
+    'disputed' => g.l10n.bookingStatusDisputed,
     _ => '-',
   };
 
@@ -123,8 +124,8 @@ class BookingCard extends StatelessWidget {
       ServiceHelper.serviceOriginalName(b.modelService?.service?.name);
 
   static String? _durationLabel(MyBookingModel b) {
-    if (b.dayAmount != null) return '${b.dayAmount} ວັນ';
-    if (b.hours != null) return '${b.hours} ຊົ່ວໂມງ';
+    if (b.dayAmount != null) return g.l10n.commonDays(b.dayAmount!);
+    if (b.hours != null) return g.l10n.commonHours(b.hours!);
     return null;
   }
 
@@ -273,7 +274,7 @@ class BookingCard extends StatelessWidget {
         m?.lastName,
       ].where((s) => s != null && s.isNotEmpty).join(' ');
       profileUrl = m?.profile ?? '';
-      displayName = name.isEmpty ? 'ບໍ່ມີຊື່' : name;
+      displayName = name.isEmpty ? g.l10n.bookingNoName : name;
       age = m?.age;
     } else {
       final c = b.customer;
@@ -285,7 +286,7 @@ class BookingCard extends StatelessWidget {
       profileUrl = c?.profile ?? '';
       displayName = name.isNotEmpty
           ? name
-          : (fallback.isNotEmpty ? fallback : 'ບໍ່ມີຊື່');
+          : (fallback.isNotEmpty ? fallback : g.l10n.bookingNoName);
       age = c?.age;
     }
 
@@ -309,7 +310,9 @@ class BookingCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  age != null ? '$displayName · $age ປີ' : displayName,
+                  age != null
+                      ? '$displayName · ${g.l10n.commonAgeYears(age)}'
+                      : displayName,
                   style: TextStyle(
                     fontSize: 13.sp,
                     fontWeight: FontWeight.w700,
@@ -338,7 +341,7 @@ class BookingCard extends StatelessWidget {
                         ),
                         SizedBox(width: 3.w),
                         Text(
-                          'ມີທິບໃຫ້ພ້ອມ',
+                          g.l10n.bookingTipReady,
                           style: TextStyle(
                             fontSize: 10.sp,
                             fontWeight: FontWeight.w600,
@@ -582,7 +585,7 @@ class BookingCard extends StatelessWidget {
     final id = b.id ?? '';
 
     final msgBtn = _Btn(
-      label: 'ເເຊັດ',
+      label: g.l10n.bookingActionChat,
       icon: AppIcons.chatFill,
       style: _BtnStyle.outline,
       onTap: () => _openChat(b),
@@ -601,9 +604,9 @@ class BookingCard extends StatelessWidget {
     Future<void> confirmCancel() async {
       final confirmed = await ConfirmSheet.show(
         context,
-        title: 'ຍົກເລີກການຈອງ',
-        message: 'ທ່ານຕ້ອງການຍົກເລີກການຈອງນີ້ແທ້ບໍ່?',
-        confirmLabel: 'ຍົກເລີກການຈອງ',
+        title: g.l10n.cancelBookingTitle,
+        message: g.l10n.cancelBookingMessageShort,
+        confirmLabel: g.l10n.cancelBookingTitle,
         icon: AppIcons.cancel,
         isDanger: true,
       );
@@ -621,7 +624,7 @@ class BookingCard extends StatelessWidget {
     if (isCustomer) {
       if (status == 'pending') {
         return [
-          _Btn(label: 'ຍົກເລີກ', style: _BtnStyle.ghost, onTap: confirmCancel),
+          _Btn(label: g.l10n.commonCancel, style: _BtnStyle.ghost, onTap: confirmCancel),
           SizedBox(width: 6.w),
           msgBtn,
         ];
@@ -633,7 +636,7 @@ class BookingCard extends StatelessWidget {
         if (bookingEnded) {
           return [
             _Btn(
-              label: 'ປ່ອຍເງີນ',
+              label: g.l10n.bookingActionReleasePayment,
               style: _BtnStyle.green,
               onTap: () => _logic.releasePayment(id),
             ),
@@ -650,10 +653,10 @@ class BookingCard extends StatelessWidget {
         if (inDisputeWindow) {
           return [
             _Btn(
-              label: 'ເງິນຄືນ',
+              label: g.l10n.bookingActionRefund,
               style: _BtnStyle.amber,
               onTap: () => showReason(
-                'ເຫດຜົນການຮ້ອງຂໍເງິນຄືນ',
+                g.l10n.refundReasonTitle,
                 (reason) => _logic.disputeBooking(id, reason),
               ),
             ),
@@ -669,7 +672,7 @@ class BookingCard extends StatelessWidget {
         if (canCancel) {
           return [
             _Btn(
-              label: 'ຍົກເລີກ',
+              label: g.l10n.commonCancel,
               style: _BtnStyle.ghost,
               onTap: confirmCancel,
             ),
@@ -684,16 +687,16 @@ class BookingCard extends StatelessWidget {
       if (status == 'pending') {
         return [
           _Btn(
-            label: 'ປະຕິເສດ',
+            label: g.l10n.bookingActionReject,
             style: _BtnStyle.red,
             onTap: () => showReason(
-              'ເຫດຜົນການປະຕິເສດ',
+              g.l10n.rejectReasonTitle,
               (reason) => _logic.rejectBooking(id, reason),
             ),
           ),
           SizedBox(width: 6.w),
           _Btn(
-            label: 'ຢືນຢັນ',
+            label: g.l10n.commonConfirm,
             style: _BtnStyle.green,
             onTap: () => _logic.confirmBooking(id),
           ),
@@ -705,7 +708,7 @@ class BookingCard extends StatelessWidget {
         if (bookingEnded) {
           return [
             _Btn(
-              label: 'ຮັບເງີນ',
+              label: g.l10n.bookingActionReceiveMoney,
               style: _BtnStyle.pink,
               onTap: () => _logic.receiveMoney(id),
             ),
@@ -717,15 +720,15 @@ class BookingCard extends StatelessWidget {
     if (_isCompleted(status) || _isCancelled(status) || _isRejected(status)) {
       return [
         _Btn(
-          label: 'ລຶບ',
+          label: g.l10n.commonDelete,
           icon: AppIcons.delete,
           style: _BtnStyle.red,
           onTap: () async {
             final confirmed = await ConfirmSheet.show(
               context,
-              title: 'ລຶບລາຍການ',
-              message: 'ທ່ານຕ້ອງການລຶບລາຍການນີ້ແທ້ບໍ່?',
-              confirmLabel: 'ລຶບ',
+              title: g.l10n.deleteItemTitle,
+              message: g.l10n.deleteItemMessage,
+              confirmLabel: g.l10n.commonDelete,
               icon: AppIcons.delete,
               isDanger: true,
             );
@@ -844,7 +847,7 @@ class _ReasonSheetState extends State<_ReasonSheet> {
   Future<void> _submit() async {
     final reason = _ctrl.text.trim();
     if (reason.length < 10) {
-      AppSnackbar.info('ເຫດຜົນຕ້ອງມີຢ່າງໜ້ອຍ 10 ຕົວອັກສອນ', title: 'ກະລຸນາ');
+      AppSnackbar.info(g.l10n.reasonMinLength, title: g.l10n.commonPleaseTitle);
       return;
     }
     setState(() => _loading = true);
@@ -895,14 +898,14 @@ class _ReasonSheetState extends State<_ReasonSheet> {
             AppTextField(
               controller: _ctrl,
               focusNode: _focus,
-              hint: 'ກະລຸນາລະບຸເຫດຜົນ (ຢ່າງໜ້ອຍ 10 ຕົວອັກສອນ)',
+              hint: g.l10n.reasonHint,
               accent: AppColors.primary,
               maxLines: 4,
               action: TextInputAction.done,
             ),
             SizedBox(height: 16.h),
             AppPrimaryButton(
-              label: 'ຢືນຢັນ',
+              label: g.l10n.commonConfirm,
               loading: _loading,
               onTap: _submit,
             ),

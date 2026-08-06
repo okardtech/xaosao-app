@@ -4,7 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:xaosao/constants/app_color.dart';
-import 'package:xaosao/pages/register/components/register_app_bar.dart';
+import 'package:xaosao/l10n/app_localizations.dart';
 import 'package:xaosao/pages/register/getx/register_logic.dart';
 import 'package:xaosao/pages/register/getx/register_state.dart';
 import '../../login/getx/login_state.dart';
@@ -112,6 +112,7 @@ class _OtpPageState extends State<OtpPage> {
   // ══════════════════════════════════════════════════════════
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return PopScope(
       canPop: widget.model.role == RegisterRole.customer,
       onPopInvokedWithResult: (didPop, _) {
@@ -143,7 +144,7 @@ class _OtpPageState extends State<OtpPage> {
                     children: [
                       // Subtitle
                       Text(
-                        'ກະລຸນາກວດເບິ່ງ SMS ຂອງທ່ານ\nລະຫັດໃຊ້ໄດ້ 5 ນາທີ ເທົ່ານັ້ນ',
+                        l10n.registerOtpSmsInfo,
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           fontSize: 14.sp,
@@ -163,7 +164,7 @@ class _OtpPageState extends State<OtpPage> {
                         mainAxisSize: MainAxisSize.max,
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         errorText: _hasError
-                            ? 'ລະຫັດ OTP ບໍ່ຖືກຕ້ອງ — ລອງໃໝ່'
+                            ? l10n.registerOtpInvalid
                             : null,
                         theme: MaterialPinTheme(
                           shape: MaterialPinShape.outlined,
@@ -207,7 +208,7 @@ class _OtpPageState extends State<OtpPage> {
                         child: Padding(
                           padding: EdgeInsets.only(bottom: 8.h),
                           child: Text(
-                            'ລະຫັດ OTP ບໍ່ຖືກຕ້ອງ ກະລຸນາລອງໃໝ່',
+                            l10n.registerOtpInvalidRetry,
                             style: TextStyle(
                               fontSize: 14.sp,
                               color: Colors.red.shade400,
@@ -241,7 +242,7 @@ class _OtpPageState extends State<OtpPage> {
                           GestureDetector(
                             onTap: _goBack,
                             child: Text(
-                              'ປ່ຽນເບີໂທລະສັບ',
+                              l10n.registerOtpChangePhone,
                               style: TextStyle(
                                 fontSize: 12.sp,
                                 fontWeight: FontWeight.w700,
@@ -345,7 +346,7 @@ class _OtpHero extends StatelessWidget {
                   ),
                   SizedBox(height: 12.h),
                   Text(
-                    'ຢືນຢັນເບີໂທ',
+                    AppLocalizations.of(context)!.registerOtpConfirmPhone,
                     style: TextStyle(
                       fontSize: 18.sp,
                       fontWeight: FontWeight.w900,
@@ -355,7 +356,7 @@ class _OtpHero extends StatelessWidget {
                   ),
                   SizedBox(height: 6.h),
                   Text(
-                    'ໃສ່ລະຫັດ 6 ໂຕທີ່ສົ່ງໄປຫາ',
+                    AppLocalizations.of(context)!.registerOtpEnter6Digits,
                     style: TextStyle(
                       fontSize: 14.sp,
                       color: Colors.white.withOpacity(0.70),
@@ -413,6 +414,7 @@ class _CountdownRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Column(
       children: [
         if (!canResend)
@@ -420,7 +422,7 @@ class _CountdownRow extends StatelessWidget {
             TextSpan(
               style: TextStyle(fontSize: 14.sp, color: AppColors.textHint),
               children: [
-                const TextSpan(text: 'ລະຫັດໝົດອາຍຸໃນ '),
+                TextSpan(text: l10n.registerOtpExpiresIn),
                 TextSpan(
                   text: timerLabel,
                   style: TextStyle(
@@ -434,7 +436,7 @@ class _CountdownRow extends StatelessWidget {
           )
         else
           Text(
-            'ລະຫັດໝົດອາຍຸແລ້ວ',
+            l10n.registerOtpExpired,
             style: TextStyle(fontSize: 14.sp, color: Colors.red.shade400),
           ),
         SizedBox(height: 6.h),
@@ -444,9 +446,9 @@ class _CountdownRow extends StatelessWidget {
             TextSpan(
               style: TextStyle(fontSize: 14.sp, color: AppColors.textHint),
               children: [
-                TextSpan(text: 'ຍັງບໍ່ໄດ້ຮັບລະຫັດ? '),
+                TextSpan(text: l10n.registerOtpNotReceived),
                 TextSpan(
-                  text: 'ສົ່ງໃໝ່',
+                  text: l10n.registerOtpResend,
                   style: TextStyle(
                     fontSize: 14.sp,
                     fontWeight: FontWeight.w700,
@@ -518,7 +520,7 @@ class _VerifyButton extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(
-                      'ຢືນຢັນ OTP',
+                      AppLocalizations.of(context)!.registerOtpVerify,
                       style: TextStyle(
                         fontSize: 14.sp,
                         fontWeight: FontWeight.w700,

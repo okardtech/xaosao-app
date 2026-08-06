@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:xaosao/constants/app_color.dart';
+import 'package:xaosao/l10n/app_localizations.dart';
 import 'package:xaosao/models/profile_model.dart';
 import 'package:xaosao/pages/profile/components/profile_constant.dart';
 import 'package:xaosao/utils/service_helper.dart';
@@ -17,6 +18,7 @@ class ServicesSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -43,8 +45,8 @@ class ServicesSection extends StatelessWidget {
               iconBg: AppColors.primary.withValues(alpha: 0.08),
               iconColor: AppColors.primary,
               icon: Icons.tune_rounded,
-              label: 'ແກ້ໄຂ / ເພີ່ມ ບໍລິການ',
-              sub: 'ຕັ້ງລາຄາ ແລະ ຄຳອະທິບາຍ',
+              label: l10n.servicesEditAddLabel,
+              sub: l10n.servicesEditAddSub,
               onTap: onEdit,
             ),
           ],
@@ -151,7 +153,7 @@ class _EmptyChip extends StatelessWidget {
           ),
           SizedBox(width: 5.w),
           Text(
-            'ຍັງບໍ່ມີບໍລິການ',
+            AppLocalizations.of(context)!.profileNoServices,
             style: TextStyle(
               fontSize: 12.sp,
               fontWeight: FontWeight.w600,

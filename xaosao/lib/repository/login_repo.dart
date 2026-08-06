@@ -77,7 +77,7 @@ class LoginRepo extends BaseRepository {
         data: {'latitude': latitude, 'longitude': longitude},
       ),
       fromJson: (json){
-        print('Location update response: $json'); // Debug log
+        // print('Location update response: $json'); // Debug log
         return true;
       },
     );

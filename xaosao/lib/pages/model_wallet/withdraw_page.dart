@@ -3,7 +3,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:xaosao/constants/app_color.dart';
+import 'package:xaosao/l10n/app_localizations.dart';
 import 'package:xaosao/utils/currency_formatter.dart';
+import 'package:xaosao/utils/l10n.dart' as g;
 import 'package:xaosao/models/bank_account_model.dart';
 import 'package:xaosao/pages/model_wallet/components/model_wallet_shimmer.dart';
 import 'package:xaosao/pages/model_wallet/getx/model_wallet_logic.dart';
@@ -93,9 +95,10 @@ class _WithdrawPageState extends State<WithdrawPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       backgroundColor: AppColors.bg,
-      appBar: GradientAppBar(title: 'ຖອນເງິນ', subtitle: 'ຈ່າຍໃຫ້ບັນຊີທະນາຄານ'),
+      appBar: GradientAppBar(title: l10n.withdrawTitle, subtitle: l10n.withdrawSubtitle),
       body: Obx(() {
         final st = _logic.state;
         final wallet = st.wallet;
@@ -126,7 +129,7 @@ class _WithdrawPageState extends State<WithdrawPage> {
 
                     // ── Section: Bank accounts ───────────────────
                     Text(
-                      'ເລືອກບັນຊີທະນາຄານ',
+                      l10n.withdrawSelectBank,
                       style: TextStyle(
                         fontSize: 14.sp,
                         fontWeight: FontWeight.w700,
@@ -166,7 +169,7 @@ class _WithdrawPageState extends State<WithdrawPage> {
 
                     // ── Section: Amount input ────────────────────
                     Text(
-                      'ຈໍານວນເງິນ',
+                      l10n.withdrawAmountLabel,
                       style: TextStyle(
                         fontSize: 14.sp,
                         fontWeight: FontWeight.w700,
@@ -177,9 +180,9 @@ class _WithdrawPageState extends State<WithdrawPage> {
                     AppTextField(
                       controller: _amountCtrl,
                       focusNode: _amountFocus,
-                      hint: 'ປ້ອນຈໍານວນ',
+                      hint: l10n.withdrawAmountHint,
                       prefixIcon: Icons.attach_money_rounded,
-                      suffixLabel: 'ກີບ',
+                      suffixLabel: l10n.commonCurrencyKip,
                       keyboardType: TextInputType.number,
                       formatters: [ThousandsSeparatorFormatter()],
                       accent: AppColors.primary,
@@ -191,14 +194,14 @@ class _WithdrawPageState extends State<WithdrawPage> {
                       children: [
                         _HintChip(
                           icon: Icons.arrow_downward_rounded,
-                          label: 'ຕ່ຳສຸດ',
+                          label: l10n.withdrawHintMin,
                           value: _fmtKip(minWithdraw),
                           color: AppColors.online,
                         ),
                         SizedBox(width: 8.w),
                         _HintChip(
                           icon: Icons.arrow_upward_rounded,
-                          label: 'ສູງສຸດ',
+                          label: l10n.withdrawHintMax,
                           value: _fmtKip(maxWithdraw),
                           color: AppColors.primary,
                         ),
@@ -209,12 +212,12 @@ class _WithdrawPageState extends State<WithdrawPage> {
                     if (_amount > 0 && _amount < minWithdraw) ...[
                       SizedBox(height: 8.h),
                       _ValidationMsg(
-                        'ຈໍານວນຕ່ຳກວ່າຂີດຈໍາກັດ (${_fmtKip(minWithdraw)})',
+                        l10n.withdrawBelowMin(_fmtKip(minWithdraw)),
                       ),
                     ] else if (_amount > maxWithdraw && maxWithdraw > 0) ...[
                       SizedBox(height: 8.h),
                       _ValidationMsg(
-                        'ເກີນຍອດທີ່ສາມາດຖອນໄດ້ (${_fmtKip(maxWithdraw)})',
+                        l10n.withdrawAboveMax(_fmtKip(maxWithdraw)),
                       ),
                     ],
 
@@ -228,7 +231,7 @@ class _WithdrawPageState extends State<WithdrawPage> {
             Padding(
               padding: EdgeInsets.fromLTRB(16.w, 8.h, 16.w, 24.h),
               child: AppPrimaryButton(
-                label: 'ຢືນຢັນການຖອນ',
+                label: l10n.withdrawConfirmBtn,
                 enabled: _canSubmit(minWithdraw, maxWithdraw),
                 onTap: _submit,
                 trailingIcon: Icons.arrow_forward_ios_rounded,
@@ -241,7 +244,7 @@ class _WithdrawPageState extends State<WithdrawPage> {
   }
 }
 
-String _fmtKip(num? n) => '${NumberFormat.decimalPattern().format(n ?? 0)} ກີບ';
+String _fmtKip(num? n) => '${NumberFormat.decimalPattern().format(n ?? 0)} ${g.l10n.commonCurrencyKip}';
 
 // ── Balance info card ─────────────────────────────────────────────
 class _BalanceInfoCard extends StatelessWidget {
@@ -251,6 +254,7 @@ class _BalanceInfoCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final canWithdraw = wallet.canWithdraw == true;
     return Container(
       width: double.infinity,
@@ -281,7 +285,7 @@ class _BalanceInfoCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'ຍອດທີ່ຖອນໄດ້',
+                  l10n.withdrawableBalance,
                   style: TextStyle(fontSize: 11.sp, color: AppColors.textHint),
                 ),
                 SizedBox(height: 2.h),
@@ -327,7 +331,7 @@ class _BalanceInfoCard extends StatelessWidget {
                     ),
                     SizedBox(width: 4.w),
                     Text(
-                      'ຖອນທັງໝົດ',
+                      l10n.withdrawAll,
                       style: TextStyle(
                         fontSize: 11.sp,
                         fontWeight: FontWeight.w800,
@@ -346,7 +350,7 @@ class _BalanceInfoCard extends StatelessWidget {
                 borderRadius: BorderRadius.circular(20.r),
               ),
               child: Text(
-                'ຖອນບໍ່ໄດ້',
+                l10n.withdrawUnavailable,
                 style: TextStyle(
                   fontSize: 10.sp,
                   fontWeight: FontWeight.w700,
@@ -447,7 +451,7 @@ class _BankCard extends StatelessWidget {
                 borderRadius: BorderRadius.circular(10.r),
               ),
               child: Text(
-                'ບັນຊີຫຼັກ',
+                AppLocalizations.of(context)!.qrDefaultLabel,
                 style: TextStyle(
                   fontSize: 9.sp,
                   fontWeight: FontWeight.w700,
@@ -485,6 +489,7 @@ class _EmptyBankState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Container(
       width: double.infinity,
       padding: EdgeInsets.symmetric(vertical: 28.h, horizontal: 20.w),
@@ -520,7 +525,7 @@ class _EmptyBankState extends StatelessWidget {
           ),
           SizedBox(height: 12.h),
           Text(
-            'ຍັງບໍ່ມີບັນຊີທະນາຄານ',
+            l10n.withdrawNoBankTitle,
             style: TextStyle(
               fontSize: 14.sp,
               fontWeight: FontWeight.w700,
@@ -529,7 +534,7 @@ class _EmptyBankState extends StatelessWidget {
           ),
           SizedBox(height: 4.h),
           Text(
-            'ກະລຸນາເພີ່ມບັນຊີກ່ອນທີ່ຈະຖອນເງິນ',
+            l10n.withdrawNoBankSubtitle,
             style: TextStyle(fontSize: 12.sp, color: AppColors.textHint),
             textAlign: TextAlign.center,
           ),
@@ -559,7 +564,7 @@ class _EmptyBankState extends StatelessWidget {
                   Icon(Icons.add_rounded, size: 15.r, color: Colors.white),
                   SizedBox(width: 6.w),
                   Text(
-                    'ເພີ່ມບັນຊີທະນາຄານ',
+                    l10n.withdrawAddBank,
                     style: TextStyle(
                       fontSize: 13.sp,
                       fontWeight: FontWeight.w700,

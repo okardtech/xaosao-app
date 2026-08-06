@@ -89,7 +89,7 @@ class BookingRepo extends BaseRepository {
     String url =
         '${isClient ? ApiConstants.booking : ApiConstants.modelBooking}?page=$page&limit=$limit';
     if (status != null) url += '&status=$status';
-    print('==>${url}');
+    // print('==>${url}');
     return safeCall(
       () => api.get(url),
       fromJson: (json) => (json as List)

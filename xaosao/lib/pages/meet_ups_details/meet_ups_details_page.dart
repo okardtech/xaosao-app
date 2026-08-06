@@ -3,10 +3,12 @@ import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:xaosao/constants/app_color.dart';
+import 'package:xaosao/l10n/app_localizations.dart';
 import 'package:xaosao/models/conversation_model.dart';
 import 'package:xaosao/models/my_booking_model.dart';
 import 'package:xaosao/pages/chat/getx/chat_logic.dart';
 import 'package:xaosao/utils/app_snackbar.dart';
+import 'package:xaosao/utils/l10n.dart' as g;
 import 'package:xaosao/widgets/app_button.dart';
 import 'package:xaosao/widgets/app_text_field.dart';
 import 'package:xaosao/widgets/confirm_sheet.dart';
@@ -110,12 +112,13 @@ class _MeetUpsDetailsPageState extends State<MeetUpsDetailsPage> {
 
   // ── Map API model → UI model ──────────────────────────────────
   BookingDetailModel _toUiModel(MyBookingModel m) {
+    final l10n = AppLocalizations.of(context)!;
     final nameParts = widget.isCustomer
         ? [m.model?.firstName, m.model?.lastName]
         : [m.customer?.firstName, m.customer?.lastName];
     final joined =
         nameParts.where((s) => s != null && s.isNotEmpty).join(' ');
-    final companionName = joined.isEmpty ? 'ບໍ່ມີຊື່' : joined;
+    final companionName = joined.isEmpty ? l10n.bookingNoName : joined;
     final companionImageUrl =
         widget.isCustomer ? m.model?.profile : m.customer?.profile;
 
@@ -136,13 +139,15 @@ class _MeetUpsDetailsPageState extends State<MeetUpsDetailsPage> {
       countdown = start.difference(DateTime.now());
     }
 
-    final svcName = m.modelService?.service?.name ?? 'ບໍລິການ';
+    final svcName = m.modelService?.service?.name ?? l10n.meetupsServiceFallback;
     final price = m.price ?? 0;
     final String durationLabel;
     if (m.dayAmount != null) {
-      durationLabel = '$svcName × ${m.dayAmount} ວັນ';
+      durationLabel = l10n.meetupsServiceMultiplier(
+          svcName, m.dayAmount!, l10n.meetupsUnitDays);
     } else if (m.hours != null) {
-      durationLabel = '$svcName × ${m.hours} ຊົ່ວໂມງ';
+      durationLabel = l10n.meetupsServiceMultiplier(
+          svcName, m.hours!, l10n.meetupsUnitHours);
     } else {
       durationLabel = svcName;
     }
@@ -160,17 +165,18 @@ class _MeetUpsDetailsPageState extends State<MeetUpsDetailsPage> {
       locationSub: '',
       priceKip: price,
       countdown: countdown,
-      timeline: _buildTimelineEvents(m),
+      timeline: _buildTimelineEvents(m, l10n),
       priceBreakdown: {durationLabel: price},
     );
   }
 
-  List<BookingTimelineEvent> _buildTimelineEvents(MyBookingModel m) {
+  List<BookingTimelineEvent> _buildTimelineEvents(
+      MyBookingModel m, AppLocalizations l10n) {
     final events = <BookingTimelineEvent>[];
     final created = m.createdAt ?? DateTime.now();
 
     events.add(BookingTimelineEvent(
-      title: 'ສ້າງການຈອງ',
+      title: l10n.meetupsStepCreateBooking,
       timestamp: created,
       dotColor: const Color(0xFF22C55E),
     ));
@@ -178,20 +184,20 @@ class _MeetUpsDetailsPageState extends State<MeetUpsDetailsPage> {
     switch (m.status) {
       case 'pending':
         events.add(BookingTimelineEvent(
-          title: 'ລໍຖ້າ Companion ຢືນຢັນ',
+          title: l10n.meetupsStepWaitCompanionConfirm,
           timestamp: created.add(const Duration(seconds: 1)),
           dotColor: const Color(0xFF3B82F6),
           isCurrent: true,
         ));
       case 'confirmed':
         events.add(BookingTimelineEvent(
-          title: 'Companion ຢືນຢັນ',
+          title: l10n.meetupsStepCompanionConfirmed,
           timestamp: m.updatedAt ?? created,
           dotColor: const Color(0xFF22C55E),
         ));
         if (m.startDate != null) {
           events.add(BookingTimelineEvent(
-            title: 'ລໍຖ້ານັດພົບ',
+            title: l10n.meetupsStepWaitingMeetup,
             timestamp: m.startDate!,
             dotColor: const Color(0xFF3B82F6),
             isCurrent: true,
@@ -199,13 +205,13 @@ class _MeetUpsDetailsPageState extends State<MeetUpsDetailsPage> {
         }
       case 'in_progress':
         events.add(BookingTimelineEvent(
-          title: 'Companion ຢືນຢັນ',
+          title: l10n.meetupsStepCompanionConfirmed,
           timestamp: m.updatedAt ?? created,
           dotColor: const Color(0xFF22C55E),
         ));
         if (m.startDate != null) {
           events.add(BookingTimelineEvent(
-            title: 'ກຳລັງດຳເນີນ',
+            title: l10n.meetupsStepInProgress,
             timestamp: m.startDate!,
             dotColor: const Color(0xFFF59E0B),
             isCurrent: true,
@@ -213,51 +219,51 @@ class _MeetUpsDetailsPageState extends State<MeetUpsDetailsPage> {
         }
       case 'awaiting_confirmation':
         events.add(BookingTimelineEvent(
-          title: 'Companion ຢືນຢັນ',
+          title: l10n.meetupsStepCompanionConfirmed,
           timestamp: m.updatedAt ?? created,
           dotColor: const Color(0xFF22C55E),
         ));
         events.add(BookingTimelineEvent(
-          title: 'ລໍຢືນຢັນ',
+          title: l10n.meetupsStepWaitingConfirmation,
           timestamp: m.endDate ?? m.updatedAt ?? created,
           dotColor: const Color(0xFFF59E0B),
           isCurrent: true,
         ));
       case 'completed':
         events.add(BookingTimelineEvent(
-          title: 'Companion ຢືນຢັນ',
+          title: l10n.meetupsStepCompanionConfirmed,
           timestamp: m.updatedAt ?? created,
           dotColor: const Color(0xFF22C55E),
         ));
         if (m.startDate != null) {
           events.add(BookingTimelineEvent(
-            title: 'ດຳເນີນນັດພົບ',
+            title: l10n.meetupsStepMeetingUp,
             timestamp: m.startDate!,
             dotColor: const Color(0xFF22C55E),
           ));
         }
         events.add(BookingTimelineEvent(
-          title: 'ສຳເລັດ',
+          title: l10n.meetupsStepCompleted,
           timestamp: m.endDate ?? m.updatedAt ?? created,
           dotColor: const Color(0xFF22C55E),
         ));
       case 'cancelled':
         events.add(BookingTimelineEvent(
-          title: 'ຍົກເລີກ',
+          title: l10n.meetupsStepCancelled,
           timestamp: m.updatedAt ?? created,
           dotColor: const Color(0xFF9B9BAD),
           isCurrent: true,
         ));
       case 'rejected':
         events.add(BookingTimelineEvent(
-          title: 'ຖືກປະຕິເສດ',
+          title: l10n.meetupsStepRejected,
           timestamp: m.updatedAt ?? created,
           dotColor: const Color(0xFFF59E0B),
           isCurrent: true,
         ));
       case 'disputed':
         events.add(BookingTimelineEvent(
-          title: 'ຂໍ້ຂັດແຍ້ງ',
+          title: l10n.meetupsStepDisputed,
           timestamp: m.updatedAt ?? created,
           dotColor: const Color(0xFFF59E0B),
           isCurrent: true,
@@ -270,6 +276,7 @@ class _MeetUpsDetailsPageState extends State<MeetUpsDetailsPage> {
   // ══════════════════════════════════════════════════════════════
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       backgroundColor: const Color(0xFFF8F8FC),
       body: Obx(() {
@@ -281,7 +288,7 @@ class _MeetUpsDetailsPageState extends State<MeetUpsDetailsPage> {
         }
 
         if (s.status == MeetUpsDetailsStatus.failure) {
-          return _buildError(s.error ?? 'ບໍ່ສາມາດໂຫຼດຂໍ້ມູນ');
+          return _buildError(s.error ?? l10n.meetupsCantLoadData);
         }
 
         final raw = s.booking!;
@@ -345,6 +352,7 @@ class _MeetUpsDetailsPageState extends State<MeetUpsDetailsPage> {
   }
 
   Widget _buildError(String error) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       backgroundColor: const Color(0xFFF8F8FC),
       appBar: AppBar(
@@ -371,7 +379,7 @@ class _MeetUpsDetailsPageState extends State<MeetUpsDetailsPage> {
             TextButton(
               onPressed: _logic.fetch,
               child: Text(
-                'ລອງໃໝ່',
+                l10n.commonRetry,
                 style: TextStyle(
                     color: AppColors.primary, fontWeight: FontWeight.w700),
               ),
@@ -527,8 +535,9 @@ class _MeetUpsDetailsPageState extends State<MeetUpsDetailsPage> {
 
   // ── Detail card ─────────────────────────────────────────────
   Widget _buildDetailCard(BookingDetailModel b) {
+    final l10n = AppLocalizations.of(context)!;
     return _Card(
-      title: 'ລາຍລະອຽດການຈອງ',
+      title: l10n.bookingDetailTitle,
       children: [
         _InfoRow(
           iconBg: b.status == MeetUpsStatus.completed
@@ -538,21 +547,21 @@ class _MeetUpsDetailsPageState extends State<MeetUpsDetailsPage> {
           iconColor: b.status == MeetUpsStatus.completed
               ? const Color(0xFF22C55E)
               : const Color(0xFF3B82F6),
-          label: 'ວັນທີ ແລະ ເວລາ',
+          label: l10n.meetupsSectionDateTime,
           value: b.formattedDateRange,
         ),
         _InfoRow(
           iconBg: const Color(0xFFF8F8FC),
           icon: Icons.location_on_outlined,
           iconColor: const Color(0xFF9B9BAD),
-          label: 'ສະຖານທີ່ນັດພົບ',
+          label: l10n.meetupsSectionLocation,
           value: b.locationName,
           trailing:
               b.status == MeetUpsStatus.upcoming ||
                       b.status == MeetUpsStatus.completed
                   ? GestureDetector(
                       onTap: () {},
-                      child: Text('ແຜນທີ່ ›',
+                      child: Text(l10n.meetupsMapLink,
                           style: TextStyle(
                               fontSize: 11.sp,
                               fontWeight: FontWeight.w700,
@@ -564,7 +573,7 @@ class _MeetUpsDetailsPageState extends State<MeetUpsDetailsPage> {
           iconBg: const Color(0xFFF8F8FC),
           icon: Icons.favorite_border_rounded,
           iconColor: const Color(0xFF9B9BAD),
-          label: 'ບໍລິການ',
+          label: l10n.meetupsSectionServices,
           value: b.services.join(' · '),
         ),
       ],
@@ -573,30 +582,32 @@ class _MeetUpsDetailsPageState extends State<MeetUpsDetailsPage> {
 
   // ── Price card ──────────────────────────────────────────────
   Widget _buildPriceCard(BookingDetailModel b) {
+    final l10n = AppLocalizations.of(context)!;
     return _Card(
-      title: 'ສະຫຼຸບລາຄາ',
+      title: l10n.meetupsPriceSummary,
       children: [
         ...b.priceBreakdown.entries.map((e) => _PriceRow(
               label: e.key,
               amount: e.value,
               isTotal: false,
             )),
-        _PriceRow(label: 'ລວມທັງໝົດ', amount: b.priceKip, isTotal: true),
+        _PriceRow(label: l10n.meetupsPriceTotal, amount: b.priceKip, isTotal: true),
       ],
     );
   }
 
   // ── Rating card (completed) ──────────────────────────────────
   Widget _buildRatingCard(BookingDetailModel b) {
+    final l10n = AppLocalizations.of(context)!;
     return _Card(
-      title: 'ຄຳຕິຊົມຂອງທ່ານ',
+      title: l10n.meetupsYourReview,
       children: [
         Padding(
           padding: EdgeInsets.fromLTRB(13.w, 10.h, 13.w, 12.h),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('ທ່ານໃຫ້ຄະແນນ ${b.companionName.split(' ').first}',
+              Text(l10n.meetupsYouRated(b.companionName.split(' ').first),
                   style: TextStyle(
                       fontSize: 10.sp,
                       color: const Color(0xFF9B9BAD))),
@@ -642,8 +653,9 @@ class _MeetUpsDetailsPageState extends State<MeetUpsDetailsPage> {
 
   // ── Timeline ─────────────────────────────────────────────────
   Widget _buildTimeline(BookingDetailModel b) {
+    final l10n = AppLocalizations.of(context)!;
     return _Card(
-      title: 'ຄວາມຄືບໜ້າ',
+      title: l10n.meetupsProgress,
       children: [
         Padding(
           padding: EdgeInsets.fromLTRB(13.w, 10.h, 13.w, 12.h),
@@ -662,8 +674,9 @@ class _MeetUpsDetailsPageState extends State<MeetUpsDetailsPage> {
 
   // ── Policy note (upcoming) ───────────────────────────────────
   Widget _buildPolicyNote(BookingDetailModel b) {
+    final l10n = AppLocalizations.of(context)!;
     return _Card(
-      title: 'ນະໂຍບາຍຍົກເລີກ',
+      title: l10n.meetupsCancellationPolicy,
       children: [
         Padding(
           padding: EdgeInsets.fromLTRB(13.w, 9.h, 13.w, 12.h),
@@ -688,21 +701,21 @@ class _MeetUpsDetailsPageState extends State<MeetUpsDetailsPage> {
                         color: const Color(0xFF6B6B80),
                         height: 1.55),
                     children: [
-                      const TextSpan(text: 'ຍົກເລີກກ່ອນ '),
+                      TextSpan(text: l10n.meetupsCancelBefore),
                       TextSpan(
                         text: b.cancelDeadline,
                         style: const TextStyle(
                             fontWeight: FontWeight.w800,
                             color: Color(0xFF1A1A2E)),
                       ),
-                      const TextSpan(text: ' ຈະໄດ້ຄືນ '),
+                      TextSpan(text: l10n.meetupsWillRefund),
                       const TextSpan(
                         text: '100%',
                         style: TextStyle(
                             fontWeight: FontWeight.w900,
                             color: Color(0xFF15803D)),
                       ),
-                      const TextSpan(text: ' ພາຍໃນ 24 ຊ.ມ.'),
+                      TextSpan(text: l10n.meetupsWithin24h),
                     ],
                   ),
                 ),
@@ -716,8 +729,9 @@ class _MeetUpsDetailsPageState extends State<MeetUpsDetailsPage> {
 
   // ── Reject note ──────────────────────────────────────────────
   Widget _buildRejectNote(BookingDetailModel b) {
+    final l10n = AppLocalizations.of(context)!;
     return _Card(
-      title: 'ເຫດຜົນການປະຕິເສດ',
+      title: l10n.rejectReasonTitle,
       children: [
         Padding(
           padding: EdgeInsets.fromLTRB(13.w, 9.h, 13.w, 12.h),
@@ -765,6 +779,7 @@ class _MeetUpsDetailsPageState extends State<MeetUpsDetailsPage> {
   }
 
   List<Widget> _buildActions(MyBookingModel m, BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final now = DateTime.now();
     final start = m.startDate;
     final end = m.endDate;
@@ -781,7 +796,7 @@ class _MeetUpsDetailsPageState extends State<MeetUpsDetailsPage> {
     }
 
     final msgBtn = _BarBtn(
-      label: 'ຂໍ້ຄວາມ',
+      label: l10n.meetupsActionMessage,
       icon: Icons.chat_bubble_outline_rounded,
       style: _BStyle.ghost,
       onTap: () => _openChat(m),
@@ -793,7 +808,7 @@ class _MeetUpsDetailsPageState extends State<MeetUpsDetailsPage> {
       if (!bookingEnded) {
         return [
           _BarBtn(
-            label: 'ໂທ',
+            label: l10n.meetupsActionCall,
             icon: Icons.phone_outlined,
             style: _BStyle.dark,
             onTap: () => _openChat(m),
@@ -808,7 +823,7 @@ class _MeetUpsDetailsPageState extends State<MeetUpsDetailsPage> {
       if (status == 'pending') {
         return [
           _BarBtn(
-            label: 'ຍົກເລີກ',
+            label: l10n.meetupsActionCancel,
             icon: Icons.close_rounded,
             style: _BStyle.ghost,
             onTap: () => _logic.cancel(),
@@ -828,11 +843,11 @@ class _MeetUpsDetailsPageState extends State<MeetUpsDetailsPage> {
         if (inDisputeWindow) {
           return [
             _BarBtn(
-              label: 'ເງິນຄືນ',
+              label: l10n.bookingActionRefund,
               icon: Icons.reply_rounded,
               style: _BStyle.amber,
               onTap: () => showReason(
-                'ເຫດຜົນການຮ້ອງຂໍເງິນຄືນ',
+                l10n.refundReasonTitle,
                 (r) => _logic.dispute(r),
               ),
             ),
@@ -844,7 +859,7 @@ class _MeetUpsDetailsPageState extends State<MeetUpsDetailsPage> {
         if (canCancel) {
           return [
             _BarBtn(
-              label: 'ຍົກເລີກ',
+              label: l10n.meetupsActionCancel,
               icon: Icons.close_rounded,
               style: _BStyle.ghost,
               onTap: () => _logic.cancel(),
@@ -856,7 +871,7 @@ class _MeetUpsDetailsPageState extends State<MeetUpsDetailsPage> {
 
         return [
           _BarBtn(
-            label: 'ປ່ອຍເງີນ',
+            label: l10n.bookingActionReleasePayment,
             icon: Icons.send_rounded,
             style: _BStyle.green,
             onTap: () => _logic.releasePayment(),
@@ -870,17 +885,17 @@ class _MeetUpsDetailsPageState extends State<MeetUpsDetailsPage> {
       if (status == 'pending') {
         return [
           _BarBtn(
-            label: 'ປະຕິເສດ',
+            label: l10n.bookingActionReject,
             icon: Icons.close_rounded,
             style: _BStyle.red,
             onTap: () => showReason(
-              'ເຫດຜົນການປະຕິເສດ',
+              l10n.rejectReasonTitle,
               (r) => _logic.reject(r),
             ),
           ),
           SizedBox(width: 8.w),
           _BarBtn(
-            label: 'ຢືນຢັນ',
+            label: l10n.meetupsActionConfirmShort,
             icon: Icons.check_rounded,
             style: _BStyle.green,
             onTap: () => _logic.confirm(),
@@ -893,7 +908,7 @@ class _MeetUpsDetailsPageState extends State<MeetUpsDetailsPage> {
         if (bookingEnded) {
           return [
             _BarBtn(
-              label: 'ຮັບເງີນ',
+              label: l10n.bookingActionReceiveMoney,
               icon: Icons.payments_rounded,
               style: _BStyle.pink,
               onTap: () => _logic.receiveMoney(),
@@ -910,15 +925,15 @@ class _MeetUpsDetailsPageState extends State<MeetUpsDetailsPage> {
         status == 'disputed') {
       return [
         _BarBtn(
-          label: 'ລຶບ',
+          label: l10n.commonDelete,
           icon: Icons.delete_outline_rounded,
           style: _BStyle.ghost,
           onTap: () async {
             final confirmed = await ConfirmSheet.show(
               context,
-              title: 'ລຶບລາຍການ',
-              message: 'ທ່ານຕ້ອງການລຶບລາຍການນີ້ແທ້ບໍ່?',
-              confirmLabel: 'ລຶບ',
+              title: l10n.deleteItemTitle,
+              message: l10n.deleteItemMessage,
+              confirmLabel: l10n.commonDelete,
               icon: AppIcons.delete,
               isDanger: true,
             );
@@ -936,6 +951,7 @@ class _MeetUpsDetailsPageState extends State<MeetUpsDetailsPage> {
 
   // ── More bottom sheet ────────────────────────────────────────
   void _showMoreSheet() {
+    final l10n = AppLocalizations.of(context)!;
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.white,
@@ -955,11 +971,11 @@ class _MeetUpsDetailsPageState extends State<MeetUpsDetailsPage> {
             SizedBox(height: 20.h),
             _SheetRow(
                 icon: Icons.share_outlined,
-                label: 'ແຊຣ໌',
+                label: l10n.meetupsActionShare,
                 onTap: () => Navigator.pop(context)),
             _SheetRow(
                 icon: Icons.flag_outlined,
-                label: 'ລາຍງານ',
+                label: l10n.meetupsActionReport,
                 isRed: true,
                 onTap: () => Navigator.pop(context)),
           ]),
@@ -996,8 +1012,8 @@ class _ReasonSheetState extends State<_ReasonSheet> {
   Future<void> _submit() async {
     final reason = _ctrl.text.trim();
     if (reason.length < 10) {
-      AppSnackbar.info('ເຫດຜົນຕ້ອງມີຢ່າງໜ້ອຍ 10 ຕົວອັກສອນ',
-          title: 'ກະລຸນາ');
+      AppSnackbar.info(g.l10n.reasonMinLength,
+          title: g.l10n.meetupsSnackPleaseTitle);
       return;
     }
     setState(() => _loading = true);
@@ -1012,6 +1028,7 @@ class _ReasonSheetState extends State<_ReasonSheet> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Padding(
       padding:
           EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
@@ -1044,14 +1061,14 @@ class _ReasonSheetState extends State<_ReasonSheet> {
             AppTextField(
               controller: _ctrl,
               focusNode: _focus,
-              hint: 'ກະລຸນາລະບຸເຫດຜົນ (ຢ່າງໜ້ອຍ 10 ຕົວອັກສອນ)',
+              hint: l10n.reasonHint,
               accent: AppColors.primary,
               maxLines: 4,
               action: TextInputAction.done,
             ),
             SizedBox(height: 16.h),
             AppPrimaryButton(
-              label: 'ຢືນຢັນ',
+              label: l10n.meetupsActionConfirmShort,
               loading: _loading,
               onTap: _submit,
             ),
@@ -1192,7 +1209,7 @@ class _PriceRow extends StatelessWidget {
       if (i > 0 && (s.length - i) % 3 == 0) buf.write(',');
       buf.write(s[i]);
     }
-    return '${buf.toString()} ກີບ';
+    return '${buf.toString()} ${g.l10n.commonCurrencyKip}';
   }
 
   @override

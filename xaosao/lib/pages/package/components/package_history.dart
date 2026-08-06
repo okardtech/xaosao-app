@@ -4,24 +4,26 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:xaosao/constants/app_color.dart';
+import 'package:xaosao/l10n/app_localizations.dart';
 import 'package:xaosao/models/package_history_model.dart';
 import 'package:xaosao/pages/package/getx/package_logic.dart';
+import 'package:xaosao/utils/l10n.dart' as g;
 import 'package:xaosao/widgets/gradient_app_bar.dart';
 
-const _kLaoMonths = [
+List<String> get _kLaoMonths => [
   '',
-  'ມ.ກ',
-  'ກ.ພ',
-  'ມ.ນ',
-  'ມ.ສ',
-  'ພ.ພ',
-  'ມ.ຖ',
-  'ກ.ລ',
-  'ສ.ຫ',
-  'ກ.ຍ',
-  'ຕ.ລ',
-  'ພ.ຈ',
-  'ທ.ວ',
+  g.l10n.monthShortJan,
+  g.l10n.monthShortFeb,
+  g.l10n.monthShortMar,
+  g.l10n.monthShortApr,
+  g.l10n.monthShortMay,
+  g.l10n.monthShortJun,
+  g.l10n.monthShortJul,
+  g.l10n.monthShortAug,
+  g.l10n.monthShortSep,
+  g.l10n.monthShortOct,
+  g.l10n.monthShortNov,
+  g.l10n.monthShortDec,
 ];
 
 String _fmtDate(DateTime? d) {
@@ -29,7 +31,8 @@ String _fmtDate(DateTime? d) {
   return '${d.day} ${_kLaoMonths[d.month]} ${d.year}';
 }
 
-String _fmtKip(int? n) => '${NumberFormat.decimalPattern().format(n ?? 0)} ກີບ';
+String _fmtKip(int? n) =>
+    '${NumberFormat.decimalPattern().format(n ?? 0)} ${g.l10n.commonCurrencyKip}';
 
 // Status helpers
 Color _accentColor(String? s) => switch (s) {
@@ -72,25 +75,25 @@ Color _badgeFg(String? s) => switch (s) {
 };
 
 String _statusLabel(String? s) => switch (s) {
-  'active' => 'ກຳລັງໃຊ້',
-  'completed' || 'approved' || 'released' => 'ສຳເລັດ',
-  'pending' => 'ລໍຖ້າ',
-  'pending_release' => 'ລໍຖ້າໂອນ',
-  'canceled' || 'rejected' => 'ຍົກເລີກ',
-  'refunded' => 'ຄືນເງິນ',
-  'expired' => 'ໝົດອາຍຸ',
-  'upgraded' => 'ອັບເກຣດ',
-  'held' => 'ຄ້ຳປະກັນ',
-  'superseded' => 'ຖືກແທນທີ່',
+  'active' => g.l10n.packageStatusActive,
+  'completed' || 'approved' || 'released' => g.l10n.packageStatusCompleted,
+  'pending' => g.l10n.packageStatusPending,
+  'pending_release' => g.l10n.packageStatusPendingRelease,
+  'canceled' || 'rejected' => g.l10n.packageStatusCanceled,
+  'refunded' => g.l10n.packageStatusRefunded,
+  'expired' => g.l10n.packageStatusExpired,
+  'upgraded' => g.l10n.packageStatusUpgraded,
+  'held' => g.l10n.packageStatusHeld,
+  'superseded' => g.l10n.packageStatusSuperseded,
   _ => s ?? '—',
 };
 
-const _kChips = <(String, String?)>[
-  ('ທັງໝົດ', null),
-  ('ອັບເກຣດ', 'upgraded'),
-  ('ຖືກແທນທີ່', 'superseded'),
-  ('ກຳລັງໃຊ້', 'active'),
-  ('ຍົກເລີກ', 'canceled'),
+List<(String, String?)> _buildChips(AppLocalizations l10n) => [
+  (l10n.commonAll, null),
+  (l10n.packageStatusUpgraded, 'upgraded'),
+  (l10n.packageStatusSuperseded, 'superseded'),
+  (l10n.packageStatusActive, 'active'),
+  (l10n.packageStatusCanceled, 'canceled'),
 ];
 
 class PackageHistoryPage extends StatefulWidget {
@@ -118,34 +121,36 @@ class _PackageHistoryPageState extends State<PackageHistoryPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       backgroundColor: AppColors.bg,
       appBar: GradientAppBar(
-        title: 'ປະຫວັດ Package',
-        subtitle: 'ລາຍການຊື້ທັງໝົດ',
+        title: l10n.packageHistoryTitle,
+        subtitle: l10n.packageHistorySubtitle,
       ),
       body: Column(
         children: [
           SizedBox(height: 10.h),
-          _buildFilterChips(),
-          Expanded(child: Obx(() => _buildList())),
+          _buildFilterChips(l10n),
+          Expanded(child: Obx(() => _buildList(l10n))),
         ],
       ),
     );
   }
 
   // ── Filter chips ────────────────────────────────────────────
-  Widget _buildFilterChips() {
+  Widget _buildFilterChips(AppLocalizations l10n) {
+    final chips = _buildChips(l10n);
     return SizedBox(
       height: 36.h,
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
         physics: const BouncingScrollPhysics(),
         padding: EdgeInsets.symmetric(horizontal: 16.w),
-        itemCount: _kChips.length,
+        itemCount: chips.length,
         separatorBuilder: (_, __) => SizedBox(width: 6.w),
         itemBuilder: (_, i) {
-          final (label, status) = _kChips[i];
+          final (label, status) = chips[i];
           final isOn = _filter == status;
           return GestureDetector(
             onTap: () => setState(() => _filter = status),
@@ -177,7 +182,7 @@ class _PackageHistoryPageState extends State<PackageHistoryPage> {
   }
 
   // ── List ────────────────────────────────────────────────────
-  Widget _buildList() {
+  Widget _buildList(AppLocalizations l10n) {
     final st = _logic.state;
     if (st.loadingHistory && st.history.isEmpty) {
       return _HistoryListShimmer();
@@ -195,7 +200,7 @@ class _PackageHistoryPageState extends State<PackageHistoryPage> {
             ),
             SizedBox(height: 12.h),
             Text(
-              'ບໍ່ມີລາຍການ',
+              l10n.packageHistoryEmpty,
               style: TextStyle(
                 fontSize: 14.sp,
                 fontWeight: FontWeight.w700,
@@ -239,6 +244,7 @@ class _HistoryCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final accent = _accentColor(item.status);
     final isExpiredOrCanceled =
         item.status == 'expired' ||
@@ -325,7 +331,9 @@ class _HistoryCard extends StatelessWidget {
                                       borderRadius: BorderRadius.circular(20.r),
                                     ),
                                     child: Text(
-                                      'ຍັງເຫຼືອ ${item.durationDays} ວັນ',
+                                      l10n.packageDaysRemaining(
+                                        item.durationDays!,
+                                      ),
                                       style: TextStyle(
                                         fontSize: 12.sp,
                                         fontWeight: FontWeight.w700,
@@ -381,7 +389,9 @@ class _HistoryCard extends StatelessWidget {
                             _MetaPill(
                               icon: Icons.event_outlined,
                               iconColor: AppColors.textHint,
-                              text: 'ໝົດ ${_fmtDate(item.endDate)}',
+                              text: l10n.packageExpiresShort(
+                                _fmtDate(item.endDate),
+                              ),
                             ),
                           ],
                         ],
@@ -392,7 +402,7 @@ class _HistoryCard extends StatelessWidget {
                       Row(
                         children: [
                           Text(
-                            'ຈຳນວນ',
+                            l10n.packageAmount,
                             style: TextStyle(
                               fontSize: 12.sp,
                               color: AppColors.textHint,
@@ -430,7 +440,7 @@ class _HistoryCard extends StatelessWidget {
                             ),
                             SizedBox(width: 5.w),
                             Text(
-                              'ຍັງເຫຼືອ $daysLeft ວັນ',
+                              l10n.packageDaysRemaining(daysLeft),
                               style: TextStyle(
                                 fontSize: 12.sp,
                                 fontWeight: FontWeight.w700,

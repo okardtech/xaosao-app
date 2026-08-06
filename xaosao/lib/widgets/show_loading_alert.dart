@@ -15,7 +15,7 @@ void showLoadingDialog({String imagePath = AppImage.xaosaoNoBack}) {
     barrierDismissible: false,
     barrierColor: Colors.transparent,
     builder: (context) => PopScope(
-      canPop: true,
+      canPop: false,
       child: Stack(
         children: [
           Container(

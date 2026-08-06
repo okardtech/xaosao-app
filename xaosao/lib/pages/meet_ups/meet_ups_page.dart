@@ -3,12 +3,14 @@ import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:xaosao/constants/app_color.dart';
+import 'package:xaosao/l10n/app_localizations.dart';
 import 'package:xaosao/models/my_booking_model.dart';
 import 'package:xaosao/constants/app_routes.dart';
 import 'package:xaosao/pages/meet_ups/components/booking_card.dart';
 import 'package:xaosao/pages/meet_ups/components/cancellation_policy.dart';
 import 'package:xaosao/pages/meet_ups/getx/meet_ups_logic.dart';
 import 'package:xaosao/pages/meet_ups/getx/meet_ups_state.dart';
+import 'package:xaosao/utils/l10n.dart' as g;
 import 'package:xaosao/widgets/empty_state.dart';
 import 'package:xaosao/widgets/notif_badge.dart';
 
@@ -22,18 +24,18 @@ class MeetUpsPage extends StatefulWidget {
 class _MeetUpsPageState extends State<MeetUpsPage> {
   late final MeetUpLogic _logic;
 
-  // Chip definitions — label + API status value
-  static const _chips = <(String, String?)>[
-    ('ທັງໝົດ', null),
-    ('ລໍຖ້າ', 'pending'),
-    ('ຢືນຢັນ', 'confirmed'),
-    ('ກຳລັງດຳເນີນ', 'in_progress'),
-    ('ລໍຢືນຢັນ', 'awaiting_confirmation'),
-    ('ສຳເລັດ', 'completed'),
-    ('ຍົກເລີກ', 'cancelled'),
-    ('ຖືກປະຕິເສດ', 'rejected'),
-    ('ຂໍ້ຂັດແຍ້ງ', 'disputed'),
-  ];
+  // Chip definitions — label + API status value. Built at build-time.
+  List<(String, String?)> _buildChips(AppLocalizations l10n) => [
+        (l10n.commonAll, null),
+        (l10n.walletTxStatusPending, 'pending'),
+        (l10n.bookingStatusConfirmed, 'confirmed'),
+        (l10n.bookingStatusInProgress, 'in_progress'),
+        (l10n.bookingStatusAwaitingConfirmation, 'awaiting_confirmation'),
+        (l10n.walletTxStatusCompleted, 'completed'),
+        (l10n.walletTxStatusCancelled, 'cancelled'),
+        (l10n.bookingStatusRejected, 'rejected'),
+        (l10n.bookingStatusDisputed, 'disputed'),
+      ];
 
   // Count items in the loaded list matching a given status chip
   int _countFor(String? status, List<MyBookingModel> all) {
@@ -55,6 +57,8 @@ class _MeetUpsPageState extends State<MeetUpsPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final chips = _buildChips(l10n);
     return Scaffold(
       backgroundColor: const Color(0xFFF8F8FC),
       body: SafeArea(
@@ -88,7 +92,7 @@ class _MeetUpsPageState extends State<MeetUpsPage> {
                 pinned: true,
                 delegate: _FilterChipsDelegate(
                   selectedStatus: selectedStatus,
-                  chips: _chips,
+                  chips: chips,
                   countFor: (s) => _countFor(s, all),
                   onSelect: (s) => _logic.filterBy(s),
                   height: 12 + 34 + 8,
@@ -112,10 +116,10 @@ class _MeetUpsPageState extends State<MeetUpsPage> {
                   hasScrollBody: false,
                   child: AppEmptyState(
                     icon: Icons.wifi_off_rounded,
-                    title: 'ບໍ່ສາມາດໂຫຼດຂໍ້ມູນ',
-                    subtitle: state.error ?? 'ກະລຸນາລອງໃໝ່ອີກຄັ້ງ',
+                    title: l10n.commonLoadDataFailed,
+                    subtitle: state.error ?? l10n.commonPleaseRetry,
                     iconColor: AppColors.primary,
-                    actionLabel: 'ລອງໃໝ່',
+                    actionLabel: l10n.commonRetry,
                     onAction: () => _logic.filterBy(selectedStatus),
                   ),
                 ),
@@ -128,8 +132,8 @@ class _MeetUpsPageState extends State<MeetUpsPage> {
                   hasScrollBody: false,
                   child: AppEmptyState(
                     icon: Icons.calendar_today_outlined,
-                    title: 'ບໍ່ມີລາຍການ',
-                    subtitle: 'ລາຍການຈອງຈະສະແດງທີ່ນີ້',
+                    title: l10n.meetUpsEmptyTitle,
+                    subtitle: l10n.meetUpsEmptySubtitle,
                     iconColor: AppColors.primary,
                   ),
                 ),
@@ -164,7 +168,7 @@ class _MeetUpsPageState extends State<MeetUpsPage> {
                       child: TextButton(
                         onPressed: _logic.loadMore,
                         child: Text(
-                          'ໂຫຼດເພີ່ມ',
+                          l10n.meetUpsLoadMore,
                           style: TextStyle(
                             fontSize: 13.sp,
                             fontWeight: FontWeight.w700,
@@ -184,8 +188,8 @@ class _MeetUpsPageState extends State<MeetUpsPage> {
 
   Widget _buildTitle(int count, String? selectedStatus) {
     final sub = selectedStatus == null
-        ? 'ປະຫວັດການຈອງທັງໝົດ'
-        : '$count ລາຍການ · ${_statusLabel(selectedStatus)}';
+        ? g.l10n.meetUpsAllHistory
+        : g.l10n.meetUpsItemsWithStatus(count, _statusLabel(selectedStatus));
 
     return Row(
       children: [
@@ -194,7 +198,7 @@ class _MeetUpsPageState extends State<MeetUpsPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'ນັດພົບ',
+                g.l10n.meetUpsTitle,
                 style: TextStyle(
                   fontSize: 24.sp,
                   fontWeight: FontWeight.w900,
@@ -249,15 +253,15 @@ class _MeetUpsPageState extends State<MeetUpsPage> {
   }
 
   static String _statusLabel(String? s) => switch (s) {
-    'pending' => 'ລໍຖ້າ',
-    'confirmed' => 'ຮັບເເລ້ວ',
-    'in_progress' => 'ກຳລັງດຳເນີນ',
-    'awaiting_confirmation' => 'ລໍຮັບຢືນຢັນ',
-    'completed' => 'ສຳເລັດ',
-    'cancelled' => 'ຍົກເລີກ',
-    'rejected' => 'ຖືກປະຕິເສດ',
-    'disputed' => 'ຂໍ້ຂັດແຍ້ງ',
-    _ => 'ທັງໝົດ',
+    'pending' => g.l10n.walletTxStatusPending,
+    'confirmed' => g.l10n.bookingStatusConfirmedShort,
+    'in_progress' => g.l10n.bookingStatusInProgress,
+    'awaiting_confirmation' => g.l10n.bookingStatusAwaitingConfirmationShort,
+    'completed' => g.l10n.walletTxStatusCompleted,
+    'cancelled' => g.l10n.walletTxStatusCancelled,
+    'rejected' => g.l10n.bookingStatusRejected,
+    'disputed' => g.l10n.bookingStatusDisputed,
+    _ => g.l10n.commonAll,
   };
 }
 

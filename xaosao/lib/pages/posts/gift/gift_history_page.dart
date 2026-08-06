@@ -4,9 +4,11 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:xaosao/constants/app_color.dart';
+import 'package:xaosao/l10n/app_localizations.dart';
 import 'package:xaosao/models/my_gift_history_model.dart';
 import 'package:xaosao/pages/posts/gift/getx/gift_history_logic.dart';
 import 'package:xaosao/pages/posts/gift/getx/gift_history_state.dart';
+import 'package:xaosao/utils/l10n.dart' as g;
 import 'package:xaosao/widgets/app_network_image.dart';
 import 'package:xaosao/widgets/gradient_app_bar.dart';
 
@@ -34,11 +36,12 @@ class _GiftHistoryPageState extends State<GiftHistoryPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       backgroundColor: AppColors.bg,
       appBar: GradientAppBar(
-        title: 'ປະຫວັດຂອງຂວັນ',
-        subtitle: 'ລາຍການຂອງຂວັນທີ່ທ່ານໄດ້ສົ່ງ',
+        title: l10n.giftHistoryTitle,
+        subtitle: l10n.giftHistorySubtitle,
       ),
       body: SafeArea(top: false, child: Obx(() => _buildBody(_logic.state))),
     );
@@ -76,6 +79,7 @@ class _GiftHistoryPageState extends State<GiftHistoryPage> {
 
   // ── Failure ──────────────────────────────────────────────────
   Widget _buildFailure(String? error) {
+    final l10n = AppLocalizations.of(context)!;
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -83,7 +87,7 @@ class _GiftHistoryPageState extends State<GiftHistoryPage> {
           Icon(Icons.wifi_off_rounded, size: 40.r, color: AppColors.textHint),
           SizedBox(height: 14.h),
           Text(
-            error ?? 'ໂຫຼດຂໍ້ມູນບໍ່ສຳເລັດ',
+            error ?? l10n.commonLoadDataFailed,
             style: TextStyle(
               fontSize: 15.sp,
               fontWeight: FontWeight.w700,
@@ -100,7 +104,7 @@ class _GiftHistoryPageState extends State<GiftHistoryPage> {
                 borderRadius: BorderRadius.circular(12.r),
               ),
               child: Text(
-                'ລອງໃໝ່',
+                l10n.commonRetry,
                 style: TextStyle(
                   fontSize: 13.sp,
                   fontWeight: FontWeight.w700,
@@ -116,6 +120,7 @@ class _GiftHistoryPageState extends State<GiftHistoryPage> {
 
   // ── Empty ────────────────────────────────────────────────────
   Widget _buildEmpty() {
+    final l10n = AppLocalizations.of(context)!;
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -135,7 +140,7 @@ class _GiftHistoryPageState extends State<GiftHistoryPage> {
           ),
           SizedBox(height: 16.h),
           Text(
-            'ຍັງບໍ່ມີປະຫວັດຂອງຂວັນ',
+            l10n.giftHistoryEmptyTitle,
             style: TextStyle(
               fontSize: 16.sp,
               fontWeight: FontWeight.w700,
@@ -144,7 +149,7 @@ class _GiftHistoryPageState extends State<GiftHistoryPage> {
           ),
           SizedBox(height: 6.h),
           Text(
-            'ເມື່ອທ່ານສົ່ງຂອງຂວັນໃຫ້ໂມເດວ,\nລາຍການຈະສະແດງຢູ່ນີ້',
+            l10n.giftHistoryEmptySubtitle,
             style: TextStyle(
               fontSize: 13.sp,
               color: AppColors.textHint,
@@ -159,6 +164,7 @@ class _GiftHistoryPageState extends State<GiftHistoryPage> {
 
   // ── List ─────────────────────────────────────────────────────
   Widget _buildList(List<MyGiftHistoryModel> items) {
+    final l10n = AppLocalizations.of(context)!;
     final total = items.fold<int>(0, (sum, e) => sum + ((e.amount ?? 0)));
 
     return RefreshIndicator(
@@ -181,7 +187,7 @@ class _GiftHistoryPageState extends State<GiftHistoryPage> {
             padding: EdgeInsets.fromLTRB(20.w, 4.h, 20.w, 10.h),
             sliver: SliverToBoxAdapter(
               child: Text(
-                'ລາຍລະອຽດຂອງຂວັນ',
+                l10n.giftDetailsTitle,
                 style: TextStyle(
                   fontSize: 13.sp,
                   fontWeight: FontWeight.w700,
@@ -219,6 +225,7 @@ class _SummaryHero extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Padding(
       padding: EdgeInsets.fromLTRB(16.w, 20.h, 16.w, 20.h),
       child: Container(
@@ -268,7 +275,7 @@ class _SummaryHero extends StatelessWidget {
                   ),
                   SizedBox(height: 5.h),
                   Text(
-                    'ຄັ້ງທີ່ທ່ານສົ່ງຂອງຂວັນ',
+                    l10n.giftHistorySentTimes,
                     style: TextStyle(
                       fontSize: 14.sp,
                       fontWeight: FontWeight.w500,
@@ -277,7 +284,7 @@ class _SummaryHero extends StatelessWidget {
                   ),
                   SizedBox(height: 4.h),
                   Text(
-                    'ໃຊ້ຈ່າຍ ${NumberFormat('#,###').format(total)} ກີບ',
+                    l10n.giftHistorySpent(NumberFormat('#,###').format(total)),
                     style: TextStyle(
                       fontSize: 12.sp,
                       color: Colors.white.withValues(alpha: 0.70),
@@ -306,20 +313,21 @@ class _GiftHistoryTile extends StatelessWidget {
   final MyGiftHistoryModel item;
   const _GiftHistoryTile({required this.item});
 
-  String _fmtLak(int v) => NumberFormat('#,##0', 'en_US').format(v) + ' ກີບ';
+  String _fmtLak(int v) => '${NumberFormat('#,##0', 'en_US').format(v)} ${g.l10n.commonCurrencyKip}';
 
   String _ago(DateTime? dt) {
     if (dt == null) return '';
     final diff = DateTime.now().difference(dt);
-    if (diff.inMinutes < 1) return 'ຫາກໍ່';
-    if (diff.inHours < 1) return '${diff.inMinutes} ນາທີກ່ອນ';
-    if (diff.inDays < 1) return '${diff.inHours} ຊົ່ວໂມງກ່ອນ';
-    if (diff.inDays < 30) return '${diff.inDays} ວັນກ່ອນ';
+    if (diff.inMinutes < 1) return g.l10n.timeJustNowShort;
+    if (diff.inHours < 1) return g.l10n.timeMinutesAgo(diff.inMinutes);
+    if (diff.inDays < 1) return g.l10n.timeHoursAgo(diff.inHours);
+    if (diff.inDays < 30) return g.l10n.timeDaysAgo(diff.inDays);
     return DateFormat('dd MMM').format(dt);
   }
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final gift = item.gift;
     final hasImage = (gift?.image ?? '').isNotEmpty;
     final total = (item.amount ?? 0);
@@ -376,7 +384,7 @@ class _GiftHistoryTile extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  gift?.name ?? 'ຂອງຂວັນ',
+                  gift?.name ?? l10n.giftFallback,
                   style: TextStyle(
                     fontSize: 14.sp,
                     fontWeight: FontWeight.w700,

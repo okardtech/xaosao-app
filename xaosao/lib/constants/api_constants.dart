@@ -120,4 +120,5 @@ class ApiConstants {
   // referral
   static const String referral = 'model/referrals';
   static const String referralValidate = 'referrals/validate';
+  static const String referralComission = 'model/referrals/commissions';
 }

@@ -1,16 +1,18 @@
+import 'package:xaosao/utils/l10n.dart';
+
 class ServiceHelper {
   static String serviceName(String? billingType) {
     switch (billingType) {
       case 'per_hour':
-        return '/ຊົ່ວໂມງ';
+        return l10n.serviceUnitHour;
       case 'per_day':
-        return '/ວັນ';
+        return l10n.serviceUnitDay;
       case 'per_night':
-        return '/ຄືນ';
+        return l10n.serviceUnitNight;
       case 'one_time':
-        return 'ຄັ້ງດຽວ';
+        return l10n.serviceUnitOnce;
       case 'per_minute':
-        return '/ນາທີ';
+        return l10n.serviceUnitMinute;
       default:
         return '';
     }
@@ -19,11 +21,11 @@ class ServiceHelper {
   static String serviceOriginalName(String? name) {
     switch (name) {
       case 'drinkingFriend':
-        return 'ເພື່ອນສັງຄົມ';
+        return l10n.serviceTypeSocial;
       case 'travelingFriend':
-        return 'ເພື່ອນທ່ອງທ່ຽວ';
+        return l10n.serviceTypeTravel;
       case 'massage':
-        return 'ບໍລິການນວດ';
+        return l10n.serviceTypeMassage;
       default:
         return name ?? '';
     }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:xaosao/constants/app_icons.dart';
+import 'package:xaosao/l10n/app_localizations.dart';
 import 'package:xaosao/widgets/app_svg_icon.dart';
 
 import '../../../constants/app_color.dart';
@@ -14,14 +15,15 @@ class RoleCards extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Row(
       children: [
         Expanded(
           child: _RoleCard(
             role: RegisterRole.customer,
             selected: selected,
-            label: 'ຜູ້ຈອງ',
-            sub: 'ຄົ້ນຫາ ແລະ ຈອງບໍລິການ',
+            label: l10n.loginRoleCustomerLabel,
+            sub: l10n.loginRoleCustomerSub,
             icon: AppIcons.user,
             activeGrad: AppColors.pinkGradient,
             activeBg: const Color(0xFFFFF5F6),
@@ -35,8 +37,8 @@ class RoleCards extends StatelessWidget {
           child: _RoleCard(
             role: RegisterRole.companion,
             selected: selected,
-            label: 'ຜູ້ໃຫ້ບໍລິການ',
-            sub: 'ໂພສບໍລິການ ແລະ ຮັບການຈອງ',
+            label: l10n.loginRoleCompanionLabel,
+            sub: l10n.loginRoleCompanionSub,
             icon: AppIcons.userGroup,
             activeGrad: const [Color(0xFF2A2A4E), Color(0xFF1A1A2E)],
             activeBg: const Color(0xFFF2F2F8),

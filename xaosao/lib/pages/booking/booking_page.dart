@@ -2,6 +2,7 @@
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:xaosao/constants/app_color.dart';
+import 'package:xaosao/l10n/app_localizations.dart';
 import 'package:xaosao/pages/booking/booking_args.dart';
 import 'package:xaosao/pages/booking/components/per_day_form.dart';
 import 'package:xaosao/pages/booking/components/per_hour_form.dart';
@@ -216,6 +217,7 @@ class BookingSummary extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Column(
       children: [
         _row(rateLabel, rateValue),
@@ -228,7 +230,7 @@ class BookingSummary extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              'ລວມທັງໝົດ',
+              l10n.meetupsPriceTotal,
               style: TextStyle(
                 fontSize: 15.sp,
                 fontWeight: FontWeight.w700,
@@ -284,6 +286,7 @@ class BookingBottomBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Container(
       padding: EdgeInsets.fromLTRB(16.w, 12.h, 16.w, 16.h),
       decoration: BoxDecoration(
@@ -296,7 +299,7 @@ class BookingBottomBar extends StatelessWidget {
         ),
       ),
       child: AppPrimaryButton(
-        label: 'ຈອງດຽວນີ້',
+        label: l10n.cpBookNow,
         trailingIcon: Icons.check_rounded,
         enabled: canBook,
         onTap: onBook,

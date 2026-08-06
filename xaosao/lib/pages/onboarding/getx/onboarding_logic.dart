@@ -23,7 +23,7 @@ class OnboardingLogic extends GetxController {
     _updateState(state.copyWith(status: OnboardingStatus.loading));
     try {
       final result = await _repo.getModelsHot();
-      print('booking status =>${result.statusCode}, ${result.message}');
+      // print('booking status =>${result.statusCode}, ${result.message}');
       if (result.success) {
         _updateState(
           state.copyWith(
@@ -35,7 +35,7 @@ class OnboardingLogic extends GetxController {
         _updateState(state.copyWith(status: OnboardingStatus.failure));
       }
     } catch (e) {
-      print('check tracking: $e');
+      // print('check tracking: $e');
       _updateState(state.copyWith(status: OnboardingStatus.failure));
     }
   }

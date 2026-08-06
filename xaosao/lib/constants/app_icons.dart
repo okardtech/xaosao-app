@@ -26,4 +26,7 @@ class AppIcons {
   static const String userGroup = 'assets/icons/user-group.svg';
   static const String location = 'assets/icons/location.svg';
   static const String lock = 'assets/icons/lock.svg';
+  //
+  static const String verify = 'assets/icons/verify.svg';
+  static const String bolt = 'assets/icons/bolt.svg';
 }

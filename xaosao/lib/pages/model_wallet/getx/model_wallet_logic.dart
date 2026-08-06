@@ -4,6 +4,7 @@ import 'package:xaosao/repository/bank_repo.dart';
 import 'package:xaosao/repository/wallet_repo.dart';
 import 'package:xaosao/services/storage_service.dart';
 import 'package:xaosao/utils/app_snackbar.dart';
+import 'package:xaosao/utils/l10n.dart';
 import 'package:xaosao/widgets/show_loading_alert.dart';
 
 class ModelWalletLogic extends GetxController {
@@ -57,7 +58,7 @@ class ModelWalletLogic extends GetxController {
       refresh();
       return true;
     }
-    AppSnackbar.error(res.laMessage ?? 'ບໍ່ສາມາດຖອນເງິນໄດ້');
+    AppSnackbar.error(res.laMessage ?? l10n.modelWalletWithdrawFailed);
     return false;
   }
 

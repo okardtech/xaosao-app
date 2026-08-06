@@ -7,6 +7,7 @@ import 'package:xaosao/pages/view_companion/getx/view_companion_state.dart';
 import 'package:xaosao/repository/discover_repo.dart';
 import 'package:xaosao/repository/review_repo.dart';
 import 'package:xaosao/services/storage_service.dart';
+import 'package:xaosao/utils/l10n.dart';
 
 class ViewCompanionLogic extends GetxController {
   final DiscoverRepo _repo = DiscoverRepo();
@@ -150,7 +151,7 @@ class ViewCompanionLogic extends GetxController {
         companions: isRefresh ? [] : s.companions,
         filter: s.filter,
         search: s.search,
-        error: 'ມີຂໍ້ຜິດພາດ: $e',
+        error: l10n.commonErrorDetail(e.toString()),
       );
     }
   }

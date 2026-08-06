@@ -5,6 +5,7 @@ import 'package:xaosao/pages/posts/getx/post_state.dart';
 import 'package:xaosao/repository/post_repo.dart';
 import 'package:xaosao/services/storage_service.dart';
 import 'package:xaosao/utils/app_snackbar.dart';
+import 'package:xaosao/utils/l10n.dart';
 import 'package:xaosao/widgets/show_loading_alert.dart';
 
 class PostLogic extends GetxController {
@@ -71,7 +72,7 @@ class PostLogic extends GetxController {
             feedStatus: isFirst ? PostStatus.failure : PostStatus.success,
           ),
         );
-        if (isFirst) AppSnackbar.error(res.laMessage ?? 'ໂຫຼດຟີດບໍ່ສຳເລັດ');
+        if (isFirst) AppSnackbar.error(res.laMessage ?? l10n.postsFeedLoadFailed);
       }
     } catch (_) {
       _update(
@@ -79,7 +80,7 @@ class PostLogic extends GetxController {
           feedStatus: isFirst ? PostStatus.failure : PostStatus.success,
         ),
       );
-      if (isFirst) AppSnackbar.error('ໂຫຼດຟີດບໍ່ສຳເລັດ');
+      if (isFirst) AppSnackbar.error(l10n.postsFeedLoadFailed);
     } finally {
       _loadingFeed = false;
     }
@@ -124,7 +125,7 @@ class PostLogic extends GetxController {
             myStatus: isFirst ? PostStatus.failure : PostStatus.success,
           ),
         );
-        if (isFirst) AppSnackbar.error(res.laMessage ?? 'ໂຫຼດໂພສຂ້ອຍບໍ່ສຳເລັດ');
+        if (isFirst) AppSnackbar.error(res.laMessage ?? l10n.postsMyLoadFailed);
       }
     } catch (_) {
       _update(
@@ -132,7 +133,7 @@ class PostLogic extends GetxController {
           myStatus: isFirst ? PostStatus.failure : PostStatus.success,
         ),
       );
-      if (isFirst) AppSnackbar.error('ໂຫຼດໂພສຂ້ອຍບໍ່ສຳເລັດ');
+      if (isFirst) AppSnackbar.error(l10n.postsMyLoadFailed);
     } finally {
       _loadingMy = false;
     }
@@ -330,16 +331,16 @@ class PostLogic extends GetxController {
             )
           : await _repo.createModelPost(content: content, filePath: filePath);
       if (res.success) {
-        AppSnackbar.info(res.laMessage ?? 'ສ້າງໂພສສຳເລັດ');
+        AppSnackbar.info(res.laMessage ?? l10n.postsCreateSuccess);
         fetchMyPosts(refresh: true);
         fetchFeed(refresh: true);
         return true;
       } else {
-        AppSnackbar.error(res.laMessage ?? 'ສ້າງໂພສບໍ່ສຳເລັດ');
+        AppSnackbar.error(res.laMessage ?? l10n.postsCreateFailed);
         return false;
       }
     } catch (_) {
-      AppSnackbar.error('ສ້າງໂພສບໍ່ສຳເລັດ');
+      AppSnackbar.error(l10n.postsCreateFailed);
       return false;
     } finally {
       hideLoadingDialog();
@@ -367,12 +368,12 @@ class PostLogic extends GetxController {
           );
           _update(state.copyWith(myPosts: patched));
         }
-        AppSnackbar.info(res.laMessage ?? 'ປິດໃຊ້ງານໂພສສຳເລັດ');
+        AppSnackbar.info(res.laMessage ?? l10n.postsDisableSuccess);
       } else {
-        AppSnackbar.error(res.laMessage ?? 'ປິດໃຊ້ງານໂພສບໍ່ສຳເລັດ');
+        AppSnackbar.error(res.laMessage ?? l10n.postsDisableFailed);
       }
     } catch (_) {
-      AppSnackbar.error('ປິດໃຊ້ງານໂພສບໍ່ສຳເລັດ');
+      AppSnackbar.error(l10n.postsDisableFailed);
     } finally {
       hideLoadingDialog();
     }
@@ -392,12 +393,12 @@ class PostLogic extends GetxController {
             feed: state.feed.where((p) => p.id != postId).toList(),
           ),
         );
-        AppSnackbar.info(res.laMessage ?? "ລຶບໂພສສຳເລັດ");
+        AppSnackbar.info(res.laMessage ?? l10n.postsDeleteSuccess);
       } else {
-        AppSnackbar.error(res.laMessage ?? 'ລຶບໂພສບໍ່ສຳເລັດ');
+        AppSnackbar.error(res.laMessage ?? l10n.postsDeleteFailed);
       }
     } catch (_) {
-      AppSnackbar.error('ລຶບໂພສບໍ່ສຳເລັດ');
+      AppSnackbar.error(l10n.postsDeleteFailed);
     } finally {
       hideLoadingDialog();
     }

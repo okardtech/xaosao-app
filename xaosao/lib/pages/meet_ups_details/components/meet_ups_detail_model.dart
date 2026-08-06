@@ -1,4 +1,32 @@
 import 'package:flutter/material.dart';
+import 'package:xaosao/utils/l10n.dart' as g;
+
+// ── Localised short month names (index 1..12) ─────────────────
+List<String> _monthShortList() => [
+      '',
+      g.l10n.monthShortJan,
+      g.l10n.monthShortFeb,
+      g.l10n.monthShortMar,
+      g.l10n.monthShortApr,
+      g.l10n.monthShortMay,
+      g.l10n.monthShortJun,
+      g.l10n.monthShortJul,
+      g.l10n.monthShortAug,
+      g.l10n.monthShortSep,
+      g.l10n.monthShortOct,
+      g.l10n.monthShortNov,
+      g.l10n.monthShortDec,
+    ];
+
+List<String> _dayShortList() => [
+      g.l10n.meetupsDayShortSun,
+      g.l10n.meetupsDayShortMon,
+      g.l10n.meetupsDayShortTue,
+      g.l10n.meetupsDayShortWed,
+      g.l10n.meetupsDayShortThu,
+      g.l10n.meetupsDayShortFri,
+      g.l10n.meetupsDayShortSat,
+    ];
 
 // ═══════════════════════════════════════════════════════════════
 //  BookingDetailEntry — ບອກວ່ານັດລາຍລະອຽດເປີດຈາກໃສ
@@ -7,8 +35,8 @@ enum BookingEntrySource { meetUps, chat }
 
 extension BookingEntrySourceExt on BookingEntrySource {
   String get label => switch (this) {
-        BookingEntrySource.meetUps => 'ຈາກໜ້ານັດພົບ',
-        BookingEntrySource.chat    => 'ຈາກ Chat',
+        BookingEntrySource.meetUps => g.l10n.meetupsEntryFromMeetUps,
+        BookingEntrySource.chat    => g.l10n.meetupsEntryFromChat,
       };
 
   IconData get icon => switch (this) {
@@ -34,10 +62,7 @@ class BookingTimelineEvent {
   });
 
   String get formattedTime {
-    const months = [
-      '', 'ມ.ກ', 'ກ.ພ', 'ມ.ນ', 'ມ.ສ', 'ພ.ພ', 'ມ.ຖ',
-      'ກ.ລ', 'ສ.ຫ', 'ກ.ຍ', 'ຕ.ລ', 'ພ.ຈ', 'ທ.ວ',
-    ];
+    final months = _monthShortList();
     final h = timestamp.hour.toString().padLeft(2, '0');
     final m = timestamp.minute.toString().padLeft(2, '0');
     return '${timestamp.day} ${months[timestamp.month]} · $h:$m';
@@ -89,18 +114,15 @@ class BookingDetailModel {
   });
 
   String get formattedDateRange {
-    const days = ['ອາ', 'ຈ', 'ອ', 'ພ', 'ພຫ', 'ສຸ', 'ສ'];
-    const months = [
-      '', 'ມ.ກ', 'ກ.ພ', 'ມ.ນ', 'ມ.ສ', 'ພ.ພ', 'ມ.ຖ',
-      'ກ.ລ', 'ສ.ຫ', 'ກ.ຍ', 'ຕ.ລ', 'ພ.ຈ', 'ທ.ວ',
-    ];
+    final days = _dayShortList();
+    final months = _monthShortList();
     final d   = dateTime;
     final end = d.add(Duration(hours: durationHours));
     final sh  = d.hour.toString().padLeft(2, '0');
     final sm  = d.minute.toString().padLeft(2, '0');
     final eh  = end.hour.toString().padLeft(2, '0');
     final em  = end.minute.toString().padLeft(2, '0');
-    return '${days[d.weekday % 7]}. ${d.day} ${months[d.month]} ${d.year}\n$sh:$sm – $eh:$em ໂມງ';
+    return '${days[d.weekday % 7]}. ${d.day} ${months[d.month]} ${d.year}\n$sh:$sm – $eh:$em ${g.l10n.meetupsClockSuffix}';
   }
 
   String get formattedTotal {
@@ -110,23 +132,20 @@ class BookingDetailModel {
       if (i > 0 && (s.length - i) % 3 == 0) buf.write(',');
       buf.write(s[i]);
     }
-    return '${buf.toString()} ກີບ';
+    return '${buf.toString()} ${g.l10n.commonCurrencyKip}';
   }
 
   String get countdownText {
     if (countdown == null) return '';
     final days  = countdown!.inDays;
     final hours = countdown!.inHours % 24;
-    if (days > 0) return 'ເຫຼືອອີກ $days ວັນ $hours ຊ.ມ.';
-    if (hours > 0) return 'ເຫຼືອອີກ $hours ຊ.ມ.';
-    return 'ເຫຼືອ ${countdown!.inMinutes} ນາທີ';
+    if (days > 0) return g.l10n.meetupsCountdownDays(days, hours);
+    if (hours > 0) return g.l10n.meetupsCountdownHours(hours);
+    return g.l10n.meetupsCountdownMinutes(countdown!.inMinutes);
   }
 
   String get countdownSub {
-    const months = [
-      '', 'ມ.ກ', 'ກ.ພ', 'ມ.ນ', 'ມ.ສ', 'ພ.ພ', 'ມ.ຖ',
-      'ກ.ລ', 'ສ.ຫ', 'ກ.ຍ', 'ຕ.ລ', 'ພ.ຈ', 'ທ.ວ',
-    ];
+    final months = _monthShortList();
     final d = dateTime;
     return '${d.day} ${months[d.month]} '
         '${d.hour.toString().padLeft(2, '0')}:'
@@ -135,13 +154,10 @@ class BookingDetailModel {
 
   String get cancelDeadline {
     final dl = dateTime.subtract(const Duration(minutes: 30));
-    const months = [
-      '', 'ມ.ກ', 'ກ.ພ', 'ມ.ນ', 'ມ.ສ', 'ພ.ພ', 'ມ.ຖ',
-      'ກ.ລ', 'ສ.ຫ', 'ກ.ຍ', 'ຕ.ລ', 'ພ.ຈ', 'ທ.ວ',
-    ];
+    final months = _monthShortList();
     return '${dl.day} ${months[dl.month]} '
         '${dl.hour.toString().padLeft(2, '0')}:'
-        '${dl.minute.toString().padLeft(2, '0')} ໂມງ';
+        '${dl.minute.toString().padLeft(2, '0')} ${g.l10n.meetupsClockSuffix}';
   }
 }
 
@@ -150,10 +166,10 @@ enum MeetUpsStatus { upcoming, completed, cancelled, rejected }
 
 extension MeetUpsStatusExt on MeetUpsStatus {
   String get label => switch (this) {
-        MeetUpsStatus.upcoming   => 'ກຳລັງມາ',
-        MeetUpsStatus.completed  => 'ສຳເລັດ',
-        MeetUpsStatus.cancelled  => 'ຍົກເລີກ',
-        MeetUpsStatus.rejected   => 'ຖືກປະຕິເສດ',
+        MeetUpsStatus.upcoming   => g.l10n.bookingSummaryActive,
+        MeetUpsStatus.completed  => g.l10n.meetupsStepCompleted,
+        MeetUpsStatus.cancelled  => g.l10n.meetupsStepCancelled,
+        MeetUpsStatus.rejected   => g.l10n.meetupsStepRejected,
       };
 
   Color get badgeBg => switch (this) {

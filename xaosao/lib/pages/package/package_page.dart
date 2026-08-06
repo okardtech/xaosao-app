@@ -12,7 +12,9 @@ import 'package:xaosao/pages/package/getx/package_logic.dart';
 import 'package:xaosao/pages/package/getx/package_state.dart';
 import 'package:xaosao/pages/package/subscription_checkout_page.dart';
 import 'package:xaosao/pages/wallet/getx/wallet_logic.dart';
+import 'package:xaosao/l10n/app_localizations.dart';
 import 'package:xaosao/utils/date_time_formatter.dart';
+import 'package:xaosao/utils/l10n.dart' as g;
 import 'package:xaosao/widgets/gradient_app_bar.dart';
 
 import '../../widgets/app_svg_icon.dart';
@@ -31,30 +33,32 @@ const _kAccents = <Color>[
   Color(0xFF11998e),
 ];
 
-String _fmtKip(int? n) => '${NumberFormat.decimalPattern().format(n ?? 0)} ກີບ';
+String _fmtKip(int? n) =>
+    '${NumberFormat.decimalPattern().format(n ?? 0)} ${g.l10n.commonCurrencyKip}';
 
 // Shared feature list shown on every package card.
-const _kPackageFeatures = <String>[
-  'ເຂົ້າເຖິງທຸກຟີເຈີແບບໄຮ້ຂີດຈໍາກັດ',
-  'ສົ່ງຂໍ້ຄວາມແຊັດໄດ້ບໍ່ຈໍາກັດ',
-  'ນັດໝາຍນໍາຄົນທີ່ເຮົາມັກໄດ້ບໍ່ຈໍາກັດ',
-  'ເປີດສິດເຂົ້າເບິ່ງໂປຣໄຟລ໌ VIP ຂອງສາວໆ',
-  'ລະບົບຄົ້ນຫາ ແລະ ຄັດກອງແບບຂັ້ນສູງ',
-  'ໄດ້ຮັບບໍລິການຊ່ວຍເຫຼືອລະດັບພິເສດຕະຫຼອດ 24/7',
-  'ເພີ່ມການເບິ່ງເຫັນໂປຣໄຟລ໌',
+List<String> get _kPackageFeatures => <String>[
+  g.l10n.packageFeature1,
+  g.l10n.packageFeature2,
+  g.l10n.packageFeature3,
+  g.l10n.packageFeature4,
+  g.l10n.packageFeature5,
+  g.l10n.packageFeature6,
+  g.l10n.packageFeature7,
 ];
 
 // Per-card description overrides (Lao). Indexes outside this range fall
 // back to the API-provided pkg.description.
-const _kPackageDescriptions = <String>[
-  'ສຳຫຼວດທຸກຟີເຈີລະດັບພຣີມຽມ ແລະ ເລີ່ມເຊື່ອມຕໍ່ໄດ້ທັນທີ',
-  'ທົດລອງບໍລິການ 24 ຊົ່ວໂມງ ດ້ວຍແຊັດ ແລະ ການຈອງແບບບໍ່ຈຳກັດ',
-  'ດີລທີ່ຄຸ້ມຄ່າທີ່ສຸດ ສຳລັບການນັດໝາຍໄລຍະຍາວ ແລະ ການເຊື່ອມຕໍ່ທີ່ຈິງໃຈ',
+List<String> get _kPackageDescriptions => <String>[
+  g.l10n.packagePlanShort1,
+  g.l10n.packagePlanShort2,
+  g.l10n.packagePlanShort3,
 ];
 
 String? _descriptionFor(int index, PackageData pkg) {
-  if (index >= 0 && index < _kPackageDescriptions.length) {
-    return _kPackageDescriptions[index];
+  final descriptions = _kPackageDescriptions;
+  if (index >= 0 && index < descriptions.length) {
+    return descriptions[index];
   }
   return pkg.description;
 }
@@ -86,11 +90,12 @@ class _PackagePageState extends State<PackagePage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       backgroundColor: AppColors.bg,
       appBar: GradientAppBar(
-        title: 'ເລືອກແຜນ',
-        subtitle: 'ຍົກລະດັບປະສົບການຂອງທ່ານ',
+        title: l10n.packageChooseTitle,
+        subtitle: l10n.packageChooseSubtitle,
         actions: [
           GestureDetector(
             onTap: () => Get.toNamed(AppRoutes.packageHistory),
@@ -127,7 +132,7 @@ class _PackagePageState extends State<PackagePage> {
                   ),
                   SizedBox(width: 5.w),
                   Text(
-                    'ປະຫວັດ',
+                    l10n.packageHistoryButton,
                     style: TextStyle(
                       fontSize: 12.sp,
                       fontWeight: FontWeight.w700,
@@ -151,7 +156,7 @@ class _PackagePageState extends State<PackagePage> {
           Padding(
             padding: EdgeInsets.only(bottom: 16.h),
             child: Text(
-              'ຍົກເລີກໄດ້ທຸກເວລາ · ໂອນຄືນຕາມນະໂຍບາຍ',
+              l10n.packageCancelAnytime,
               style: TextStyle(fontSize: 11.sp, color: AppColors.textDisabled),
             ),
           ),
@@ -170,6 +175,7 @@ class _PackagePageState extends State<PackagePage> {
   }
 
   Widget _buildCurrentPlanCard(CurrentSubscriptionPlan plan) {
+    final l10n = AppLocalizations.of(context)!;
     final days = plan.daysRemaining ?? 0;
     final isPending = plan.status == 'pending';
     final isUrgent = !isPending && days > 0 && days <= 7;
@@ -184,12 +190,12 @@ class _PackagePageState extends State<PackagePage> {
         : AppColors.primary;
 
     final String statusLabel = isPending
-        ? 'ລໍຖ້າການຢືນຢັນ'
+        ? l10n.packageWaitingVerification
         : isExpired
-        ? 'ໝົດອາຍຸແລ້ວ'
+        ? l10n.packageExpiredLabel
         : isUrgent
-        ? 'ໃກ້ໝົດອາຍຸ'
-        : 'ກຳລັງໃຊ້ງານ';
+        ? l10n.packageNearExpiry
+        : l10n.packageActive;
 
     return Padding(
       padding: EdgeInsets.fromLTRB(24.w, 14.h, 24.w, 8.h),
@@ -282,8 +288,10 @@ class _PackagePageState extends State<PackagePage> {
                               SizedBox(width: 4.w),
                               Text(
                                 isPending
-                                    ? 'ກຳລັງດຳເນີນການຢືນຢັນ...'
-                                    : 'ໝົດອາຍຸ ${DateTimeFormatter.laoDate(plan.endDate)}',
+                                    ? l10n.packageProcessingVerification
+                                    : l10n.packageExpiresOn(
+                                        DateTimeFormatter.laoDate(plan.endDate),
+                                      ),
                                 style: TextStyle(
                                   fontSize: 12.sp,
                                   color: AppColors.textHint,
@@ -334,7 +342,7 @@ class _PackagePageState extends State<PackagePage> {
                                     ),
                                   ),
                                   Text(
-                                    'ວັນ',
+                                    l10n.packageDays,
                                     style: TextStyle(
                                       fontSize: 10.sp,
                                       fontWeight: FontWeight.w700,
@@ -347,7 +355,7 @@ class _PackagePageState extends State<PackagePage> {
                           ),
                           SizedBox(height: 4.h),
                           Text(
-                            'ຄົງເຫຼືອ',
+                            l10n.packageRemainingLabel,
                             style: TextStyle(
                               fontSize: 12.sp,
                               color: AppColors.textHint,
@@ -367,6 +375,7 @@ class _PackagePageState extends State<PackagePage> {
 
   // ── Hero text ───────────────────────────────────────────────
   Widget _buildHero() {
+    final l10n = AppLocalizations.of(context)!;
     return Padding(
       padding: EdgeInsets.fromLTRB(16.w, 20.h, 16.w, 0),
       child: Column(
@@ -388,7 +397,7 @@ class _PackagePageState extends State<PackagePage> {
                 ),
                 SizedBox(width: 5.w),
                 Text(
-                  'ເລືອກແຜນຂອງທ່ານ',
+                  l10n.packageChooseYourPlan,
                   style: TextStyle(
                     fontSize: 11.sp,
                     fontWeight: FontWeight.w700,
@@ -400,7 +409,7 @@ class _PackagePageState extends State<PackagePage> {
           ),
           SizedBox(height: 10.h),
           Text(
-            'ຍົກລະດັບປະສົບການ',
+            l10n.packageUpgradeExperience,
             style: TextStyle(
               fontSize: 20.sp,
               fontWeight: FontWeight.w900,
@@ -410,7 +419,7 @@ class _PackagePageState extends State<PackagePage> {
           ),
           SizedBox(height: 5.h),
           Text(
-            'ເລືອກແຜນທີ່ເໝາະສົມ ແລ້ວຊອກຫາຄູ່ໄດ້ທຸກເວລາ',
+            l10n.packageChooseFitPlan,
             textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: 12.sp,
@@ -425,6 +434,7 @@ class _PackagePageState extends State<PackagePage> {
 
   // ── Body (shimmer / error / cards) ──────────────────────────
   Widget _buildBody() {
+    final l10n = AppLocalizations.of(context)!;
     final st = _logic.state;
     if (st.status == PackageStatus.loading) return _PackageListShimmer();
     if (st.status == PackageStatus.failure) {
@@ -439,7 +449,7 @@ class _PackagePageState extends State<PackagePage> {
             ),
             SizedBox(height: 12.h),
             Text(
-              st.error ?? 'ໂຫຼດບໍ່ສຳເລັດ',
+              st.error ?? l10n.packageLoadFailedShort,
               style: TextStyle(fontSize: 13.sp, color: AppColors.textHint),
             ),
             SizedBox(height: 12.h),
@@ -452,7 +462,7 @@ class _PackagePageState extends State<PackagePage> {
                   borderRadius: BorderRadius.circular(20.r),
                 ),
                 child: Text(
-                  'ລອງໃໝ່',
+                  l10n.commonRetry,
                   style: TextStyle(
                     fontSize: 13.sp,
                     fontWeight: FontWeight.w700,
@@ -468,7 +478,7 @@ class _PackagePageState extends State<PackagePage> {
     if (st.packages.isEmpty) {
       return Center(
         child: Text(
-          'ບໍ່ມີ Package',
+          l10n.packageNoPackage,
           style: TextStyle(fontSize: 13.sp, color: AppColors.textHint),
         ),
       );
@@ -508,6 +518,7 @@ class _PackagePageState extends State<PackagePage> {
   }
 
   Widget _buildPendingBanner() {
+    final l10n = AppLocalizations.of(context)!;
     const purple = Color(0xFF8B5CF6);
     return Container(
       margin: EdgeInsets.fromLTRB(16.w, 0, 16.w, 8.h),
@@ -523,7 +534,7 @@ class _PackagePageState extends State<PackagePage> {
           SizedBox(width: 10.w),
           Expanded(
             child: Text(
-              'ຄຳຮ້ອງຂໍຂອງທ່ານກຳລັງຖືກດຳເນີນການ · ກະລຸນາລໍຖ້າ',
+              l10n.packageRequestProcessing,
               style: TextStyle(
                 fontSize: 11.sp,
                 fontWeight: FontWeight.w600,
@@ -649,7 +660,7 @@ class _PackageCard extends StatelessWidget {
                   thickness: 0.5,
                   color: AppColors.borderMedium,
                 ),
-                Expanded(child: _buildBody()),
+                Expanded(child: _buildBody(context)),
               ],
             ),
           ),
@@ -740,8 +751,9 @@ class _PackageCard extends StatelessWidget {
     );
   }
 
-  Widget _buildBody() {
-    const feats = _kPackageFeatures;
+  Widget _buildBody(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final feats = _kPackageFeatures;
     return Padding(
       padding: EdgeInsets.fromLTRB(18.w, 14.h, 18.w, 16.h),
       child: Column(
@@ -805,7 +817,7 @@ class _PackageCard extends StatelessWidget {
                     SizedBox(width: 5.w),
                   ],
                   Text(
-                    isCurrentPlan ? 'ແພັກເກດປັດຈຸບັນ' : 'ເລືອກແຜນນີ້',
+                    isCurrentPlan ? l10n.packageCurrent : l10n.packageSelectPlan,
                     style: TextStyle(
                       fontSize: 13.sp,
                       fontWeight: FontWeight.w800,

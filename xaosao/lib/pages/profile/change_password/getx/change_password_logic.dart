@@ -2,6 +2,7 @@ import 'package:get/get.dart';
 import 'package:xaosao/repository/register_repo.dart';
 import 'package:xaosao/services/storage_service.dart';
 import 'package:xaosao/utils/app_snackbar.dart';
+import 'package:xaosao/utils/l10n.dart';
 import 'package:xaosao/widgets/show_loading_alert.dart';
 
 enum ChangePasswordStatus { initial, loading, success, failure }
@@ -28,15 +29,15 @@ class ChangePasswordLogic extends GetxController {
       hideLoadingDialog();
       if (res.success) {
         status.value = ChangePasswordStatus.success;
-        AppSnackbar.success('ປ່ຽນລະຫັດຜ່ານສຳເລັດ');
+        AppSnackbar.success(l10n.changePasswordSuccess);
       } else {
         status.value = ChangePasswordStatus.failure;
-        AppSnackbar.error(res.laMessage ?? 'ປ່ຽນລະຫັດຜ່ານບໍ່ສຳເລັດ');
+        AppSnackbar.error(res.laMessage ?? l10n.changePasswordFailed);
       }
     } catch (e) {
       hideLoadingDialog();
       status.value = ChangePasswordStatus.failure;
-      AppSnackbar.error('ເກີດຂໍ້ຜິດພາດ, ກະລຸນາລອງໃໝ່');
+      AppSnackbar.error(l10n.commonError);
     }
   }
 }

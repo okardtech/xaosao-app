@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:xaosao/pages/profile/components/profile_constant.dart';
+import 'package:xaosao/l10n/app_localizations.dart';
 
 import '../../../constants/app_color.dart';
 
@@ -36,7 +36,7 @@ class QrRow extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'ສະແກນເພື່ອໂອນເງິນ',
+                    AppLocalizations.of(context)!.qrRowScanToTransfer,
                     style: TextStyle(fontSize: 10.sp, color: AppColors.textHint),
                   ),
                   SizedBox(height: 2.h),
