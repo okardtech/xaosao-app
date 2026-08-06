@@ -698,6 +698,7 @@ class _PillSwitcher extends StatelessWidget {
                                 ? Colors.white
                                 : AppColors.textSecondary,
                             letterSpacing: active ? 0.1 : 0,
+                            fontFamily: 'NotoSansLao',
                           ),
                           child: Text(labels[i]),
                         ),
@@ -1503,6 +1504,7 @@ class _GenderOption extends StatelessWidget {
                 fontSize: 13.sp,
                 fontWeight: isActive ? FontWeight.w800 : FontWeight.w500,
                 color: isActive ? Colors.white : AppColors.textSecondary,
+                fontFamily: 'NotoSansLao',
               ),
               child: Text(label),
             ),
@@ -1618,7 +1620,7 @@ class _GiftHistoryBanner extends StatelessWidget {
               Container(
                 width: 46.r,
                 height: 46.r,
-                padding:EdgeInsets.all(12.r),
+                padding: EdgeInsets.all(12.r),
                 decoration: BoxDecoration(
                   color: Colors.white.withValues(alpha: 0.20),
                   shape: BoxShape.circle,
