@@ -1871,10 +1871,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get subscriptionViewPackage => 'View Package';
 
   @override
-  String get subscriptionNeedPackage => 'Package required';
+  String get subscriptionNeedPackage => 'Wallet Package required';
 
   @override
-  String get subscriptionNoActive => 'You don\'t have any active Package yet';
+  String get subscriptionNoActive => 'No active Wallet Package yet';
 
   @override
   String get subscriptionServicePrice => 'Service price';
@@ -1898,7 +1898,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get subscriptionAlreadySubscribed =>
-      'You already subscribed to a Package';
+      'You already have an active Wallet Package';
 
   @override
   String get subscriptionPendingBadge => 'Pending';
@@ -1924,43 +1924,48 @@ class AppLocalizationsEn extends AppLocalizations {
   String get packagePurchaseFailed => 'Purchase failed';
 
   @override
-  String get packageFeature1 => 'Unlimited access to all features';
+  String get packageFeature1 =>
+      'Book services from local providers with no daily limit';
 
   @override
-  String get packageFeature2 => 'Unlimited chat messages';
+  String get packageFeature2 =>
+      'Message providers to coordinate bookings and activities';
 
   @override
-  String get packageFeature3 => 'Unlimited bookings with people you like';
+  String get packageFeature3 =>
+      'Reserve real-world activities and services with no daily cap';
 
   @override
-  String get packageFeature4 => 'Access to VIP profiles';
+  String get packageFeature4 =>
+      'Discover top-rated service providers in your area';
 
   @override
-  String get packageFeature5 => 'Advanced search and filters';
+  String get packageFeature5 =>
+      'Search providers by service, location, and availability';
 
   @override
-  String get packageFeature6 => '24/7 priority support';
+  String get packageFeature6 => '24/7 customer support';
 
   @override
-  String get packageFeature7 => 'Increased profile visibility';
+  String get packageFeature7 => 'Higher visibility as a service provider';
 
   @override
   String get packagePlanShort1 =>
-      'Explore all premium features and start connecting right away';
+      'Book services and connect with local providers right away';
 
   @override
   String get packagePlanShort2 =>
-      '24-hour trial with unlimited chat and bookings';
+      '24-hour trial for booking and provider communication';
 
   @override
   String get packagePlanShort3 =>
-      'The best value for long-term dates and genuine connections';
+      'Best value for long-term booking and activity planning';
 
   @override
   String get packageChooseTitle => 'Choose a plan';
 
   @override
-  String get packageChooseSubtitle => 'Upgrade your experience';
+  String get packageChooseSubtitle => 'Choose your Wallet Package';
 
   @override
   String get packageHistoryButton => 'History';
@@ -1998,11 +2003,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get packageChooseYourPlan => 'Choose your plan';
 
   @override
-  String get packageUpgradeExperience => 'Upgrade your experience';
+  String get packageUpgradeExperience => 'Enhance your booking access';
 
   @override
-  String get packageChooseFitPlan =>
-      'Pick a plan that fits and find matches anytime';
+  String get packageChooseFitPlan => 'Pick a plan that fits your booking needs';
 
   @override
   String get packageLoadFailedShort => 'Load failed';
@@ -2024,7 +2028,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get checkoutPurchaseSuccess => 'Package purchased successfully';
 
   @override
-  String get checkoutUpgradeTitle => 'Upgrade';
+  String get checkoutUpgradeTitle => 'Upgrade Package';
 
   @override
   String get checkoutUpgradeSubtitle => 'Review and confirm payment';
@@ -2033,7 +2037,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get checkoutProcessPayment => 'Process payment';
 
   @override
-  String get checkoutAlreadySubscribed => 'Already subscribed to a Package';
+  String get checkoutAlreadySubscribed => 'Wallet Package already active';
 
   @override
   String checkoutPillPlan(String name) {
@@ -2161,7 +2165,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get onboardingRegisterUnlock =>
-      'Register now and unlock higher tiers by referring others';
+      'Register now and grow your rewards by referring others';
 
   @override
   String get onboardingGetStarted => 'Get started';
@@ -3168,7 +3172,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get analyticsBookings => 'Bookings';
 
   @override
-  String get analyticsSubscriptions => 'Subscriptions';
+  String get analyticsSubscriptions => 'Packages';
 
   @override
   String get analyticsApproved => 'Approved';
@@ -3378,22 +3382,22 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get tiersLevel2Benefit =>
-      'No flat 10,000 KIP anymore — instead you earn 20% of customer subscriptions, and 2% of bookings made with models you referred.';
+      'No flat 10,000 KIP anymore — instead you earn 20% of customer Wallet Package purchases, and 2% of bookings made with providers you referred.';
 
   @override
   String get tiersLevel3Title => 'Partner tier';
 
   @override
   String get tiersLevel3Condition =>
-      'Refer more than 5 people AND earn 1,000,000 KIP in total commissions (from customer subs + bookings on your referred models)';
+      'Refer more than 5 people AND earn 1,000,000 KIP in total commissions (from customer packages + bookings on your referred providers)';
 
   @override
   String get tiersLevel3Links =>
-      'You get 2 links: a customer referral link and a model referral link';
+      'You get 2 links: a customer referral link and a provider referral link';
 
   @override
   String get tiersLevel3Benefit =>
-      'No flat 10,000 KIP — instead you earn 40% of customer subscriptions, and 4% of bookings made with models you referred.';
+      'No flat 10,000 KIP — instead you earn 40% of customer Wallet Package purchases, and 4% of bookings made with providers you referred.';
 
   @override
   String get tiersConditionLabel => 'Condition';
@@ -3408,5 +3412,5 @@ class AppLocalizationsEn extends AppLocalizations {
   String get tiersCurrentBadge => 'Your current tier';
 
   @override
-  String get tiersLockedNote => 'Not unlocked yet';
+  String get tiersLockedNote => 'Not yet reached';
 }

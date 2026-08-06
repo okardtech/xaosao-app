@@ -68,6 +68,10 @@ dependencies:
   fl_chart: ^1.2.0
   flutter_svg: ^2.3.0
   new_version_plus: ^1.0.1
+  # iOS 14.5+ App Tracking Transparency prompt — required by Apple
+  # Guideline 5.1.2(i) so AppsFlyer can collect IDFA for attribution.
+  # No-op on Android.
+  app_tracking_transparency: ^2.0.6+1
 
 dev_dependencies:
   flutter_test:

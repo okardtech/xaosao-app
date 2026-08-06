@@ -7,6 +7,7 @@ import 'package:xaosao/constants/app_routes.dart';
 import 'package:xaosao/pages/login/getx/login_logic.dart';
 import 'package:xaosao/services/deep_link_service.dart';
 import 'package:xaosao/services/storage_service.dart';
+import 'package:xaosao/utils/att_helper.dart';
 
 // ═══════════════════════════════════════════════════════════════
 //  SplashPage — Variant C · Full Gradient
@@ -42,6 +43,13 @@ class _SplashPageState extends State<SplashPage> {
         statusBarBrightness: Brightness.dark,
       ),
     );
+    // iOS 14.5+ App Tracking Transparency — fire-and-forget so it
+    // doesn't block the splash → auth-check flow. AppsFlyer's SDK is
+    // configured to wait up to 15s (`timeToWaitForATTUserAuthorization`)
+    // for the ATT decision before finalising attribution, so as long as
+    // the user answers within the splash + auth-check window we're fine.
+    // No-op on Android.
+    AttHelper.ensureRequested();
     Future.delayed(const Duration(seconds: 2), _checkAuthAndNavigate);
   }
 

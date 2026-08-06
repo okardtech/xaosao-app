@@ -6,6 +6,8 @@
 	<string>We need access to your photo library to save images.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>We need access to your photo library to save images.</string>
+	<key>NSUserTrackingUsageDescription</key>
+	<string>Allow tracking so your friends can earn commissions when you sign up using their referral link.</string>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
 	<key>LSApplicationQueriesSchemes</key>

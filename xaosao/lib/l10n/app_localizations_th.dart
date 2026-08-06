@@ -1864,10 +1864,10 @@ class AppLocalizationsTh extends AppLocalizations {
   String get subscriptionViewPackage => 'ดู Package';
 
   @override
-  String get subscriptionNeedPackage => 'ต้องการ Package';
+  String get subscriptionNeedPackage => 'ต้องการ Wallet Package';
 
   @override
-  String get subscriptionNoActive => 'คุณยังไม่ได้สมัคร Package ใดๆ';
+  String get subscriptionNoActive => 'ยังไม่มี Wallet Package ใช้งาน';
 
   @override
   String get subscriptionServicePrice => 'ราคาบริการ';
@@ -1890,7 +1890,8 @@ class AppLocalizationsTh extends AppLocalizations {
   String get subscriptionPendingVerification => 'รอการยืนยัน';
 
   @override
-  String get subscriptionAlreadySubscribed => 'คุณได้สมัคร Package แล้ว';
+  String get subscriptionAlreadySubscribed =>
+      'คุณมี Wallet Package ใช้งานอยู่แล้ว';
 
   @override
   String get subscriptionPendingBadge => 'รอ';
@@ -1915,43 +1916,48 @@ class AppLocalizationsTh extends AppLocalizations {
   String get packagePurchaseFailed => 'การซื้อไม่สำเร็จ';
 
   @override
-  String get packageFeature1 => 'เข้าถึงทุกฟีเจอร์แบบไม่จำกัด';
+  String get packageFeature1 =>
+      'จองบริการจากผู้ให้บริการในท้องถิ่นได้ไม่จำกัดต่อวัน';
 
   @override
-  String get packageFeature2 => 'ส่งข้อความแชทได้ไม่จำกัด';
+  String get packageFeature2 =>
+      'ติดต่อผู้ให้บริการเพื่อประสานงานการจองและกิจกรรม';
 
   @override
-  String get packageFeature3 => 'นัดหมายกับคนที่ชอบได้ไม่จำกัด';
+  String get packageFeature3 =>
+      'จองกิจกรรมและบริการในชีวิตจริงได้ไม่จำกัดต่อวัน';
 
   @override
-  String get packageFeature4 => 'เปิดสิทธิ์เข้าดูโปรไฟล์ VIP';
+  String get packageFeature4 =>
+      'ค้นพบผู้ให้บริการที่ได้รับคะแนนสูงในพื้นที่ของคุณ';
 
   @override
-  String get packageFeature5 => 'ระบบค้นหาและกรองขั้นสูง';
+  String get packageFeature5 =>
+      'ค้นหาผู้ให้บริการตามประเภท สถานที่ และความพร้อม';
 
   @override
-  String get packageFeature6 => 'ได้รับบริการช่วยเหลือระดับพิเศษตลอด 24/7';
+  String get packageFeature6 => 'บริการช่วยเหลือลูกค้าตลอด 24/7';
 
   @override
-  String get packageFeature7 => 'เพิ่มการมองเห็นโปรไฟล์';
+  String get packageFeature7 => 'โปรไฟล์ผู้ให้บริการเห็นเด่นชัดขึ้น';
 
   @override
   String get packagePlanShort1 =>
-      'สำรวจทุกฟีเจอร์ระดับพรีเมียมและเริ่มเชื่อมต่อได้ทันที';
+      'จองบริการและเชื่อมต่อกับผู้ให้บริการในท้องถิ่นได้ทันที';
 
   @override
   String get packagePlanShort2 =>
-      'ทดลองบริการ 24 ชั่วโมงด้วยแชทและการจองแบบไม่จำกัด';
+      'ทดลองใช้ 24 ชั่วโมง สำหรับการจองและติดต่อผู้ให้บริการ';
 
   @override
   String get packagePlanShort3 =>
-      'ดีลที่คุ้มค่าที่สุด สำหรับการนัดหมายระยะยาวและการเชื่อมต่อที่จริงใจ';
+      'คุ้มที่สุดสำหรับการจองระยะยาวและวางแผนกิจกรรม';
 
   @override
   String get packageChooseTitle => 'เลือกแผน';
 
   @override
-  String get packageChooseSubtitle => 'ยกระดับประสบการณ์ของคุณ';
+  String get packageChooseSubtitle => 'เลือก Wallet Package';
 
   @override
   String get packageHistoryButton => 'ประวัติ';
@@ -1989,10 +1995,10 @@ class AppLocalizationsTh extends AppLocalizations {
   String get packageChooseYourPlan => 'เลือกแผนของคุณ';
 
   @override
-  String get packageUpgradeExperience => 'ยกระดับประสบการณ์';
+  String get packageUpgradeExperience => 'ขยายการเข้าถึงการจอง';
 
   @override
-  String get packageChooseFitPlan => 'เลือกแผนที่เหมาะสม แล้วหาคู่ได้ทุกเวลา';
+  String get packageChooseFitPlan => 'เลือกแผนที่ตรงกับความต้องการจองของคุณ';
 
   @override
   String get packageLoadFailedShort => 'โหลดไม่สำเร็จ';
@@ -2014,7 +2020,7 @@ class AppLocalizationsTh extends AppLocalizations {
   String get checkoutPurchaseSuccess => 'ซื้อ Package สำเร็จ';
 
   @override
-  String get checkoutUpgradeTitle => 'การอัปเกรด';
+  String get checkoutUpgradeTitle => 'อัปเกรด Package';
 
   @override
   String get checkoutUpgradeSubtitle => 'ตรวจสอบและยืนยันการชำระ';
@@ -2023,7 +2029,7 @@ class AppLocalizationsTh extends AppLocalizations {
   String get checkoutProcessPayment => 'ดำเนินการชำระ';
 
   @override
-  String get checkoutAlreadySubscribed => 'สมัคร Package อยู่แล้ว';
+  String get checkoutAlreadySubscribed => 'Wallet Package ใช้งานอยู่แล้ว';
 
   @override
   String checkoutPillPlan(String name) {
@@ -2151,7 +2157,7 @@ class AppLocalizationsTh extends AppLocalizations {
 
   @override
   String get onboardingRegisterUnlock =>
-      'ลงทะเบียนตอนนี้ และปลดล็อกระดับที่สูงขึ้นด้วยการแนะนำผู้อื่น';
+      'ลงทะเบียนตอนนี้ และเพิ่มรางวัลของคุณด้วยการแนะนำผู้อื่น';
 
   @override
   String get onboardingGetStarted => 'เริ่มต้น';
@@ -3152,7 +3158,7 @@ class AppLocalizationsTh extends AppLocalizations {
   String get analyticsBookings => 'การจอง';
 
   @override
-  String get analyticsSubscriptions => 'สมาชิก';
+  String get analyticsSubscriptions => 'Package';
 
   @override
   String get analyticsApproved => 'อนุมัติ';
@@ -3362,22 +3368,22 @@ class AppLocalizationsTh extends AppLocalizations {
 
   @override
   String get tiersLevel2Benefit =>
-      'ไม่ได้รับเงิน 10,000 กีบ แต่จะได้เป็นเปอร์เซ็นต์แทน เช่น: 20% ของเงินที่ลูกค้า subscription, 2% ของโมเดลที่ตัวเองแนะนำเวลามีคนจอง';
+      'ไม่ได้รับเงิน 10,000 กีบ แต่จะได้เป็นเปอร์เซ็นต์แทน เช่น: 20% ของลูกค้าซื้อ Wallet Package, 2% ของผู้ให้บริการที่ตัวเองแนะนำเวลามีคนจอง';
 
   @override
   String get tiersLevel3Title => 'ระดับพาร์ทเนอร์';
 
   @override
   String get tiersLevel3Condition =>
-      'ต้องมีผู้แนะนำมากกว่า 5 คนขึ้นไป และรายได้รวมของค่าคอมมิชชั่นที่ได้จากลูกค้า sub และลูกค้าจองโมเดลที่แนะนำ 1,000,000 กีบ';
+      'ต้องมีผู้แนะนำมากกว่า 5 คนขึ้นไป และรายได้รวมของค่าคอมมิชชั่นที่ได้จาก Wallet Package ของลูกค้าและลูกค้าจองผู้ให้บริการที่แนะนำ 1,000,000 กีบ';
 
   @override
   String get tiersLevel3Links =>
-      'จะมีลิงก์แนะนำ 2 ลิงก์: ลิงก์แนะนำลูกค้า และลิงก์แนะนำโมเดลด้วยกัน';
+      'จะมีลิงก์แนะนำ 2 ลิงก์: ลิงก์แนะนำลูกค้า และลิงก์แนะนำผู้ให้บริการด้วยกัน';
 
   @override
   String get tiersLevel3Benefit =>
-      'ไม่ได้รับเงิน 10,000 กีบ แต่จะได้เป็นเปอร์เซ็นต์แทน เช่น: 40% ของเงินที่ลูกค้า subscription, 4% ของโมเดลที่ตัวเองแนะนำเวลามีคนจอง';
+      'ไม่ได้รับเงิน 10,000 กีบ แต่จะได้เป็นเปอร์เซ็นต์แทน เช่น: 40% ของลูกค้าซื้อ Wallet Package, 4% ของผู้ให้บริการที่ตัวเองแนะนำเวลามีคนจอง';
 
   @override
   String get tiersConditionLabel => 'เงื่อนไข';
@@ -3392,5 +3398,5 @@ class AppLocalizationsTh extends AppLocalizations {
   String get tiersCurrentBadge => 'ระดับปัจจุบันของคุณ';
 
   @override
-  String get tiersLockedNote => 'ยังไม่ปลดล็อก';
+  String get tiersLockedNote => 'ยังไม่ถึงระดับ';
 }

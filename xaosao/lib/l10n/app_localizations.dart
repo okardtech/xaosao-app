@@ -3619,13 +3619,13 @@ abstract class AppLocalizations {
   /// No description provided for @subscriptionNeedPackage.
   ///
   /// In lo, this message translates to:
-  /// **'ຕ້ອງການ Package'**
+  /// **'ຕ້ອງການ Wallet Package'**
   String get subscriptionNeedPackage;
 
   /// No description provided for @subscriptionNoActive.
   ///
   /// In lo, this message translates to:
-  /// **'ທ່ານຍັງບໍ່ທັນສະໝັກ Package ໃດ'**
+  /// **'ຍັງບໍ່ມີ Wallet Package ໃຊ້ງານ'**
   String get subscriptionNoActive;
 
   /// No description provided for @subscriptionServicePrice.
@@ -3667,7 +3667,7 @@ abstract class AppLocalizations {
   /// No description provided for @subscriptionAlreadySubscribed.
   ///
   /// In lo, this message translates to:
-  /// **'ທ່ານໄດ້ສະໝັກ Package ແລ້ວ'**
+  /// **'ທ່ານມີ Wallet Package ໃຊ້ງານຢູ່ແລ້ວ'**
   String get subscriptionAlreadySubscribed;
 
   /// No description provided for @subscriptionPendingBadge.
@@ -3715,61 +3715,61 @@ abstract class AppLocalizations {
   /// No description provided for @packageFeature1.
   ///
   /// In lo, this message translates to:
-  /// **'ເຂົ້າເຖິງທຸກຟີເຈີແບບໄຮ້ຂີດຈໍາກັດ'**
+  /// **'ຈອງບໍລິການຈາກຜູ້ໃຫ້ບໍລິການໃນທ້ອງຖິ່ນໄດ້ບໍ່ຈຳກັດຕໍ່ວັນ'**
   String get packageFeature1;
 
   /// No description provided for @packageFeature2.
   ///
   /// In lo, this message translates to:
-  /// **'ສົ່ງຂໍ້ຄວາມແຊັດໄດ້ບໍ່ຈໍາກັດ'**
+  /// **'ຕິດຕໍ່ຜູ້ໃຫ້ບໍລິການເພື່ອປະສານງານການຈອງ ແລະ ກິດຈະກຳ'**
   String get packageFeature2;
 
   /// No description provided for @packageFeature3.
   ///
   /// In lo, this message translates to:
-  /// **'ນັດໝາຍນໍາຄົນທີ່ເຮົາມັກໄດ້ບໍ່ຈໍາກັດ'**
+  /// **'ຈອງກິດຈະກຳ ແລະ ບໍລິການໃນຊີວິດຈິງໄດ້ບໍ່ຈຳກັດຕໍ່ວັນ'**
   String get packageFeature3;
 
   /// No description provided for @packageFeature4.
   ///
   /// In lo, this message translates to:
-  /// **'ເປີດສິດເຂົ້າເບິ່ງໂປຣໄຟລ໌ VIP ຂອງສາວໆ'**
+  /// **'ຄົ້ນພົບຜູ້ໃຫ້ບໍລິການທີ່ໄດ້ຮັບຄະແນນສູງໃນເຂດຂອງທ່ານ'**
   String get packageFeature4;
 
   /// No description provided for @packageFeature5.
   ///
   /// In lo, this message translates to:
-  /// **'ລະບົບຄົ້ນຫາ ແລະ ຄັດກອງແບບຂັ້ນສູງ'**
+  /// **'ຄົ້ນຫາຜູ້ໃຫ້ບໍລິການຕາມປະເພດ, ສະຖານທີ່ ແລະ ຄວາມພ້ອມ'**
   String get packageFeature5;
 
   /// No description provided for @packageFeature6.
   ///
   /// In lo, this message translates to:
-  /// **'ໄດ້ຮັບບໍລິການຊ່ວຍເຫຼືອລະດັບພິເສດຕະຫຼອດ 24/7'**
+  /// **'ບໍລິການຊ່ວຍເຫຼືອລູກຄ້າ 24/7'**
   String get packageFeature6;
 
   /// No description provided for @packageFeature7.
   ///
   /// In lo, this message translates to:
-  /// **'ເພີ່ມການເບິ່ງເຫັນໂປຣໄຟລ໌'**
+  /// **'ໂປຣໄຟລ໌ຜູ້ໃຫ້ບໍລິການເຫັນເດັ່ນຊັດຂຶ້ນ'**
   String get packageFeature7;
 
   /// No description provided for @packagePlanShort1.
   ///
   /// In lo, this message translates to:
-  /// **'ສຳຫຼວດທຸກຟີເຈີລະດັບພຣີມຽມ ແລະ ເລີ່ມເຊື່ອມຕໍ່ໄດ້ທັນທີ'**
+  /// **'ຈອງບໍລິການ ແລະ ເຊື່ອມຕໍ່ກັບຜູ້ໃຫ້ບໍລິການໃນທ້ອງຖິ່ນ'**
   String get packagePlanShort1;
 
   /// No description provided for @packagePlanShort2.
   ///
   /// In lo, this message translates to:
-  /// **'ທົດລອງບໍລິການ 24 ຊົ່ວໂມງ ດ້ວຍແຊັດ ແລະ ການຈອງແບບບໍ່ຈຳກັດ'**
+  /// **'ທົດລອງໃຊ້ 24 ຊົ່ວໂມງ ສຳລັບການຈອງ ແລະ ຕິດຕໍ່ຜູ້ໃຫ້ບໍລິການ'**
   String get packagePlanShort2;
 
   /// No description provided for @packagePlanShort3.
   ///
   /// In lo, this message translates to:
-  /// **'ດີລທີ່ຄຸ້ມຄ່າທີ່ສຸດ ສຳລັບການນັດໝາຍໄລຍະຍາວ ແລະ ການເຊື່ອມຕໍ່ທີ່ຈິງໃຈ'**
+  /// **'ຄຸ້ມທີ່ສຸດສຳລັບການຈອງໄລຍະຍາວ ແລະ ວາງແຜນກິດຈະກຳ'**
   String get packagePlanShort3;
 
   /// No description provided for @packageChooseTitle.
@@ -3781,7 +3781,7 @@ abstract class AppLocalizations {
   /// No description provided for @packageChooseSubtitle.
   ///
   /// In lo, this message translates to:
-  /// **'ຍົກລະດັບປະສົບການຂອງທ່ານ'**
+  /// **'ເລືອກ Wallet Package'**
   String get packageChooseSubtitle;
 
   /// No description provided for @packageHistoryButton.
@@ -3853,13 +3853,13 @@ abstract class AppLocalizations {
   /// No description provided for @packageUpgradeExperience.
   ///
   /// In lo, this message translates to:
-  /// **'ຍົກລະດັບປະສົບການ'**
+  /// **'ຂະຫຍາຍການເຂົ້າເຖິງການຈອງ'**
   String get packageUpgradeExperience;
 
   /// No description provided for @packageChooseFitPlan.
   ///
   /// In lo, this message translates to:
-  /// **'ເລືອກແຜນທີ່ເໝາະສົມ ແລ້ວຊອກຫາຄູ່ໄດ້ທຸກເວລາ'**
+  /// **'ເລືອກແຜນທີ່ເໝາະສົມກັບຄວາມຕ້ອງການຈອງ'**
   String get packageChooseFitPlan;
 
   /// No description provided for @packageLoadFailedShort.
@@ -3901,7 +3901,7 @@ abstract class AppLocalizations {
   /// No description provided for @checkoutUpgradeTitle.
   ///
   /// In lo, this message translates to:
-  /// **'ການອັບເກຣດ'**
+  /// **'ອັບເກຣດ Package'**
   String get checkoutUpgradeTitle;
 
   /// No description provided for @checkoutUpgradeSubtitle.
@@ -3919,7 +3919,7 @@ abstract class AppLocalizations {
   /// No description provided for @checkoutAlreadySubscribed.
   ///
   /// In lo, this message translates to:
-  /// **'ສະໝັກ Package ຢູ່ແລ້ວ'**
+  /// **'Wallet Package ໃຊ້ງານຢູ່ແລ້ວ'**
   String get checkoutAlreadySubscribed;
 
   /// No description provided for @checkoutPillPlan.
@@ -4153,7 +4153,7 @@ abstract class AppLocalizations {
   /// No description provided for @onboardingRegisterUnlock.
   ///
   /// In lo, this message translates to:
-  /// **'ລົງທະບຽນຕອນນີ້ ແລະ ປົດລັອກລະດັບທີ່ສູງຂຶ້ນ ໂດຍການແນະນຳຜູ້ອື່ນ'**
+  /// **'ລົງທະບຽນຕອນນີ້ ແລະ ເພີ່ມລາງວັນຂອງທ່ານ ໂດຍການແນະນຳຜູ້ອື່ນ'**
   String get onboardingRegisterUnlock;
 
   /// No description provided for @onboardingGetStarted.
@@ -6013,7 +6013,7 @@ abstract class AppLocalizations {
   /// No description provided for @analyticsSubscriptions.
   ///
   /// In lo, this message translates to:
-  /// **'ສະມາຊິກ'**
+  /// **'Package'**
   String get analyticsSubscriptions;
 
   /// No description provided for @analyticsApproved.
@@ -6403,7 +6403,7 @@ abstract class AppLocalizations {
   /// No description provided for @tiersLevel2Benefit.
   ///
   /// In lo, this message translates to:
-  /// **'ບໍ່ໄດ້ຮັບເງີນ 10,000 ກີບ ແຕ່ຈະໄດ້ຮັບເປັນເປີເຊັນແທນເຊັ່ນ: 20% ຂອງເງີນທີ່ລູກຄ້າ subscription, 2% ຂອງໂມເດວທີ່ຕົວເອງແນະນຳເວລາມີຄົນຈອງ'**
+  /// **'ບໍ່ໄດ້ຮັບເງີນ 10,000 ກີບ ແຕ່ຈະໄດ້ຮັບເປັນເປີເຊັນແທນເຊັ່ນ: 20% ຂອງລູກຄ້າຊື້ Wallet Package, 2% ຂອງຜູ້ໃຫ້ບໍລິການທີ່ຕົວເອງແນະນຳເວລາມີຄົນຈອງ'**
   String get tiersLevel2Benefit;
 
   /// No description provided for @tiersLevel3Title.
@@ -6415,19 +6415,19 @@ abstract class AppLocalizations {
   /// No description provided for @tiersLevel3Condition.
   ///
   /// In lo, this message translates to:
-  /// **'ຕ້ອງມີຜູ້ແນະນຳຫຼາຍກວ່າ 5 ຄົນຂຶ້ນໄປ ແລະ ລາຍໄດ້ລວມຂອງຄ່າຄອມມິສຊັນທີ່ໄດ້ຈາກລູກຄ້າ sub ແລະ ລູກຄ້າຈອງໂມເດວທີ່ແນະນຳ 1,000,000 ກີບ'**
+  /// **'ຕ້ອງມີຜູ້ແນະນຳຫຼາຍກວ່າ 5 ຄົນຂຶ້ນໄປ ແລະ ລາຍໄດ້ລວມຂອງຄ່າຄອມມິສຊັນທີ່ໄດ້ຈາກ Wallet Package ຂອງລູກຄ້າ ແລະ ລູກຄ້າຈອງຜູ້ໃຫ້ບໍລິການທີ່ແນະນຳ 1,000,000 ກີບ'**
   String get tiersLevel3Condition;
 
   /// No description provided for @tiersLevel3Links.
   ///
   /// In lo, this message translates to:
-  /// **'ຈະມີລິ້ງແນະນຳ 2 ລິ້ງຄື: ລິ້ງແນະນຳລູກຄ້າ ແລະ ລິ້ງແນະນຳໂມເດວດ້ວຍກັນ'**
+  /// **'ຈະມີລິ້ງແນະນຳ 2 ລິ້ງຄື: ລິ້ງແນະນຳລູກຄ້າ ແລະ ລິ້ງແນະນຳຜູ້ໃຫ້ບໍລິການດ້ວຍກັນ'**
   String get tiersLevel3Links;
 
   /// No description provided for @tiersLevel3Benefit.
   ///
   /// In lo, this message translates to:
-  /// **'ບໍ່ໄດ້ຮັບເງີນ 10,000 ກີບ ແຕ່ຈະໄດ້ຮັບເປັນເປີເຊັນແທນເຊັ່ນ: 40% ຂອງເງີນທີ່ລູກຄ້າ subscription, 4% ຂອງໂມເດວທີ່ຕົວເອງແນະນຳເວລາມີຄົນຈອງ'**
+  /// **'ບໍ່ໄດ້ຮັບເງີນ 10,000 ກີບ ແຕ່ຈະໄດ້ຮັບເປັນເປີເຊັນແທນເຊັ່ນ: 40% ຂອງລູກຄ້າຊື້ Wallet Package, 4% ຂອງຜູ້ໃຫ້ບໍລິການທີ່ຕົວເອງແນະນຳເວລາມີຄົນຈອງ'**
   String get tiersLevel3Benefit;
 
   /// No description provided for @tiersConditionLabel.
@@ -6457,7 +6457,7 @@ abstract class AppLocalizations {
   /// No description provided for @tiersLockedNote.
   ///
   /// In lo, this message translates to:
-  /// **'ຍັງບໍ່ປົດລັອກ'**
+  /// **'ຍັງບໍ່ເຖິງລະດັບ'**
   String get tiersLockedNote;
 }
 
