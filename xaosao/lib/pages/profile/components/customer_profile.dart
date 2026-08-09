@@ -219,7 +219,8 @@ class _CustomerProfilePageState extends State<CustomerProfilePage> {
                         iconColor: AppColors.primaryVariant,
                         icon: Icons.description_outlined,
                         label: l10n.profileTerms,
-                        onTap: () => Get.toNamed(AppRoutes.customerPolicyPrivacy),
+                        onTap: () =>
+                            Get.toNamed(AppRoutes.customerPolicyPrivacy),
                       ),
                     ],
                   ),
@@ -246,7 +247,7 @@ class _CustomerProfilePageState extends State<CustomerProfilePage> {
 
                   Center(
                     child: Text(
-                      l10n.profileAppVersion('1.0.4'),
+                      l10n.profileAppVersion('1.0.0'),
                       style: const TextStyle(
                         fontSize: 10,
                         color: Color(0xFFC4C4D0),
@@ -288,151 +289,146 @@ class _CustomerProfilePageState extends State<CustomerProfilePage> {
           ],
         ),
         child: Column(
-            children: [
-              Row(
-                children: [
-                  Stack(
-                    clipBehavior: Clip.none,
-                    children: [
-                      Container(
-                        width: 76.r,
-                        height: 76.r,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          image:
-                              customer?.profile != null &&
-                                  customer!.profile!.isNotEmpty
-                              ? DecorationImage(
-                                  image: NetworkImage(customer.profile!),
-                                  fit: BoxFit.cover,
-                                )
-                              : null,
-                          gradient:
-                              customer?.profile == null ||
-                                  customer!.profile!.isEmpty
-                              ? const LinearGradient(
-                                  begin: Alignment.topLeft,
-                                  end: Alignment.bottomRight,
-                                  colors: [
-                                    Color(0xFF5C6BC0),
-                                    Color(0xFF1A1A2E),
-                                  ],
-                                )
-                              : null,
-                          border: Border.all(color: AppColors.bg, width: 2.5),
-                        ),
-                        child: uploading
-                            ? Container(
-                                decoration: const BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: Colors.black26,
-                                ),
-                                child: const Center(
-                                  child: CircularProgressIndicator(
-                                    strokeWidth: 2,
-                                    color: Colors.white,
-                                  ),
-                                ),
+          children: [
+            Row(
+              children: [
+                Stack(
+                  clipBehavior: Clip.none,
+                  children: [
+                    Container(
+                      width: 76.r,
+                      height: 76.r,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        image:
+                            customer?.profile != null &&
+                                customer!.profile!.isNotEmpty
+                            ? DecorationImage(
+                                image: NetworkImage(customer.profile!),
+                                fit: BoxFit.cover,
                               )
                             : null,
+                        gradient:
+                            customer?.profile == null ||
+                                customer!.profile!.isEmpty
+                            ? const LinearGradient(
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,
+                                colors: [Color(0xFF5C6BC0), Color(0xFF1A1A2E)],
+                              )
+                            : null,
+                        border: Border.all(color: AppColors.bg, width: 2.5),
                       ),
-                      if (!uploading)
-                        Positioned(
-                          bottom: 1,
-                          right: 1,
-                          child: GestureDetector(
-                            onTap: _profileLogic.updateProfileImage,
-                            child: Container(
-                              width: 22.r,
-                              height: 22.r,
-                              decoration: BoxDecoration(
-                                color: AppColors.primary,
+                      child: uploading
+                          ? Container(
+                              decoration: const BoxDecoration(
                                 shape: BoxShape.circle,
-                                border: Border.all(
+                                color: Colors.black26,
+                              ),
+                              child: const Center(
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
                                   color: Colors.white,
-                                  width: 2,
                                 ),
                               ),
-                              child: const Icon(
-                                Icons.edit_rounded,
-                                size: 10,
-                                color: Colors.white,
-                              ),
+                            )
+                          : null,
+                    ),
+                    if (!uploading)
+                      Positioned(
+                        bottom: 1,
+                        right: 1,
+                        child: GestureDetector(
+                          onTap: _profileLogic.updateProfileImage,
+                          child: Container(
+                            width: 22.r,
+                            height: 22.r,
+                            decoration: BoxDecoration(
+                              color: AppColors.primary,
+                              shape: BoxShape.circle,
+                              border: Border.all(color: Colors.white, width: 2),
                             ),
+                            child: const Icon(
+                              Icons.edit_rounded,
+                              size: 10,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
+                SizedBox(width: 12.w),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        customer?.fullName.isNotEmpty == true
+                            ? customer!.fullName
+                            : '—',
+                        style: TextStyle(
+                          fontSize: 18.sp,
+                          fontWeight: FontWeight.w900,
+                          color: AppColors.primaryVariant,
+                          letterSpacing: -0.3,
+                        ),
+                      ),
+                      Text(
+                        customer?.whatsapp != null
+                            ? '+856 ${customer!.whatsapp}'
+                            : '—',
+                        style: TextStyle(
+                          fontSize: 12.sp,
+                          color: AppColors.textHint,
+                        ),
+                      ),
+                      // Verified badge
+                      if (customer?.isPhoneVerified == true)
+                        Container(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 10.w,
+                            vertical: 5.h,
+                          ),
+                          decoration: BoxDecoration(
+                            color: AppColors.safetyFg.withOpacity(0.05),
+                            borderRadius: BorderRadius.circular(20.r),
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(
+                                Icons.verified_rounded,
+                                size: 12.r,
+                                color: AppColors.online,
+                              ),
+                              SizedBox(width: 4.w),
+                              Text(
+                                AppLocalizations.of(
+                                  context,
+                                )!.profileVerifiedIdentity,
+                                style: TextStyle(
+                                  fontSize: 10.sp,
+                                  fontWeight: FontWeight.w700,
+                                  color: AppColors.online,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                     ],
                   ),
-                  SizedBox(width: 12.w),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          customer?.fullName.isNotEmpty == true
-                              ? customer!.fullName
-                              : '—',
-                          style: TextStyle(
-                            fontSize: 18.sp,
-                            fontWeight: FontWeight.w900,
-                            color: AppColors.primaryVariant,
-                            letterSpacing: -0.3,
-                          ),
-                        ),
-                        Text(
-                          customer?.whatsapp != null
-                              ? '+856 ${customer!.whatsapp}'
-                              : '—',
-                          style: TextStyle(
-                            fontSize: 12.sp,
-                            color: AppColors.textHint,
-                          ),
-                        ),
-                        // Verified badge
-                        if (customer?.isPhoneVerified == true)
-                          Container(
-                            padding: EdgeInsets.symmetric(
-                              horizontal: 10.w,
-                              vertical: 5.h,
-                            ),
-                            decoration: BoxDecoration(
-                              color: AppColors.safetyFg.withOpacity(0.05),
-                              borderRadius: BorderRadius.circular(20.r),
-                            ),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Icon(
-                                  Icons.verified_rounded,
-                                  size: 12.r,
-                                  color: AppColors.online,
-                                ),
-                                SizedBox(width: 4.w),
-                                Text(
-                                  AppLocalizations.of(context)!
-                                      .profileVerifiedIdentity,
-                                  style: TextStyle(
-                                    fontSize: 10.sp,
-                                    fontWeight: FontWeight.w700,
-                                    color: AppColors.online,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-              _WalletCard(
-                showAmounts: _showAmt,
-                onToggle: () => setState(() => _showAmt = !_showAmt),
-                onTopUp: () => Get.toNamed(AppRoutes.topupAmount),
-                onHistory: () => Get.toNamed(AppRoutes.wallet),
-              ),
-            ],
-          ),
+                ),
+              ],
+            ),
+            _WalletCard(
+              showAmounts: _showAmt,
+              onToggle: () => setState(() => _showAmt = !_showAmt),
+              onTopUp: () => Get.toNamed(AppRoutes.topupAmount),
+              onHistory: () => Get.toNamed(AppRoutes.wallet),
+            ),
+          ],
+        ),
       );
     });
   }
