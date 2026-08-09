@@ -9,7 +9,7 @@ import '../services/base_repo.dart';
 class DiscoverRepo extends BaseRepository {
   Future<ApiResponse<List<ModelsHot>>> getModelsHot() async {
     return safeCall(
-      () => api.get('${ApiConstants.modelsHot}'),
+      () => api.get(ApiConstants.modelsHot),
       fromJson: (json) =>
           (json as List).map((e) => ModelsHot.fromJson(e)).toList(),
     );
@@ -19,13 +19,13 @@ class DiscoverRepo extends BaseRepository {
     required int page,
     required int limit,
     required double maxDistanceKm,
-    String? genderType,
+    // String? genderType,
     String? search,
     String? status, //new,nearby, , vip, popular
   }) async {
     String url =
         '${ApiConstants.recommended}?page=$page&limit=$limit&maxDistanceKm=$maxDistanceKm';
-    if (genderType != null) url += '&gender=$genderType';
+    // if (genderType != null) url += '&gender=$genderType';
     if (search != null) url += '&search=$search';
     if (status != null) url += '&sort=$status';
     return safeCall(
@@ -41,13 +41,13 @@ class DiscoverRepo extends BaseRepository {
     required int page,
     required int limit,
     required double maxDistanceKm,
-    String? genderType,
+    // String? genderType,
     String? search,
     String? status, //new,nearby, , vip, popular
   }) async {
     String url =
         '${ApiConstants.online}?page=$page&limit=$limit&maxDistanceKm=$maxDistanceKm';
-    if (genderType != null) url += '&gender=$genderType';
+    // if (genderType != null) url += '&gender=$genderType';
     if (search != null) url += '&search=$search';
     if (status != null) url += '&sort=$status';
     return safeCall(

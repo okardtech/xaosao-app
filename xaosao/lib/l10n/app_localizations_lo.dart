@@ -575,13 +575,13 @@ class AppLocalizationsLo extends AppLocalizations {
   String get commonPleaseRetry => 'ກະລຸນາລອງໃໝ່ອີກຄັ້ງ';
 
   @override
-  String get serviceTypeSocial => 'ສັງຄົມ';
+  String get serviceTypeSocial => 'ກິດຈະກຳທ້ອງຖິ່ນ';
 
   @override
   String get serviceTypeMassage => 'ນວດ';
 
   @override
-  String get serviceTypeTravel => 'ທ່ຽວ';
+  String get serviceTypeTravel => 'ປະສົບການທ້ອງຖິ່ນ';
 
   @override
   String get viewCompanionPageTitle => 'ທັງໝົດ';
@@ -680,7 +680,7 @@ class AppLocalizationsLo extends AppLocalizations {
 
   @override
   String commonHours(int hours) {
-    return '$hours ຊົ່ວໂມງ';
+    return '$hours ຮອບ';
   }
 
   @override
@@ -2384,7 +2384,7 @@ class AppLocalizationsLo extends AppLocalizations {
       'ຄົ້ນຫາແລ້ວກົດ ♥ ເພື່ອສະແດງຄວາມສົນໃຈ';
 
   @override
-  String get detailPersonalInfo => 'ຂໍ້ມູນສ່ວນຕົວ';
+  String get detailPersonalInfo => 'ຂໍ້ມູນຜູ້ໃຫ້ບໍລິການ';
 
   @override
   String get detailStatAge => 'ອາຍຸ';
@@ -2750,13 +2750,13 @@ class AppLocalizationsLo extends AppLocalizations {
   String get cpRatingsSection => 'ຄະແນນ ແລະ ລີວິວ';
 
   @override
-  String get cpStatusAvailable => 'ໃຊ້ງານຢູ່';
+  String get cpStatusAvailable => 'ຮັບຈອງ';
 
   @override
-  String get cpStatusUnavailable => 'ບໍ່ໄດ້ໃຊ້ງານ';
+  String get cpStatusUnavailable => 'ບໍ່ຮັບຈອງ';
 
   @override
-  String get cpStatusLabel => 'ສະຖານະ';
+  String get cpStatusLabel => 'ການຈອງ';
 
   @override
   String get cpNoServicesNow => 'ບໍ່ມີບໍລິການໃນຂະນະນີ້';
@@ -2883,16 +2883,16 @@ class AppLocalizationsLo extends AppLocalizations {
   String get bookingLabelDate => 'ວັນທີ';
 
   @override
-  String get bookingHoursCount => 'ຈຳນວນຊົ່ວໂມງ';
+  String get bookingHoursCount => 'ຈຳນວນຮອບ';
 
   @override
   String bookingHoursValue(int hours) {
-    return '$hours ຊົ່ວໂມງ';
+    return '$hours ຮອບ';
   }
 
   @override
   String bookingHoursShortValue(int hours) {
-    return '$hours ຊມ';
+    return '$hours ຮ.';
   }
 
   @override
@@ -2943,12 +2943,12 @@ class AppLocalizationsLo extends AppLocalizations {
 
   @override
   String bookingRatePerHour(String rate) {
-    return '$rate ກີບ / ຊົ່ວໂມງ';
+    return '$rate ກີບ / ຮອບ';
   }
 
   @override
   String bookingRatePerHourShort(String rate) {
-    return '$rate ກີບ / ຊມ';
+    return '$rate ກີບ / ຮ.';
   }
 
   @override
@@ -3102,6 +3102,19 @@ class AppLocalizationsLo extends AppLocalizations {
   String get shareInviteSubject => 'ເຂົ້າຮ່ວມ Xaosao';
 
   @override
+  String get appName => 'Xaosao';
+
+  @override
+  String bookingThankYouFor(String appName) {
+    return 'ຂໍຂອບໃຈທີ່ໃຊ້ບໍລິການຜ່ານ $appName';
+  }
+
+  @override
+  String bookingSupportContact(String phone) {
+    return 'ສອບຖາມເພີ່ມເຕີມ ໂທ $phone';
+  }
+
+  @override
   String get shareCommissionReferral => 'ການແນະນຳ';
 
   @override
@@ -3234,7 +3247,7 @@ class AppLocalizationsLo extends AppLocalizations {
   String get imagePickerCamera => 'ກ້ອງຖ່າຍຮູບ';
 
   @override
-  String get serviceUnitHour => '/ຊົ່ວໂມງ';
+  String get serviceUnitHour => '/ຮອບ';
 
   @override
   String get serviceUnitDay => '/ວັນ';

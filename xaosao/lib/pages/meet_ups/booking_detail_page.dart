@@ -98,27 +98,35 @@ class BookingDetailPage extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: const Color(0xFFF8F8FC),
-      appBar: GradientAppBar(title: AppLocalizations.of(context)!.bookingDetailTitle),
+      appBar: GradientAppBar(
+        title: AppLocalizations.of(context)!.bookingDetailTitle,
+      ),
       body: SafeArea(
         top: false,
         child: SingleChildScrollView(
           physics: const BouncingScrollPhysics(),
-          padding: EdgeInsets.fromLTRB(16.w, 20.h, 16.w, 32.h),
-          child: _DetailCard(
-            booking: b,
-            isCustomer: isCustomer,
-            badgeBg: _badgeBg(b.status),
-            badgeFg: _badgeFg(b.status),
-            statusLabel: _statusLabel(b.status),
-            serviceType: _serviceTypeName(b),
-            paymentLabel: _paymentLabel(b.paymentStatus),
+          padding: EdgeInsets.fromLTRB(20.w, 20.h, 20.w, 32.h),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              _DetailCard(
+                booking: b,
+                isCustomer: isCustomer,
+                badgeBg: _badgeBg(b.status),
+                badgeFg: _badgeFg(b.status),
+                statusLabel: _statusLabel(b.status),
+                serviceType: _serviceTypeName(b),
+                paymentLabel: _paymentLabel(b.paymentStatus),
+              ),
+              SizedBox(height: 16.h),
+              _BottomBar(
+                booking: b,
+                isCustomer: isCustomer,
+                logic: _logic,
+              ),
+            ],
           ),
         ),
-      ),
-      bottomNavigationBar: _BottomBar(
-        booking: b,
-        isCustomer: isCustomer,
-        logic: _logic,
       ),
     );
   }
@@ -153,296 +161,462 @@ class _DetailCard extends StatelessWidget {
         ? b.id!.substring(0, 8).toUpperCase()
         : (b.id ?? '-');
 
-    return Container(
-      padding: EdgeInsets.only(bottom: 16.h),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(22.r),
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.primary.withValues(alpha: 0.08),
-            blurRadius: 20,
-            offset: const Offset(0, 6),
+    return Stack(
+      children: [
+        Container(
+          padding: EdgeInsets.only(bottom: 16.h),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(22.r),
+            boxShadow: [
+              BoxShadow(
+                color: AppColors.primary.withValues(alpha: 0.08),
+                blurRadius: 20,
+                offset: const Offset(0, 6),
+              ),
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.05),
+                blurRadius: 8,
+                offset: const Offset(0, 2),
+              ),
+            ],
           ),
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // ── Profile header ─────────────────────────────────────
-          _ProfileHeader(
-            booking: b,
-            isCustomer: isCustomer,
-            badgeBg: badgeBg,
-            badgeFg: badgeFg,
-            statusLabel: statusLabel,
-          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // ── Profile header ─────────────────────────────────────
+              _ProfileHeader(
+                booking: b,
+                isCustomer: isCustomer,
+                badgeBg: badgeBg,
+                badgeFg: badgeFg,
+                statusLabel: statusLabel,
+              ),
 
-          // ── Service type ────────────────────────────────────────
-          Padding(
-            padding: EdgeInsets.fromLTRB(16.w, 10.h, 16.w, 4.h),
-            child: Row(
-              children: [
-                Text(
-                  serviceType,
-                  style: TextStyle(
-                    fontSize: 22.sp,
-                    fontWeight: FontWeight.w900,
-                    color: AppColors.textPrimary,
-                    letterSpacing: -0.5,
+              // ── Service type ────────────────────────────────────────
+              Padding(
+                padding: EdgeInsets.fromLTRB(16.w, 10.h, 16.w, 4.h),
+                child: Row(
+                  children: [
+                    Text(
+                      serviceType,
+                      style: TextStyle(
+                        fontSize: 22.sp,
+                        fontWeight: FontWeight.w900,
+                        color: AppColors.textPrimary,
+                        letterSpacing: -0.5,
+                      ),
+                    ),
+                    if (b.dayAmount != null || b.hours != null) ...[
+                      SizedBox(width: 6.w),
+                      Container(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 7.w,
+                          vertical: 3.h,
+                        ),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFF3F4F6),
+                          borderRadius: BorderRadius.circular(20.r),
+                        ),
+                        child: Text(
+                          b.dayAmount != null
+                              ? g.l10n.commonDays(b.dayAmount!)
+                              : g.l10n.commonHours(b.hours ?? 0),
+                          style: TextStyle(
+                            fontSize: 11.sp,
+                            fontWeight: FontWeight.w600,
+                            color: const Color(0xFF6B7280),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ],
+                ),
+              ),
+
+              // ── Schedule ───────────────────────────────────────────
+              _CardSection(
+                // title: 'ເວລານັດ',
+                // icon: Icons.schedule_outlined,
+                child: _ScheduleContent(booking: b),
+              ),
+              SizedBox(height: 8.h),
+              // ── Location ───────────────────────────────────────────
+              if (b.location != null)
+                _CardSection(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        child: Text(
+                          g.l10n.bookingLocation,
+                          style: TextStyle(
+                            fontSize: 14.sp,
+                            color: AppColors.textSecondary,
+                            height: 1.5,
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                      ),
+                      Flexible(
+                        flex: 2,
+                        child: Text(
+                          b.location ?? '-',
+                          style: TextStyle(
+                            fontSize: 14.sp,
+                            color: AppColors.textPrimary,
+                            height: 1.5,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-                if (b.dayAmount != null || b.hours != null) ...[
-                  SizedBox(width: 6.w),
-                  Container(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 7.w,
-                      vertical: 3.h,
-                    ),
-                    decoration: BoxDecoration(
-                      color: const Color(0xFFF3F4F6),
-                      borderRadius: BorderRadius.circular(20.r),
-                    ),
-                    child: Text(
-                      b.dayAmount != null
-                          ? g.l10n.commonDays(b.dayAmount!)
-                          : g.l10n.commonHours(b.hours ?? 0),
-                      style: TextStyle(
-                        fontSize: 11.sp,
-                        fontWeight: FontWeight.w600,
-                        color: const Color(0xFF6B7280),
-                      ),
-                    ),
-                  ),
-                ],
-              ],
-            ),
-          ),
 
-          // ── Schedule ───────────────────────────────────────────
-          _CardSection(
-            // title: 'ເວລານັດ',
-            // icon: Icons.schedule_outlined,
-            child: _ScheduleContent(booking: b),
-          ),
-
-          // ── Location ───────────────────────────────────────────
-          if (b.location != null)
-            _CardSection(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(
-                    child: Text(
-                      g.l10n.bookingLocation,
-                      style: TextStyle(
-                        fontSize: 14.sp,
-                        color: AppColors.textSecondary,
-                        height: 1.5,
-                        fontWeight: FontWeight.w400,
-                      ),
-                    ),
-                  ),
-                  Flexible(
-                    flex: 2,
-                    child: Text(
-                      b.location ?? '-',
-                      style: TextStyle(
-                        fontSize: 14.sp,
-                        color: AppColors.textPrimary,
-                        height: 1.5,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ),
-                ],
+              // ── Payment ────────────────────────────────────────────
+              _CardSection(
+                // title: 'ການຊຳລະເງິນ',
+                // icon: Icons.payments_outlined,
+                child: _PaymentContent(booking: b, paymentLabel: paymentLabel),
               ),
-            ),
-
-          // ── Payment ────────────────────────────────────────────
-          _CardSection(
-            // title: 'ການຊຳລະເງິນ',
-            // icon: Icons.payments_outlined,
-            child: _PaymentContent(booking: b, paymentLabel: paymentLabel),
-          ),
-          if (b.model != null && b.model?.whatsapp != null)
-            _CardSection(
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(
-                    child: Text(
-                      g.l10n.bookingPhone,
-                      style: TextStyle(
-                        fontSize: 14.sp,
-                        color: AppColors.textSecondary,
-                        height: 1.5,
-                        fontWeight: FontWeight.w400,
-                      ),
-                    ),
-                  ),
-                  Text(
-                    '${b.model?.whatsapp}',
-                    style: TextStyle(
-                      fontSize: 14.sp,
-                      color: AppColors.textPrimary,
-                      height: 1.5,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          if (b.hasTip == true)
-            Padding(
-              padding: EdgeInsets.symmetric(vertical: 16.h, horizontal: 16.w),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    g.l10n.bookingTip,
-                    style: TextStyle(
-                      fontSize: 14.sp,
-                      color: AppColors.textSecondary,
-                    ),
-                  ),
-                  Container(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 10.w,
-                      vertical: 6.h,
-                    ),
-                    decoration: BoxDecoration(
-                      color: const Color(0xFFFFF7ED),
-                      borderRadius: BorderRadius.circular(20.r),
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(
-                          Icons.volunteer_activism_outlined,
-                          size: 13.r,
-                          color: const Color(0xFFF59E0B),
-                        ),
-                        SizedBox(width: 5.w),
-                        Text(
-                          g.l10n.bookingTipReady,
+              if (b.model != null && b.model?.whatsapp != null)
+                _CardSection(
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        child: Text(
+                          g.l10n.bookingPhone,
                           style: TextStyle(
-                            fontSize: 12.sp,
+                            fontSize: 14.sp,
+                            color: AppColors.textSecondary,
+                            height: 1.5,
                             fontWeight: FontWeight.w400,
-                            color: const Color(0xFFF59E0B),
+                          ),
+                        ),
+                      ),
+                      Text(
+                        '${b.model?.whatsapp}',
+                        style: TextStyle(
+                          fontSize: 14.sp,
+                          color: AppColors.textPrimary,
+                          height: 1.5,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              if (b.hasTip == true)
+                Padding(
+                  padding: EdgeInsets.symmetric(
+                    vertical: 8.h,
+                    horizontal: 16.w,
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        g.l10n.bookingTip,
+                        style: TextStyle(
+                          fontSize: 14.sp,
+                          color: AppColors.textSecondary,
+                        ),
+                      ),
+                      Container(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 10.w,
+                          vertical: 6.h,
+                        ),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFFFF7ED),
+                          borderRadius: BorderRadius.circular(20.r),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(
+                              Icons.volunteer_activism_outlined,
+                              size: 13.r,
+                              color: const Color(0xFFF59E0B),
+                            ),
+                            SizedBox(width: 5.w),
+                            Text(
+                              g.l10n.bookingTipReady,
+                              style: TextStyle(
+                                fontSize: 12.sp,
+                                fontWeight: FontWeight.w400,
+                                color: const Color(0xFFF59E0B),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+
+              // ── Attire (show when available) ────────────────────────
+              if (b.preferredAttire != null && b.preferredAttire!.isNotEmpty)
+                _CardSection(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        child: Text(
+                          g.l10n.bookingAttire,
+                          style: TextStyle(
+                            fontSize: 14.sp,
+                            fontWeight: FontWeight.w400,
+                            color: AppColors.textSecondary,
+                            height: 1.4,
+                          ),
+                        ),
+                      ),
+                      Flexible(
+                        flex: 2,
+                        child: Container(
+                          padding: EdgeInsets.symmetric(
+                            vertical: 4.h,
+                            horizontal: 12.w,
+                          ),
+                          decoration: BoxDecoration(
+                            color: AppColors.massageOverlayFg.withAlpha(50),
+                            borderRadius: BorderRadius.circular(20.r),
+                          ),
+                          child: Text(
+                            b.preferredAttire ?? "-",
+                            style: TextStyle(
+                              fontSize: 14.sp,
+                              fontWeight: FontWeight.w400,
+                              color: AppColors.flexFg,
+                              height: 1.4,
+                              // fontStyle: FontStyle.italic,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+
+              // ── Booking reference + created at ─────────────────────
+              Padding(
+                padding: EdgeInsets.fromLTRB(14.w, 4.h, 14.w, 4.h),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Booking ID row
+                    Row(
+                      children: [
+                        Text(
+                          g.l10n.bookingId,
+                          style: TextStyle(
+                            fontSize: 14.sp,
+                            color: AppColors.textSecondary,
+                          ),
+                        ),
+                        const Spacer(),
+                        Text(
+                          '#$shortId',
+                          style: TextStyle(
+                            fontSize: 14.sp,
+                            fontWeight: FontWeight.w800,
+                            color: AppColors.textPrimary,
+                            letterSpacing: 0.8,
                           ),
                         ),
                       ],
                     ),
-                  ),
-                ],
-              ),
-            ),
-
-          // ── Attire (show when available) ────────────────────────
-          if (b.preferredAttire != null && b.preferredAttire!.isNotEmpty)
-            _CardSection(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(
-                    child: Text(
-                      g.l10n.bookingAttire,
-                      style: TextStyle(
-                        fontSize: 14.sp,
-                        fontWeight: FontWeight.w400,
-                        color: AppColors.textSecondary,
-                        height: 1.4,
-                      ),
-                    ),
-                  ),
-                  Flexible(
-                    flex: 2,
-                    child: Container(
-                      padding: EdgeInsets.symmetric(
-                        vertical: 4.h,
-                        horizontal: 12.w,
-                      ),
-                      decoration: BoxDecoration(
-                        color: AppColors.massageOverlayFg.withAlpha(50),
-                        borderRadius: BorderRadius.circular(10.r),
-                      ),
-                      child: Text(
-                        b.preferredAttire ?? "-",
-                        style: TextStyle(
-                          fontSize: 14.sp,
-                          fontWeight: FontWeight.w600,
-                          color: AppColors.flexFg,
-                          height: 1.4,
-                          fontStyle: FontStyle.italic,
+                    SizedBox(height: 8.h),
+                    // Created at row
+                    Row(
+                      children: [
+                        Text(
+                          g.l10n.bookingCreatedAt,
+                          style: TextStyle(
+                            fontSize: 14.sp,
+                            color: AppColors.textSecondary,
+                          ),
                         ),
-                      ),
+                        const Spacer(),
+                        Text(
+                          DateTimeFormatter.laoDateTime(b.createdAt),
+                          style: TextStyle(
+                            fontSize: 14.sp,
+                            fontWeight: FontWeight.w600,
+                            color: AppColors.textPrimary,
+                          ),
+                        ),
+                      ],
                     ),
+                  ],
+                ),
+              ),
+              // ── Ticket perforation strip (cutouts on both sides
+              // + dashed divider between them for the classic receipt
+              // look). Sits BEFORE the thank-you footer so it visually
+              // separates receipt body from the "signature/support"
+              // section below.
+              _TicketPerforation(bgColor: const Color(0xFFF8F8FC)),
+
+              // ── Thank you + support footer ─────────────────────
+              Padding(
+                padding: EdgeInsets.fromLTRB(20.w, 8.h, 20.w, 20.h),
+                child: Center(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        AppLocalizations.of(context)!.bookingThankYouFor(
+                          AppLocalizations.of(context)!.appName,
+                        ),
+                        style: TextStyle(
+                          fontSize: 13.sp,
+                          fontWeight: FontWeight.w700,
+                          color: AppColors.textPrimary,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                      SizedBox(height: 12.h),
+                      _SupportCallRow(
+                        phone: '020 9108 2600',
+                        label: AppLocalizations.of(context)!
+                            .bookingSupportContact('020 9108 2600'),
+                      ),
+                    ],
                   ),
-                ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  Ticket perforation — 2 background-colored circles overlapping the
+//  card edges + dashed line between them. Creates the classic torn-
+//  receipt look that separates the invoice details from the footer.
+//  The circles must be painted in the PAGE background color (not
+//  Colors.white) or they'll be invisible against the white card.
+// ═══════════════════════════════════════════════════════════════
+class _TicketPerforation extends StatelessWidget {
+  final Color bgColor;
+  const _TicketPerforation({required this.bgColor});
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: 24.h,
+      child: Stack(
+        clipBehavior: Clip.none,
+        alignment: Alignment.center,
+        children: [
+          // Left cutout — half of the circle spills off the card edge
+          Positioned(
+            left: -12.w,
+            child: Container(
+              width: 24.r,
+              height: 24.r,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: bgColor,
               ),
             ),
-
-          // ── Booking reference + created at ─────────────────────
+          ),
+          // Right cutout — mirror of left
+          Positioned(
+            right: -12.w,
+            child: Container(
+              width: 24.r,
+              height: 24.r,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: bgColor,
+              ),
+            ),
+          ),
+          // Dashed line between the cutouts — visual perforation
           Padding(
-            padding: EdgeInsets.fromLTRB(14.w, 14.h, 14.w, 16.h),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Booking ID row
-                Row(
-                  children: [
-                    Text(
-                      g.l10n.bookingId,
-                      style: TextStyle(
-                        fontSize: 14.sp,
-                        color: AppColors.textSecondary,
-                      ),
-                    ),
-                    const Spacer(),
-                    Text(
-                      '#$shortId',
-                      style: TextStyle(
-                        fontSize: 14.sp,
-                        fontWeight: FontWeight.w800,
-                        color: AppColors.textPrimary,
-                        letterSpacing: 0.8,
-                      ),
-                    ),
-                  ],
-                ),
+            padding: EdgeInsets.symmetric(horizontal: 22.w),
+            child: CustomPaint(
+              size: Size.fromHeight(1.h),
+              painter: _DashedLinePainter(color: const Color(0xFFE5E7EB)),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
 
-                SizedBox(height: 32.h),
+class _DashedLinePainter extends CustomPainter {
+  final Color color;
+  const _DashedLinePainter({required this.color});
 
-                // Created at row
-                Row(
-                  children: [
-                    Text(
-                      g.l10n.bookingCreatedAt,
-                      style: TextStyle(
-                        fontSize: 14.sp,
-                        color: AppColors.textSecondary,
-                      ),
-                    ),
-                    const Spacer(),
-                    Text(
-                      DateTimeFormatter.laoDateTime(b.createdAt),
-                      style: TextStyle(
-                        fontSize: 14.sp,
-                        fontWeight: FontWeight.w600,
-                        color: AppColors.textPrimary,
-                      ),
-                    ),
-                  ],
-                ),
-              ],
+  @override
+  void paint(Canvas canvas, Size size) {
+    const dashWidth = 5.0;
+    const dashGap = 4.0;
+    final paint = Paint()
+      ..color = color
+      ..strokeWidth = 1.2
+      ..strokeCap = StrokeCap.round;
+    double startX = 0;
+    while (startX < size.width) {
+      canvas.drawLine(
+        Offset(startX, size.height / 2),
+        Offset(startX + dashWidth, size.height / 2),
+        paint,
+      );
+      startX += dashWidth + dashGap;
+    }
+  }
+
+  @override
+  bool shouldRepaint(_DashedLinePainter old) => old.color != color;
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  Support call row — tappable pill that shows the support number.
+//  Currently a display-only widget; wire onTap → url_launcher's
+//  tel: scheme when phone-linking is ready.
+// ═══════════════════════════════════════════════════════════════
+class _SupportCallRow extends StatelessWidget {
+  final String phone;
+  final String label;
+  const _SupportCallRow({required this.phone, required this.label});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
+      decoration: BoxDecoration(
+        color: const Color(0xFFF3F4F6),
+        borderRadius: BorderRadius.circular(20.r),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            Icons.support_agent_rounded,
+            size: 14.r,
+            color: AppColors.textSecondary,
+          ),
+          SizedBox(width: 6.w),
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: 12.sp,
+              fontWeight: FontWeight.w600,
+              color: AppColors.textPrimary,
             ),
           ),
         ],
@@ -494,7 +668,9 @@ class _ProfileHeader extends StatelessWidget {
       firstName,
       lastName,
     ].where((s) => s != null && s.isNotEmpty);
-    final displayName = nameParts.isEmpty ? g.l10n.bookingNoName : nameParts.join(' ');
+    final displayName = nameParts.isEmpty
+        ? g.l10n.bookingNoName
+        : nameParts.join(' ');
 
     return Padding(
       padding: EdgeInsets.fromLTRB(16.w, 18.h, 16.w, 16.h),
@@ -653,7 +829,7 @@ class _CardSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.fromLTRB(14.w, 6.h, 14.w, 6.h),
+      padding: EdgeInsets.fromLTRB(14.w, 4.h, 14.w, 4.h),
       child: child,
     );
   }
@@ -923,8 +1099,7 @@ class _BottomBar extends StatelessWidget {
     final confirmed = await ConfirmSheet.show(
       context,
       title: g.l10n.cancelBookingTitle,
-      message:
-          g.l10n.cancelBookingMessage,
+      message: g.l10n.cancelBookingMessage,
       confirmLabel: g.l10n.cancelBookingTitle,
       icon: AppIcons.cancel,
       isDanger: true,
@@ -937,23 +1112,14 @@ class _BottomBar extends StatelessWidget {
     final actions = _buildActions(context);
     if (actions.isEmpty) return const SizedBox.shrink();
 
-    return Container(
-      padding: EdgeInsets.fromLTRB(20.w, 12.h, 20.w, 28.h),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.06),
-            blurRadius: 16,
-            offset: const Offset(0, -4),
-          ),
-        ],
-      ),
-      child: Row(
-        children: [
-          ...actions.map((w) => Expanded(child: w)).toList(),
-        ].separated(SizedBox(width: 10.w)),
-      ),
+    // Buttons now live inline in the page's scrollable Column
+    // (see [BookingDetailPage.build]) — no sticky-bottom container /
+    // top shadow needed. The parent Column supplies the 16.h gap
+    // between the detail card and this action row.
+    return Row(
+      children: [
+        ...actions.map((w) => Expanded(child: w)),
+      ].separated(SizedBox(width: 10.w)),
     );
   }
 
@@ -1125,17 +1291,27 @@ class _CancelBookingBtn extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (canCancel) {
+      // Active cancel — matches _Btn.red styling so both cancel-style
+      // buttons stand out against the page bg (0xFFF8F8FC) with a
+      // red tinted border + soft shadow.
       return GestureDetector(
         onTap: onCancel,
         child: Container(
-          height: 46.h,
+          height: 42.h,
           decoration: BoxDecoration(
             color: const Color(0xFFFEF2F2),
             borderRadius: BorderRadius.circular(14.r),
             border: Border.all(
-              color: const Color(0xFFEF4444).withValues(alpha: 0.25),
-              width: 0.8,
+              color: const Color(0xFFDC2626).withValues(alpha: 0.25),
+              width: 1,
             ),
+            boxShadow: const [
+              BoxShadow(
+                color: Color(0x14DC2626),
+                blurRadius: 8,
+                offset: Offset(0, 3),
+              ),
+            ],
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -1160,12 +1336,22 @@ class _CancelBookingBtn extends StatelessWidget {
       );
     }
 
-    // Disabled — locked in
+    // Disabled — locked in. White bg + slate border + neutral shadow
+    // so it still reads as a button (not blank space) but signals
+    // clearly that it's inactive.
     return Container(
-      height: 46.h,
+      height: 42.h,
       decoration: BoxDecoration(
-        color: const Color(0xFFF5F5F7),
+        color: Colors.white,
         borderRadius: BorderRadius.circular(14.r),
+        border: Border.all(color: const Color(0xFFE5E7EB), width: 1),
+        boxShadow: const [
+          BoxShadow(
+            color: Color(0x14000000),
+            blurRadius: 6,
+            offset: Offset(0, 2),
+          ),
+        ],
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -1173,7 +1359,7 @@ class _CancelBookingBtn extends StatelessWidget {
           Icon(
             Icons.lock_outline_rounded,
             size: 14.r,
-            color: const Color(0xFFD1D1E0),
+            color: const Color(0xFFB0B0C0),
           ),
           SizedBox(width: 6.w),
           Text(
@@ -1181,7 +1367,7 @@ class _CancelBookingBtn extends StatelessWidget {
             style: TextStyle(
               fontSize: 13.sp,
               fontWeight: FontWeight.w700,
-              color: const Color(0xFFD1D1E0),
+              color: const Color(0xFFB0B0C0),
             ),
           ),
         ],
@@ -1245,41 +1431,41 @@ class _ReasonSheetState extends State<_ReasonSheet> {
         child: SafeArea(
           top: false,
           child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              width: 36.w,
-              height: 4.h,
-              decoration: BoxDecoration(
-                color: const Color(0xFFE0E0E0),
-                borderRadius: BorderRadius.circular(4.r),
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: 36.w,
+                height: 4.h,
+                decoration: BoxDecoration(
+                  color: const Color(0xFFE0E0E0),
+                  borderRadius: BorderRadius.circular(4.r),
+                ),
               ),
-            ),
-            SizedBox(height: 18.h),
-            Text(
-              widget.title,
-              style: TextStyle(
-                fontSize: 16.sp,
-                fontWeight: FontWeight.w800,
-                color: const Color(0xFF1A1A2E),
+              SizedBox(height: 18.h),
+              Text(
+                widget.title,
+                style: TextStyle(
+                  fontSize: 16.sp,
+                  fontWeight: FontWeight.w800,
+                  color: const Color(0xFF1A1A2E),
+                ),
               ),
-            ),
-            SizedBox(height: 16.h),
-            AppTextField(
-              controller: _ctrl,
-              focusNode: _focus,
-              hint: g.l10n.reasonHint,
-              accent: AppColors.primary,
-              maxLines: 4,
-              action: TextInputAction.done,
-            ),
-            SizedBox(height: 16.h),
-            AppPrimaryButton(
-              label: g.l10n.commonConfirm,
-              loading: _loading,
-              onTap: _submit,
-            ),
-          ],
+              SizedBox(height: 16.h),
+              AppTextField(
+                controller: _ctrl,
+                focusNode: _focus,
+                hint: g.l10n.reasonHint,
+                accent: AppColors.primary,
+                maxLines: 4,
+                action: TextInputAction.done,
+              ),
+              SizedBox(height: 16.h),
+              AppPrimaryButton(
+                label: g.l10n.commonConfirm,
+                loading: _loading,
+                onTap: _submit,
+              ),
+            ],
           ),
         ),
       ),
@@ -1302,47 +1488,124 @@ class _Btn extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final (bg, fg, border) = switch (style) {
+    // Each style resolves to a bundle of (bg, fg, border, shadow).
+    // The page background is `0xFFF8F8FC` (very light gray) — every
+    // filled variant needs enough contrast + a soft drop shadow to
+    // lift off the page. Light-tint variants (ghost/red/amber) also
+    // get a matching border so they don't blend into the page.
+    final ({Color bg, Color fg, Border? border, List<BoxShadow> shadow}) v =
+        switch (style) {
       _BtnStyle.ghost => (
-        const Color(0xFFF0F0F5),
-        const Color(0xFF1A1A2E),
-        null,
+        bg: Colors.white,
+        fg: const Color(0xFF1A1A2E),
+        border: Border.all(color: const Color(0xFFE5E7EB), width: 1),
+        shadow: const [
+          BoxShadow(
+            color: Color(0x14000000),
+            blurRadius: 6,
+            offset: Offset(0, 2),
+          ),
+        ],
       ),
-      _BtnStyle.dark => (const Color(0xFF1A1A2E), Colors.white, null),
-      _BtnStyle.pink => (AppColors.primary, Colors.white, null),
-      _BtnStyle.green => (const Color(0xFF22C55E), Colors.white, null),
-      _BtnStyle.red => (const Color(0xFFFEF2F2), const Color(0xFFDC2626), null),
+      _BtnStyle.dark => (
+        bg: const Color(0xFF1A1A2E),
+        fg: Colors.white,
+        border: null,
+        shadow: const [
+          BoxShadow(
+            color: Color(0x331A1A2E),
+            blurRadius: 10,
+            offset: Offset(0, 4),
+          ),
+        ],
+      ),
+      _BtnStyle.pink => (
+        bg: AppColors.primary,
+        fg: Colors.white,
+        border: null,
+        shadow: [
+          BoxShadow(
+            color: AppColors.primary.withValues(alpha: 0.28),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      _BtnStyle.green => (
+        bg: const Color(0xFF22C55E),
+        fg: Colors.white,
+        border: null,
+        shadow: const [
+          BoxShadow(
+            color: Color(0x4022C55E),
+            blurRadius: 10,
+            offset: Offset(0, 4),
+          ),
+        ],
+      ),
+      _BtnStyle.red => (
+        bg: const Color(0xFFFEF2F2),
+        fg: const Color(0xFFDC2626),
+        border: Border.all(
+          color: const Color(0xFFDC2626).withValues(alpha: 0.25),
+          width: 1,
+        ),
+        shadow: const [
+          BoxShadow(
+            color: Color(0x14DC2626),
+            blurRadius: 8,
+            offset: Offset(0, 3),
+          ),
+        ],
+      ),
       _BtnStyle.amber => (
-        const Color(0xFFFFFBEB),
-        const Color(0xFFD97706),
-        null,
+        bg: const Color(0xFFFFFBEB),
+        fg: const Color(0xFFD97706),
+        border: Border.all(
+          color: const Color(0xFFD97706).withValues(alpha: 0.25),
+          width: 1,
+        ),
+        shadow: const [
+          BoxShadow(
+            color: Color(0x14D97706),
+            blurRadius: 8,
+            offset: Offset(0, 3),
+          ),
+        ],
       ),
       _BtnStyle.outline => (
-        Colors.transparent,
-        const Color(0xFF1A1A2E),
-        Border.all(color: const Color(0xFFE0E0E0), width: 1),
+        bg: Colors.white,
+        fg: const Color(0xFF1A1A2E),
+        border: Border.all(color: const Color(0xFFE5E7EB), width: 1),
+        shadow: const [
+          BoxShadow(
+            color: Color(0x14000000),
+            blurRadius: 6,
+            offset: Offset(0, 2),
+          ),
+        ],
       ),
     };
 
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        height: 46.h,
+        height: 42.h,
         decoration: BoxDecoration(
-          color: bg,
+          color: v.bg,
           borderRadius: BorderRadius.circular(14.r),
-          border: border,
+          border: v.border,
+          boxShadow: v.shadow,
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             if (icon != null) ...[
-              // Icon(icon, size: 14.r, color: fg),
               AppSvgIcon(
                 assetName: icon ?? "",
                 width: 17.w,
                 height: 17.h,
-                color: fg,
+                color: v.fg,
               ),
               SizedBox(width: 5.w),
             ],
@@ -1351,7 +1614,7 @@ class _Btn extends StatelessWidget {
               style: TextStyle(
                 fontSize: 13.sp,
                 fontWeight: FontWeight.w700,
-                color: fg,
+                color: v.fg,
               ),
             ),
           ],

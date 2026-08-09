@@ -103,7 +103,7 @@ class HomeLogic extends GetxController {
         page: _recommendedSkip,
         limit: _pageSize,
         maxDistanceKm: state.maxDistanceKm,
-        genderType: state.gender == 'all' ? null : state.gender,
+        // genderType: state.gender == 'all' ? null : state.gender,
         search: state.search,
         status: state.sort,
       );
@@ -168,7 +168,7 @@ class HomeLogic extends GetxController {
         page: _onlineSkip,
         limit: _pageSize,
         maxDistanceKm: state.maxDistanceKm,
-        genderType: state.gender == 'all' ? null : state.gender,
+        // genderType: state.gender == 'all' ? null : state.gender,
         search: state.search,
         status: state.sort,
       );
