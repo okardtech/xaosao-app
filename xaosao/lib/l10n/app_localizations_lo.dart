@@ -2384,7 +2384,7 @@ class AppLocalizationsLo extends AppLocalizations {
       'ຄົ້ນຫາແລ້ວກົດ ♥ ເພື່ອສະແດງຄວາມສົນໃຈ';
 
   @override
-  String get detailPersonalInfo => 'ຂໍ້ມູນສ່ວນຕົວ';
+  String get detailPersonalInfo => 'ຂໍ້ມູນຜູ້ໃຫ້ບໍລິການ';
 
   @override
   String get detailStatAge => 'ອາຍຸ';
@@ -2750,13 +2750,13 @@ class AppLocalizationsLo extends AppLocalizations {
   String get cpRatingsSection => 'ຄະແນນ ແລະ ລີວິວ';
 
   @override
-  String get cpStatusAvailable => 'ໃຊ້ງານຢູ່';
+  String get cpStatusAvailable => 'ຮັບຈອງ';
 
   @override
-  String get cpStatusUnavailable => 'ບໍ່ໄດ້ໃຊ້ງານ';
+  String get cpStatusUnavailable => 'ບໍ່ຮັບຈອງ';
 
   @override
-  String get cpStatusLabel => 'ສະຖານະ';
+  String get cpStatusLabel => 'ການຈອງ';
 
   @override
   String get cpNoServicesNow => 'ບໍ່ມີບໍລິການໃນຂະນະນີ້';

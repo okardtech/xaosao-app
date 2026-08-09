@@ -260,7 +260,10 @@ class _CompanionProfilePageState extends State<CompanionProfilePage> {
   // ── Info grid ─────────────────────────────────────────────────
   Widget _buildInfoGrid(RecommendedModel profile) {
     final l10n = _l10n;
-    final age = _age(profile);
+    // Age intentionally not surfaced — see the "2-stat strip" note below.
+    // Kept the [_age] helper untouched so re-enabling the stat is a
+    // single-line change.
+    // final age = _age(profile);
     final memberSince = profile.createdAt != null
         ? DateFormat('MMM yyyy').format(profile.createdAt!)
         : '—';
@@ -290,15 +293,19 @@ class _CompanionProfilePageState extends State<CompanionProfilePage> {
       ),
       child: Column(
         children: [
-          // ── 3-stat strip ────────────────────────────────────────
+          // ── 2-stat strip (Age hidden for App Store compliance —
+          // showing a personal attribute like age on an individual's
+          // profile is a red flag under Apple Guideline 1.1.4 in a
+          // service marketplace context. Kept in comments so it can
+          // be re-enabled easily if requirements change.) ────────────
           IntrinsicHeight(
             child: Row(
               children: [
-                _StatStrip(
-                  label: l10n.detailStatAge,
-                  value: age > 0 ? l10n.commonAgeYears(age) : '—',
-                ),
-                _StatStripDivider(),
+                // _StatStrip(
+                //   label: l10n.detailStatAge,
+                //   value: age > 0 ? l10n.commonAgeYears(age) : '—',
+                // ),
+                // _StatStripDivider(),
                 _StatStrip(
                   label: l10n.detailStatMemberSince,
                   value: memberSince,

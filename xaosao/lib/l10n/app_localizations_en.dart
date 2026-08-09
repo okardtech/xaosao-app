@@ -2393,7 +2393,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get discoverEmptyILikedSubtitle => 'Browse and tap ♥ to show interest';
 
   @override
-  String get detailPersonalInfo => 'Personal info';
+  String get detailPersonalInfo => 'Provider info';
 
   @override
   String get detailStatAge => 'Age';
@@ -2759,13 +2759,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get cpRatingsSection => 'Ratings and reviews';
 
   @override
-  String get cpStatusAvailable => 'Available';
+  String get cpStatusAvailable => 'Accepting bookings';
 
   @override
-  String get cpStatusUnavailable => 'Unavailable';
+  String get cpStatusUnavailable => 'Not accepting';
 
   @override
-  String get cpStatusLabel => 'Status';
+  String get cpStatusLabel => 'Bookings';
 
   @override
   String get cpNoServicesNow => 'No services right now';

@@ -884,7 +884,7 @@
   "discoverEmptyILikedTitle": "You haven't liked anyone",
   "discoverEmptyILikedSubtitle": "Browse and tap ♥ to show interest",
 
-  "detailPersonalInfo": "Personal info",
+  "detailPersonalInfo": "Provider info",
   "detailStatAge": "Age",
   "detailStatMemberSince": "Member since",
   "detailStatTier": "Tier",
@@ -1016,9 +1016,9 @@
   "reviewRatingPick": "Pick a rating",
 
   "cpRatingsSection": "Ratings and reviews",
-  "cpStatusAvailable": "Available",
-  "cpStatusUnavailable": "Unavailable",
-  "cpStatusLabel": "Status",
+  "cpStatusAvailable": "Accepting bookings",
+  "cpStatusUnavailable": "Not accepting",
+  "cpStatusLabel": "Bookings",
   "cpNoServicesNow": "No services right now",
   "cpNoReviewsBeFirst": "No reviews yet, be the first!",
   "cpLoadMoreReviews": "Load more reviews",

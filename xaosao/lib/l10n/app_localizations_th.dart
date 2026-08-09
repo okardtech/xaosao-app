@@ -2382,7 +2382,7 @@ class AppLocalizationsTh extends AppLocalizations {
   String get discoverEmptyILikedSubtitle => 'ค้นหาแล้วกด ♥ เพื่อแสดงความสนใจ';
 
   @override
-  String get detailPersonalInfo => 'ข้อมูลส่วนตัว';
+  String get detailPersonalInfo => 'ข้อมูลผู้ให้บริการ';
 
   @override
   String get detailStatAge => 'อายุ';
@@ -2748,13 +2748,13 @@ class AppLocalizationsTh extends AppLocalizations {
   String get cpRatingsSection => 'คะแนนและรีวิว';
 
   @override
-  String get cpStatusAvailable => 'ใช้งานอยู่';
+  String get cpStatusAvailable => 'รับจอง';
 
   @override
-  String get cpStatusUnavailable => 'ไม่ได้ใช้งาน';
+  String get cpStatusUnavailable => 'ไม่รับจอง';
 
   @override
-  String get cpStatusLabel => 'สถานะ';
+  String get cpStatusLabel => 'การจอง';
 
   @override
   String get cpNoServicesNow => 'ไม่มีบริการในขณะนี้';

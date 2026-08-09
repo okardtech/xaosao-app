@@ -886,7 +886,7 @@
   "discoverEmptyILikedTitle": "ທ່ານຍັງບໍ່ໄດ້ຖືກໃຈໃຜ",
   "discoverEmptyILikedSubtitle": "ຄົ້ນຫາແລ້ວກົດ ♥ ເພື່ອສະແດງຄວາມສົນໃຈ",
 
-  "detailPersonalInfo": "ຂໍ້ມູນສ່ວນຕົວ",
+  "detailPersonalInfo": "ຂໍ້ມູນຜູ້ໃຫ້ບໍລິການ",
   "detailStatAge": "ອາຍຸ",
   "detailStatMemberSince": "ສະມາຊິກຕັ້ງແຕ່",
   "detailStatTier": "ລະດັບ",
@@ -1018,9 +1018,9 @@
   "reviewRatingPick": "ເລືອກຄະແນນ",
 
   "cpRatingsSection": "ຄະແນນ ແລະ ລີວິວ",
-  "cpStatusAvailable": "ໃຊ້ງານຢູ່",
-  "cpStatusUnavailable": "ບໍ່ໄດ້ໃຊ້ງານ",
-  "cpStatusLabel": "ສະຖານະ",
+  "cpStatusAvailable": "ຮັບຈອງ",
+  "cpStatusUnavailable": "ບໍ່ຮັບຈອງ",
+  "cpStatusLabel": "ການຈອງ",
   "cpNoServicesNow": "ບໍ່ມີບໍລິການໃນຂະນະນີ້",
   "cpNoReviewsBeFirst": "ຍັງບໍ່ມີລີວິວ ເປັນຄົນທຳອິດ!",
   "cpLoadMoreReviews": "ໂຫຼດລີວິວເພີ່ມ",

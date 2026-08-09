@@ -106,21 +106,27 @@ class BookingDetailPage extends StatelessWidget {
         child: SingleChildScrollView(
           physics: const BouncingScrollPhysics(),
           padding: EdgeInsets.fromLTRB(20.w, 20.h, 20.w, 32.h),
-          child: _DetailCard(
-            booking: b,
-            isCustomer: isCustomer,
-            badgeBg: _badgeBg(b.status),
-            badgeFg: _badgeFg(b.status),
-            statusLabel: _statusLabel(b.status),
-            serviceType: _serviceTypeName(b),
-            paymentLabel: _paymentLabel(b.paymentStatus),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              _DetailCard(
+                booking: b,
+                isCustomer: isCustomer,
+                badgeBg: _badgeBg(b.status),
+                badgeFg: _badgeFg(b.status),
+                statusLabel: _statusLabel(b.status),
+                serviceType: _serviceTypeName(b),
+                paymentLabel: _paymentLabel(b.paymentStatus),
+              ),
+              SizedBox(height: 16.h),
+              _BottomBar(
+                booking: b,
+                isCustomer: isCustomer,
+                logic: _logic,
+              ),
+            ],
           ),
         ),
-      ),
-      bottomNavigationBar: _BottomBar(
-        booking: b,
-        isCustomer: isCustomer,
-        logic: _logic,
       ),
     );
   }
@@ -1106,23 +1112,14 @@ class _BottomBar extends StatelessWidget {
     final actions = _buildActions(context);
     if (actions.isEmpty) return const SizedBox.shrink();
 
-    return Container(
-      padding: EdgeInsets.fromLTRB(20.w, 12.h, 20.w, 28.h),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.06),
-            blurRadius: 16,
-            offset: const Offset(0, -4),
-          ),
-        ],
-      ),
-      child: Row(
-        children: [
-          ...actions.map((w) => Expanded(child: w)).toList(),
-        ].separated(SizedBox(width: 10.w)),
-      ),
+    // Buttons now live inline in the page's scrollable Column
+    // (see [BookingDetailPage.build]) — no sticky-bottom container /
+    // top shadow needed. The parent Column supplies the 16.h gap
+    // between the detail card and this action row.
+    return Row(
+      children: [
+        ...actions.map((w) => Expanded(child: w)),
+      ].separated(SizedBox(width: 10.w)),
     );
   }
 
@@ -1294,17 +1291,27 @@ class _CancelBookingBtn extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (canCancel) {
+      // Active cancel — matches _Btn.red styling so both cancel-style
+      // buttons stand out against the page bg (0xFFF8F8FC) with a
+      // red tinted border + soft shadow.
       return GestureDetector(
         onTap: onCancel,
         child: Container(
-          height: 46.h,
+          height: 42.h,
           decoration: BoxDecoration(
             color: const Color(0xFFFEF2F2),
             borderRadius: BorderRadius.circular(14.r),
             border: Border.all(
-              color: const Color(0xFFEF4444).withValues(alpha: 0.25),
-              width: 0.8,
+              color: const Color(0xFFDC2626).withValues(alpha: 0.25),
+              width: 1,
             ),
+            boxShadow: const [
+              BoxShadow(
+                color: Color(0x14DC2626),
+                blurRadius: 8,
+                offset: Offset(0, 3),
+              ),
+            ],
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -1329,12 +1336,22 @@ class _CancelBookingBtn extends StatelessWidget {
       );
     }
 
-    // Disabled — locked in
+    // Disabled — locked in. White bg + slate border + neutral shadow
+    // so it still reads as a button (not blank space) but signals
+    // clearly that it's inactive.
     return Container(
-      height: 46.h,
+      height: 42.h,
       decoration: BoxDecoration(
-        color: const Color(0xFFF5F5F7),
+        color: Colors.white,
         borderRadius: BorderRadius.circular(14.r),
+        border: Border.all(color: const Color(0xFFE5E7EB), width: 1),
+        boxShadow: const [
+          BoxShadow(
+            color: Color(0x14000000),
+            blurRadius: 6,
+            offset: Offset(0, 2),
+          ),
+        ],
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -1342,7 +1359,7 @@ class _CancelBookingBtn extends StatelessWidget {
           Icon(
             Icons.lock_outline_rounded,
             size: 14.r,
-            color: const Color(0xFFD1D1E0),
+            color: const Color(0xFFB0B0C0),
           ),
           SizedBox(width: 6.w),
           Text(
@@ -1350,7 +1367,7 @@ class _CancelBookingBtn extends StatelessWidget {
             style: TextStyle(
               fontSize: 13.sp,
               fontWeight: FontWeight.w700,
-              color: const Color(0xFFD1D1E0),
+              color: const Color(0xFFB0B0C0),
             ),
           ),
         ],
@@ -1471,47 +1488,124 @@ class _Btn extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final (bg, fg, border) = switch (style) {
+    // Each style resolves to a bundle of (bg, fg, border, shadow).
+    // The page background is `0xFFF8F8FC` (very light gray) — every
+    // filled variant needs enough contrast + a soft drop shadow to
+    // lift off the page. Light-tint variants (ghost/red/amber) also
+    // get a matching border so they don't blend into the page.
+    final ({Color bg, Color fg, Border? border, List<BoxShadow> shadow}) v =
+        switch (style) {
       _BtnStyle.ghost => (
-        const Color(0xFFF0F0F5),
-        const Color(0xFF1A1A2E),
-        null,
+        bg: Colors.white,
+        fg: const Color(0xFF1A1A2E),
+        border: Border.all(color: const Color(0xFFE5E7EB), width: 1),
+        shadow: const [
+          BoxShadow(
+            color: Color(0x14000000),
+            blurRadius: 6,
+            offset: Offset(0, 2),
+          ),
+        ],
       ),
-      _BtnStyle.dark => (const Color(0xFF1A1A2E), Colors.white, null),
-      _BtnStyle.pink => (AppColors.primary, Colors.white, null),
-      _BtnStyle.green => (const Color(0xFF22C55E), Colors.white, null),
-      _BtnStyle.red => (const Color(0xFFFEF2F2), const Color(0xFFDC2626), null),
+      _BtnStyle.dark => (
+        bg: const Color(0xFF1A1A2E),
+        fg: Colors.white,
+        border: null,
+        shadow: const [
+          BoxShadow(
+            color: Color(0x331A1A2E),
+            blurRadius: 10,
+            offset: Offset(0, 4),
+          ),
+        ],
+      ),
+      _BtnStyle.pink => (
+        bg: AppColors.primary,
+        fg: Colors.white,
+        border: null,
+        shadow: [
+          BoxShadow(
+            color: AppColors.primary.withValues(alpha: 0.28),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      _BtnStyle.green => (
+        bg: const Color(0xFF22C55E),
+        fg: Colors.white,
+        border: null,
+        shadow: const [
+          BoxShadow(
+            color: Color(0x4022C55E),
+            blurRadius: 10,
+            offset: Offset(0, 4),
+          ),
+        ],
+      ),
+      _BtnStyle.red => (
+        bg: const Color(0xFFFEF2F2),
+        fg: const Color(0xFFDC2626),
+        border: Border.all(
+          color: const Color(0xFFDC2626).withValues(alpha: 0.25),
+          width: 1,
+        ),
+        shadow: const [
+          BoxShadow(
+            color: Color(0x14DC2626),
+            blurRadius: 8,
+            offset: Offset(0, 3),
+          ),
+        ],
+      ),
       _BtnStyle.amber => (
-        const Color(0xFFFFFBEB),
-        const Color(0xFFD97706),
-        null,
+        bg: const Color(0xFFFFFBEB),
+        fg: const Color(0xFFD97706),
+        border: Border.all(
+          color: const Color(0xFFD97706).withValues(alpha: 0.25),
+          width: 1,
+        ),
+        shadow: const [
+          BoxShadow(
+            color: Color(0x14D97706),
+            blurRadius: 8,
+            offset: Offset(0, 3),
+          ),
+        ],
       ),
       _BtnStyle.outline => (
-        Colors.transparent,
-        const Color(0xFF1A1A2E),
-        Border.all(color: const Color(0xFFE0E0E0), width: 1),
+        bg: Colors.white,
+        fg: const Color(0xFF1A1A2E),
+        border: Border.all(color: const Color(0xFFE5E7EB), width: 1),
+        shadow: const [
+          BoxShadow(
+            color: Color(0x14000000),
+            blurRadius: 6,
+            offset: Offset(0, 2),
+          ),
+        ],
       ),
     };
 
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        height: 46.h,
+        height: 42.h,
         decoration: BoxDecoration(
-          color: bg,
+          color: v.bg,
           borderRadius: BorderRadius.circular(14.r),
-          border: border,
+          border: v.border,
+          boxShadow: v.shadow,
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             if (icon != null) ...[
-              // Icon(icon, size: 14.r, color: fg),
               AppSvgIcon(
                 assetName: icon ?? "",
                 width: 17.w,
                 height: 17.h,
-                color: fg,
+                color: v.fg,
               ),
               SizedBox(width: 5.w),
             ],
@@ -1520,7 +1614,7 @@ class _Btn extends StatelessWidget {
               style: TextStyle(
                 fontSize: 13.sp,
                 fontWeight: FontWeight.w700,
-                color: fg,
+                color: v.fg,
               ),
             ),
           ],

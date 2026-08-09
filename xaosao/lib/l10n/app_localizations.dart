@@ -4567,7 +4567,7 @@ abstract class AppLocalizations {
   /// No description provided for @detailPersonalInfo.
   ///
   /// In lo, this message translates to:
-  /// **'ຂໍ້ມູນສ່ວນຕົວ'**
+  /// **'ຂໍ້ມູນຜູ້ໃຫ້ບໍລິການ'**
   String get detailPersonalInfo;
 
   /// No description provided for @detailStatAge.
@@ -5275,19 +5275,19 @@ abstract class AppLocalizations {
   /// No description provided for @cpStatusAvailable.
   ///
   /// In lo, this message translates to:
-  /// **'ໃຊ້ງານຢູ່'**
+  /// **'ຮັບຈອງ'**
   String get cpStatusAvailable;
 
   /// No description provided for @cpStatusUnavailable.
   ///
   /// In lo, this message translates to:
-  /// **'ບໍ່ໄດ້ໃຊ້ງານ'**
+  /// **'ບໍ່ຮັບຈອງ'**
   String get cpStatusUnavailable;
 
   /// No description provided for @cpStatusLabel.
   ///
   /// In lo, this message translates to:
-  /// **'ສະຖານະ'**
+  /// **'ການຈອງ'**
   String get cpStatusLabel;
 
   /// No description provided for @cpNoServicesNow.

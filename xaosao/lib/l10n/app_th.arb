@@ -884,7 +884,7 @@
   "discoverEmptyILikedTitle": "คุณยังไม่ได้ถูกใจใคร",
   "discoverEmptyILikedSubtitle": "ค้นหาแล้วกด ♥ เพื่อแสดงความสนใจ",
 
-  "detailPersonalInfo": "ข้อมูลส่วนตัว",
+  "detailPersonalInfo": "ข้อมูลผู้ให้บริการ",
   "detailStatAge": "อายุ",
   "detailStatMemberSince": "สมาชิกตั้งแต่",
   "detailStatTier": "ระดับ",
@@ -1016,9 +1016,9 @@
   "reviewRatingPick": "เลือกคะแนน",
 
   "cpRatingsSection": "คะแนนและรีวิว",
-  "cpStatusAvailable": "ใช้งานอยู่",
-  "cpStatusUnavailable": "ไม่ได้ใช้งาน",
-  "cpStatusLabel": "สถานะ",
+  "cpStatusAvailable": "รับจอง",
+  "cpStatusUnavailable": "ไม่รับจอง",
+  "cpStatusLabel": "การจอง",
   "cpNoServicesNow": "ไม่มีบริการในขณะนี้",
   "cpNoReviewsBeFirst": "ยังไม่มีรีวิว เป็นคนแรก!",
   "cpLoadMoreReviews": "โหลดรีวิวเพิ่ม",
