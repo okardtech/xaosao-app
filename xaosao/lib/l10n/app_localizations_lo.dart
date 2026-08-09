@@ -301,13 +301,13 @@ class AppLocalizationsLo extends AppLocalizations {
   String get authRolePrompt => 'ທ່ານເຂົ້າໃນຖານະໃດ?';
 
   @override
-  String get authTagline => 'ເພື່ອນຄູ່ໃຈ ທຸກທີ່ ທຸກເວລາ';
+  String get authTagline => 'ບໍລິການທ້ອງຖິ່ນ ທຸກທີ່ ທຸກເວລາ';
 
   @override
   String get authRoleCustomer => 'ລູກຄ້າ';
 
   @override
-  String get authRoleCompanion => 'Companion';
+  String get authRoleCompanion => 'ຜູ້ໃຫ້ບໍລິການ';
 
   @override
   String get authFieldPhone => 'ເບີໂທລະສັບ';
@@ -331,7 +331,7 @@ class AppLocalizationsLo extends AppLocalizations {
   String get authCreateCustomerAccount => 'ສ້າງບັນຊີ ລູກຄ້າ';
 
   @override
-  String get authCreateCompanionAccount => 'ສ້າງບັນຊີ ຜູ້ຮັບຈອງ';
+  String get authCreateCompanionAccount => 'ສ້າງບັນຊີຜູ້ໃຫ້ບໍລິການ';
 
   @override
   String get authValidPhoneRequired => 'ກະລຸນາໃສ່ເບີໂທລະສັບໃຫ້ຖືກຕ້ອງ';
@@ -584,7 +584,7 @@ class AppLocalizationsLo extends AppLocalizations {
   String get serviceTypeTravel => 'ປະສົບການທ້ອງຖິ່ນ';
 
   @override
-  String get viewCompanionPageTitle => 'ທັງໝົດ';
+  String get viewCompanionPageTitle => 'ຜູ້ໃຫ້ບໍລິການທັງໝົດ';
 
   @override
   String get viewCompanionFilterLikedByMe => 'ຂ້ອຍ Like';
@@ -620,7 +620,7 @@ class AppLocalizationsLo extends AppLocalizations {
   String get homeSearch => 'ຄົ້ນຫາ';
 
   @override
-  String get homeFindCompanion => 'ຄົ້ນພົບຜູ້ຮ່ວມທາງຂອງທ່ານ';
+  String get homeFindCompanion => 'ຄົ້ນຫາຜູ້ໃຫ້ບໍລິການໃນທ້ອງຖິ່ນ';
 
   @override
   String get homeSearchHint => 'ຄົ້ນຫາດ້ວຍຊື່...';
@@ -653,10 +653,10 @@ class AppLocalizationsLo extends AppLocalizations {
   String get homeFilterNearby => 'ໃກ້ຄຽງ';
 
   @override
-  String get homeServiceSocial => 'ເພື່ອນສັງຄົມ';
+  String get homeServiceSocial => 'ກິດຈະກຳທ້ອງຖິ່ນ';
 
   @override
-  String get homeServiceTravel => 'ທ່ອງທ່ຽວ';
+  String get homeServiceTravel => 'ປະສົບການທ້ອງຖິ່ນ';
 
   @override
   String get homeCardSubtitleSocial => 'ທ່ຽວ, ງານລ້ຽງ, ທຸກໂອກາດ';
@@ -1289,7 +1289,7 @@ class AppLocalizationsLo extends AppLocalizations {
   String get profileVerifiedCustomer => 'ຢືນຢັງແລ້ວ';
 
   @override
-  String get profileVerifiedCompanion => 'Companion ຢືນຢັງ';
+  String get profileVerifiedCompanion => 'ຜູ້ໃຫ້ບໍລິການທີ່ຢືນຢັນ';
 
   @override
   String get profileUpdateSuccess => 'ອັບເດດຂໍ້ມູນສຳເລັດ';
@@ -1520,7 +1520,7 @@ class AppLocalizationsLo extends AppLocalizations {
   String get postsEmpty => 'ຍັງບໍ່ມີໂພສ';
 
   @override
-  String get postsEmptyFeedSubtitle => 'ໂພສຈາກ Companion ຈະສະແດງທີ່ນີ້';
+  String get postsEmptyFeedSubtitle => 'ໂພສຈາກຜູ້ໃຫ້ບໍລິການຈະສະແດງທີ່ນີ້';
 
   @override
   String get postsEmptyMySubtitle => 'ກົດ \"ສ້າງໂພສ\" ເພື່ອເລີ່ມໂພສ';
@@ -1561,7 +1561,7 @@ class AppLocalizationsLo extends AppLocalizations {
   String get postsPublicPost => 'ໂພສສາທາລະນະ';
 
   @override
-  String get postsWhatLookingFor => 'ທ່ານກຳລັງຊອກຫາຄູ່ເເບບໃດ?';
+  String get postsWhatLookingFor => 'ທ່ານກຳລັງຊອກຫາບໍລິການແບບໃດ?';
 
   @override
   String get postsHintCustomer =>
@@ -1605,7 +1605,8 @@ class AppLocalizationsLo extends AppLocalizations {
   String get postsGiftHistory => 'ປະຫວັດຂອງຂວັນ';
 
   @override
-  String get postsGiftHistorySubtitle => 'ດູລາຍການຂອງຂວັນທີ່ທ່ານສົ່ງໃຫ້ໂມເດວ';
+  String get postsGiftHistorySubtitle =>
+      'ດູລາຍການຂອງຂວັນທີ່ທ່ານສົ່ງໃຫ້ຜູ້ໃຫ້ບໍລິການ';
 
   @override
   String get postsAuthorFallback => 'ຜູ້ໂພສ';
@@ -1725,7 +1726,7 @@ class AppLocalizationsLo extends AppLocalizations {
 
   @override
   String get giftHistoryEmptySubtitle =>
-      'ເມື່ອທ່ານສົ່ງຂອງຂວັນໃຫ້ໂມເດວ,\nລາຍການຈະສະແດງຢູ່ນີ້';
+      'ເມື່ອທ່ານສົ່ງຂອງຂວັນໃຫ້ຜູ້ໃຫ້ບໍລິການ,\nລາຍການຈະສະແດງຢູ່ນີ້';
 
   @override
   String get giftDetailsTitle => 'ລາຍລະອຽດຂອງຂວັນ';
@@ -2077,7 +2078,7 @@ class AppLocalizationsLo extends AppLocalizations {
       'ຍອດ Wallet ຈະຖືກຕັດທັນທີ. Package ຈະເປີດໃຊ້ງານຫຼັງຈາກການຊຳລະສຳເລັດ.';
 
   @override
-  String get onboardingTopCompanions => 'ເພື່ອນແນະນຳຍອດນິຍົມ';
+  String get onboardingTopCompanions => 'ຜູ້ໃຫ້ບໍລິການຍອດນິຍົມ';
 
   @override
   String get onboardingTopCompanionsSubtitle =>
@@ -2087,7 +2088,7 @@ class AppLocalizationsLo extends AppLocalizations {
   String get onboardingWelcome => 'ຍິນດີຕ້ອນຮັບ 👋';
 
   @override
-  String get onboardingFindYourCompanion => 'ຊອກຫາເພື່ອນຂອງທ່ານ';
+  String get onboardingFindYourCompanion => 'ຊອກຫາຜູ້ໃຫ້ບໍລິການໃນທ້ອງຖິ່ນ';
 
   @override
   String get onboardingLoginOrSignup => 'ເຂົ້າສູ່ລະບົບ / ສ້າງບັນຊີ';
@@ -2114,7 +2115,7 @@ class AppLocalizationsLo extends AppLocalizations {
       'ຄູ່ຮ່ວມງານສຳລັບງານສັງຄົມ ເພື່ອເພີ່ມຄວາມມ່ວນຊື່ນ ແລະ ຄວາມປະທັບໃຈ';
 
   @override
-  String get onboardingTravelTitle => 'ເພື່ອນທ່ອງທ່ຽວ';
+  String get onboardingTravelTitle => 'ປະສົບການທ້ອງຖິ່ນ';
 
   @override
   String get onboardingTravelSubtitle =>
@@ -2476,10 +2477,10 @@ class AppLocalizationsLo extends AppLocalizations {
   String get meetupsStepCreateBooking => 'ສ້າງການຈອງ';
 
   @override
-  String get meetupsStepWaitCompanionConfirm => 'ລໍຖ້າ Companion ຢືນຢັນ';
+  String get meetupsStepWaitCompanionConfirm => 'ລໍຖ້າຜູ້ໃຫ້ບໍລິການຢືນຢັນ';
 
   @override
-  String get meetupsStepCompanionConfirmed => 'Companion ຢືນຢັນ';
+  String get meetupsStepCompanionConfirmed => 'ຜູ້ໃຫ້ບໍລິການຢືນຢັນແລ້ວ';
 
   @override
   String get meetupsStepWaitingMeetup => 'ລໍຖ້ານັດພົບ';
@@ -3118,11 +3119,11 @@ class AppLocalizationsLo extends AppLocalizations {
   String get shareCommissionReferral => 'ການແນະນຳ';
 
   @override
-  String get shareQrBrandName => 'xaosao — ເຊົ້າສາວ';
+  String get shareQrBrandName => 'xaosao — ບໍລິການທ້ອງຖິ່ນ';
 
   @override
   String get shareQrBrandTagline =>
-      'ບ້ານພັກທີ່ລວບລວມນາງ-ສາວທີ່ໂດດ ແລະ ພ້ອມທີ່ຈະບ້ານຢູ່ທ່ານ.';
+      'ບໍລິການທ້ອງຖິ່ນທີ່ຄັດສັນມາຢ່າງດີ ພ້ອມສະເໝີເມື່ອທ່ານຕ້ອງການ.';
 
   @override
   String get shareQrDownload => 'ດາວໂຫຼດ QR';
