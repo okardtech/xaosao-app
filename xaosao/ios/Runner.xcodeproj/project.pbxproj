@@ -207,6 +207,7 @@
 				3B06AD1E1E4923F5004D2608 /* Thin Binary */,
 				361247CEAC460DD3FF7F2FCC /* [CP] Embed Pods Frameworks */,
 				973D6A71E793BB5C5B9CB65A /* [CP] Copy Pods Resources */,
+				4E5A7C1100000000000000A1 /* Generate Native Asset dSYMs */,
 			);
 			buildRules = (
 			);
@@ -287,13 +288,9 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Runner/Pods-Runner-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
-			inputPaths = (
-			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Runner/Pods-Runner-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -315,6 +312,21 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "/bin/sh \"$FLUTTER_ROOT/packages/flutter_tools/bin/xcode_backend.sh\" embed_and_thin";
+		};
+		4E5A7C1100000000000000A1 /* Generate Native Asset dSYMs */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Generate Native Asset dSYMs";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Dart native-asset frameworks (e.g. objective_c.framework, pulled in by\n# path_provider_foundation) are built by the Dart hooks runner, not by Xcode or\n# CocoaPods, so nothing emits a dSYM for them and App Store Connect reports\n# \"Upload Symbols Failed\". Generate one for each native asset that lacks it.\n[ \"${DEBUG_INFORMATION_FORMAT}\" = \"dwarf-with-dsym\" ] || exit 0\n[ -n \"${DWARF_DSYM_FOLDER_PATH}\" ] || exit 0\nNATIVE_ASSETS_DIR=\"${FLUTTER_APPLICATION_PATH:-${SRCROOT}/..}/${FLUTTER_BUILD_DIR:-build}/native_assets/ios\"\n[ -d \"${NATIVE_ASSETS_DIR}\" ] || exit 0\nmkdir -p \"${DWARF_DSYM_FOLDER_PATH}\"\nfor asset in \"${NATIVE_ASSETS_DIR}\"/*.framework; do\n  name=$(basename \"${asset}\" .framework)\n  binary=\"${BUILT_PRODUCTS_DIR}/${FULL_PRODUCT_NAME}/Frameworks/${name}.framework/${name}\"\n  [ -f \"${binary}\" ] || continue\n  [ -d \"${DWARF_DSYM_FOLDER_PATH}/${name}.framework.dSYM\" ] && continue\n  echo \"note: generating dSYM for native asset ${name}.framework\"\n  dsymutil \"${binary}\" -o \"${DWARF_DSYM_FOLDER_PATH}/${name}.framework.dSYM\" || true\ndone\n";
 		};
 		64C668DC18AEA1B87AA8FF8D /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -346,13 +358,9 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Runner/Pods-Runner-resources-${CONFIGURATION}-input-files.xcfilelist",
 			);
-			inputPaths = (
-			);
 			name = "[CP] Copy Pods Resources";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Runner/Pods-Runner-resources-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
