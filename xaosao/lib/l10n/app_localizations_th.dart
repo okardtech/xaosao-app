@@ -302,13 +302,13 @@ class AppLocalizationsTh extends AppLocalizations {
   String get authRolePrompt => 'คุณต้องการเข้าใช้งานในฐานะใด?';
 
   @override
-  String get authTagline => 'เพื่อนคู่ใจ ทุกที่ ทุกเวลา';
+  String get authTagline => 'บริการท้องถิ่น ทุกที่ ทุกเวลา';
 
   @override
   String get authRoleCustomer => 'ลูกค้า';
 
   @override
-  String get authRoleCompanion => 'Companion';
+  String get authRoleCompanion => 'ผู้ให้บริการ';
 
   @override
   String get authFieldPhone => 'เบอร์โทรศัพท์';
@@ -332,7 +332,7 @@ class AppLocalizationsTh extends AppLocalizations {
   String get authCreateCustomerAccount => 'สร้างบัญชีลูกค้า';
 
   @override
-  String get authCreateCompanionAccount => 'สร้างบัญชี Companion';
+  String get authCreateCompanionAccount => 'สร้างบัญชีผู้ให้บริการ';
 
   @override
   String get authValidPhoneRequired => 'กรุณาใส่เบอร์โทรศัพท์ให้ถูกต้อง';
@@ -584,7 +584,7 @@ class AppLocalizationsTh extends AppLocalizations {
   String get serviceTypeTravel => 'ประสบการณ์ท้องถิ่น';
 
   @override
-  String get viewCompanionPageTitle => 'ทั้งหมด';
+  String get viewCompanionPageTitle => 'ผู้ให้บริการทั้งหมด';
 
   @override
   String get viewCompanionFilterLikedByMe => 'ที่ฉันไลค์';
@@ -620,7 +620,7 @@ class AppLocalizationsTh extends AppLocalizations {
   String get homeSearch => 'ค้นหา';
 
   @override
-  String get homeFindCompanion => 'ค้นหาเพื่อนคู่ใจของคุณ';
+  String get homeFindCompanion => 'ค้นหาผู้ให้บริการในท้องถิ่น';
 
   @override
   String get homeSearchHint => 'ค้นหาด้วยชื่อ...';
@@ -653,10 +653,10 @@ class AppLocalizationsTh extends AppLocalizations {
   String get homeFilterNearby => 'ใกล้เคียง';
 
   @override
-  String get homeServiceSocial => 'เพื่อนสังคม';
+  String get homeServiceSocial => 'กิจกรรมท้องถิ่น';
 
   @override
-  String get homeServiceTravel => 'ท่องเที่ยว';
+  String get homeServiceTravel => 'ประสบการณ์ท้องถิ่น';
 
   @override
   String get homeCardSubtitleSocial => 'เที่ยว งานเลี้ยง ทุกโอกาส';
@@ -1290,7 +1290,7 @@ class AppLocalizationsTh extends AppLocalizations {
   String get profileVerifiedCustomer => 'ยืนยันแล้ว';
 
   @override
-  String get profileVerifiedCompanion => 'Companion ยืนยันแล้ว';
+  String get profileVerifiedCompanion => 'ผู้ให้บริการที่ยืนยันแล้ว';
 
   @override
   String get profileUpdateSuccess => 'อัปเดตข้อมูลสำเร็จ';
@@ -1521,7 +1521,7 @@ class AppLocalizationsTh extends AppLocalizations {
   String get postsEmpty => 'ยังไม่มีโพสต์';
 
   @override
-  String get postsEmptyFeedSubtitle => 'โพสต์จาก Companion จะแสดงที่นี่';
+  String get postsEmptyFeedSubtitle => 'โพสต์จากผู้ให้บริการจะแสดงที่นี่';
 
   @override
   String get postsEmptyMySubtitle => 'กด \"สร้างโพสต์\" เพื่อเริ่มโพสต์';
@@ -1562,7 +1562,7 @@ class AppLocalizationsTh extends AppLocalizations {
   String get postsPublicPost => 'โพสต์สาธารณะ';
 
   @override
-  String get postsWhatLookingFor => 'คุณกำลังหาคู่แบบไหน?';
+  String get postsWhatLookingFor => 'คุณกำลังหาบริการแบบไหน?';
 
   @override
   String get postsHintCustomer =>
@@ -1605,7 +1605,8 @@ class AppLocalizationsTh extends AppLocalizations {
   String get postsGiftHistory => 'ประวัติของขวัญ';
 
   @override
-  String get postsGiftHistorySubtitle => 'ดูรายการของขวัญที่คุณส่งให้โมเดล';
+  String get postsGiftHistorySubtitle =>
+      'ดูรายการของขวัญที่คุณส่งให้ผู้ให้บริการ';
 
   @override
   String get postsAuthorFallback => 'ผู้โพสต์';
@@ -1725,7 +1726,7 @@ class AppLocalizationsTh extends AppLocalizations {
 
   @override
   String get giftHistoryEmptySubtitle =>
-      'เมื่อคุณส่งของขวัญให้โมเดล\nรายการจะแสดงที่นี่';
+      'เมื่อคุณส่งของขวัญให้ผู้ให้บริการ\nรายการจะแสดงที่นี่';
 
   @override
   String get giftDetailsTitle => 'รายละเอียดของขวัญ';
@@ -2077,7 +2078,7 @@ class AppLocalizationsTh extends AppLocalizations {
       'ยอด Wallet จะถูกตัดทันที Package จะเปิดใช้งานหลังจากการชำระสำเร็จ';
 
   @override
-  String get onboardingTopCompanions => 'เพื่อนแนะนำยอดนิยม';
+  String get onboardingTopCompanions => 'ผู้ให้บริการยอดนิยม';
 
   @override
   String get onboardingTopCompanionsSubtitle =>
@@ -2087,7 +2088,7 @@ class AppLocalizationsTh extends AppLocalizations {
   String get onboardingWelcome => 'ยินดีต้อนรับ 👋';
 
   @override
-  String get onboardingFindYourCompanion => 'ค้นหาเพื่อนของคุณ';
+  String get onboardingFindYourCompanion => 'ค้นหาผู้ให้บริการในท้องถิ่น';
 
   @override
   String get onboardingLoginOrSignup => 'เข้าสู่ระบบ / สร้างบัญชี';
@@ -2113,7 +2114,7 @@ class AppLocalizationsTh extends AppLocalizations {
       'คู่ร่วมงานสำหรับงานสังคม เพื่อเพิ่มความสนุกและความประทับใจ';
 
   @override
-  String get onboardingTravelTitle => 'เพื่อนท่องเที่ยว';
+  String get onboardingTravelTitle => 'ประสบการณ์ท้องถิ่น';
 
   @override
   String get onboardingTravelSubtitle =>
@@ -2474,10 +2475,10 @@ class AppLocalizationsTh extends AppLocalizations {
   String get meetupsStepCreateBooking => 'สร้างการจอง';
 
   @override
-  String get meetupsStepWaitCompanionConfirm => 'รอ Companion ยืนยัน';
+  String get meetupsStepWaitCompanionConfirm => 'รอผู้ให้บริการยืนยัน';
 
   @override
-  String get meetupsStepCompanionConfirmed => 'Companion ยืนยัน';
+  String get meetupsStepCompanionConfirmed => 'ผู้ให้บริการยืนยันแล้ว';
 
   @override
   String get meetupsStepWaitingMeetup => 'รอนัดพบ';
@@ -3116,11 +3117,11 @@ class AppLocalizationsTh extends AppLocalizations {
   String get shareCommissionReferral => 'การแนะนำ';
 
   @override
-  String get shareQrBrandName => 'xaosao — เพื่อนสาว';
+  String get shareQrBrandName => 'xaosao — บริการท้องถิ่น';
 
   @override
   String get shareQrBrandTagline =>
-      'แหล่งรวมเพื่อนสาวคุณภาพ พร้อมอยู่เคียงข้างคุณเสมอ';
+      'บริการท้องถิ่นที่คัดสรรมาอย่างดี พร้อมเสมอเมื่อคุณต้องการ';
 
   @override
   String get shareQrDownload => 'ดาวน์โหลด QR';

@@ -301,13 +301,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get authRolePrompt => 'How do you want to sign in?';
 
   @override
-  String get authTagline => 'Your companion, everywhere, anytime';
+  String get authTagline => 'Your local services, everywhere, anytime';
 
   @override
   String get authRoleCustomer => 'Customer';
 
   @override
-  String get authRoleCompanion => 'Companion';
+  String get authRoleCompanion => 'Provider';
 
   @override
   String get authFieldPhone => 'Phone number';
@@ -331,7 +331,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get authCreateCustomerAccount => 'Create a customer account';
 
   @override
-  String get authCreateCompanionAccount => 'Create a companion account';
+  String get authCreateCompanionAccount => 'Create a provider account';
 
   @override
   String get authValidPhoneRequired => 'Please enter a valid phone number';
@@ -585,7 +585,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get serviceTypeTravel => 'Local Tours';
 
   @override
-  String get viewCompanionPageTitle => 'All companions';
+  String get viewCompanionPageTitle => 'All providers';
 
   @override
   String get viewCompanionFilterLikedByMe => 'Liked by me';
@@ -621,7 +621,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get homeSearch => 'Search';
 
   @override
-  String get homeFindCompanion => 'Find your companion';
+  String get homeFindCompanion => 'Find a local provider';
 
   @override
   String get homeSearchHint => 'Search by name...';
@@ -654,10 +654,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get homeFilterNearby => 'Nearby';
 
   @override
-  String get homeServiceSocial => 'Social companion';
+  String get homeServiceSocial => 'Local Activities';
 
   @override
-  String get homeServiceTravel => 'Travel companion';
+  String get homeServiceTravel => 'Local Experiences';
 
   @override
   String get homeCardSubtitleSocial => 'Trips, parties, any occasion';
@@ -987,7 +987,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get registerCompanionTitle => 'Create companion account';
+  String get registerCompanionTitle => 'Create provider account';
 
   @override
   String get registerCustomerTitle => 'Create customer account';
@@ -1292,7 +1292,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get profileVerifiedCustomer => 'Verified';
 
   @override
-  String get profileVerifiedCompanion => 'Verified companion';
+  String get profileVerifiedCompanion => 'Verified provider';
 
   @override
   String get profileUpdateSuccess => 'Profile updated';
@@ -1513,7 +1513,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get postsTitle => 'Posts';
 
   @override
-  String get postsSubtitle => 'Find companions near you';
+  String get postsSubtitle => 'Find local providers near you';
 
   @override
   String get postsCantLoad => 'Cannot load data';
@@ -1525,7 +1525,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get postsEmpty => 'No posts yet';
 
   @override
-  String get postsEmptyFeedSubtitle => 'Posts from companions will appear here';
+  String get postsEmptyFeedSubtitle => 'Posts from providers will appear here';
 
   @override
   String get postsEmptyMySubtitle => 'Tap \"Create post\" to start posting';
@@ -1566,8 +1566,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get postsPublicPost => 'Public post';
 
   @override
-  String get postsWhatLookingFor =>
-      'What kind of companion are you looking for?';
+  String get postsWhatLookingFor => 'What kind of service are you looking for?';
 
   @override
   String get postsHintCustomer =>
@@ -1612,7 +1611,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get postsGiftHistorySubtitle =>
-      'See the gifts you have sent to companions';
+      'See the gifts you have sent to providers';
 
   @override
   String get postsAuthorFallback => 'Poster';
@@ -1732,7 +1731,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get giftHistoryEmptySubtitle =>
-      'When you send a gift to a companion,\nit will appear here';
+      'When you send a gift to a provider,\nit will appear here';
 
   @override
   String get giftDetailsTitle => 'Gift details';
@@ -2085,17 +2084,17 @@ class AppLocalizationsEn extends AppLocalizations {
       'Wallet balance will be deducted immediately. The Package will activate after payment succeeds.';
 
   @override
-  String get onboardingTopCompanions => 'Top companions';
+  String get onboardingTopCompanions => 'Top providers';
 
   @override
   String get onboardingTopCompanionsSubtitle =>
-      'Discover our highest-rated companions';
+      'Discover our highest-rated providers';
 
   @override
   String get onboardingWelcome => 'Welcome 👋';
 
   @override
-  String get onboardingFindYourCompanion => 'Find your companion';
+  String get onboardingFindYourCompanion => 'Find a local provider';
 
   @override
   String get onboardingLoginOrSignup => 'Log in / Sign up';
@@ -2121,7 +2120,7 @@ class AppLocalizationsEn extends AppLocalizations {
       'Social event partners to add fun and make lasting impressions';
 
   @override
-  String get onboardingTravelTitle => 'Travel companion';
+  String get onboardingTravelTitle => 'Local Experiences';
 
   @override
   String get onboardingTravelSubtitle =>
@@ -2485,10 +2484,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get meetupsStepCreateBooking => 'Booking created';
 
   @override
-  String get meetupsStepWaitCompanionConfirm => 'Waiting for companion';
+  String get meetupsStepWaitCompanionConfirm => 'Waiting for provider';
 
   @override
-  String get meetupsStepCompanionConfirmed => 'Companion confirmed';
+  String get meetupsStepCompanionConfirmed => 'Provider confirmed';
 
   @override
   String get meetupsStepWaitingMeetup => 'Waiting for meet-up';
@@ -2589,7 +2588,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get loginRoleCustomerSub => 'Browse and book services';
 
   @override
-  String get loginRoleCompanionLabel => 'Companion';
+  String get loginRoleCompanionLabel => 'Provider';
 
   @override
   String get loginRoleCompanionSub => 'Post services and receive bookings';
@@ -3129,11 +3128,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get shareCommissionReferral => 'Referral';
 
   @override
-  String get shareQrBrandName => 'xaosao — companions';
+  String get shareQrBrandName => 'xaosao — local services';
 
   @override
   String get shareQrBrandTagline =>
-      'A curated companion experience, always ready when you are.';
+      'A curated local service experience, always ready when you are.';
 
   @override
   String get shareQrDownload => 'Download QR';
