@@ -667,7 +667,7 @@ abstract class AppLocalizations {
   /// No description provided for @authTagline.
   ///
   /// In lo, this message translates to:
-  /// **'ເພື່ອນຄູ່ໃຈ ທຸກທີ່ ທຸກເວລາ'**
+  /// **'ບໍລິການທ້ອງຖິ່ນ ທຸກທີ່ ທຸກເວລາ'**
   String get authTagline;
 
   /// No description provided for @authRoleCustomer.
@@ -679,7 +679,7 @@ abstract class AppLocalizations {
   /// No description provided for @authRoleCompanion.
   ///
   /// In lo, this message translates to:
-  /// **'Companion'**
+  /// **'ຜູ້ໃຫ້ບໍລິການ'**
   String get authRoleCompanion;
 
   /// No description provided for @authFieldPhone.
@@ -727,7 +727,7 @@ abstract class AppLocalizations {
   /// No description provided for @authCreateCompanionAccount.
   ///
   /// In lo, this message translates to:
-  /// **'ສ້າງບັນຊີ ຜູ້ຮັບຈອງ'**
+  /// **'ສ້າງບັນຊີຜູ້ໃຫ້ບໍລິການ'**
   String get authCreateCompanionAccount;
 
   /// No description provided for @authValidPhoneRequired.
@@ -1219,7 +1219,7 @@ abstract class AppLocalizations {
   /// No description provided for @viewCompanionPageTitle.
   ///
   /// In lo, this message translates to:
-  /// **'ທັງໝົດ'**
+  /// **'ຜູ້ໃຫ້ບໍລິການທັງໝົດ'**
   String get viewCompanionPageTitle;
 
   /// No description provided for @viewCompanionFilterLikedByMe.
@@ -1291,7 +1291,7 @@ abstract class AppLocalizations {
   /// No description provided for @homeFindCompanion.
   ///
   /// In lo, this message translates to:
-  /// **'ຄົ້ນພົບຜູ້ຮ່ວມທາງຂອງທ່ານ'**
+  /// **'ຄົ້ນຫາຜູ້ໃຫ້ບໍລິການໃນທ້ອງຖິ່ນ'**
   String get homeFindCompanion;
 
   /// No description provided for @homeSearchHint.
@@ -1357,13 +1357,13 @@ abstract class AppLocalizations {
   /// No description provided for @homeServiceSocial.
   ///
   /// In lo, this message translates to:
-  /// **'ເພື່ອນສັງຄົມ'**
+  /// **'ກິດຈະກຳທ້ອງຖິ່ນ'**
   String get homeServiceSocial;
 
   /// No description provided for @homeServiceTravel.
   ///
   /// In lo, this message translates to:
-  /// **'ທ່ອງທ່ຽວ'**
+  /// **'ປະສົບການທ້ອງຖິ່ນ'**
   String get homeServiceTravel;
 
   /// No description provided for @homeCardSubtitleSocial.
@@ -2569,7 +2569,7 @@ abstract class AppLocalizations {
   /// No description provided for @profileVerifiedCompanion.
   ///
   /// In lo, this message translates to:
-  /// **'Companion ຢືນຢັງ'**
+  /// **'ຜູ້ໃຫ້ບໍລິການທີ່ຢືນຢັນ'**
   String get profileVerifiedCompanion;
 
   /// No description provided for @profileUpdateSuccess.
@@ -2977,7 +2977,7 @@ abstract class AppLocalizations {
   /// No description provided for @postsEmptyFeedSubtitle.
   ///
   /// In lo, this message translates to:
-  /// **'ໂພສຈາກ Companion ຈະສະແດງທີ່ນີ້'**
+  /// **'ໂພສຈາກຜູ້ໃຫ້ບໍລິການຈະສະແດງທີ່ນີ້'**
   String get postsEmptyFeedSubtitle;
 
   /// No description provided for @postsEmptyMySubtitle.
@@ -3055,7 +3055,7 @@ abstract class AppLocalizations {
   /// No description provided for @postsWhatLookingFor.
   ///
   /// In lo, this message translates to:
-  /// **'ທ່ານກຳລັງຊອກຫາຄູ່ເເບບໃດ?'**
+  /// **'ທ່ານກຳລັງຊອກຫາບໍລິການແບບໃດ?'**
   String get postsWhatLookingFor;
 
   /// No description provided for @postsHintCustomer.
@@ -3139,7 +3139,7 @@ abstract class AppLocalizations {
   /// No description provided for @postsGiftHistorySubtitle.
   ///
   /// In lo, this message translates to:
-  /// **'ດູລາຍການຂອງຂວັນທີ່ທ່ານສົ່ງໃຫ້ໂມເດວ'**
+  /// **'ດູລາຍການຂອງຂວັນທີ່ທ່ານສົ່ງໃຫ້ຜູ້ໃຫ້ບໍລິການ'**
   String get postsGiftHistorySubtitle;
 
   /// No description provided for @postsAuthorFallback.
@@ -3367,7 +3367,7 @@ abstract class AppLocalizations {
   /// No description provided for @giftHistoryEmptySubtitle.
   ///
   /// In lo, this message translates to:
-  /// **'ເມື່ອທ່ານສົ່ງຂອງຂວັນໃຫ້ໂມເດວ,\nລາຍການຈະສະແດງຢູ່ນີ້'**
+  /// **'ເມື່ອທ່ານສົ່ງຂອງຂວັນໃຫ້ຜູ້ໃຫ້ບໍລິການ,\nລາຍການຈະສະແດງຢູ່ນີ້'**
   String get giftHistoryEmptySubtitle;
 
   /// No description provided for @giftDetailsTitle.
@@ -4003,7 +4003,7 @@ abstract class AppLocalizations {
   /// No description provided for @onboardingTopCompanions.
   ///
   /// In lo, this message translates to:
-  /// **'ເພື່ອນແນະນຳຍອດນິຍົມ'**
+  /// **'ຜູ້ໃຫ້ບໍລິການຍອດນິຍົມ'**
   String get onboardingTopCompanions;
 
   /// No description provided for @onboardingTopCompanionsSubtitle.
@@ -4021,7 +4021,7 @@ abstract class AppLocalizations {
   /// No description provided for @onboardingFindYourCompanion.
   ///
   /// In lo, this message translates to:
-  /// **'ຊອກຫາເພື່ອນຂອງທ່ານ'**
+  /// **'ຊອກຫາຜູ້ໃຫ້ບໍລິການໃນທ້ອງຖິ່ນ'**
   String get onboardingFindYourCompanion;
 
   /// No description provided for @onboardingLoginOrSignup.
@@ -4069,7 +4069,7 @@ abstract class AppLocalizations {
   /// No description provided for @onboardingTravelTitle.
   ///
   /// In lo, this message translates to:
-  /// **'ເພື່ອນທ່ອງທ່ຽວ'**
+  /// **'ປະສົບການທ້ອງຖິ່ນ'**
   String get onboardingTravelTitle;
 
   /// No description provided for @onboardingTravelSubtitle.
@@ -4735,13 +4735,13 @@ abstract class AppLocalizations {
   /// No description provided for @meetupsStepWaitCompanionConfirm.
   ///
   /// In lo, this message translates to:
-  /// **'ລໍຖ້າ Companion ຢືນຢັນ'**
+  /// **'ລໍຖ້າຜູ້ໃຫ້ບໍລິການຢືນຢັນ'**
   String get meetupsStepWaitCompanionConfirm;
 
   /// No description provided for @meetupsStepCompanionConfirmed.
   ///
   /// In lo, this message translates to:
-  /// **'Companion ຢືນຢັນ'**
+  /// **'ຜູ້ໃຫ້ບໍລິການຢືນຢັນແລ້ວ'**
   String get meetupsStepCompanionConfirmed;
 
   /// No description provided for @meetupsStepWaitingMeetup.
@@ -5923,13 +5923,13 @@ abstract class AppLocalizations {
   /// No description provided for @shareQrBrandName.
   ///
   /// In lo, this message translates to:
-  /// **'xaosao — ເຊົ້າສາວ'**
+  /// **'xaosao — ບໍລິການທ້ອງຖິ່ນ'**
   String get shareQrBrandName;
 
   /// No description provided for @shareQrBrandTagline.
   ///
   /// In lo, this message translates to:
-  /// **'ບ້ານພັກທີ່ລວບລວມນາງ-ສາວທີ່ໂດດ ແລະ ພ້ອມທີ່ຈະບ້ານຢູ່ທ່ານ.'**
+  /// **'ບໍລິການທ້ອງຖິ່ນທີ່ຄັດສັນມາຢ່າງດີ ພ້ອມສະເໝີເມື່ອທ່ານຕ້ອງການ.'**
   String get shareQrBrandTagline;
 
   /// No description provided for @shareQrDownload.
