@@ -182,7 +182,8 @@ class _ProfilePageState extends State<ProfilePage> {
                           icon: Icons.description_outlined,
                           iconColor: AppColors.textPrimary,
                           label: l10n.profileTerms,
-                          onTap: () => Get.toNamed(AppRoutes.companionPolicyPrivacy),
+                          onTap: () =>
+                              Get.toNamed(AppRoutes.companionPolicyPrivacy),
                         ),
                       ],
                     ),
@@ -220,7 +221,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     ),
                     SizedBox(height: 14.h),
                     Text(
-                      l10n.profileAppVersion('1.0.4'),
+                      l10n.profileAppVersion('1.0.0'),
                       style: TextStyle(
                         fontSize: 10.sp,
                         fontWeight: FontWeight.w600,
@@ -484,7 +485,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         label: l10n.profileStatFriends,
                       ),
                       StatCell(
-                        value: '${model?.totalReferredCustomers  ?? 0}★',
+                        value: '${model?.totalReferredCustomers ?? 0}★',
                         label: l10n.profileStatReferrals,
                       ),
                       StatCell(
@@ -506,21 +507,16 @@ class _ProfilePageState extends State<ProfilePage> {
                 ShareEnableCard(
                   enabled: st.hidden,
                   onShareTap: () {
-                    final model =
-                        Get.find<LoginLogic>().state.modelProfile;
+                    final model = Get.find<LoginLogic>().state.modelProfile;
                     if (model != null) {
-                      Get.toNamed(
-                        AppRoutes.shareLink,
-                        arguments: model,
-                      );
+                      Get.toNamed(AppRoutes.shareLink, arguments: model);
                     }
                   },
                   onToggle: _profileLogic.toggleHidden,
                   enableDesc: st.hidden
                       ? l10n.profileHiddenEnabled
                       : l10n.profileHiddenDisabled,
-                  enableDescColor:
-                      st.hidden ? const Color(0xFFE65100) : null,
+                  enableDescColor: st.hidden ? const Color(0xFFE65100) : null,
                 ),
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.center,

@@ -576,13 +576,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get commonPleaseRetry => 'Please try again';
 
   @override
-  String get serviceTypeSocial => 'Social';
+  String get serviceTypeSocial => 'Local Activities';
 
   @override
   String get serviceTypeMassage => 'Massage';
 
   @override
-  String get serviceTypeTravel => 'Travel';
+  String get serviceTypeTravel => 'Local Tours';
 
   @override
   String get viewCompanionPageTitle => 'All companions';
@@ -681,7 +681,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String commonHours(int hours) {
-    return '$hours hr';
+    return '$hours session';
   }
 
   @override
@@ -2393,7 +2393,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get discoverEmptyILikedSubtitle => 'Browse and tap ♥ to show interest';
 
   @override
-  String get detailPersonalInfo => 'Personal info';
+  String get detailPersonalInfo => 'Provider info';
 
   @override
   String get detailStatAge => 'Age';
@@ -2759,13 +2759,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get cpRatingsSection => 'Ratings and reviews';
 
   @override
-  String get cpStatusAvailable => 'Available';
+  String get cpStatusAvailable => 'Accepting bookings';
 
   @override
-  String get cpStatusUnavailable => 'Unavailable';
+  String get cpStatusUnavailable => 'Not accepting';
 
   @override
-  String get cpStatusLabel => 'Status';
+  String get cpStatusLabel => 'Bookings';
 
   @override
   String get cpNoServicesNow => 'No services right now';
@@ -2892,16 +2892,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get bookingLabelDate => 'Date';
 
   @override
-  String get bookingHoursCount => 'Hours';
+  String get bookingHoursCount => 'Sessions';
 
   @override
   String bookingHoursValue(int hours) {
-    return '$hours hours';
+    return '$hours sessions';
   }
 
   @override
   String bookingHoursShortValue(int hours) {
-    return '$hours hr';
+    return '$hours sess';
   }
 
   @override
@@ -2952,12 +2952,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String bookingRatePerHour(String rate) {
-    return '$rate KIP / hour';
+    return '$rate KIP / session';
   }
 
   @override
   String bookingRatePerHourShort(String rate) {
-    return '$rate KIP / hr';
+    return '$rate KIP / sess';
   }
 
   @override
@@ -3113,6 +3113,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get shareInviteSubject => 'Join Xaosao';
 
   @override
+  String get appName => 'Xaosao';
+
+  @override
+  String bookingThankYouFor(String appName) {
+    return 'Thank you for booking with $appName';
+  }
+
+  @override
+  String bookingSupportContact(String phone) {
+    return 'Need help? Call $phone';
+  }
+
+  @override
   String get shareCommissionReferral => 'Referral';
 
   @override
@@ -3246,7 +3259,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get imagePickerCamera => 'Camera';
 
   @override
-  String get serviceUnitHour => '/hour';
+  String get serviceUnitHour => '/session';
 
   @override
   String get serviceUnitDay => '/day';

@@ -69,8 +69,7 @@ class _SplashPageState extends State<SplashPage> {
       // The service owns the entire register-push flow. It reads
       // storage, dedups, mounts onboarding + register, and returns
       // true iff it navigated. On false we fall back to onboarding.
-      final consumed =
-          Get.find<DeepLinkService>().consumeReferralIfPresent();
+      final consumed = Get.find<DeepLinkService>().consumeReferralIfPresent();
       if (!consumed) _goTo(AppRoutes.xaosaoHome);
       return;
     }
@@ -231,7 +230,7 @@ class _SplashPageState extends State<SplashPage> {
                 const _LoadingDots(),
                 SizedBox(height: 10.h),
                 Text(
-                  'v1.0.4',
+                  'v1.0.0',
                   style: TextStyle(
                     fontSize: 12.sp,
                     color: Colors.white.withOpacity(0.28),

@@ -10,8 +10,6 @@
 	<string>Xaosao needs access to your camera so you can take photos for your profile, posts, and chat messages.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Xaosao uses your location to show companions and services near you.</string>
-	<key>NSUserTrackingUsageDescription</key>
-	<string>Your data will be used to measure advertising efficiency and deliver a better experience.</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>remote-notification</string>
@@ -25,7 +23,6 @@
 			<string>cstr6suwn9.skadnetwork</string>
 		</dict>
 	</array>
-	<string>We need access to your photo library to save images.</string>
 	<key>NSUserTrackingUsageDescription</key>
 	<string>Allow tracking so your friends can earn commissions when you sign up using their referral link.</string>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
@@ -49,11 +46,11 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.0.0</string>
+	<string>$(FLUTTER_BUILD_NAME)</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>2</string>
+	<string>$(FLUTTER_BUILD_NUMBER)</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>UIApplicationSceneManifest</key>
