@@ -71,7 +71,9 @@ class _ExplorePageState extends State<ExplorePage> {
     if (remaining < 300) _logic.loadMoreRecommended();
   }
 
-  void _onGenderChanged(String gender) => _logic.setGender(gender);
+  // Gender handler disabled together with the [GenderTabBar] in the
+  // filter bar. Re-enable both when the API supports gender filtering.
+  // void _onGenderChanged(String gender) => _logic.setGender(gender);
 
   Future<void> _onRefresh() => Future.wait([
     _logic.fetchRecommended(refresh: true),
@@ -231,16 +233,20 @@ class _ExplorePageState extends State<ExplorePage> {
   // ── Filter bar — reactive only to gender ──────────────────────────────────
   Widget _buildFilterBar() {
     return Obx(() {
-      final gender = _logic.state.gender;
+      // Gender tab hidden — matching the disabled gender filter in
+      // [HomeLogic] (API endpoint currently ignores gender). Kept in
+      // code (not deleted) so we can re-enable together when the API
+      // is ready.
+      // final gender = _logic.state.gender;
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Gender tabs on white bg so the underline border is visible
-          Container(
-            padding: EdgeInsets.symmetric(horizontal: 18.w),
-            child: GenderTabBar(selected: gender, onChanged: _onGenderChanged),
-          ),
-          SizedBox(height: 14.h),
+          // Container(
+          //   padding: EdgeInsets.symmetric(horizontal: 18.w),
+          //   child: GenderTabBar(selected: gender, onChanged: _onGenderChanged),
+          // ),
+          // SizedBox(height: 14.h),
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 18.w),
             child: CategoryPillRow(

@@ -575,13 +575,13 @@ class AppLocalizationsTh extends AppLocalizations {
   String get commonPleaseRetry => 'กรุณาลองใหม่อีกครั้ง';
 
   @override
-  String get serviceTypeSocial => 'สังคม';
+  String get serviceTypeSocial => 'กิจกรรมท้องถิ่น';
 
   @override
   String get serviceTypeMassage => 'นวด';
 
   @override
-  String get serviceTypeTravel => 'ท่องเที่ยว';
+  String get serviceTypeTravel => 'ประสบการณ์ท้องถิ่น';
 
   @override
   String get viewCompanionPageTitle => 'ทั้งหมด';
@@ -680,7 +680,7 @@ class AppLocalizationsTh extends AppLocalizations {
 
   @override
   String commonHours(int hours) {
-    return '$hours ชม.';
+    return '$hours รอบ';
   }
 
   @override
@@ -2881,16 +2881,16 @@ class AppLocalizationsTh extends AppLocalizations {
   String get bookingLabelDate => 'วันที่';
 
   @override
-  String get bookingHoursCount => 'จำนวนชั่วโมง';
+  String get bookingHoursCount => 'จำนวนรอบ';
 
   @override
   String bookingHoursValue(int hours) {
-    return '$hours ชั่วโมง';
+    return '$hours รอบ';
   }
 
   @override
   String bookingHoursShortValue(int hours) {
-    return '$hours ชม.';
+    return '$hours รอบ';
   }
 
   @override
@@ -2941,12 +2941,12 @@ class AppLocalizationsTh extends AppLocalizations {
 
   @override
   String bookingRatePerHour(String rate) {
-    return '$rate กีบ / ชั่วโมง';
+    return '$rate กีบ / รอบ';
   }
 
   @override
   String bookingRatePerHourShort(String rate) {
-    return '$rate กีบ / ชม.';
+    return '$rate กีบ / รอบ';
   }
 
   @override
@@ -3100,6 +3100,19 @@ class AppLocalizationsTh extends AppLocalizations {
   String get shareInviteSubject => 'เข้าร่วม Xaosao';
 
   @override
+  String get appName => 'Xaosao';
+
+  @override
+  String bookingThankYouFor(String appName) {
+    return 'ขอบคุณที่ใช้บริการผ่าน $appName';
+  }
+
+  @override
+  String bookingSupportContact(String phone) {
+    return 'สอบถามเพิ่มเติม โทร $phone';
+  }
+
+  @override
   String get shareCommissionReferral => 'การแนะนำ';
 
   @override
@@ -3232,7 +3245,7 @@ class AppLocalizationsTh extends AppLocalizations {
   String get imagePickerCamera => 'กล้องถ่ายรูป';
 
   @override
-  String get serviceUnitHour => '/ชั่วโมง';
+  String get serviceUnitHour => '/รอบ';
 
   @override
   String get serviceUnitDay => '/วัน';

@@ -1201,7 +1201,7 @@ abstract class AppLocalizations {
   /// No description provided for @serviceTypeSocial.
   ///
   /// In lo, this message translates to:
-  /// **'ສັງຄົມ'**
+  /// **'ກິດຈະກຳທ້ອງຖິ່ນ'**
   String get serviceTypeSocial;
 
   /// No description provided for @serviceTypeMassage.
@@ -1213,7 +1213,7 @@ abstract class AppLocalizations {
   /// No description provided for @serviceTypeTravel.
   ///
   /// In lo, this message translates to:
-  /// **'ທ່ຽວ'**
+  /// **'ປະສົບການທ້ອງຖິ່ນ'**
   String get serviceTypeTravel;
 
   /// No description provided for @viewCompanionPageTitle.
@@ -1405,7 +1405,7 @@ abstract class AppLocalizations {
   /// No description provided for @commonHours.
   ///
   /// In lo, this message translates to:
-  /// **'{hours} ຊົ່ວໂມງ'**
+  /// **'{hours} ຮອບ'**
   String commonHours(int hours);
 
   /// No description provided for @commonDays.
@@ -5515,19 +5515,19 @@ abstract class AppLocalizations {
   /// No description provided for @bookingHoursCount.
   ///
   /// In lo, this message translates to:
-  /// **'ຈຳນວນຊົ່ວໂມງ'**
+  /// **'ຈຳນວນຮອບ'**
   String get bookingHoursCount;
 
   /// No description provided for @bookingHoursValue.
   ///
   /// In lo, this message translates to:
-  /// **'{hours} ຊົ່ວໂມງ'**
+  /// **'{hours} ຮອບ'**
   String bookingHoursValue(int hours);
 
   /// No description provided for @bookingHoursShortValue.
   ///
   /// In lo, this message translates to:
-  /// **'{hours} ຊມ'**
+  /// **'{hours} ຮ.'**
   String bookingHoursShortValue(int hours);
 
   /// No description provided for @bookingTotalPriceShort.
@@ -5617,13 +5617,13 @@ abstract class AppLocalizations {
   /// No description provided for @bookingRatePerHour.
   ///
   /// In lo, this message translates to:
-  /// **'{rate} ກີບ / ຊົ່ວໂມງ'**
+  /// **'{rate} ກີບ / ຮອບ'**
   String bookingRatePerHour(String rate);
 
   /// No description provided for @bookingRatePerHourShort.
   ///
   /// In lo, this message translates to:
-  /// **'{rate} ກີບ / ຊມ'**
+  /// **'{rate} ກີບ / ຮ.'**
   String bookingRatePerHourShort(String rate);
 
   /// No description provided for @bookingCountUnit.
@@ -5896,6 +5896,24 @@ abstract class AppLocalizations {
   /// **'ເຂົ້າຮ່ວມ Xaosao'**
   String get shareInviteSubject;
 
+  /// No description provided for @appName.
+  ///
+  /// In lo, this message translates to:
+  /// **'Xaosao'**
+  String get appName;
+
+  /// No description provided for @bookingThankYouFor.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຂໍຂອບໃຈທີ່ໃຊ້ບໍລິການຜ່ານ {appName}'**
+  String bookingThankYouFor(String appName);
+
+  /// No description provided for @bookingSupportContact.
+  ///
+  /// In lo, this message translates to:
+  /// **'ສອບຖາມເພີ່ມເຕີມ ໂທ {phone}'**
+  String bookingSupportContact(String phone);
+
   /// No description provided for @shareCommissionReferral.
   ///
   /// In lo, this message translates to:
@@ -6157,7 +6175,7 @@ abstract class AppLocalizations {
   /// No description provided for @serviceUnitHour.
   ///
   /// In lo, this message translates to:
-  /// **'/ຊົ່ວໂມງ'**
+  /// **'/ຮອບ'**
   String get serviceUnitHour;
 
   /// No description provided for @serviceUnitDay.
