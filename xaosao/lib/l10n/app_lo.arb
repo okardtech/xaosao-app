@@ -224,9 +224,9 @@
   "commonRetry": "ລອງໃໝ່",
   "commonPleaseRetry": "ກະລຸນາລອງໃໝ່ອີກຄັ້ງ",
 
-  "serviceTypeSocial": "ກິດຈະກຳທ້ອງຖິ່ນ",
+  "serviceTypeSocial": "ເພື່ອນສັງຄົມ",
   "serviceTypeMassage": "ນວດ",
-  "serviceTypeTravel": "ປະສົບການທ້ອງຖິ່ນ",
+  "serviceTypeTravel": "ເພື່ອນທ່ອງທ່ຽວ",
 
   "viewCompanionPageTitle": "ຜູ້ໃຫ້ບໍລິການທັງໝົດ",
   "viewCompanionFilterLikedByMe": "ຂ້ອຍ Like",
@@ -1195,8 +1195,8 @@
   "imagePickerTitle": "ເລືອກຮູບໂປຣໄຟ",
   "imagePickerGallery": "ຄັງຮູບ",
   "imagePickerCamera": "ກ້ອງຖ່າຍຮູບ",
-  "serviceUnitHour": "/ຮອບ",
-  "serviceUnitDay": "/ວັນ",
+  "serviceUnitHour": "/ຊົ່ວໂມງ",
+  "serviceUnitDay": "/ມື້",
   "serviceUnitNight": "/ຄືນ",
   "serviceUnitOnce": "ຄັ້ງດຽວ",
   "serviceUnitMinute": "/ນາທີ",

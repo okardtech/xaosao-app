@@ -3,11 +3,14 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:xaosao/constants/app_color.dart';
+import 'package:xaosao/constants/app_icons.dart';
 import 'package:xaosao/constants/app_image.dart';
 import 'package:xaosao/constants/app_routes.dart';
 import 'package:xaosao/l10n/app_localizations.dart';
 import 'package:xaosao/models/notification_item_model.dart';
 import 'package:xaosao/utils/l10n.dart' as g;
+import 'package:xaosao/widgets/app_network_image.dart';
+import 'package:xaosao/widgets/app_svg_icon.dart';
 import 'package:xaosao/widgets/empty_state.dart';
 import 'package:xaosao/widgets/gradient_app_bar.dart';
 
@@ -246,6 +249,76 @@ class _NotifTile extends StatelessWidget {
 
   const _NotifTile({required this.item, required this.onTap});
 
+  /// The API ships English in `title`/`message` and Lao in
+  /// `la_title`/`la_message`. Pick the one matching the active locale
+  /// instead of always preferring Lao, and fall back to whichever field
+  /// the server actually populated so a tile is never blank.
+  /// (`th` has no dedicated field — it falls back to English.)
+  String _localizedText(BuildContext context, String? en, String? la) {
+    final isLao = Localizations.localeOf(context).languageCode == 'lo';
+    final preferred = isLao ? la : en;
+    final fallback = isLao ? en : la;
+    if (preferred != null && preferred.isNotEmpty) return preferred;
+    if (fallback != null && fallback.isNotEmpty) return fallback;
+    return '';
+  }
+
+  /// Admin notifications show the app logo; everything else shows the
+  /// sender's profile photo (falling back to the logo when absent).
+  Widget _buildAvatar(Color color) {
+    final isAdmin = item.isAdmin ?? false;
+
+    // Non-admin → show the sender: their photo when we have one,
+    // otherwise the profile icon.
+    if (!isAdmin) {
+      final sender = item.sender;
+      final profile = sender?.profile;
+
+      if (sender != null && profile != null && profile.isNotEmpty) {
+        return ClipOval(
+          child: SizedBox(
+            width: 42.r,
+            height: 42.r,
+            child: AppNetworkImage(
+              imageUrl: profile,
+              width: 42.r,
+              height: 42.r,
+              fit: BoxFit.cover,
+              accentColor: color,
+            ),
+          ),
+        );
+      }
+
+      return Container(
+        width: 42.r,
+        height: 42.r,
+        decoration: BoxDecoration(
+          color: color.withValues(alpha: 0.12),
+          shape: BoxShape.circle,
+        ),
+        alignment: Alignment.center,
+        child: AppSvgIcon(
+          assetName: AppIcons.user,
+          width: 22.r,
+          height: 22.r,
+          // color: ,
+        ),
+      );
+    }
+
+    // Admin → app logo
+    return Container(
+      width: 42.r,
+      height: 42.r,
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.12),
+        shape: BoxShape.circle,
+        image: DecorationImage(image: AssetImage(AppImage.xaosao)),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final type = item.type ?? '';
@@ -273,21 +346,16 @@ class _NotifTile extends StatelessWidget {
 
               SizedBox(width: 14.w),
 
-              // Icon circle
+              // Avatar circle — xaosao logo for admin, sender photo otherwise
               Padding(
                 padding: EdgeInsets.only(top: 14.h),
-                child: Container(
-                  width: 42.r,
-                  height: 42.r,
-                  decoration: BoxDecoration(
-                    color: color.withValues(alpha: 0.12),
-                    shape: BoxShape.circle,
-                    image: DecorationImage(
-                      image: AssetImage(AppImage.xaosao),
-                      // fit: BoxFit.cover,
-                    ),
-                  ),
-                  // child: Icon(icon, size: 20.r, color: color),
+                // widthFactor keeps the Align sized to the avatar, and the
+                // Align hands it *loose* constraints so the Row's
+                // CrossAxisAlignment.stretch cannot squash it into an oval.
+                child: Align(
+                  alignment: Alignment.topCenter,
+                  widthFactor: 1,
+                  child: _buildAvatar(color),
                 ),
               ),
 
@@ -305,8 +373,11 @@ class _NotifTile extends StatelessWidget {
                         children: [
                           Expanded(
                             child: Text(
-                              // _labelForType(type),
-                              item.laTitle ?? item.title ?? '',
+                              _localizedText(
+                                context,
+                                item.title,
+                                item.laTitle,
+                              ),
                               style: TextStyle(
                                 fontSize: 14.sp,
                                 fontWeight: read
@@ -352,19 +423,22 @@ class _NotifTile extends StatelessWidget {
                           ),
                         ],
                       ),
-                      if (item.laMessage != null && item.laMessage!.isNotEmpty) ...[
-                        SizedBox(height: 4.h),
-                        Text(
-                          item.laMessage!,
-                          style: TextStyle(
-                            fontSize: 12.sp,
-                            color: AppColors.textHint,
-                            height: 1.45,
-                          ),
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
+
+                      SizedBox(height: 4.h),
+                      Text(
+                        _localizedText(
+                          context,
+                          item.message,
+                          item.laMessage,
                         ),
-                      ],
+                        style: TextStyle(
+                          fontSize: 12.sp,
+                          color: AppColors.textHint,
+                          height: 1.45,
+                        ),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
                     ],
                   ),
                 ),
@@ -435,7 +509,6 @@ class _NotifShimmer extends StatelessWidget {
     );
   }
 }
-
 
 Color _colorForType(String type) {
   switch (type) {
@@ -559,6 +632,7 @@ String _relativeTime(DateTime? dt) {
   if (diff.inHours < 24) return g.l10n.notifTimeHours(diff.inHours);
   if (diff.inDays == 1) return g.l10n.notifTimeYesterday;
   if (diff.inDays < 7) return g.l10n.notifTimeDaysAgo(diff.inDays);
-  if (diff.inDays < 30) return g.l10n.notifTimeWeeksAgo((diff.inDays / 7).floor());
+  if (diff.inDays < 30)
+    return g.l10n.notifTimeWeeksAgo((diff.inDays / 7).floor());
   return g.l10n.notifTimeMonthsAgo((diff.inDays / 30).floor());
 }

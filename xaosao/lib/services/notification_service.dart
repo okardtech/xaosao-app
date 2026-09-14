@@ -156,7 +156,10 @@ class NotificationService {
   static Future<void> refreshToken() async {
     try {
       _fcmToken = await FirebaseMessaging.instance.getToken();
-    } catch (_) {}
+      print('fcm ==>${_fcmToken}');
+    } catch (e) {
+      print("error with fcm :$e");
+    }
   }
 
   // ── Foreground handler ─────────────────────────────────────────────────────
@@ -266,6 +269,7 @@ class NotificationService {
       // ── Gifts ────────────────────────────────────────────────────
       case 'post_gift_received':
       case 'gift_received':
+       case 'gift_reaction':
         final postId = _s('postId');
         if (postId.isNotEmpty) {
           Get.toNamed(AppRoutes.myGifts, arguments: postId);

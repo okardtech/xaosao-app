@@ -575,13 +575,13 @@ class AppLocalizationsTh extends AppLocalizations {
   String get commonPleaseRetry => 'กรุณาลองใหม่อีกครั้ง';
 
   @override
-  String get serviceTypeSocial => 'กิจกรรมท้องถิ่น';
+  String get serviceTypeSocial => 'เพื่อนสังคม';
 
   @override
   String get serviceTypeMassage => 'นวด';
 
   @override
-  String get serviceTypeTravel => 'ประสบการณ์ท้องถิ่น';
+  String get serviceTypeTravel => 'เพื่อนท่องเที่ยว';
 
   @override
   String get viewCompanionPageTitle => 'ผู้ให้บริการทั้งหมด';
@@ -3246,7 +3246,7 @@ class AppLocalizationsTh extends AppLocalizations {
   String get imagePickerCamera => 'กล้องถ่ายรูป';
 
   @override
-  String get serviceUnitHour => '/รอบ';
+  String get serviceUnitHour => '/ชั่วโมง';
 
   @override
   String get serviceUnitDay => '/วัน';

@@ -221,7 +221,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     ),
                     SizedBox(height: 14.h),
                     Text(
-                      l10n.profileAppVersion('1.0.0'),
+                      l10n.profileAppVersion('1.0.5(6)'),
                       style: TextStyle(
                         fontSize: 10.sp,
                         fontWeight: FontWeight.w600,

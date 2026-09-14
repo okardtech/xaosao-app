@@ -222,9 +222,9 @@
   "commonRetry": "ลองใหม่",
   "commonPleaseRetry": "กรุณาลองใหม่อีกครั้ง",
 
-  "serviceTypeSocial": "กิจกรรมท้องถิ่น",
+  "serviceTypeSocial": "เพื่อนสังคม",
   "serviceTypeMassage": "นวด",
-  "serviceTypeTravel": "ประสบการณ์ท้องถิ่น",
+  "serviceTypeTravel": "เพื่อนท่องเที่ยว",
 
   "viewCompanionPageTitle": "ผู้ให้บริการทั้งหมด",
   "viewCompanionFilterLikedByMe": "ที่ฉันไลค์",
@@ -1193,7 +1193,7 @@
   "imagePickerTitle": "เลือกรูปโปรไฟล์",
   "imagePickerGallery": "คลังรูปภาพ",
   "imagePickerCamera": "กล้องถ่ายรูป",
-  "serviceUnitHour": "/รอบ",
+  "serviceUnitHour": "/ชั่วโมง",
   "serviceUnitDay": "/วัน",
   "serviceUnitNight": "/คืน",
   "serviceUnitOnce": "ครั้งเดียว",

@@ -1201,7 +1201,7 @@ abstract class AppLocalizations {
   /// No description provided for @serviceTypeSocial.
   ///
   /// In lo, this message translates to:
-  /// **'ກິດຈະກຳທ້ອງຖິ່ນ'**
+  /// **'ເພື່ອນສັງຄົມ'**
   String get serviceTypeSocial;
 
   /// No description provided for @serviceTypeMassage.
@@ -1213,7 +1213,7 @@ abstract class AppLocalizations {
   /// No description provided for @serviceTypeTravel.
   ///
   /// In lo, this message translates to:
-  /// **'ປະສົບການທ້ອງຖິ່ນ'**
+  /// **'ເພື່ອນທ່ອງທ່ຽວ'**
   String get serviceTypeTravel;
 
   /// No description provided for @viewCompanionPageTitle.
@@ -6175,13 +6175,13 @@ abstract class AppLocalizations {
   /// No description provided for @serviceUnitHour.
   ///
   /// In lo, this message translates to:
-  /// **'/ຮອບ'**
+  /// **'/ຊົ່ວໂມງ'**
   String get serviceUnitHour;
 
   /// No description provided for @serviceUnitDay.
   ///
   /// In lo, this message translates to:
-  /// **'/ວັນ'**
+  /// **'/ມື້'**
   String get serviceUnitDay;
 
   /// No description provided for @serviceUnitNight.

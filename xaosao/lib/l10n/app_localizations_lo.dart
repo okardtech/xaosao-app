@@ -575,13 +575,13 @@ class AppLocalizationsLo extends AppLocalizations {
   String get commonPleaseRetry => 'ກະລຸນາລອງໃໝ່ອີກຄັ້ງ';
 
   @override
-  String get serviceTypeSocial => 'ກິດຈະກຳທ້ອງຖິ່ນ';
+  String get serviceTypeSocial => 'ເພື່ອນສັງຄົມ';
 
   @override
   String get serviceTypeMassage => 'ນວດ';
 
   @override
-  String get serviceTypeTravel => 'ປະສົບການທ້ອງຖິ່ນ';
+  String get serviceTypeTravel => 'ເພື່ອນທ່ອງທ່ຽວ';
 
   @override
   String get viewCompanionPageTitle => 'ຜູ້ໃຫ້ບໍລິການທັງໝົດ';
@@ -3248,10 +3248,10 @@ class AppLocalizationsLo extends AppLocalizations {
   String get imagePickerCamera => 'ກ້ອງຖ່າຍຮູບ';
 
   @override
-  String get serviceUnitHour => '/ຮອບ';
+  String get serviceUnitHour => '/ຊົ່ວໂມງ';
 
   @override
-  String get serviceUnitDay => '/ວັນ';
+  String get serviceUnitDay => '/ມື້';
 
   @override
   String get serviceUnitNight => '/ຄືນ';

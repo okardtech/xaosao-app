@@ -71,16 +71,7 @@ class NotifListLogic extends GetxController {
     if (idx == -1 || (state.items[idx].isRead ?? false)) return;
 
     final updated = List<NotificationItemModel>.from(state.items);
-    final old = updated[idx];
-    updated[idx] = NotificationItemModel(
-      id: old.id,
-      type: old.type,
-      title: old.title,
-      message: old.message,
-      data: old.data,
-      isRead: true,
-      createdAt: old.createdAt,
-    );
+    updated[idx] = updated[idx].copyWith(isRead: true);
     final newCount = (state.unreadCount - 1).clamp(0, state.unreadCount);
     _update(state.copyWith(items: updated, unreadCount: newCount));
     NotificationService.unreadCount.value = newCount;
@@ -91,19 +82,7 @@ class NotifListLogic extends GetxController {
   Future<void> markAllRead() async {
     if (state.unreadCount == 0) return;
     _update(state.copyWith(
-      items: state.items
-          .map(
-            (e) => NotificationItemModel(
-              id: e.id,
-              type: e.type,
-              title: e.title,
-              message: e.message,
-              data: e.data,
-              isRead: true,
-              createdAt: e.createdAt,
-            ),
-          )
-          .toList(),
+      items: state.items.map((e) => e.copyWith(isRead: true)).toList(),
       unreadCount: 0,
     ));
     NotificationService.unreadCount.value = 0;
@@ -119,9 +98,10 @@ class NotifListLogic extends GetxController {
 
   // ── Type-specific navigation ────────────────────────────────────
   void _navigateFromType(String type, Data? data, [NotificationItemModel? item]) {
-    // print('type ${type}');
+     print('type ${type}');
     final isCustomer =
         Get.find<StorageService>().read<String>('role') == 'customer';
+
 
     switch (type) {
       // ── Home ──────────────────────────────────────────────────
@@ -152,6 +132,8 @@ class NotifListLogic extends GetxController {
 
       // ── Post gifts ────────────────────────────────────────────
       case 'post_gift_received':
+      case 'gift_received':
+      case 'gift_reaction':
         final giftPostId = data?.postId ?? '';
         if (giftPostId.isNotEmpty) {
           Get.toNamed(AppRoutes.myGifts, arguments: giftPostId);

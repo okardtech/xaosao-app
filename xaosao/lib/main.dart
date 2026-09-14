@@ -63,7 +63,7 @@ class MyApp extends StatelessWidget {
           theme: ThemeData(
             primarySwatch: Colors.blue,
             scaffoldBackgroundColor: AppColors.bg,
-            fontFamily: 'NotoSansLao',
+            fontFamily: langService.fontFamily,
           ),
           builder: (context, child) {
             final mediaQuery = MediaQuery.of(context);

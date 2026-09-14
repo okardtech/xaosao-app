@@ -247,7 +247,7 @@ class _CustomerProfilePageState extends State<CustomerProfilePage> {
 
                   Center(
                     child: Text(
-                      l10n.profileAppVersion('1.0.0'),
+                      l10n.profileAppVersion('1.0.5(6)'),
                       style: const TextStyle(
                         fontSize: 10,
                         color: Color(0xFFC4C4D0),
