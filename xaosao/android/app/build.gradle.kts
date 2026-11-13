@@ -1,3 +1,8 @@
+// AGP 9 deprecates the legacy `android { }` Kotlin DSL accessor at ERROR level, which
+// fails script compilation while `android.newDsl=false` is still required by Flutter.
+// Remove once this project migrates to built-in Kotlin / the new AGP DSL.
+@file:Suppress("DEPRECATION")
+
 import java.util.Properties
 import java.io.FileInputStream
 
@@ -28,10 +33,6 @@ android {
         isCoreLibraryDesugaringEnabled = true
     }
 
-    kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_17.toString()
-    }
-
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
         applicationId = "com.xaosao.mobile"
@@ -39,8 +40,8 @@ android {
         // For more information, see: https://flutter.dev/to/review-gradle-config.
         minSdk = 24
         targetSdk = 36
-        versionCode = 5
-        versionName = "1.0.4"
+        versionCode = 7
+        versionName = "1.0.6"
     }
 
     signingConfigs {
@@ -67,6 +68,12 @@ android {
                 signingConfigs.getByName("debug")
             }
         }
+    }
+}
+
+kotlin {
+    compilerOptions {
+        jvmTarget = org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17
     }
 }
 

@@ -8,6 +8,7 @@ class AppSearchField extends StatelessWidget {
   final ValueChanged<String>? onChanged;
   final String? hintText;
   final bool autofocus;
+  final FocusNode? focusNode;
 
   const AppSearchField({
     super.key,
@@ -15,6 +16,7 @@ class AppSearchField extends StatelessWidget {
     this.onChanged,
     this.hintText,
     this.autofocus = false,
+    this.focusNode,
   });
 
   @override
@@ -22,6 +24,7 @@ class AppSearchField extends StatelessWidget {
     final l10n = AppLocalizations.of(context)!;
     return TextField(
       controller: controller,
+      focusNode: focusNode,
       autofocus: autofocus,
       onChanged: onChanged,
       style: TextStyle(fontSize: 13.sp, color: AppColors.textPrimary),

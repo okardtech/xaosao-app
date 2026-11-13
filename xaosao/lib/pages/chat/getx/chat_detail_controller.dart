@@ -1,15 +1,46 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:xaosao/models/chat_location.dart';
 import 'package:xaosao/models/conversation_model.dart';
-import 'package:xaosao/pages/model_discover/model_detail_page.dart';
+import 'package:xaosao/services/location_manager.dart';
 import 'package:xaosao/pages/chat/getx/chat_logic.dart';
 import 'package:xaosao/pages/chat/getx/chat_state.dart';
 
 import '../../../constants/app_routes.dart';
 import '../../../services/storage_service.dart';
+
+/// Why a location share did or didn't go through.
+///
+/// The controller returns one of these instead of touching a
+/// `BuildContext`: deciding between a snackbar, a settings sheet and a
+/// silent no-op is the widget's job, and keeping it out here is what makes
+/// [ChatDetailController.sendCurrentLocation] testable.
+enum LocationSendOutcome {
+  ok,
+
+  /// Another send is already running.
+  busy,
+
+  /// The OS location service (GPS toggle) is off — app permission is
+  /// irrelevant until the user turns it on.
+  serviceDisabled,
+
+  /// User declined this time; the OS will ask again later.
+  permissionDenied,
+
+  /// Permanently denied — only the system settings screen can recover.
+  permissionDeniedForever,
+
+  /// Permission is fine but the hardware produced no fix in time.
+  fixFailed,
+
+  /// We had coordinates; the message itself failed to send.
+  sendFailed,
+}
 
 class ChatDetailController extends GetxController {
   final String conversationId;
@@ -26,6 +57,10 @@ class ChatDetailController extends GetxController {
   final canSend = false.obs;
   final showEmoji = false.obs;
   final isSending = false.obs;
+
+  /// Separate from [isSending] so the location button can show its own
+  /// spinner while the text/image send button stays usable.
+  final isSendingLocation = false.obs;
   final pendingImage = Rx<File?>(null);
 
   int _prevMessageCount = 0;
@@ -171,6 +206,63 @@ class ChatDetailController extends GetxController {
     );
     isSending.value = false;
     return ok;
+  }
+
+  // ── Send current location ─────────────────────────────────
+  /// Captures a fresh GPS fix and sends it as a message.
+  ///
+  /// Permission is requested here rather than deferred to
+  /// `PermissionCoordinator`, because this is a user-initiated action: the
+  /// user just tapped "send my location", so the OS prompt needs no primer
+  /// and arrives with obvious context.
+  ///
+  /// Never throws — every failure mode comes back as a [LocationSendOutcome]
+  /// for the caller to turn into UI.
+  Future<LocationSendOutcome> sendCurrentLocation() async {
+    if (isSending.value || isSendingLocation.value) {
+      return LocationSendOutcome.busy;
+    }
+
+    // GPS toggle is OS-level and orthogonal to app permission — check it
+    // first, or a granted app would still silently never get a fix.
+    if (!await Geolocator.isLocationServiceEnabled()) {
+      return LocationSendOutcome.serviceDisabled;
+    }
+
+    var perm = await Geolocator.checkPermission();
+    if (perm == LocationPermission.denied) {
+      perm = await Geolocator.requestPermission();
+    }
+    if (perm == LocationPermission.deniedForever) {
+      return LocationSendOutcome.permissionDeniedForever;
+    }
+    if (perm != LocationPermission.whileInUse &&
+        perm != LocationPermission.always) {
+      return LocationSendOutcome.permissionDenied;
+    }
+
+    isSendingLocation.value = true;
+    try {
+      // currentFresh() — not getOrRefresh() — so a stale cached point is
+      // never published as the user's current whereabouts.
+      final pos = await Get.find<LocationManager>().currentFresh();
+      if (pos == null) return LocationSendOutcome.fixFailed;
+
+      final location = ChatLocation(
+        latitude: pos.latitude,
+        longitude: pos.longitude,
+      );
+      final ok = await _chatLogic.sendMessage(
+        conversationId,
+        location.shareUrl,
+      );
+      return ok ? LocationSendOutcome.ok : LocationSendOutcome.sendFailed;
+    } catch (_) {
+      // LocationManager not registered yet, or GPS threw — treat as no fix.
+      return LocationSendOutcome.fixFailed;
+    } finally {
+      isSendingLocation.value = false;
+    }
   }
 
   // ── Open partner profile ──────────────────────────────────

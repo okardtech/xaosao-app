@@ -1201,7 +1201,7 @@ abstract class AppLocalizations {
   /// No description provided for @serviceTypeSocial.
   ///
   /// In lo, this message translates to:
-  /// **'ກິດຈະກຳທ້ອງຖິ່ນ'**
+  /// **'ເພື່ອນສັງຄົມ'**
   String get serviceTypeSocial;
 
   /// No description provided for @serviceTypeMassage.
@@ -1213,7 +1213,7 @@ abstract class AppLocalizations {
   /// No description provided for @serviceTypeTravel.
   ///
   /// In lo, this message translates to:
-  /// **'ປະສົບການທ້ອງຖິ່ນ'**
+  /// **'ເພື່ອນທ່ອງທ່ຽວ'**
   String get serviceTypeTravel;
 
   /// No description provided for @viewCompanionPageTitle.
@@ -1336,11 +1336,17 @@ abstract class AppLocalizations {
   /// **'ຕົວກອງ'**
   String get homeFilters;
 
-  /// No description provided for @homeMaxDistance.
+  /// No description provided for @homeFilterByService.
   ///
   /// In lo, this message translates to:
-  /// **'ໄລຍະທາງສູງສຸດ'**
-  String get homeMaxDistance;
+  /// **'ບໍລິການ'**
+  String get homeFilterByService;
+
+  /// No description provided for @homeClearFilter.
+  ///
+  /// In lo, this message translates to:
+  /// **'ລ້າງ'**
+  String get homeClearFilter;
 
   /// No description provided for @homeApplyFilter.
   ///
@@ -1401,18 +1407,6 @@ abstract class AppLocalizations {
   /// In lo, this message translates to:
   /// **'{years} ປີ'**
   String commonAgeYears(int years);
-
-  /// No description provided for @commonHours.
-  ///
-  /// In lo, this message translates to:
-  /// **'{hours} ຮອບ'**
-  String commonHours(int hours);
-
-  /// No description provided for @commonDays.
-  ///
-  /// In lo, this message translates to:
-  /// **'{days} ວັນ'**
-  String commonDays(int days);
 
   /// No description provided for @commonConfirm.
   ///
@@ -4711,7 +4705,7 @@ abstract class AppLocalizations {
   /// No description provided for @meetupsUnitDays.
   ///
   /// In lo, this message translates to:
-  /// **'ວັນ'**
+  /// **'ມື້'**
   String get meetupsUnitDays;
 
   /// No description provided for @meetupsUnitHours.
@@ -5506,29 +5500,83 @@ abstract class AppLocalizations {
   /// **'📷 ຮູບພາບ'**
   String get chatImagePrefix;
 
+  /// No description provided for @chatLocationPrefix.
+  ///
+  /// In lo, this message translates to:
+  /// **'📍 ຕຳແໜ່ງ'**
+  String get chatLocationPrefix;
+
+  /// No description provided for @chatLocationTitle.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຕຳແໜ່ງປັດຈຸບັນ'**
+  String get chatLocationTitle;
+
+  /// No description provided for @chatLocationOpenHint.
+  ///
+  /// In lo, this message translates to:
+  /// **'ແຕະເພື່ອເປີດແຜນທີ່'**
+  String get chatLocationOpenHint;
+
+  /// No description provided for @chatSendLocationTitle.
+  ///
+  /// In lo, this message translates to:
+  /// **'ສົ່ງຕຳແໜ່ງປັດຈຸບັນ?'**
+  String get chatSendLocationTitle;
+
+  /// No description provided for @chatSendLocationBody.
+  ///
+  /// In lo, this message translates to:
+  /// **'{name} ຈະເຫັນຕຳແໜ່ງປັດຈຸບັນຂອງທ່ານ'**
+  String chatSendLocationBody(String name);
+
+  /// No description provided for @chatSendLocationConfirm.
+  ///
+  /// In lo, this message translates to:
+  /// **'ສົ່ງຕຳແໜ່ງ'**
+  String get chatSendLocationConfirm;
+
+  /// No description provided for @chatLocationGpsOffTitle.
+  ///
+  /// In lo, this message translates to:
+  /// **'GPS ປິດໄວ້'**
+  String get chatLocationGpsOffTitle;
+
+  /// No description provided for @chatLocationGpsOffBody.
+  ///
+  /// In lo, this message translates to:
+  /// **'ກະລຸນາເປີດ GPS ເພື່ອສົ່ງຕຳແໜ່ງຂອງທ່ານ'**
+  String get chatLocationGpsOffBody;
+
+  /// No description provided for @chatLocationPermTitle.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຕ້ອງການສິດເຂົ້າເຖິງສະຖານທີ່'**
+  String get chatLocationPermTitle;
+
+  /// No description provided for @chatLocationPermBody.
+  ///
+  /// In lo, this message translates to:
+  /// **'ເປີດການເຂົ້າເຖິງສະຖານທີ່ໃນການຕັ້ງຄ່າ ເພື່ອສົ່ງຕຳແໜ່ງຂອງທ່ານ'**
+  String get chatLocationPermBody;
+
+  /// No description provided for @chatLocationFixFailed.
+  ///
+  /// In lo, this message translates to:
+  /// **'ບໍ່ສາມາດຫາຕຳແໜ່ງໄດ້ ກະລຸນາລອງໃໝ່'**
+  String get chatLocationFixFailed;
+
+  /// No description provided for @chatLocationOpenFailed.
+  ///
+  /// In lo, this message translates to:
+  /// **'ບໍ່ສາມາດເປີດແຜນທີ່ໄດ້'**
+  String get chatLocationOpenFailed;
+
   /// No description provided for @bookingLabelDate.
   ///
   /// In lo, this message translates to:
   /// **'ວັນທີ'**
   String get bookingLabelDate;
-
-  /// No description provided for @bookingHoursCount.
-  ///
-  /// In lo, this message translates to:
-  /// **'ຈຳນວນຮອບ'**
-  String get bookingHoursCount;
-
-  /// No description provided for @bookingHoursValue.
-  ///
-  /// In lo, this message translates to:
-  /// **'{hours} ຮອບ'**
-  String bookingHoursValue(int hours);
-
-  /// No description provided for @bookingHoursShortValue.
-  ///
-  /// In lo, this message translates to:
-  /// **'{hours} ຮ.'**
-  String bookingHoursShortValue(int hours);
 
   /// No description provided for @bookingTotalPriceShort.
   ///
@@ -5559,6 +5607,18 @@ abstract class AppLocalizations {
   /// In lo, this message translates to:
   /// **'ຄືນ'**
   String get bookingUnitNight;
+
+  /// No description provided for @bookingUnitMinute.
+  ///
+  /// In lo, this message translates to:
+  /// **'ນາທີ'**
+  String get bookingUnitMinute;
+
+  /// No description provided for @bookingUnitTime.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຄັ້ງ'**
+  String get bookingUnitTime;
 
   /// No description provided for @bookingDateDeparture.
   ///
@@ -5613,18 +5673,6 @@ abstract class AppLocalizations {
   /// In lo, this message translates to:
   /// **'{rate} ກີບ / {unit}'**
   String bookingRatePerUnit(String rate, String unit);
-
-  /// No description provided for @bookingRatePerHour.
-  ///
-  /// In lo, this message translates to:
-  /// **'{rate} ກີບ / ຮອບ'**
-  String bookingRatePerHour(String rate);
-
-  /// No description provided for @bookingRatePerHourShort.
-  ///
-  /// In lo, this message translates to:
-  /// **'{rate} ກີບ / ຮ.'**
-  String bookingRatePerHourShort(String rate);
 
   /// No description provided for @bookingCountUnit.
   ///
@@ -6175,13 +6223,13 @@ abstract class AppLocalizations {
   /// No description provided for @serviceUnitHour.
   ///
   /// In lo, this message translates to:
-  /// **'/ຮອບ'**
+  /// **'/ຊົ່ວໂມງ'**
   String get serviceUnitHour;
 
   /// No description provided for @serviceUnitDay.
   ///
   /// In lo, this message translates to:
-  /// **'/ວັນ'**
+  /// **'/ມື້'**
   String get serviceUnitDay;
 
   /// No description provided for @serviceUnitNight.
@@ -6477,6 +6525,30 @@ abstract class AppLocalizations {
   /// In lo, this message translates to:
   /// **'ຍັງບໍ່ເຖິງລະດັບ'**
   String get tiersLockedNote;
+
+  /// No description provided for @announcementTitle.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຂ່າວສານ'**
+  String get announcementTitle;
+
+  /// No description provided for @announcementBadge.
+  ///
+  /// In lo, this message translates to:
+  /// **'ປະກາດທາງການ'**
+  String get announcementBadge;
+
+  /// No description provided for @announcementFrom.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຈາກທີມງານ Xaosao'**
+  String get announcementFrom;
+
+  /// No description provided for @announcementGotIt.
+  ///
+  /// In lo, this message translates to:
+  /// **'ເຂົ້າໃຈແລ້ວ'**
+  String get announcementGotIt;
 }
 
 class _AppLocalizationsDelegate

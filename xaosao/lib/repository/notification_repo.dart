@@ -1,4 +1,4 @@
-import 'dart:ffi';
+import 'dart:io';
 
 import 'package:xaosao/models/notification_item_model.dart';
 import '../constants/api_constants.dart';
@@ -32,6 +32,23 @@ class NotificationRepo extends BaseRepository {
   Future<ApiResponse<bool>> markAllRead() {
     return safeCall(
       () => api.post(ApiConstants.notificationReadAll),
+      fromJson: (_) => true,
+      authRequired: true,
+    );
+  }
+
+  /// Registers this device's push token with the backend so the server can
+  /// target it. Called from [NotificationService.syncTokenToServer] — the
+  /// single place that owns token acquisition + registration.
+  Future<ApiResponse<bool>> registerDevice({required String deviceToken}) {
+    return safeCall(
+      () => api.post(
+        '${ApiConstants.myNotificaiton}/register-device',
+        data: {
+          'device_token': deviceToken,
+          'platform': Platform.isAndroid ? 'android' : 'ios',
+        },
+      ),
       fromJson: (_) => true,
       authRequired: true,
     );

@@ -7,7 +7,9 @@ import 'package:get/get.dart';
 import 'package:xaosao/constants/app_color.dart';
 import 'package:xaosao/l10n/app_localizations.dart';
 import 'package:xaosao/models/Recommended_model.dart';
+import 'package:xaosao/models/service_model.dart';
 import 'package:xaosao/pages/home/components/companion_card.dart';
+import 'package:xaosao/utils/service_helper.dart';
 import 'package:xaosao/pages/home/components/companion_filter.dart';
 import 'package:xaosao/pages/home/components/home_shimmer.dart';
 import 'package:xaosao/pages/home/getx/home_logic.dart';
@@ -34,6 +36,7 @@ class _ExplorePageState extends State<ExplorePage> {
   late final HomeLogic _logic;
   late final ScrollController _scrollCtrl;
   late final TextEditingController _searchCtrl;
+  late final FocusNode _searchFocusNode;
   late final StreamSubscription<bool> _searchSub;
 
   @override
@@ -42,6 +45,7 @@ class _ExplorePageState extends State<ExplorePage> {
     _logic = Get.find<HomeLogic>();
     _scrollCtrl = ScrollController()..addListener(_onScroll);
     _searchCtrl = TextEditingController();
+    _searchFocusNode = FocusNode();
     _searchSub = _logic.searchOpen.listen((open) {
       if (!open) _searchCtrl.clear();
     });
@@ -59,6 +63,7 @@ class _ExplorePageState extends State<ExplorePage> {
       ..removeListener(_onScroll)
       ..dispose();
     _searchCtrl.dispose();
+    _searchFocusNode.dispose();
     _searchSub.cancel();
     super.dispose();
   }
@@ -159,14 +164,12 @@ class _ExplorePageState extends State<ExplorePage> {
               active: _logic.searchOpen.value,
             ),
           ),
-          // SizedBox(width: 10.w),
-          // _iconBtn(Icons.tune_rounded, _showFilterSheet),
         ],
       ),
     );
   }
 
-  // ── Collapsible search bar ─────────────────────────────────────────────────
+  // ── Collapsible search bar + filter button ─────────────────────────────────
   Widget _buildSearchField() {
     return Obx(() {
       final open = _logic.searchOpen.value;
@@ -181,11 +184,26 @@ class _ExplorePageState extends State<ExplorePage> {
               ? EdgeInsets.fromLTRB(18.w, 0, 18.w, 8.h)
               : EdgeInsets.zero,
           child: open
-              ? AppSearchField(
-                  controller: _searchCtrl,
-                  onChanged: _logic.onSearchChanged,
-                  hintText: AppLocalizations.of(context)!.homeSearchHint,
-                  autofocus: true,
+              ? Row(
+                  children: [
+                    Expanded(
+                      child: AppSearchField(
+                        controller: _searchCtrl,
+                        focusNode: _searchFocusNode,
+                        onChanged: _logic.onSearchChanged,
+                        hintText: AppLocalizations.of(context)!.homeSearchHint,
+                        autofocus: true,
+                      ),
+                    ),
+                    SizedBox(width: 8.w),
+                    Obx(
+                      () => _iconBtn(
+                        Icons.tune_rounded,
+                        _showFilterSheet,
+                        active: _logic.state.serviceId != null,
+                      ),
+                    ),
+                  ],
                 )
               : const SizedBox.shrink(),
         ),
@@ -524,118 +542,23 @@ class _ExplorePageState extends State<ExplorePage> {
 
   // ── Filter bottom sheet ────────────────────────────────────────────────────
   void _showFilterSheet() {
+    // Dismiss the search field's keyboard first so it doesn't fight the
+    // sheet for screen space. Unfocus the field's own node directly —
+    // more reliable than the ambient FocusScope call alone — then fall
+    // back to the scope call in case focus is elsewhere.
+    _searchFocusNode.unfocus();
+    FocusScope.of(context).unfocus();
     showModalBottomSheet(
       context: context,
-      backgroundColor: Colors.white,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(28.r)),
-      ),
-      builder: (_) => SafeArea(
-        top: false,
-        child: Padding(
-        padding: EdgeInsets.all(24.r),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Center(
-              child: Container(
-                width: 40.w,
-                height: 4.h,
-                decoration: BoxDecoration(
-                  color: const Color(0xFFE0E0E0),
-                  borderRadius: BorderRadius.circular(2.r),
-                ),
-              ),
-            ),
-            SizedBox(height: 20.h),
-            Text(
-              AppLocalizations.of(context)!.homeFilters,
-              style: TextStyle(
-                fontSize: 18.sp,
-                fontWeight: FontWeight.w800,
-                color: const Color(0xFF1A1A2E),
-              ),
-            ),
-            SizedBox(height: 16.h),
-            Text(
-              AppLocalizations.of(context)!.homeMaxDistance,
-              style: TextStyle(
-                fontSize: 13.sp,
-                fontWeight: FontWeight.w600,
-                color: const Color(0xFF555570),
-              ),
-            ),
-            SizedBox(height: 8.h),
-            _distanceChips(),
-            SizedBox(height: 28.h),
-            SizedBox(
-              width: double.infinity,
-              height: 52.h,
-              child: ElevatedButton(
-                onPressed: () => Navigator.pop(context),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFFF06292),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16.r),
-                  ),
-                  elevation: 0,
-                ),
-                child: Text(
-                  AppLocalizations.of(context)!.homeApplyFilter,
-                  style: TextStyle(
-                    fontSize: 15.sp,
-                    fontWeight: FontWeight.w700,
-                    color: Colors.white,
-                  ),
-                ),
-              ),
-            ),
-            SizedBox(height: 10.h),
-          ],
-        ),
-        ),
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      barrierColor: Colors.black.withValues(alpha: 0.4),
+      builder: (_) => _ServiceFilterSheet(
+        services: _logic.state.services,
+        initialSelectedId: _logic.state.serviceId,
+        onApply: _logic.setServiceId,
       ),
     );
-  }
-
-  Widget _distanceChips() {
-    final opts = <Map<String, dynamic>>[
-      {'label': '< 5km', 'value': 5.0},
-      {'label': '< 10km', 'value': 10.0},
-      {'label': '< 30km', 'value': 30.0},
-      {'label': AppLocalizations.of(context)!.commonAll, 'value': 200.0},
-    ];
-    return Obx(() {
-      final current = _logic.state.maxDistanceKm;
-      return Wrap(
-        spacing: 8.w,
-        children: opts.map((o) {
-          final val = o['value'] as double;
-          final selected = current == val;
-          return FilterChip(
-            label: Text(o['label'] as String),
-            selected: selected,
-            onSelected: (_) {
-              _logic.setMaxDistance(val);
-              Navigator.pop(context);
-            },
-            backgroundColor: const Color(0xFFF8F8FC),
-            selectedColor: const Color(0xFFF06292).withValues(alpha: 0.15),
-            labelStyle: TextStyle(
-              fontSize: 12.sp,
-              color: selected
-                  ? const Color(0xFFF06292)
-                  : const Color(0xFF555570),
-              fontWeight: selected ? FontWeight.w700 : FontWeight.w400,
-            ),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(20.r),
-            ),
-          );
-        }).toList(),
-      );
-    });
   }
 }
 
@@ -664,5 +587,321 @@ class _LoadMoreCell extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+// ═════════════════════════════════════════════════════════════════════════════
+//  _ServiceFilterSheet — single-select Service filter bottom sheet
+//  (the API accepts exactly one serviceId, so this must stay single-select)
+// ═════════════════════════════════════════════════════════════════════════════
+class _ServiceFilterSheet extends StatefulWidget {
+  final List<ServiceModel> services;
+  final String? initialSelectedId;
+  final ValueChanged<String?> onApply;
+
+  const _ServiceFilterSheet({
+    required this.services,
+    required this.initialSelectedId,
+    required this.onApply,
+  });
+
+  @override
+  State<_ServiceFilterSheet> createState() => _ServiceFilterSheetState();
+}
+
+class _ServiceFilterSheetState extends State<_ServiceFilterSheet> {
+  late String? _selected;
+
+  @override
+  void initState() {
+    super.initState();
+    _selected = widget.initialSelectedId;
+  }
+
+  void _select(String? id) {
+    if (id == null || id.isEmpty) return;
+    setState(() {
+      // Tapping the already-selected service deselects it (back to "All");
+      // tapping any other service replaces the current selection — only
+      // one serviceId can ever be sent to the API.
+      _selected = _selected == id ? null : id;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final maxHeight = MediaQuery.of(context).size.height * 0.75;
+
+    return Container(
+      constraints: BoxConstraints(maxHeight: maxHeight),
+      clipBehavior: Clip.antiAlias,
+      decoration: BoxDecoration(
+        color: AppColors.surface,
+        borderRadius: BorderRadius.vertical(top: Radius.circular(28.r)),
+      ),
+      child: SafeArea(
+        top: false,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Center(
+              child: Padding(
+                padding: EdgeInsets.only(top: 12.h, bottom: 2.h),
+                child: Container(
+                  width: 40.w,
+                  height: 4.h,
+                  decoration: BoxDecoration(
+                    color: AppColors.textDisabled,
+                    borderRadius: BorderRadius.circular(2.r),
+                  ),
+                ),
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.fromLTRB(20.w, 14.h, 20.w, 0),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      l10n.homeFilters,
+                      style: TextStyle(
+                        fontSize: 18.sp,
+                        fontWeight: FontWeight.w800,
+                        color: AppColors.textPrimary,
+                      ),
+                    ),
+                  ),
+                  if (_selected != null)
+                    GestureDetector(
+                      onTap: () {
+                        // Clear commits immediately (not staged behind
+                        // Apply) — leaving a filter applied with no
+                        // visible selection would be a stuck/confusing
+                        // state.
+                        setState(() => _selected = null);
+                        widget.onApply(null);
+                      },
+                      child: Text(
+                        l10n.homeClearFilter,
+                        style: TextStyle(
+                          fontSize: 13.sp,
+                          fontWeight: FontWeight.w700,
+                          color: AppColors.primary,
+                        ),
+                      ),
+                    ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.fromLTRB(20.w, 18.h, 20.w, 10.h),
+              child: Text(
+                l10n.homeFilterByService,
+                style: TextStyle(
+                  fontSize: 13.sp,
+                  fontWeight: FontWeight.w700,
+                  color: AppColors.textSecondary,
+                ),
+              ),
+            ),
+            Flexible(
+              child: widget.services.isEmpty
+                  ? Padding(
+                      padding: EdgeInsets.symmetric(vertical: 36.h),
+                      child: Center(
+                        child: SizedBox(
+                          width: 22.r,
+                          height: 22.r,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            color: AppColors.primary,
+                          ),
+                        ),
+                      ),
+                    )
+                  : ListView.builder(
+                      padding: EdgeInsets.fromLTRB(20.w, 0, 20.w, 4.h),
+                      shrinkWrap: true,
+                      itemCount: widget.services.length,
+                      itemBuilder: (_, i) {
+                        final svc = widget.services[i];
+                        return _ServiceFilterRow(
+                          service: svc,
+                          index: i,
+                          selected: _selected != null && _selected == svc.id,
+                          onTap: () => _select(svc.id),
+                        );
+                      },
+                    ),
+            ),
+            Padding(
+              padding: EdgeInsets.fromLTRB(20.w, 10.h, 20.w, 14.h),
+              child: SizedBox(
+                width: double.infinity,
+                height: 52.h,
+                child: ElevatedButton(
+                  onPressed: () {
+                    widget.onApply(_selected);
+                    Navigator.pop(context);
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.primary,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16.r),
+                    ),
+                    elevation: 0,
+                  ),
+                  child: Text(
+                    l10n.homeApplyFilter,
+                    style: TextStyle(
+                      fontSize: 15.sp,
+                      fontWeight: FontWeight.w700,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// ── Service row — icon · translated name · checkbox indicator ──────────────
+class _ServiceFilterRow extends StatelessWidget {
+  final ServiceModel service;
+  final int index;
+  final bool selected;
+  final VoidCallback onTap;
+
+  const _ServiceFilterRow({
+    required this.service,
+    required this.index,
+    required this.selected,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final visual = _serviceVisual(service.name, index);
+    return GestureDetector(
+      onTap: onTap,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 160),
+        margin: EdgeInsets.only(bottom: 10.h),
+        padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 12.h),
+        decoration: BoxDecoration(
+          color: selected
+              ? visual.fg.withValues(alpha: 0.06)
+              : AppColors.surfaceSecondary,
+          borderRadius: BorderRadius.circular(16.r),
+          border: Border.all(
+            color: selected ? visual.fg : Colors.transparent,
+            width: 1.3,
+          ),
+        ),
+        child: Row(
+          children: [
+            Container(
+              width: 40.r,
+              height: 40.r,
+              decoration: BoxDecoration(
+                color: visual.bg,
+                borderRadius: BorderRadius.circular(12.r),
+              ),
+              child: Icon(visual.icon, size: 18.r, color: visual.fg),
+            ),
+            SizedBox(width: 12.w),
+            Expanded(
+              child: Text(
+                ServiceHelper.serviceOriginalName(service.name),
+                style: TextStyle(
+                  fontSize: 13.sp,
+                  fontWeight: FontWeight.w700,
+                  color: AppColors.textPrimary,
+                ),
+              ),
+            ),
+            SizedBox(width: 10.w),
+            // Circular radio indicator — a single choice among services,
+            // not an independent on/off checkbox.
+            AnimatedContainer(
+              duration: const Duration(milliseconds: 150),
+              width: 22.r,
+              height: 22.r,
+              decoration: BoxDecoration(
+                color: selected ? visual.fg : Colors.transparent,
+                shape: BoxShape.circle,
+                border: Border.all(
+                  color: selected ? visual.fg : AppColors.textDisabled,
+                  width: 1.5,
+                ),
+              ),
+              child: selected
+                  ? Icon(Icons.check_rounded, size: 14.r, color: Colors.white)
+                  : null,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// ── Icon + color pairing for a service row, keyed by its backend name ───────
+class _ServiceVisual {
+  final IconData icon;
+  final Color fg;
+  final Color bg;
+  const _ServiceVisual(this.icon, this.fg, this.bg);
+}
+
+const _serviceVisualCycleIcons = [
+  Icons.people_alt_outlined,
+  Icons.spa_outlined,
+  Icons.flight_takeoff_outlined,
+];
+const _serviceVisualCycleFg = [
+  AppColors.socialFg,
+  AppColors.massageFg,
+  AppColors.travelFg,
+];
+const _serviceVisualCycleBg = [
+  AppColors.socialBg,
+  AppColors.massageBg,
+  AppColors.travelBg,
+];
+
+_ServiceVisual _serviceVisual(String? name, int index) {
+  switch (name) {
+    case 'drinkingFriend':
+      return const _ServiceVisual(
+        Icons.people_alt_outlined,
+        AppColors.socialFg,
+        AppColors.socialBg,
+      );
+    case 'massage':
+      return const _ServiceVisual(
+        Icons.spa_outlined,
+        AppColors.massageFg,
+        AppColors.massageBg,
+      );
+    case 'travelingFriend':
+      return const _ServiceVisual(
+        Icons.flight_takeoff_outlined,
+        AppColors.travelFg,
+        AppColors.travelBg,
+      );
+    default:
+      final i = index % _serviceVisualCycleIcons.length;
+      return _ServiceVisual(
+        _serviceVisualCycleIcons[i],
+        _serviceVisualCycleFg[i],
+        _serviceVisualCycleBg[i],
+      );
   }
 }

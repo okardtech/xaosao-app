@@ -92,6 +92,7 @@ class PostCard extends StatelessWidget {
   final VoidCallback? onMore;
   final VoidCallback? onTap;
   final VoidCallback? onChat;
+  final VoidCallback? onProfile;
 
   const PostCard({
     super.key,
@@ -103,6 +104,7 @@ class PostCard extends StatelessWidget {
     this.onMore,
     this.onTap,
     this.onChat,
+    this.onProfile,
   });
 
   @override
@@ -165,7 +167,10 @@ class PostCard extends StatelessWidget {
 
     return Padding(
       padding: EdgeInsets.fromLTRB(14.w, 14.h, 14.w, 10.h),
-      child: Row(
+      child: GestureDetector(
+        onTap: onProfile,
+        behavior: HitTestBehavior.opaque,
+        child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           _AuthorAvatar(imageUrl: post.author?.profile),
@@ -241,6 +246,7 @@ class PostCard extends StatelessWidget {
             ),
           ),
         ],
+        ),
       ),
     );
   }

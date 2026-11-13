@@ -157,6 +157,8 @@ class _DetailCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final b = booking;
+    // Duration unit comes from the service's billingType, not a fixed word.
+    final unit = ServiceHelper.unitName(b.modelService?.service?.billingType);
     final shortId = (b.id ?? '').length > 8
         ? b.id!.substring(0, 8).toUpperCase()
         : (b.id ?? '-');
@@ -220,8 +222,8 @@ class _DetailCard extends StatelessWidget {
                         ),
                         child: Text(
                           b.dayAmount != null
-                              ? g.l10n.commonDays(b.dayAmount!)
-                              : g.l10n.commonHours(b.hours ?? 0),
+                              ? '${b.dayAmount} $unit'
+                              : '${b.hours ?? 0} $unit',
                           style: TextStyle(
                             fontSize: 11.sp,
                             fontWeight: FontWeight.w600,

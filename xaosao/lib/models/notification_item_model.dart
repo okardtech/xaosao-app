@@ -18,6 +18,8 @@ class NotificationItemModel {
     String? laMessage;
     Data? data;
     bool? isRead;
+    bool? isAdmin;
+    Sender? sender;
     DateTime? createdAt;
 
     NotificationItemModel({
@@ -29,6 +31,8 @@ class NotificationItemModel {
         this.laMessage,
         this.data,
         this.isRead,
+        this.isAdmin,
+        this.sender,
         this.createdAt,
     });
 
@@ -41,8 +45,39 @@ class NotificationItemModel {
         laMessage: json["la_message"],
         data: json["data"] == null ? null : Data.fromJson(json["data"]),
         isRead: json["is_read"],
+        isAdmin: json["is_admin"],
+        sender: json["sender"] == null ? null : Sender.fromJson(json["sender"]),
         createdAt: parseApiDateTime(json["created_at"]),
     );
+
+    /// Copy preserving every field — use this instead of rebuilding the
+    /// model by hand, which silently drops whatever fields you forget.
+    NotificationItemModel copyWith({
+        String? id,
+        String? type,
+        String? title,
+        String? message,
+        String? laTitle,
+        String? laMessage,
+        Data? data,
+        bool? isRead,
+        bool? isAdmin,
+        Sender? sender,
+        DateTime? createdAt,
+    }) =>
+        NotificationItemModel(
+            id: id ?? this.id,
+            type: type ?? this.type,
+            title: title ?? this.title,
+            message: message ?? this.message,
+            laTitle: laTitle ?? this.laTitle,
+            laMessage: laMessage ?? this.laMessage,
+            data: data ?? this.data,
+            isRead: isRead ?? this.isRead,
+            isAdmin: isAdmin ?? this.isAdmin,
+            sender: sender ?? this.sender,
+            createdAt: createdAt ?? this.createdAt,
+        );
 
     Map<String, dynamic> toJson() => {
         "id": id,
@@ -53,7 +88,45 @@ class NotificationItemModel {
         "la_message": laMessage,
         "data": data?.toJson(),
         "is_read": isRead,
+        "is_admin": isAdmin,
+        "sender": sender?.toJson(),
         "created_at": createdAt?.toIso8601String(),
+    };
+}
+
+class Sender {
+    String? id;
+    String? userType;
+    String? firstName;
+    String? lastName;
+    String? profile;
+    String? displayName;
+
+    Sender({
+        this.id,
+        this.userType,
+        this.firstName,
+        this.lastName,
+        this.profile,
+        this.displayName,
+    });
+
+    factory Sender.fromJson(Map<String, dynamic> json) => Sender(
+        id: json["id"],
+        userType: json["userType"],
+        firstName: json["firstName"],
+        lastName: json["lastName"],
+        profile: json["profile"],
+        displayName: json["displayName"],
+    );
+
+    Map<String, dynamic> toJson() => {
+        "id": id,
+        "userType": userType,
+        "firstName": firstName,
+        "lastName": lastName,
+        "profile": profile,
+        "displayName": displayName,
     };
 }
 

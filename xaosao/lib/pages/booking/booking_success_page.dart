@@ -70,6 +70,8 @@ class _BookingSuccessPageState extends State<BookingSuccessPage>
     final modelPhoto = booking.model?.profile ?? args.companionPhoto;
     final _rawServiceName =
         booking.modelService?.service?.name ?? args.service.name;
+    final unit = ServiceHelper.unitName(
+        booking.modelService?.service?.billingType);
     final serviceName = _rawServiceName != null
         ? ServiceHelper.serviceOriginalName(_rawServiceName)
         : '—';
@@ -117,8 +119,8 @@ class _BookingSuccessPageState extends State<BookingSuccessPage>
                   if (booking.hours != null)
                     _DetailRow(
                       icon: Icons.timer_outlined,
-                      label: l10n.bookingHoursCount,
-                      value: l10n.bookingHoursValue(booking.hours!),
+                      label: l10n.bookingCountUnit(unit),
+                      value: '${booking.hours} $unit',
                     ),
                   if (price != null)
                     _DetailRow(

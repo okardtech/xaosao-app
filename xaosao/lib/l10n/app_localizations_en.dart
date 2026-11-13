@@ -645,7 +645,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get homeFilters => 'Filters';
 
   @override
-  String get homeMaxDistance => 'Max distance';
+  String get homeFilterByService => 'Service';
+
+  @override
+  String get homeClearFilter => 'Clear';
 
   @override
   String get homeApplyFilter => 'Apply filter';
@@ -677,16 +680,6 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String commonAgeYears(int years) {
     return '$years yr';
-  }
-
-  @override
-  String commonHours(int hours) {
-    return '$hours session';
-  }
-
-  @override
-  String commonDays(int days) {
-    return '$days d';
   }
 
   @override
@@ -884,7 +877,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get billingPerNightShort => '/night';
 
   @override
-  String get billingPerSession => '/session';
+  String get billingPerSession => '/time';
 
   @override
   String get billingPerMinute => '/min';
@@ -905,7 +898,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get servicesManageYourRate => 'Your rate';
 
   @override
-  String get servicesManageFeePerSession => 'Service fee/session';
+  String get servicesManageFeePerSession => 'Service fee/time';
 
   @override
   String get servicesManageActualEarnings => 'Actual earnings';
@@ -914,7 +907,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get servicesManagePriceList => 'Price list';
 
   @override
-  String get servicesManageCommissionPerSession => 'Commission/session';
+  String get servicesManageCommissionPerSession => 'Commission/time';
 
   @override
   String get servicesManageCommission => 'Commission';
@@ -2888,20 +2881,47 @@ class AppLocalizationsEn extends AppLocalizations {
   String get chatImagePrefix => '📷 Image';
 
   @override
+  String get chatLocationPrefix => '📍 Location';
+
+  @override
+  String get chatLocationTitle => 'Current location';
+
+  @override
+  String get chatLocationOpenHint => 'Tap to open in Maps';
+
+  @override
+  String get chatSendLocationTitle => 'Send your current location?';
+
+  @override
+  String chatSendLocationBody(String name) {
+    return '$name will see where you are right now';
+  }
+
+  @override
+  String get chatSendLocationConfirm => 'Send location';
+
+  @override
+  String get chatLocationGpsOffTitle => 'GPS is off';
+
+  @override
+  String get chatLocationGpsOffBody => 'Turn on GPS to share your location';
+
+  @override
+  String get chatLocationPermTitle => 'Location permission needed';
+
+  @override
+  String get chatLocationPermBody =>
+      'Allow location access in Settings to share your location';
+
+  @override
+  String get chatLocationFixFailed =>
+      'Couldn\'t get your location. Please try again';
+
+  @override
+  String get chatLocationOpenFailed => 'Couldn\'t open Maps';
+
+  @override
   String get bookingLabelDate => 'Date';
-
-  @override
-  String get bookingHoursCount => 'Sessions';
-
-  @override
-  String bookingHoursValue(int hours) {
-    return '$hours sessions';
-  }
-
-  @override
-  String bookingHoursShortValue(int hours) {
-    return '$hours sess';
-  }
 
   @override
   String get bookingTotalPriceShort => 'Total price';
@@ -2917,6 +2937,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get bookingUnitNight => 'night';
+
+  @override
+  String get bookingUnitMinute => 'minutes';
+
+  @override
+  String get bookingUnitTime => 'times';
 
   @override
   String get bookingDateDeparture => 'Departure date';
@@ -2950,18 +2976,8 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String bookingRatePerHour(String rate) {
-    return '$rate KIP / session';
-  }
-
-  @override
-  String bookingRatePerHourShort(String rate) {
-    return '$rate KIP / sess';
-  }
-
-  @override
   String bookingCountUnit(String unit) {
-    return '$unit count';
+    return 'Number of $unit';
   }
 
   @override
@@ -3258,7 +3274,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get imagePickerCamera => 'Camera';
 
   @override
-  String get serviceUnitHour => '/session';
+  String get serviceUnitHour => '/hour';
 
   @override
   String get serviceUnitDay => '/day';
@@ -3425,4 +3441,16 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get tiersLockedNote => 'Not yet reached';
+
+  @override
+  String get announcementTitle => 'Announcement';
+
+  @override
+  String get announcementBadge => 'Official announcement';
+
+  @override
+  String get announcementFrom => 'From the Xaosao team';
+
+  @override
+  String get announcementGotIt => 'Got it';
 }

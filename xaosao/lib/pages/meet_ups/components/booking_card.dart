@@ -123,9 +123,12 @@ class BookingCard extends StatelessWidget {
   static String _serviceTypeName(MyBookingModel b) =>
       ServiceHelper.serviceOriginalName(b.modelService?.service?.name);
 
+  /// Duration label in the service's own unit — days / nights / hours /
+  /// minutes per `billingType`, never one generic word for all of them.
   static String? _durationLabel(MyBookingModel b) {
-    if (b.dayAmount != null) return g.l10n.commonDays(b.dayAmount!);
-    if (b.hours != null) return g.l10n.commonHours(b.hours!);
+    final unit = ServiceHelper.unitName(b.modelService?.service?.billingType);
+    if (b.dayAmount != null) return '${b.dayAmount} $unit';
+    if (b.hours != null) return '${b.hours} $unit';
     return null;
   }
 

@@ -22,12 +22,14 @@ class DiscoverRepo extends BaseRepository {
     // String? genderType,
     String? search,
     String? status, //new,nearby, , vip, popular
+    String? serviceId,
   }) async {
     String url =
         '${ApiConstants.recommended}?page=$page&limit=$limit&maxDistanceKm=$maxDistanceKm';
     // if (genderType != null) url += '&gender=$genderType';
     if (search != null) url += '&search=$search';
     if (status != null) url += '&sort=$status';
+    if (serviceId != null) url += '&serviceId=$serviceId';
     return safeCall(
       () => api.get(url),
       authRequired: true,
@@ -44,12 +46,14 @@ class DiscoverRepo extends BaseRepository {
     // String? genderType,
     String? search,
     String? status, //new,nearby, , vip, popular
+    String? serviceId,
   }) async {
     String url =
         '${ApiConstants.online}?page=$page&limit=$limit&maxDistanceKm=$maxDistanceKm';
     // if (genderType != null) url += '&gender=$genderType';
     if (search != null) url += '&search=$search';
     if (status != null) url += '&sort=$status';
+    if (serviceId != null) url += '&serviceId=$serviceId';
     return safeCall(
       () => api.get(url),
       authRequired: true,
@@ -65,12 +69,14 @@ class DiscoverRepo extends BaseRepository {
     String? genderType,
     String? filter,
     String? search,
+    String? serviceId,
   }) async {
     // filter is have status is here : all(it's mean set null to api ), for-you,who-like-me,i-liked
     String url = '${ApiConstants.modelDiscover}?page=$page&limit=$limit';
     if (genderType != null) url += '&gender=$genderType';
     if (filter != null) url += '&filter=$filter';
     if (search != null) url += '&search=$search';
+    if (serviceId != null) url += '&serviceId=$serviceId';
     return safeCall(
       () => api.get(url),
       authRequired: true,

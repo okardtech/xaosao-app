@@ -265,6 +265,15 @@ class _PostsPageState extends State<PostsPage> {
                     AppRoutes.companionProfile,
                     arguments: post.author?.id ?? '',
                   ),
+                  onProfile: () {
+                    final id = post.author?.id;
+                    if (id == null || id.isEmpty) return;
+                    if (post.authorType == 'model') {
+                      Get.toNamed(AppRoutes.companionProfile, arguments: id);
+                    } else {
+                      Get.toNamed(AppRoutes.customerProfile, arguments: id);
+                    }
+                  },
                   onChat: () {
                     final id = post.author?.id;
                     if (id == null || id.isEmpty) return;

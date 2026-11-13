@@ -57,10 +57,23 @@ class UrlLauncherHelper {
     }
   }
 
-  static Future<void> openMaps(double latitude, double longitude) async {
-    final Uri uri = Uri.parse('geo:$latitude,$longitude');
-    if (!await launchUrl(uri)) {
-      throw Exception('Could not open maps');
+  /// Opens [latitude]/[longitude] in the device's maps app.
+  ///
+  /// Uses Google's documented cross-platform maps URL instead of the `geo:`
+  /// scheme: `geo:` is Android-only and fails on iOS, where there is no
+  /// handler for it. The https form opens the native Google Maps app when
+  /// installed, and Apple Maps / the browser otherwise.
+  ///
+  /// Returns false instead of throwing — callers show a message, and a map
+  /// that won't open is not worth an unhandled exception.
+  static Future<bool> openLocation(double latitude, double longitude) async {
+    try {
+      final uri = Uri.parse(
+        'https://www.google.com/maps/search/?api=1&query=$latitude,$longitude',
+      );
+      return await launchUrl(uri, mode: LaunchMode.externalApplication);
+    } catch (_) {
+      return false;
     }
   }
 

@@ -30,7 +30,6 @@ class _CompanionCardState extends State<CompanionCard>
     with SingleTickerProviderStateMixin {
   late final AnimationController _ctrl;
   late final Animation<double> _scale;
-  bool _liked = false;
 
   @override
   void initState() {
