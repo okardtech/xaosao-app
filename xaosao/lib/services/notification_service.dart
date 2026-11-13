@@ -1,11 +1,16 @@
+import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 import 'dart:math';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
 import 'package:xaosao/constants/app_routes.dart';
 import 'package:xaosao/models/notification_item_model.dart';
+import 'package:xaosao/repository/notification_repo.dart';
+import 'package:xaosao/services/api_service.dart';
 import 'package:xaosao/services/storage_service.dart';
 
 typedef ForegroundPushListener =
@@ -32,6 +37,24 @@ class NotificationService {
 
   static String? _fcmToken;
   static String? get fcmToken => _fcmToken;
+
+  /// Last device token we successfully POSTed to `/notifications/register-device`.
+  /// Persisted so a re-open of the app doesn't re-register an unchanged token,
+  /// and cleared automatically on logout (logout calls `storage.clear()`).
+  static const String _syncedTokenKey = 'fcm_synced_token';
+
+  /// The sync currently in flight, if any.
+  ///
+  /// Concurrent callers (login + PermissionCoordinator + onTokenRefresh can
+  /// all fire within the same second) share this one run instead of being
+  /// skipped. A boolean "busy" flag would turn the racing caller into a
+  /// permanent no-op: if the run it collided with then failed, nobody retried.
+  static Future<bool>? _inFlight;
+
+  /// Last failure reason. Readable from anywhere as
+  /// `NotificationService.lastSyncError` — useful for diagnosing a release
+  /// build you cannot attach a debugger to.
+  static String? lastSyncError;
 
   /// Global reactive notification badge.
   static final RxInt unreadCount = 0.obs;
@@ -82,11 +105,9 @@ class NotificationService {
   //
   // NOTE: This intentionally does NOT call `requestPermission(...)`.
   // The OS permission dialog is shown later by PermissionCoordinator,
-  // after a contextual primer sheet, so users understand WHY we're asking.
-  // The FCM token is only fetched once the user has granted permission
-  // (via `refreshToken()`); calling getToken() before grant on iOS would
-  // throw, and on Android it'd succeed but produce a token that can't
-  // deliver alerts until permission is granted.
+  // so users are asked in context. The token is fetched AND uploaded by
+  // `syncTokenToServer()`, which runs here when permission is already
+  // granted, after login, after a permission grant, and on token rotation.
   static Future<void> initialize() async {
     // iOS: present notifications when app is in foreground (no permission
     // ask here — just configures presentation if/when permission is granted).
@@ -144,21 +165,167 @@ class NotificationService {
       );
     }
 
-    // Subscribe to token rotation — the value will populate on the first
-    // grant via `refreshToken()`, or via Firebase's natural rotation later.
-    FirebaseMessaging.instance.onTokenRefresh.listen((t) => _fcmToken = t);
+    // Subscribe to token rotation — Firebase rotates tokens on reinstall,
+    // restore-from-backup and app-data clear. A rotated token MUST be
+    // pushed to the server or the device silently stops receiving pushes.
+    FirebaseMessaging.instance.onTokenRefresh.listen((t) {
+      _fcmToken = t;
+      unawaited(syncTokenToServer(force: true));
+    });
+
+    // Cold start with an existing session: make sure the server has the
+    // current token without waiting for the dashboard's PermissionCoordinator
+    // pass (which only runs once the user reaches the dashboard, and only on
+    // the permission-granted branch).
+    unawaited(_syncOnLaunch());
   }
 
-  /// Fetch (or re-fetch) the FCM device token. Call after the user grants
-  /// notification permission via PermissionCoordinator — calling before
-  /// grant on iOS throws APNS errors; on Android it succeeds but yields
-  /// a token that can't deliver alerts.
-  static Future<void> refreshToken() async {
+  /// Registers the token on launch.
+  ///
+  /// Android hands out a usable FCM token BEFORE POST_NOTIFICATIONS is
+  /// granted, so register it immediately: the server then already holds the
+  /// token the moment the user allows notifications, and a user who never
+  /// reaches the in-app prompt is still reachable once they enable
+  /// notifications from system settings.
+  ///
+  /// iOS is different — `getToken()` needs an APNS token, which only exists
+  /// after the user authorises — so there we wait for the grant.
+  static Future<void> _syncOnLaunch() async {
     try {
-      _fcmToken = await FirebaseMessaging.instance.getToken();
-      print('fcm ==>${_fcmToken}');
+      // InitialBinding registers ApiService with an un-awaited putAsync, so
+      // at this point in main() it may not be resolvable yet.
+      await _awaitApiService();
+
+      if (Platform.isAndroid) {
+        await syncTokenToServer();
+        return;
+      }
+
+      final settings = await FirebaseMessaging.instance
+          .getNotificationSettings();
+      final granted =
+          settings.authorizationStatus == AuthorizationStatus.authorized ||
+          settings.authorizationStatus == AuthorizationStatus.provisional;
+      if (granted) await syncTokenToServer();
     } catch (e) {
-      print("error with fcm :$e");
+      // debugPrint('[fcm] launch sync skipped: $e');
+      // The dashboard permission pass retries.
+    }
+  }
+
+  /// Waits (briefly) for [ApiService] to finish its async registration.
+  static Future<void> _awaitApiService() async {
+    for (var i = 0; i < 20 && !Get.isRegistered<ApiService>(); i++) {
+      await Future.delayed(const Duration(milliseconds: 100));
+    }
+  }
+
+  /// Fetch (or re-fetch) the FCM device token AND register it with the
+  /// backend. This is the single entry point for device registration —
+  /// getting the token without uploading it is what silently broke push
+  /// in production, so the two steps deliberately live together.
+  ///
+  /// Safe to call at any time; it becomes a no-op when:
+  ///   - the user is not logged in (no auth token) — login re-runs it,
+  ///   - no device token is available yet (iOS before the APNS grant),
+  ///   - the same token was already registered and [force] is false.
+  ///
+  /// Returns true when the server holds the current token.
+  static Future<bool> syncTokenToServer({bool force = false}) {
+    final running = _inFlight;
+    if (running != null) return running;
+    final run = _runSync(force: force).whenComplete(() => _inFlight = null);
+    _inFlight = run;
+    return run;
+  }
+
+  static Future<bool> _runSync({required bool force}) async {
+    try {
+      final storage = _storageOrNull();
+      final auth = storage?.read<String>('token');
+      if (auth == null || auth.isEmpty) {
+        // Not signed in yet — LoginLogic.saveFcmToken() runs this again
+        // right after a successful login.
+        lastSyncError = 'not signed in';
+        // debugPrint('[fcm] skip — not signed in');
+        return false;
+      }
+
+      final token = await _fetchToken();
+      // debugPrint('device token is here ==>$token');
+      if (token == null || token.isEmpty) {
+        lastSyncError = 'no device token';
+        return false;
+      }
+      _fcmToken = token;
+
+      if (!force && storage?.read<String>(_syncedTokenKey) == token) {
+        // debugPrint('[fcm] token unchanged — already registered');
+        return true;
+      }
+
+      // Retry transient failures. A real phone on mobile data drops requests
+      // far more often than an emulator on the host's wired connection, and
+      // this fires during startup alongside profile + wallet + socket traffic.
+      // `_syncedTokenKey` is only written on success, so a run that exhausts
+      // its retries is picked up again by the next launch or the next
+      // dashboard permission pass.
+      for (var attempt = 1; attempt <= 3; attempt++) {
+        final res = await NotificationRepo().registerDevice(deviceToken: token);
+        if (res.success) {
+          await storage?.write(_syncedTokenKey, token);
+          lastSyncError = null;
+          // debugPrint('[fcm] register-device OK (attempt $attempt)');
+          return true;
+        }
+        lastSyncError =
+            'register-device failed: ${res.statusCode} ${res.message}';
+        // debugPrint('[fcm] attempt $attempt/3 — $lastSyncError');
+        if (attempt < 3) await Future.delayed(Duration(seconds: 2 * attempt));
+      }
+      return false;
+    } catch (e) {
+      lastSyncError = 'sync error: $e';
+      // debugPrint('[fcm] $lastSyncError');
+      return false;
+    }
+  }
+
+  /// Backwards-compatible alias — kept so existing call sites keep working.
+  /// Prefer [syncTokenToServer].
+  static Future<void> refreshToken() => syncTokenToServer();
+
+  /// Reads the device token, waiting for APNS first on iOS.
+  ///
+  /// On iOS `getToken()` throws `apns-token-not-set` until APNS has handed
+  /// Firebase a device token, which can lag a few seconds after launch. The
+  /// old code swallowed that error and left the token null forever, so the
+  /// device was never registered. Poll briefly instead.
+  static Future<String?> _fetchToken() async {
+    try {
+      if (Platform.isIOS) {
+        String? apns = await FirebaseMessaging.instance.getAPNSToken();
+        for (var i = 0; i < 10 && apns == null; i++) {
+          await Future.delayed(const Duration(milliseconds: 500));
+          apns = await FirebaseMessaging.instance.getAPNSToken();
+        }
+        if (apns == null) {
+          // debugPrint('[fcm] APNS token unavailable — skipping this sync');
+          return null;
+        }
+      }
+      return await FirebaseMessaging.instance.getToken();
+    } catch (e) {
+      // debugPrint('[fcm] getToken failed: $e');
+      return null;
+    }
+  }
+
+  static StorageService? _storageOrNull() {
+    try {
+      return Get.find<StorageService>();
+    } catch (_) {
+      return null;
     }
   }
 
@@ -212,6 +379,30 @@ class NotificationService {
       }
       final type = data['type'] as String? ?? '';
       final isCustomer = role == 'customer';
+
+      // Admin broadcast → the announcement page (mirrors NotifListLogic.
+      // handleTap). FCM data values are always strings, so `is_admin` arrives
+      // as "true"/"false", not a bool. Requires the backend to include
+      // `is_admin` in the push data payload; without it this is a no-op and
+      // the type-based routing below still runs.
+      final isAdmin = (data['is_admin'] as String?)?.toLowerCase() == 'true';
+      if (isAdmin && type != 'welcome') {
+        Get.toNamed(
+          AppRoutes.announcement,
+          arguments: NotificationItemModel(
+            type: type,
+            title: data['title'] as String?,
+            laTitle: data['la_title'] as String?,
+            message: data['body'] as String?,
+            laMessage: data['la_body'] as String?,
+            isAdmin: true,
+            // No reliable send time in the data payload — the page simply
+            // omits the date pill rather than showing an invented one.
+          ),
+        );
+        return;
+      }
+
       if (type.isEmpty) {
         Get.toNamed(AppRoutes.notifications);
         return;

@@ -6,6 +6,7 @@ import 'package:xaosao/constants/app_color.dart';
 import 'package:xaosao/constants/app_icons.dart';
 import 'package:xaosao/constants/app_routes.dart';
 import 'package:xaosao/l10n/app_localizations.dart';
+import 'package:xaosao/models/chat_location.dart';
 import 'package:xaosao/models/conversation_model.dart';
 import 'package:xaosao/pages/chat/getx/chat_logic.dart';
 import 'package:xaosao/utils/date_time_formatter.dart';
@@ -427,7 +428,14 @@ class _ChatRow extends StatelessWidget {
     final isOnline = other?.isOnline ?? false;
     final isBlocked = conv.isBlocked;
     final hasUnread = !isBlocked && conv.unreadCountFor(myRole) > 0;
-    final lastMsg = conv.lastMessageText ?? '';
+    // Conversations fetched from the API carry the stored body, which for a
+    // shared location is a maps URL — label it here as well as on the live
+    // socket path, or the list shows a wall of https://...
+    final lastMsg = ChatLocation.previewLabel(
+          conv.lastMessageText,
+          messageType: conv.lastMessageType ?? 'text',
+        ) ??
+        '';
 
     return GestureDetector(
       onTap: onTap,

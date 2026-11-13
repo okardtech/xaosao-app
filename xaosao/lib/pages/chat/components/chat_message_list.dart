@@ -6,6 +6,7 @@ import 'package:xaosao/l10n/app_localizations.dart';
 import 'package:xaosao/pages/chat/components/chat_bubbles.dart';
 import 'package:xaosao/pages/chat/getx/chat_detail_controller.dart';
 import 'package:xaosao/pages/chat/getx/chat_state.dart';
+import 'package:xaosao/widgets/app_image_preview.dart';
 import 'package:xaosao/widgets/confirm_sheet.dart';
 
 // reverse:true → index 0 = visual bottom (newest messages).
@@ -25,6 +26,20 @@ class ChatMessageList extends StatelessWidget {
       }
 
       ctrl.checkAutoScroll(ms.messages.length);
+
+      // Every image in the conversation, oldest first, plus a message-id ->
+      // gallery-index map. Built ONCE per rebuild rather than inside
+      // itemBuilder: doing it per row would be O(n^2) on a long history, and
+      // an indexOf() lookup would also pick the wrong slot when the same
+      // photo was sent twice.
+      final imageUrls = <String>[];
+      final imageIndexOfMessage = <String, int>{};
+      for (final m in ms.messages) {
+        final url = m.fileUrl;
+        if (m.messageType != 'image' || url == null || url.isEmpty) continue;
+        imageIndexOfMessage[m.id] = imageUrls.length;
+        imageUrls.add(url);
+      }
 
       final msgCount = ms.messages.length;
       final isTyping = ms.isPartnerTyping;
@@ -58,6 +73,26 @@ class ChatMessageList extends StatelessWidget {
               gradient: ctrl.gradient,
               partnerImage: ctrl.partnerImage,
               onLongPress: () => _confirmDelete(ctx, msg.id),
+              // Hand the whole conversation to the viewer so the user can
+              // swipe between photos, the way every other messenger behaves,
+              // instead of being stuck on the one they tapped.
+              onImageTap: imageIndexOfMessage.containsKey(msg.id)
+                  ? () => AppImagePreview.show(
+                        ctx,
+                        imageUrls,
+                        initialIndex: imageIndexOfMessage[msg.id]!,
+                      )
+                  : null,
+              onOpenMapFailed: (message) => Get.snackbar(
+                message,
+                '',
+                snackPosition: SnackPosition.BOTTOM,
+                backgroundColor: Colors.red.shade50,
+                colorText: Colors.red.shade700,
+                margin: EdgeInsets.all(12.r),
+                borderRadius: 12.r,
+                duration: const Duration(seconds: 2),
+              ),
             ),
           );
         },

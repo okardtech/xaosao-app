@@ -230,7 +230,7 @@ class _SplashPageState extends State<SplashPage> {
                 const _LoadingDots(),
                 SizedBox(height: 10.h),
                 Text(
-                  'v1.0.5(6)',
+                  'v1.0.6(7)',
                   style: TextStyle(
                     fontSize: 12.sp,
                     color: Colors.white.withOpacity(0.28),

@@ -250,6 +250,9 @@ class _PerHourFormState extends State<PerHourForm> {
 
   void _showHourSheet() {
     final l10n = AppLocalizations.of(context)!;
+    // Unit noun follows the service's billingType — this form also serves
+    // per_minute and one_time services, so it must not assume hours.
+    final unit = ServiceHelper.unitName(_logic.args.service.billingType);
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.white,
@@ -278,7 +281,7 @@ class _PerHourFormState extends State<PerHourForm> {
               child: Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
-                  l10n.bookingHoursCount,
+                  l10n.bookingCountUnit(unit),
                   style: TextStyle(
                     fontSize: 14.sp,
                     fontWeight: FontWeight.w700,
@@ -337,7 +340,7 @@ class _PerHourFormState extends State<PerHourForm> {
                       ),
                       alignment: Alignment.center,
                       child: Text(
-                        l10n.bookingHoursValue(h),
+                        '$h $unit',
                         style: TextStyle(
                           fontSize: 13.sp,
                           fontWeight: FontWeight.w700,
@@ -374,6 +377,9 @@ class _PerHourFormState extends State<PerHourForm> {
     final variants = _logic.args.service.variants ?? [];
     if (variants.isEmpty) return;
     final l10n = AppLocalizations.of(context)!;
+    // Unit noun follows the service's billingType — this form also serves
+    // per_minute and one_time services, so it must not assume hours.
+    final unit = ServiceHelper.unitName(_logic.args.service.billingType);
 
     showModalBottomSheet(
       context: context,
@@ -523,7 +529,8 @@ class _PerHourFormState extends State<PerHourForm> {
                                     SizedBox(height: 3.h),
                                     Text(
                                       v.pricePerHour != null
-                                          ? l10n.bookingRatePerHour(CurrFormatter.format(v.pricePerHour!))
+                                          ? l10n.bookingRatePerUnit(
+                                              CurrFormatter.format(v.pricePerHour!), unit)
                                           : '—',
                                       style: TextStyle(
                                         fontSize: 12.sp,
@@ -576,6 +583,9 @@ class _PerHourFormState extends State<PerHourForm> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    // Unit noun follows the service's billingType — this form also serves
+    // per_minute and one_time services, so it must not assume hours.
+    final unit = ServiceHelper.unitName(_logic.args.service.billingType);
     return Scaffold(
       backgroundColor: AppColors.bg,
       appBar: bookingAppBar(_logic),
@@ -689,7 +699,7 @@ class _PerHourFormState extends State<PerHourForm> {
                                         crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
                                           Text(
-                                            l10n.bookingHoursCount,
+                                            l10n.bookingCountUnit(unit),
                                             style: TextStyle(
                                               fontSize: 12.sp,
                                               fontWeight: FontWeight.w600,
@@ -701,7 +711,7 @@ class _PerHourFormState extends State<PerHourForm> {
                                             showInternalLabel: false,
                                             icon: Icons.timer_outlined,
                                             label: '',
-                                            value: l10n.bookingHoursValue(st.hours),
+                                            value: '${st.hours} $unit',
                                             placeholder: l10n.bookingSelectPlaceholder,
                                             onTap: _showHourSheet,
                                           ),
@@ -877,10 +887,10 @@ class _PerHourFormState extends State<PerHourForm> {
                                       : ServiceHelper.serviceOriginalName(
                                           _logic.args.service.name,
                                         ),
-                                  rateValue: l10n.bookingRatePerHourShort(
-                                      CurrFormatter.format(_logic.rate)),
-                                  countLabel: l10n.bookingHoursCount,
-                                  countValue: l10n.bookingHoursShortValue(st.hours),
+                                  rateValue: l10n.bookingRatePerUnit(
+                                      CurrFormatter.format(_logic.rate), unit),
+                                  countLabel: l10n.bookingCountUnit(unit),
+                                  countValue: '${st.hours} $unit',
                                   total: _logic.totalHour,
                                 ),
                               ),

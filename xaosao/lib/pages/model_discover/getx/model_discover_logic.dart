@@ -65,6 +65,7 @@ class ModelDiscoverLogic extends GetxController {
         limit: _limit,
         filter: state.filter,
         search: state.search,
+        serviceId: state.serviceId,
       );
 
       if (res.success && res.data != null) {
@@ -100,6 +101,16 @@ class ModelDiscoverLogic extends GetxController {
         models: [],
         status: DiscoverStatus.loading,
       ));
+    }
+    loadModels(refresh: true);
+  }
+
+  void setServiceId(String? serviceId) {
+    if (state.serviceId == serviceId) return;
+    if (serviceId == null) {
+      _update(state.copyWith(clearServiceId: true, models: [], status: DiscoverStatus.loading));
+    } else {
+      _update(state.copyWith(serviceId: serviceId, models: [], status: DiscoverStatus.loading));
     }
     loadModels(refresh: true);
   }

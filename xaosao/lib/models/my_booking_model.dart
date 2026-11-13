@@ -358,18 +358,26 @@ class Service {
     String? id;
     String? name;
 
+    /// Billing unit the service is priced in: `per_hour`, `per_day`,
+    /// `per_night`, `per_minute` or `one_time`. Drives the unit noun shown
+    /// next to durations and rates — see [ServiceHelper.unitName].
+    String? billingType;
+
     Service({
         this.id,
         this.name,
+        this.billingType,
     });
 
     factory Service.fromJson(Map<String, dynamic> json) => Service(
         id: json["id"],
         name: json["name"],
+        billingType: json["billingType"],
     );
 
     Map<String, dynamic> toJson() => {
         "id": id,
         "name": name,
+        "billingType": billingType,
     };
 }

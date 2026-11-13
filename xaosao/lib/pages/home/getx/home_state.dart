@@ -1,4 +1,5 @@
 import 'package:xaosao/models/Recommended_model.dart';
+import 'package:xaosao/models/service_model.dart';
 
 enum HomeStatus { initial, loading, loadingMore, success, failure }
 
@@ -18,6 +19,9 @@ class HomeState {
   final String? search;
   final String sort;
 
+  final String? serviceId;
+  final List<ServiceModel> services;
+
   const HomeState({
     this.recommendedStatus = HomeStatus.initial,
     this.recommended = const [],
@@ -31,6 +35,8 @@ class HomeState {
     this.hasMoreData = true,
     this.search,
     this.sort = 'new',
+    this.serviceId,
+    this.services = const [],
   });
 
   HomeState copyWith({
@@ -47,6 +53,9 @@ class HomeState {
     String? search,
     bool clearSearch = false,
     String? sort,
+    String? serviceId,
+    bool clearServiceId = false,
+    List<ServiceModel>? services,
   }) {
     return HomeState(
       recommendedStatus: recommendedStatus ?? this.recommendedStatus,
@@ -61,6 +70,8 @@ class HomeState {
       hasMoreData: hasMoreData ?? this.hasMoreData,
       search: clearSearch ? null : (search ?? this.search),
       sort: sort ?? this.sort,
+      serviceId: clearServiceId ? null : (serviceId ?? this.serviceId),
+      services: services ?? this.services,
     );
   }
 }

@@ -9,6 +9,7 @@ class ModelDiscoverState {
   final int skip;
   final String? filter; // null=all, 'for-you', 'who-like-me', 'i-liked'
   final String? search;
+  final String? serviceId;
 
   const ModelDiscoverState({
     this.models = const [],
@@ -17,6 +18,7 @@ class ModelDiscoverState {
     this.skip = 1,
     this.filter,
     this.search,
+    this.serviceId,
   });
 
   ModelDiscoverState copyWith({
@@ -28,6 +30,8 @@ class ModelDiscoverState {
     bool clearFilter = false,
     String? search,
     bool clearSearch = false,
+    String? serviceId,
+    bool clearServiceId = false,
   }) =>
       ModelDiscoverState(
         models: models ?? this.models,
@@ -36,5 +40,6 @@ class ModelDiscoverState {
         skip: skip ?? this.skip,
         filter: clearFilter ? null : (filter ?? this.filter),
         search: clearSearch ? null : (search ?? this.search),
+        serviceId: clearServiceId ? null : (serviceId ?? this.serviceId),
       );
 }

@@ -644,7 +644,10 @@ class AppLocalizationsTh extends AppLocalizations {
   String get homeFilters => 'ตัวกรอง';
 
   @override
-  String get homeMaxDistance => 'ระยะทางสูงสุด';
+  String get homeFilterByService => 'บริการ';
+
+  @override
+  String get homeClearFilter => 'ล้าง';
 
   @override
   String get homeApplyFilter => 'ใช้ตัวกรอง';
@@ -676,16 +679,6 @@ class AppLocalizationsTh extends AppLocalizations {
   @override
   String commonAgeYears(int years) {
     return '$years ปี';
-  }
-
-  @override
-  String commonHours(int hours) {
-    return '$hours รอบ';
-  }
-
-  @override
-  String commonDays(int days) {
-    return '$days วัน';
   }
 
   @override
@@ -877,7 +870,7 @@ class AppLocalizationsTh extends AppLocalizations {
   String get billingPerHourShort => '/ชม.';
 
   @override
-  String get billingPerDayShort => '/วัน';
+  String get billingPerDayShort => '/มื้อ';
 
   @override
   String get billingPerNightShort => '/คืน';
@@ -2463,7 +2456,7 @@ class AppLocalizationsTh extends AppLocalizations {
   }
 
   @override
-  String get meetupsUnitDays => 'วัน';
+  String get meetupsUnitDays => 'มื้อ';
 
   @override
   String get meetupsUnitHours => 'ชั่วโมง';
@@ -2879,20 +2872,46 @@ class AppLocalizationsTh extends AppLocalizations {
   String get chatImagePrefix => '📷 รูปภาพ';
 
   @override
+  String get chatLocationPrefix => '📍 ตำแหน่ง';
+
+  @override
+  String get chatLocationTitle => 'ตำแหน่งปัจจุบัน';
+
+  @override
+  String get chatLocationOpenHint => 'แตะเพื่อเปิดแผนที่';
+
+  @override
+  String get chatSendLocationTitle => 'ส่งตำแหน่งปัจจุบัน?';
+
+  @override
+  String chatSendLocationBody(String name) {
+    return '$name จะเห็นตำแหน่งปัจจุบันของคุณ';
+  }
+
+  @override
+  String get chatSendLocationConfirm => 'ส่งตำแหน่ง';
+
+  @override
+  String get chatLocationGpsOffTitle => 'GPS ปิดอยู่';
+
+  @override
+  String get chatLocationGpsOffBody => 'กรุณาเปิด GPS เพื่อส่งตำแหน่งของคุณ';
+
+  @override
+  String get chatLocationPermTitle => 'ต้องการสิทธิ์เข้าถึงตำแหน่ง';
+
+  @override
+  String get chatLocationPermBody =>
+      'เปิดการเข้าถึงตำแหน่งในการตั้งค่า เพื่อส่งตำแหน่งของคุณ';
+
+  @override
+  String get chatLocationFixFailed => 'ไม่สามารถหาตำแหน่งได้ กรุณาลองใหม่';
+
+  @override
+  String get chatLocationOpenFailed => 'ไม่สามารถเปิดแผนที่ได้';
+
+  @override
   String get bookingLabelDate => 'วันที่';
-
-  @override
-  String get bookingHoursCount => 'จำนวนรอบ';
-
-  @override
-  String bookingHoursValue(int hours) {
-    return '$hours รอบ';
-  }
-
-  @override
-  String bookingHoursShortValue(int hours) {
-    return '$hours รอบ';
-  }
 
   @override
   String get bookingTotalPriceShort => 'ราคารวม';
@@ -2908,6 +2927,12 @@ class AppLocalizationsTh extends AppLocalizations {
 
   @override
   String get bookingUnitNight => 'คืน';
+
+  @override
+  String get bookingUnitMinute => 'นาที';
+
+  @override
+  String get bookingUnitTime => 'ครั้ง';
 
   @override
   String get bookingDateDeparture => 'วันเดินทาง';
@@ -2938,16 +2963,6 @@ class AppLocalizationsTh extends AppLocalizations {
   @override
   String bookingRatePerUnit(String rate, String unit) {
     return '$rate กีบ / $unit';
-  }
-
-  @override
-  String bookingRatePerHour(String rate) {
-    return '$rate กีบ / รอบ';
-  }
-
-  @override
-  String bookingRatePerHourShort(String rate) {
-    return '$rate กีบ / รอบ';
   }
 
   @override
@@ -3249,7 +3264,7 @@ class AppLocalizationsTh extends AppLocalizations {
   String get serviceUnitHour => '/ชั่วโมง';
 
   @override
-  String get serviceUnitDay => '/วัน';
+  String get serviceUnitDay => '/มื้อ';
 
   @override
   String get serviceUnitNight => '/คืน';
@@ -3413,4 +3428,16 @@ class AppLocalizationsTh extends AppLocalizations {
 
   @override
   String get tiersLockedNote => 'ยังไม่ถึงระดับ';
+
+  @override
+  String get announcementTitle => 'ข่าวสาร';
+
+  @override
+  String get announcementBadge => 'ประกาศทางการ';
+
+  @override
+  String get announcementFrom => 'จากทีมงาน Xaosao';
+
+  @override
+  String get announcementGotIt => 'เข้าใจแล้ว';
 }

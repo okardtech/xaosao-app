@@ -644,7 +644,10 @@ class AppLocalizationsLo extends AppLocalizations {
   String get homeFilters => 'ຕົວກອງ';
 
   @override
-  String get homeMaxDistance => 'ໄລຍະທາງສູງສຸດ';
+  String get homeFilterByService => 'ບໍລິການ';
+
+  @override
+  String get homeClearFilter => 'ລ້າງ';
 
   @override
   String get homeApplyFilter => 'ນຳໃຊ້ Filter';
@@ -676,16 +679,6 @@ class AppLocalizationsLo extends AppLocalizations {
   @override
   String commonAgeYears(int years) {
     return '$years ປີ';
-  }
-
-  @override
-  String commonHours(int hours) {
-    return '$hours ຮອບ';
-  }
-
-  @override
-  String commonDays(int days) {
-    return '$days ວັນ';
   }
 
   @override
@@ -2465,7 +2458,7 @@ class AppLocalizationsLo extends AppLocalizations {
   }
 
   @override
-  String get meetupsUnitDays => 'ວັນ';
+  String get meetupsUnitDays => 'ມື້';
 
   @override
   String get meetupsUnitHours => 'ຊົ່ວໂມງ';
@@ -2881,20 +2874,46 @@ class AppLocalizationsLo extends AppLocalizations {
   String get chatImagePrefix => '📷 ຮູບພາບ';
 
   @override
+  String get chatLocationPrefix => '📍 ຕຳແໜ່ງ';
+
+  @override
+  String get chatLocationTitle => 'ຕຳແໜ່ງປັດຈຸບັນ';
+
+  @override
+  String get chatLocationOpenHint => 'ແຕະເພື່ອເປີດແຜນທີ່';
+
+  @override
+  String get chatSendLocationTitle => 'ສົ່ງຕຳແໜ່ງປັດຈຸບັນ?';
+
+  @override
+  String chatSendLocationBody(String name) {
+    return '$name ຈະເຫັນຕຳແໜ່ງປັດຈຸບັນຂອງທ່ານ';
+  }
+
+  @override
+  String get chatSendLocationConfirm => 'ສົ່ງຕຳແໜ່ງ';
+
+  @override
+  String get chatLocationGpsOffTitle => 'GPS ປິດໄວ້';
+
+  @override
+  String get chatLocationGpsOffBody => 'ກະລຸນາເປີດ GPS ເພື່ອສົ່ງຕຳແໜ່ງຂອງທ່ານ';
+
+  @override
+  String get chatLocationPermTitle => 'ຕ້ອງການສິດເຂົ້າເຖິງສະຖານທີ່';
+
+  @override
+  String get chatLocationPermBody =>
+      'ເປີດການເຂົ້າເຖິງສະຖານທີ່ໃນການຕັ້ງຄ່າ ເພື່ອສົ່ງຕຳແໜ່ງຂອງທ່ານ';
+
+  @override
+  String get chatLocationFixFailed => 'ບໍ່ສາມາດຫາຕຳແໜ່ງໄດ້ ກະລຸນາລອງໃໝ່';
+
+  @override
+  String get chatLocationOpenFailed => 'ບໍ່ສາມາດເປີດແຜນທີ່ໄດ້';
+
+  @override
   String get bookingLabelDate => 'ວັນທີ';
-
-  @override
-  String get bookingHoursCount => 'ຈຳນວນຮອບ';
-
-  @override
-  String bookingHoursValue(int hours) {
-    return '$hours ຮອບ';
-  }
-
-  @override
-  String bookingHoursShortValue(int hours) {
-    return '$hours ຮ.';
-  }
 
   @override
   String get bookingTotalPriceShort => 'ລາຄາລວມ';
@@ -2910,6 +2929,12 @@ class AppLocalizationsLo extends AppLocalizations {
 
   @override
   String get bookingUnitNight => 'ຄືນ';
+
+  @override
+  String get bookingUnitMinute => 'ນາທີ';
+
+  @override
+  String get bookingUnitTime => 'ຄັ້ງ';
 
   @override
   String get bookingDateDeparture => 'ວັນທີອອກເດີນທາງ';
@@ -2940,16 +2965,6 @@ class AppLocalizationsLo extends AppLocalizations {
   @override
   String bookingRatePerUnit(String rate, String unit) {
     return '$rate ກີບ / $unit';
-  }
-
-  @override
-  String bookingRatePerHour(String rate) {
-    return '$rate ກີບ / ຮອບ';
-  }
-
-  @override
-  String bookingRatePerHourShort(String rate) {
-    return '$rate ກີບ / ຮ.';
   }
 
   @override
@@ -3416,4 +3431,16 @@ class AppLocalizationsLo extends AppLocalizations {
 
   @override
   String get tiersLockedNote => 'ຍັງບໍ່ເຖິງລະດັບ';
+
+  @override
+  String get announcementTitle => 'ຂ່າວສານ';
+
+  @override
+  String get announcementBadge => 'ປະກາດທາງການ';
+
+  @override
+  String get announcementFrom => 'ຈາກທີມງານ Xaosao';
+
+  @override
+  String get announcementGotIt => 'ເຂົ້າໃຈແລ້ວ';
 }

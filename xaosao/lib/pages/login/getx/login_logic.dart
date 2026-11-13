@@ -140,17 +140,8 @@ class LoginLogic extends GetxController {
   }
 
   // ── FCM token ─────────────────────────────────────────────────
-  /// Registers the device FCM token with the server.
-  /// Fire-and-forget — silently ignored on failure.
-  Future<void> saveFcmToken() async {
-    final token = NotificationService.fcmToken;
-    if (token == null || token.isEmpty) return;
-    try {
-      await _repo.fcmTokenSave(fcmToken: token);
-    } catch (_) {
-      // Non-critical — do not surface errors to the user
-    }
-  }
+  Future<void> saveFcmToken() =>
+      NotificationService.syncTokenToServer(force: true);
 
   void clearState() {
     final saved = Get.find<StorageService>().read<String>('last_role');

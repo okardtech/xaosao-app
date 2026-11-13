@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:xaosao/utils/l10n.dart';
 
 class ServiceHelper {
@@ -24,6 +25,41 @@ class ServiceHelper {
         // type (activities, tours, massage). Better than an empty
         // string that hides pricing context from the user.
         return l10n.serviceUnitHour;
+    }
+  }
+
+  /// Returns the BARE unit noun for [billingType] — "hours", "days",
+  /// "nights", "minutes", "times" — with no leading slash.
+  ///
+  /// Use this wherever a duration or rate needs a unit word, composed via
+  /// `l10n.bookingCountUnit(unit)`, `l10n.bookingRatePerUnit(rate, unit)`
+  /// or plain `'$n $unit'`. Never hard-code a unit: a single generic word
+  /// reads wrong for four of the five billing types the API can send.
+  static String unitName(String? billingType) {
+    switch (billingType) {
+      case 'per_hour':
+        return l10n.meetupsUnitHours;
+      case 'per_day':
+        return l10n.meetupsUnitDays;
+      case 'per_night':
+        return l10n.bookingUnitNight;
+      case 'per_minute':
+        return l10n.bookingUnitMinute;
+      case 'one_time':
+        return l10n.bookingUnitTime;
+      default:
+        // Unknown/absent billingType (the "Local Tours" case where the
+        // backend sends a type we don't know): hours is the most common
+        // unit, and a wrong-but-present unit beats a bare number.
+        //
+        // Logged rather than swallowed — a silent fallback is how this went
+        // unnoticed last time. If this line appears, the backend is sending
+        // a billingType the app doesn't map, and THAT is the real fix.
+        if (billingType != null && billingType.isNotEmpty) {
+          debugPrint('[service] unmapped billingType "$billingType" '
+              '- falling back to the hour unit');
+        }
+        return l10n.meetupsUnitHours;
     }
   }
 

@@ -53,10 +53,10 @@ class AttHelper {
       await Future.delayed(const Duration(milliseconds: 500));
       final result =
           await AppTrackingTransparency.requestTrackingAuthorization();
-      debugPrint('[ATT] user decision: $result');
+      // debugPrint('[ATT] user decision: $result');
       return result;
     } catch (e) {
-      debugPrint('[ATT] failed to request: $e');
+      // debugPrint('[ATT] failed to request: $e');
       return TrackingStatus.notDetermined;
     }
   }

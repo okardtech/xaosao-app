@@ -51,6 +51,19 @@ class LocationManager extends GetxService {
     if (fresh != null) position.value = fresh;
   }
 
+  /// Returns a FRESH fix, or null if one could not be obtained.
+  ///
+  /// Differs from [getOrRefresh] in that it never falls back to the cache:
+  /// a caller that PUBLISHES a position — sharing it in chat, for instance —
+  /// must not pass a five-minute-old point off as "where I am now", and must
+  /// be able to tell failure apart from success. The cache is still updated
+  /// on the way through, so other consumers benefit from the fix.
+  Future<Position?> currentFresh() async {
+    final fresh = await _resolve();
+    if (fresh != null) position.value = fresh;
+    return fresh;
+  }
+
   // ── Internal — silent: never prompts, never throws ────────────
   static Future<Position?> _resolve() async {
     try {

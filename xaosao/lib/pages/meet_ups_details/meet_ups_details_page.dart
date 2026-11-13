@@ -8,6 +8,7 @@ import 'package:xaosao/models/conversation_model.dart';
 import 'package:xaosao/models/my_booking_model.dart';
 import 'package:xaosao/pages/chat/getx/chat_logic.dart';
 import 'package:xaosao/utils/app_snackbar.dart';
+import 'package:xaosao/utils/service_helper.dart';
 import 'package:xaosao/utils/l10n.dart' as g;
 import 'package:xaosao/widgets/app_button.dart';
 import 'package:xaosao/widgets/app_text_field.dart';
@@ -141,13 +142,15 @@ class _MeetUpsDetailsPageState extends State<MeetUpsDetailsPage> {
 
     final svcName = m.modelService?.service?.name ?? l10n.meetupsServiceFallback;
     final price = m.price ?? 0;
+    // Unit noun comes from the service's billingType, so per_night and
+    // per_minute services don't get mislabelled as days/hours.
+    final unit = ServiceHelper.unitName(m.modelService?.service?.billingType);
     final String durationLabel;
     if (m.dayAmount != null) {
-      durationLabel = l10n.meetupsServiceMultiplier(
-          svcName, m.dayAmount!, l10n.meetupsUnitDays);
+      durationLabel =
+          l10n.meetupsServiceMultiplier(svcName, m.dayAmount!, unit);
     } else if (m.hours != null) {
-      durationLabel = l10n.meetupsServiceMultiplier(
-          svcName, m.hours!, l10n.meetupsUnitHours);
+      durationLabel = l10n.meetupsServiceMultiplier(svcName, m.hours!, unit);
     } else {
       durationLabel = svcName;
     }

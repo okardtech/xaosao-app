@@ -48,7 +48,6 @@ class PermissionCoordinator {
   // resumes don't re-do network + GPS work on every coordinator run).
   // These persist across sessions — unlike the dismiss flags below.
   static const _locSyncKey = 'perm_loc_last_sync_at';
-  static const _fcmSyncKey = 'perm_fcm_last_sync_at';
   static const _sideEffectInterval = Duration(minutes: 5);
 
   // In-memory session-only dismiss flags. Cleared on cold start, NOT
@@ -267,13 +266,15 @@ class PermissionCoordinator {
     unawaited(LocationService.push());
   }
 
-  /// Fire-and-forget: fetch a fresh FCM token. Rate-limited to once
-  /// per [_sideEffectInterval]; Firebase's `onTokenRefresh` stream will
-  /// still pick up rotations in between.
+  /// Fire-and-forget: fetch the FCM token and register it with the server.
+  ///
+  /// Deliberately NOT time-rate-limited: [NotificationService.syncTokenToServer]
+  /// already skips the network call when the token is unchanged since the last
+  /// successful registration, so re-runs are cheap. A time window here used to
+  /// suppress the very first registration when the user granted permission
+  /// less than [_sideEffectInterval] after a previous (failed) attempt.
   static Future<void> _runNotificationSideEffect() async {
-    if (await _withinInterval(_fcmSyncKey, _sideEffectInterval)) return;
-    await _stampSync(_fcmSyncKey);
-    unawaited(NotificationService.refreshToken());
+    unawaited(NotificationService.syncTokenToServer());
   }
 
   // ─────────────────────────────────────────────────────────────

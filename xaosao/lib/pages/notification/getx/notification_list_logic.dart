@@ -93,12 +93,16 @@ class NotifListLogic extends GetxController {
   // ── Tap handler (in-app notification list tap) ──────────────────
   void handleTap(NotificationItemModel item) {
     markRead(item.id ?? '');
+    if ((item.isAdmin ?? false) && item.type != 'welcome') {
+      Get.toNamed(AppRoutes.announcement, arguments: item);
+      return;
+    }
+
     _navigateFromType(item.type ?? '', item.data, item);
   }
 
   // ── Type-specific navigation ────────────────────────────────────
   void _navigateFromType(String type, Data? data, [NotificationItemModel? item]) {
-     print('type ${type}');
     final isCustomer =
         Get.find<StorageService>().read<String>('role') == 'customer';
 
@@ -194,13 +198,6 @@ class NotifListLogic extends GetxController {
             isCustomer ? AppRoutes.companionProfile : AppRoutes.customerProfile,
             arguments: id,
           );
-        }
-        return;
-
-      case 'gift_received':
-        final giftPostId2 = data?.postId ?? '';
-        if (giftPostId2.isNotEmpty) {
-          Get.toNamed(AppRoutes.myGifts, arguments: giftPostId2);
         }
         return;
 

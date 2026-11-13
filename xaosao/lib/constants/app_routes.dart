@@ -9,6 +9,7 @@ import 'package:xaosao/pages/feedback/feedback_page.dart';
 import 'package:xaosao/pages/notification/components/notification_setting.dart';
 import 'package:xaosao/pages/notification/notification_page.dart';
 import 'package:xaosao/models/notification_item_model.dart';
+import 'package:xaosao/pages/notification/announcement_page.dart';
 import 'package:xaosao/pages/notification/welcome_page.dart';
 import 'package:xaosao/pages/forgot_password/forgot_new_password_page.dart';
 import 'package:xaosao/pages/forgot_password/forgot_otp_page.dart';
@@ -93,6 +94,7 @@ class AppRoutes {
   static const String postDetail = '/post-detail';
   static const String postInterests = '/post-interests';
   static const String welcomeNotification = '/welcome-notification';
+  static const String announcement = '/announcement';
   static const String customerProfile = '/customer-profile';
 
   static Route<dynamic> onGenerateRoute(RouteSettings settings) {
@@ -233,6 +235,11 @@ class AppRoutes {
             ? settings.arguments as NotificationItemModel
             : null;
         return _fadeScale(WelcomeNotificationPage(notification: notif));
+      case announcement:
+        final announcementNotif = settings.arguments is NotificationItemModel
+            ? settings.arguments as NotificationItemModel
+            : null;
+        return _riseFade(AnnouncementPage(notification: announcementNotif));
       default:
         return _fade(const SplashPage());
     }
@@ -278,6 +285,33 @@ class AppRoutes {
     transitionDuration: const Duration(milliseconds: 400),
     transitionsBuilder: (_, anim, __, child) =>
         FadeTransition(opacity: anim, child: child),
+  );
+
+  // ── Rise + Fade + subtle Scale (announcement — feels like a letter opening)
+  static Route _riseFade(Widget page) => PageRouteBuilder(
+    pageBuilder: (_, anim, __) => page,
+    transitionDuration: const Duration(milliseconds: 420),
+    reverseTransitionDuration: const Duration(milliseconds: 280),
+    transitionsBuilder: (_, anim, __, child) {
+      final curve = CurvedAnimation(
+        parent: anim,
+        curve: Curves.easeOutCubic,
+        reverseCurve: Curves.easeInCubic,
+      );
+      return FadeTransition(
+        opacity: curve,
+        child: SlideTransition(
+          position: Tween<Offset>(
+            begin: const Offset(0, 0.10),
+            end: Offset.zero,
+          ).animate(curve),
+          child: ScaleTransition(
+            scale: Tween<double>(begin: 0.96, end: 1.0).animate(curve),
+            child: child,
+          ),
+        ),
+      );
+    },
   );
 
   // ── Fade + Scale (success — feels rewarding)

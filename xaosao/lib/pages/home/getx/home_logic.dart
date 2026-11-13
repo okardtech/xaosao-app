@@ -5,6 +5,7 @@ import 'package:xaosao/constants/app_routes.dart';
 import 'package:xaosao/models/Recommended_model.dart';
 import 'package:xaosao/pages/home/getx/home_state.dart';
 import 'package:xaosao/repository/discover_repo.dart';
+import 'package:xaosao/repository/register_repo.dart';
 import 'package:xaosao/repository/review_repo.dart';
 import 'package:xaosao/services/storage_service.dart';
 import 'package:xaosao/utils/app_snackbar.dart';
@@ -12,6 +13,7 @@ import 'package:xaosao/utils/l10n.dart';
 
 class HomeLogic extends GetxController {
   final _repo = DiscoverRepo();
+  final _registerRepo = RegisterRepo();
   final _likeRepo = ReviewRepo();
 
   final Rx<HomeState> _state = HomeState().obs;
@@ -46,6 +48,14 @@ class HomeLogic extends GetxController {
     _updateState(state.copyWith(gender: defaultGender));
     fetchRecommended(refresh: true);
     fetchOnline(refresh: true);
+    _loadServices();
+  }
+
+  Future<void> _loadServices() async {
+    final res = await _registerRepo.servicePublic();
+    if (res.success && res.data != null) {
+      _updateState(state.copyWith(services: res.data!));
+    }
   }
 
   @override
@@ -56,7 +66,17 @@ class HomeLogic extends GetxController {
 
   void toggleSearch() {
     searchOpen.value = !searchOpen.value;
-    if (!searchOpen.value) onSearchChanged('');
+    if (searchOpen.value) return;
+
+    // Closing the search row also hides its only entry point to the
+    // Service filter button — clear both the query and the selected
+    // service together so no stale filter keeps narrowing the feed
+    // with no visible way left to tell why.
+    _searchTimer?.cancel();
+    if (state.search == null && state.serviceId == null) return;
+    _updateState(state.copyWith(clearSearch: true, clearServiceId: true));
+    fetchRecommended(refresh: true);
+    fetchOnline(refresh: true);
   }
 
   void onSearchChanged(String query) {
@@ -106,6 +126,7 @@ class HomeLogic extends GetxController {
         // genderType: state.gender == 'all' ? null : state.gender,
         search: state.search,
         status: state.sort,
+        serviceId: state.serviceId,
       );
       if (res.success && res.data != null) {
         final newItems = res.data!;
@@ -171,6 +192,7 @@ class HomeLogic extends GetxController {
         // genderType: state.gender == 'all' ? null : state.gender,
         search: state.search,
         status: state.sort,
+        serviceId: state.serviceId,
       );
       if (res.success && res.data != null) {
         final newItems = res.data!;
@@ -216,9 +238,13 @@ class HomeLogic extends GetxController {
     fetchOnline(refresh: true);
   }
 
-  void setMaxDistance(double km) {
-    if (state.maxDistanceKm == km) return;
-    _updateState(state.copyWith(maxDistanceKm: km));
+  void setServiceId(String? serviceId) {
+    if (state.serviceId == serviceId) return;
+    if (serviceId == null) {
+      _updateState(state.copyWith(clearServiceId: true));
+    } else {
+      _updateState(state.copyWith(serviceId: serviceId));
+    }
     fetchRecommended(refresh: true);
     fetchOnline(refresh: true);
   }

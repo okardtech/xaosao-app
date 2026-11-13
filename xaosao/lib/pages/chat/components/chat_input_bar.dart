@@ -1,13 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
+import 'package:permission_handler/permission_handler.dart' as ph;
 import 'package:xaosao/constants/app_color.dart';
+import 'package:xaosao/constants/app_icons.dart';
 import 'package:xaosao/l10n/app_localizations.dart';
 import 'package:xaosao/pages/chat/getx/chat_detail_controller.dart';
 import 'package:xaosao/pages/package/components/subscription_banner.dart';
+import 'package:xaosao/pages/permissions/permission_sheets.dart';
 import 'package:xaosao/repository/package_repo.dart';
 import 'package:xaosao/services/storage_service.dart';
 import 'package:xaosao/utils/l10n.dart' as g;
+import 'package:xaosao/widgets/app_svg_icon.dart';
+import 'package:xaosao/widgets/confirm_sheet.dart';
 
 class ChatInputBar extends StatelessWidget {
   final ChatDetailController ctrl;
@@ -31,6 +37,7 @@ class ChatInputBar extends StatelessWidget {
               children: [
                 _EmojiButton(ctrl: ctrl),
                 _ImagePickerButton(ctrl: ctrl),
+                _LocationButton(ctrl: ctrl),
                 _TextField(ctrl: ctrl),
                 SizedBox(width: 8.w),
                 _SendButton(ctrl: ctrl, canAct: canAct),
@@ -197,6 +204,148 @@ class _TextField extends StatelessWidget {
   }
 }
 
+// ── Subscription gate ─────────────────────────────────────────
+//
+// Customers need an active subscription to send ANYTHING, so every send
+// path has to pass through here. Extracted out of _SendButton when the
+// location button arrived: a second copy of this would have been a
+// paywall bypass the moment one of the two drifted.
+//
+// Returns true when sending may proceed. On false it has already shown the
+// relevant banner to the user.
+Future<bool> _ensureCanSend(BuildContext context) async {
+  final role = Get.find<StorageService>().read<String>('role');
+  if (role != 'customer') return true;
+
+  final active = (await PackageRepo().packageActive()).data;
+  if (active?.neverSubscribed == true) {
+    final hourRes = await PackageRepo().packageHour();
+    if (hourRes.data == null) return false;
+    if (!context.mounted) return false;
+    showSubscriptionBanner(context, hourRes.data!);
+    return false;
+  }
+  if (active?.hasPendingSubscription == true) {
+    if (context.mounted) showPendingSubscriptionBanner(context);
+    return false;
+  }
+  if (active?.hasActiveSubscription != true) {
+    if (context.mounted) showNoSubscriptionBanner(context);
+    return false;
+  }
+  return true;
+}
+
+void _toast(String title, String message, {bool danger = true}) {
+  Get.snackbar(
+    title,
+    message,
+    snackPosition: SnackPosition.BOTTOM,
+    backgroundColor: danger ? Colors.red.shade50 : Colors.green.shade50,
+    colorText: danger ? Colors.red.shade700 : Colors.green.shade800,
+    margin: EdgeInsets.all(12.r),
+    borderRadius: 12.r,
+    duration: const Duration(seconds: 2),
+  );
+}
+
+// ── Share-location button ─────────────────────────────────────
+class _LocationButton extends StatelessWidget {
+  final ChatDetailController ctrl;
+  const _LocationButton({required this.ctrl});
+
+  Future<void> _onTap(BuildContext context) async {
+    if (ctrl.isSendingLocation.value) return;
+    if (!await _ensureCanSend(context)) return;
+    if (!context.mounted) return;
+
+    final l10n = AppLocalizations.of(context)!;
+
+    // Confirm first: a precise location is privacy-sensitive and a sent
+    // message cannot be unsent. One tap away from broadcasting where you
+    // live is the wrong default.
+    final confirmed = await ConfirmSheet.show(
+      context,
+      title: l10n.chatSendLocationTitle,
+      message: l10n.chatSendLocationBody(ctrl.partnerName),
+      confirmLabel: l10n.chatSendLocationConfirm,
+      icon: AppIcons.location,
+    );
+    if (confirmed != true || !context.mounted) return;
+
+    final outcome = await ctrl.sendCurrentLocation();
+    if (!context.mounted) return;
+
+    switch (outcome) {
+      case LocationSendOutcome.ok:
+        WidgetsBinding.instance.addPostFrameCallback(
+          (_) => ctrl.scrollToBottom(),
+        );
+      case LocationSendOutcome.busy:
+        break;
+      case LocationSendOutcome.serviceDisabled:
+        // GPS toggle is OS-level; only the system settings screen fixes it.
+        final go = await SettingsReminderSheet.show(
+          context,
+          icon: Icons.location_off_rounded,
+          title: l10n.chatLocationGpsOffTitle,
+          message: l10n.chatLocationGpsOffBody,
+        );
+        if (go) await Geolocator.openLocationSettings();
+      case LocationSendOutcome.permissionDeniedForever:
+        final go = await SettingsReminderSheet.show(
+          context,
+          icon: Icons.location_off_rounded,
+          title: l10n.chatLocationPermTitle,
+          message: l10n.chatLocationPermBody,
+        );
+        if (go) await ph.openAppSettings();
+      case LocationSendOutcome.permissionDenied:
+        // Declined just now — the OS will ask again, so no settings detour.
+        _toast(l10n.chatLocationPermTitle, l10n.chatLocationPermBody);
+      case LocationSendOutcome.fixFailed:
+        _toast(l10n.chatLocationFixFailed, g.l10n.chatSendPleaseRetry);
+      case LocationSendOutcome.sendFailed:
+        _toast(g.l10n.chatSendFailed, g.l10n.chatSendPleaseRetry);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Obx(() {
+      final busy = ctrl.isSendingLocation.value;
+      return GestureDetector(
+        onTap: busy ? null : () => _onTap(context),
+        child: Padding(
+          padding: EdgeInsets.only(bottom: 8.h, right: 6.w),
+          child: busy
+              ? SizedBox(
+                  width: 24.r,
+                  height: 24.r,
+                  child: Padding(
+                    padding: EdgeInsets.all(3.r),
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                      color: AppColors.primary,
+                    ),
+                  ),
+                )
+              // SVG, not a Material glyph: the icon font is tree-shaken and
+              // Shorebird cannot patch assets, so a glyph the installed
+              // release never used would render as empty space - which is
+              // exactly how this button went missing the first time.
+              : AppSvgIcon(
+                  assetName: AppIcons.location,
+                  width: 23.r,
+                  height: 23.r,
+                  color: AppColors.textDisabled,
+                ),
+        ),
+      );
+    });
+  }
+}
+
 // ── Send button ────────────────────────────────────────────────
 class _SendButton extends StatelessWidget {
   final ChatDetailController ctrl;
@@ -204,27 +353,7 @@ class _SendButton extends StatelessWidget {
   const _SendButton({required this.ctrl, required this.canAct});
 
   Future<void> _onTap(BuildContext context) async {
-    final role = Get.find<StorageService>().read<String>('role');
-    if (role == 'customer') {
-      final activeRes = await PackageRepo().packageActive();
-      final active = activeRes.data;
-      if (active?.neverSubscribed == true) {
-        final hourRes = await PackageRepo().packageHour();
-        if (hourRes.data == null) {
-          return;
-        }
-        showSubscriptionBanner(context, hourRes.data!);
-        return;
-      }
-      if (active?.hasPendingSubscription == true) {
-        showPendingSubscriptionBanner(context);
-        return;
-      }
-      if (active?.hasActiveSubscription != true) {
-        showNoSubscriptionBanner(context);
-        return;
-      }
-    }
+    if (!await _ensureCanSend(context)) return;
 
     final ok = await ctrl.sendMessage();
     if (ok) {
@@ -232,16 +361,7 @@ class _SendButton extends StatelessWidget {
         (_) => ctrl.scrollToBottom(),
       );
     } else {
-      Get.snackbar(
-        g.l10n.chatSendFailed,
-        g.l10n.chatSendPleaseRetry,
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.red.shade50,
-        colorText: Colors.red.shade700,
-        margin: EdgeInsets.all(12.r),
-        borderRadius: 12.r,
-        duration: const Duration(seconds: 2),
-      );
+      _toast(g.l10n.chatSendFailed, g.l10n.chatSendPleaseRetry);
     }
   }
 

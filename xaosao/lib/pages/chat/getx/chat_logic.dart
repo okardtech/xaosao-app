@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'package:get/get.dart';
 import 'package:xaosao/constants/app_routes.dart';
+import 'package:xaosao/models/chat_location.dart';
 import 'package:xaosao/models/chat_message_model.dart';
 import 'package:xaosao/models/conversation_model.dart';
 import 'package:xaosao/pages/chat/getx/chat_state.dart';
@@ -10,7 +11,6 @@ import 'package:xaosao/repository/chat_repo.dart';
 import 'package:xaosao/services/chat_socket_service.dart';
 import 'package:xaosao/services/notification_service.dart';
 import 'package:xaosao/services/storage_service.dart';
-import 'package:xaosao/utils/l10n.dart';
 
 import '../../../utils/api_date_parser.dart';
 
@@ -150,7 +150,10 @@ class ChatLogic extends GetxController {
 
     _patchConversationPreview(
       convId: convId,
-      lastMessageText: msg.messageText,
+      lastMessageText: ChatLocation.previewLabel(
+        msg.messageText,
+        messageType: msg.messageType,
+      ),
       lastMessageType: msg.messageType,
       lastMessageSenderId: msg.sender,
       lastMessageAt: msg.displayTime,
@@ -214,7 +217,7 @@ class ChatLogic extends GetxController {
         data['message_text']?.toString() ??
         data['body']?.toString();
 
-    final lastText = msgType == 'image' ? l10n.chatImagePrefix : msgText;
+    final lastText = ChatLocation.previewLabel(msgText, messageType: msgType);
 
     final senderId = msgMap?['sender']?.toString() ??
         (data['sender'] is Map ? data['sender']['id']?.toString() : null);
@@ -415,8 +418,10 @@ class ChatLogic extends GetxController {
         }
         _patchConversationPreview(
           convId: conversationId,
-          lastMessageText:
-              msg.messageType == 'image' ? l10n.chatImagePrefix : msg.messageText,
+          lastMessageText: ChatLocation.previewLabel(
+            msg.messageText,
+            messageType: msg.messageType,
+          ),
           lastMessageType: msg.messageType,
           lastMessageSenderId: msg.sender,
           lastMessageAt: msg.displayTime,
