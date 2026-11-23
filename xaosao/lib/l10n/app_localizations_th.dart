@@ -3440,4 +3440,287 @@ class AppLocalizationsTh extends AppLocalizations {
 
   @override
   String get announcementGotIt => 'เข้าใจแล้ว';
+
+  @override
+  String get checkinTitle => 'เช็คอินประจำวัน';
+
+  @override
+  String checkinStreak(int count) {
+    return '$count วัน';
+  }
+
+  @override
+  String get checkinNextIn => 'เช็คอินครั้งถัดไป';
+
+  @override
+  String get checkinNextHint => 'จนกว่าจะได้รางวัลวันถัดไป';
+
+  @override
+  String get checkinTodayPays => 'วันนี้ได้รับ';
+
+  @override
+  String get checkinTodayHint => 'เข้ากระเป๋าเงินของคุณ';
+
+  @override
+  String checkinClaim(String amount) {
+    return 'เช็คอินรับ $amount ₭';
+  }
+
+  @override
+  String checkinClaimed(String amount) {
+    return 'เช็คอินสำเร็จ ได้รับ $amount ₭ เข้ากระเป๋าเงินแล้ว';
+  }
+
+  @override
+  String get checkinDoneToday => 'คุณเช็คอินวันนี้แล้ว กลับมาใหม่พรุ่งนี้';
+
+  @override
+  String get checkinFinished => 'รางวัลเช็คอินของวันนี้หมดแล้ว';
+
+  @override
+  String get checkinClosedToday => 'วันนี้ไม่มีการเช็คอิน กลับมาใหม่พรุ่งนี้';
+
+  @override
+  String get checkinMon => 'จ.';
+
+  @override
+  String get checkinTue => 'อ.';
+
+  @override
+  String get checkinWed => 'พ.';
+
+  @override
+  String get checkinThu => 'พฤ.';
+
+  @override
+  String get checkinFri => 'ศ.';
+
+  @override
+  String get checkinSat => 'ส.';
+
+  @override
+  String get checkinSun => 'อา.';
+
+  @override
+  String get assistantTitle => 'ถามแอดมิน';
+
+  @override
+  String get assistantHint => 'บอกฉันว่าคุณกำลังมองหาใคร';
+
+  @override
+  String get assistantGreeting =>
+      'สวัสดี! คุณกำลังมองหาใคร บอกอายุ พื้นที่ หรือบริการที่ต้องการได้เลย';
+
+  @override
+  String get assistantPlaceholder => 'เช่น คนอายุ 20-25 ใกล้ฉัน';
+
+  @override
+  String get assistantTryAsking => 'ลองถาม';
+
+  @override
+  String get assistantQ1 => 'คนที่อยู่ใกล้ฉัน';
+
+  @override
+  String get assistantQ2 => 'อายุ 20 ถึง 25 ปี';
+
+  @override
+  String get assistantQ3 => 'คนที่นวดได้';
+
+  @override
+  String get assistantQ4 => 'คะแนนสูงสุด';
+
+  @override
+  String get assistantThinking => 'กำลังค้นหา...';
+
+  @override
+  String get assistantAge => 'อายุ';
+
+  @override
+  String get callTitle => 'โทร';
+
+  @override
+  String callName(String name) {
+    return 'โทรหา $name';
+  }
+
+  @override
+  String get callVoice => 'เสียง';
+
+  @override
+  String get callVideo => 'วิดีโอ';
+
+  @override
+  String get callPerMinute => 'ต่อนาที';
+
+  @override
+  String get callYourBalance => 'ยอดเงินของคุณ';
+
+  @override
+  String callCoversMinutes(String minutes) {
+    return 'เพียงพอประมาณ $minutes นาที';
+  }
+
+  @override
+  String callNeedTwoMinutes(String amount) {
+    return 'คุณต้องมีอย่างน้อย $amount ₭ เพื่อเริ่มการโทร';
+  }
+
+  @override
+  String get callTopUp => 'เติมเงิน';
+
+  @override
+  String get callBillingNote =>
+      'คิดค่าบริการต่อนาที ปัดขึ้น 10 วินาทีแรกฟรี และส่วนที่ไม่ได้ใช้จะคืนเข้ากระเป๋าเงินของคุณ';
+
+  @override
+  String get callNotAvailable => 'ผู้ใช้นี้ไม่รับสายในขณะนี้';
+
+  @override
+  String get callIncoming => 'สายเรียกเข้า';
+
+  @override
+  String get callAnswer => 'รับสาย';
+
+  @override
+  String get callDecline => 'ปฏิเสธ';
+
+  @override
+  String get callSomeone => 'ผู้ใช้';
+
+  @override
+  String get callEnded => 'การโทรสิ้นสุด';
+
+  @override
+  String get callDuration => 'ระยะเวลา';
+
+  @override
+  String get callMinutes => 'นาที';
+
+  @override
+  String get callCharged => 'คิดค่าบริการแล้ว';
+
+  @override
+  String get callReturned => 'คืนเข้ากระเป๋าเงิน';
+
+  @override
+  String get callYouEarned => 'คุณได้รับ';
+
+  @override
+  String get callNoAnswer => 'ไม่มีผู้รับสาย ไม่มีการคิดค่าบริการ';
+
+  @override
+  String get callDeclined => 'การโทรถูกปฏิเสธ ไม่มีการคิดค่าบริการ';
+
+  @override
+  String get callCancelled => 'คุณยกเลิกการโทร ไม่มีการคิดค่าบริการ';
+
+  @override
+  String get callNotConnected => 'การโทรไม่สำเร็จ ไม่มีการคิดค่าบริการ';
+
+  @override
+  String get callNotConnectedModel => 'การโทรไม่สำเร็จ';
+
+  @override
+  String get callEndedNoFunds => 'ยอดเงินหมด การโทรจึงสิ้นสุด';
+
+  @override
+  String get callEndedMaxDuration => 'ครบกำหนด 60 นาทีต่อการโทร';
+
+  @override
+  String get callEndedNetwork => 'การเชื่อมต่อขาดหาย การโทรจึงสิ้นสุด';
+
+  @override
+  String get callErrorAlreadyOnCall =>
+      'การโทรครั้งก่อนของคุณยังเปิดอยู่ จะสิ้นสุดเองภายในไม่ถึง 1 นาที แล้วลองใหม่';
+
+  @override
+  String get callErrorPeerBusy => 'ผู้ใช้นี้กำลังคุยสายกับคนอื่นอยู่';
+
+  @override
+  String get callErrorPeerUnavailable => 'ผู้ใช้นี้ไม่พร้อมให้บริการ';
+
+  @override
+  String get callErrorServiceDown =>
+      'การโทรไม่สามารถใช้ได้ในขณะนี้ กรุณาลองใหม่ภายหลัง';
+
+  @override
+  String get callWentOffline =>
+      'เธอเพิ่งออฟไลน์ไป เราแจ้งเธอแล้วว่าคุณอยากโทรหา — ลองใหม่อีกสักครู่ หรือหาคนที่ออนไลน์อยู่';
+
+  @override
+  String get callMicDenied =>
+      'การโทรต้องการสิทธิ์เข้าถึงไมโครโฟน กรุณาอนุญาตในการตั้งค่าแล้วลองใหม่';
+
+  @override
+  String get callConnectFailed => 'ไม่สามารถเชื่อมต่อการโทรได้ กรุณาลองใหม่';
+
+  @override
+  String callTimeLeft(String time) {
+    return 'เหลือ $time';
+  }
+
+  @override
+  String get callRinging => 'กำลังโทร…';
+
+  @override
+  String get callConnecting => 'กำลังเชื่อมต่อ…';
+
+  @override
+  String get callCostSoFar => 'ค่าใช้จ่ายถึงตอนนี้';
+
+  @override
+  String get callEarningSoFar => 'รายได้ถึงตอนนี้';
+
+  @override
+  String get callLowBalance => 'ยอดเงินเหลือไม่ถึง 1 นาที';
+
+  @override
+  String callOfflineTitle(String name) {
+    return '$name ออฟไลน์อยู่';
+  }
+
+  @override
+  String get callOfflineBody =>
+      'ติดต่อได้เฉพาะตอนที่เธอเปิดแอปอยู่ คุณสามารถแจ้งให้เธอรู้ว่าคุณอยากโทรหา — ไม่มีการคิดเงิน';
+
+  @override
+  String callOfflineNotified(String name) {
+    return 'แจ้ง $name แล้วว่าคุณอยากโทรหา เธอจะเห็นเมื่อเปิดแอปครั้งถัดไป — ยังไม่มีการคิดเงิน';
+  }
+
+  @override
+  String get callNotifyHer => 'แจ้งให้เธอรู้ว่าคุณอยากโทรหา';
+
+  @override
+  String get callNoticeSent => 'แจ้งเธอแล้ว';
+
+  @override
+  String get callFindOnline => 'หาคนที่ออนไลน์อยู่';
+
+  @override
+  String get callOnlineNow => 'ออนไลน์';
+
+  @override
+  String get callHangUp => 'วางสาย';
+
+  @override
+  String get callEndConfirm => 'วางสายการโทรนี้ไหม?';
+
+  @override
+  String get callMute => 'ปิดเสียง';
+
+  @override
+  String get callSpeaker => 'ลำโพง';
+
+  @override
+  String get callCamera => 'กล้อง';
+
+  @override
+  String get callFlipCamera => 'สลับกล้อง';
+
+  @override
+  String get callNoLongerRinging => 'สายนี้ไม่ได้เรียกเข้าแล้ว';
+
+  @override
+  String get callDone => 'ตกลง';
 }

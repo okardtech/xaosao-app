@@ -11,6 +11,8 @@ import 'package:xaosao/constants/app_routes.dart';
 import 'package:xaosao/models/notification_item_model.dart';
 import 'package:xaosao/repository/notification_repo.dart';
 import 'package:xaosao/services/api_service.dart';
+import 'package:xaosao/services/android_call_ringer.dart';
+import 'package:xaosao/services/call_service.dart';
 import 'package:xaosao/services/storage_service.dart';
 
 typedef ForegroundPushListener =
@@ -98,7 +100,12 @@ class NotificationService {
   // FCM SDK shows the notification via the manifest channel automatically.
   static Future<void> handleBackgroundMessage(RemoteMessage message) async {
     await Firebase.initializeApp();
-    // Nothing else — FCM SDK takes care of the system tray notification.
+    // An incoming call arrives data-only on Android so it can ring
+    // full-screen even with the app closed. Everything else is a normal
+    // notification that the FCM SDK puts in the tray by itself.
+    if (message.data['type'] == 'incoming_call') {
+      await AndroidCallRinger.show(Map<String, dynamic>.from(message.data));
+    }
   }
 
   // ── Main initialisation (call once from main()) ────────────────────────────
@@ -334,6 +341,14 @@ class NotificationService {
     // print('message received: ${message.messageId}, data: ${message.data}');
     // print('notification: ${message.notification?.title}/${message.notification?.body}');
     unreadCount.value++;
+    // An incoming call is not a banner: with the app open, the socket has
+    // usually opened the answer screen already, and CallService ignores
+    // the duplicate. If the socket missed it, the push opens it instead.
+    if (message.data['type'] == 'incoming_call') {
+      await CallService.instance
+          ?.handlePush(Map<String, dynamic>.from(message.data));
+      return;
+    }
     await _showBanner(
       title: message.notification?.title ?? 'ແຈ້ງເຕືອນໃໝ່',
       body: message.notification?.body ?? '',
@@ -422,6 +437,13 @@ class NotificationService {
     String _s(String key) => (data[key] as String?) ?? '';
 
     switch (type) {
+      // ── Calls ───────────────────────────────────────────────────
+      // Opens the answer screen only if the call is still ringing; a
+      // tap on a ring that already ended does nothing.
+      case 'incoming_call':
+        CallService.instance?.handlePush(data);
+        return;
+
       // ── Home ────────────────────────────────────────────────────
       case 'welcome':
         Get.toNamed(

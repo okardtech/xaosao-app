@@ -1,32 +1,31 @@
 {
   "@@locale": "lo",
-
   "english": "English",
   "lao": "ພາສາລາວ",
   "thai": "ภาษาไทย",
-
   "languageTitle": "ພາສາ",
-  "@languageTitle": {"description": "Title of the language selector sheet"},
+  "@languageTitle": {
+    "description": "Title of the language selector sheet"
+  },
   "languageSubtitle": "ເລືອກພາສາທີ່ທ່ານຕ້ອງການໃຊ້",
-  "@languageSubtitle": {"description": "Subtitle explaining what to do in the language selector"},
-
+  "@languageSubtitle": {
+    "description": "Subtitle explaining what to do in the language selector"
+  },
   "commonCancel": "ຍົກເລີກ",
   "commonOk": "ຕົກລົງ",
   "commonSave": "ບັນທຶກ",
   "commonClose": "ປິດ",
   "commonLater": "ພາຍຫຼັງ",
   "commonSuccess": "ສຳເລັດ",
-  "commonError": "ຜິດພາດ",
+  "commonError": "ເກີດຂໍ້ຜິດພາດ, ກະລຸນາລອງໃໝ່",
   "commonDelete": "ລຶບ",
   "commonBack": "ກັບຄືນ",
   "commonYes": "ແມ່ນ",
   "commonNo": "ບໍ່",
-
   "profileInfoSection": "ຂໍ້ມູນ",
   "profileSecuritySection": "ຄວາມປອດໄພ",
   "profileSettingsSection": "ຕັ້ງຄ່າ",
   "profileHelpSection": "ຊ່ວຍເຫຼືອ",
-
   "profilePersonalInfo": "ຂໍ້ມູນສ່ວນຕົວ",
   "profilePersonalInfoSubtitle": "ຊື່, ນາມສະກຸນ, ວັນເດືອນປີເກີດ",
   "profileFinance": "ຂໍ້ມູນທາງການເງິນ",
@@ -35,7 +34,6 @@
   "profileVerifyPhone": "ຢືນຢັນເບີໂທ",
   "profileVerifiedBadge": "ຢືນຢັນແລ້ວ",
   "profileVerifiedIdentity": "ຢືນຢັນຕົວຕົນແລ້ວ",
-
   "profileLanguage": "ພາສາ",
   "profileNotifications": "ການແຈ້ງເຕືອນ",
   "profileNotificationsSubtitle": "Push, ອີເມລ, SMS, WhatsApp",
@@ -43,54 +41,67 @@
   "profileFeedback": "ຄຳຕິຊົມ",
   "profileFeedbackSubtitle": "ລາຍງານບັນຫາ ຫຼື ສົ່ງຄຳຄິດເຫັນ",
   "profileTerms": "ຂໍ້ກຳນົດ ແລະ ນະໂຍບາຍ",
-
   "profileDeleteAccount": "ລຶບບັນຊີ",
   "profileDeleteAccountSubtitle": "ການດຳເນີນການນີ້ບໍ່ສາມາດຍ້ອນໄດ້",
   "profileDeleteAccountShortSubtitle": "ບໍ່ສາມາດຍ້ອນໄດ້",
   "profileLogout": "ອອກຈາກລະບົບ",
   "profileAppVersion": "XAOSAO v{version}",
-  "@profileAppVersion": {"placeholders": {"version": {"type": "String"}}},
-
+  "@profileAppVersion": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
   "profilePhotos": "ຮູບພາບ",
   "profilePhotosCount": "ຮູບພາບ ({count}/{max})",
-  "@profilePhotosCount": {"placeholders": {"count": {"type": "int"}, "max": {"type": "int"}}},
+  "@profilePhotosCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "max": {
+        "type": "int"
+      }
+    }
+  },
   "profilePhotosMissingWarning": "ຕ້ອງເພີ່ມຄົບ {max} ຮູບ — ຍັງຂາດ {missing} ຮູບ",
-  "@profilePhotosMissingWarning": {"placeholders": {"max": {"type": "int"}, "missing": {"type": "int"}}},
-
+  "@profilePhotosMissingWarning": {
+    "placeholders": {
+      "max": {
+        "type": "int"
+      },
+      "missing": {
+        "type": "int"
+      }
+    }
+  },
   "profileMyServices": "ບໍລິການຂອງຂ້ອຍ",
   "profileMyQr": "QR ຂອງຂ້ອຍ",
-
   "profileStatLikes": "ຖືກໃຈ",
   "profileStatFriends": "ໝູ່",
   "profileStatReferrals": "ຄໍາລິຊົມ",
   "profileStatBookings": "ຈອງ",
-
   "profileHiddenEnabled": "ໂປຣໄຟຂອງທ່ານຖືກຊ່ອນຢູ່ — ລູກຄ້າບໍ່ສາມາດເຫັນທ່ານໄດ້",
   "profileHiddenDisabled": "ເຊື່ອງໂປຣໄຟຂອງທ່ານບໍ່ໃຫ້ລູກຄ້າເຫັນ. ທ່ານສາມາດເປີດ-ປິດໄດ້ຕະຫຼອດເວລາ.",
-
   "customerProfileBuyPackage": "ການຊື້ແພັກເກດ",
   "customerProfileBuyPackageSubtitle": "ຊ່ວງໂມງ, ຊ່ວງວັນ ແລະ ຊ່ວງເດືອນ",
   "customerProfileTopupHistory": "ປະຫວັດເຕີມເງິນ",
-
   "walletBalanceTitle": "ກະເປົ໋າເງິນ ຍອດຄົງເຫຼືອ",
   "walletTopup": "ເຕີມເງິນ",
   "walletHistory": "ປະຫວັດ",
-
   "confirmLogoutTitle": "ອອກຈາກລະບົບ",
   "confirmLogoutMessage": "ທ່ານຕ້ອງການອອກຈາກລະບົບແທ້ບໍ່?",
   "confirmLogoutConfirm": "ອອກ",
   "confirmDeleteTitle": "ລຶບບັນຊີ",
   "confirmDeleteMessage": "ທ່ານແນ່ໃຈບໍ່ທີ່ຕ້ອງການລຶບບັນຊີ?\nຂໍ້ມູນທັງໝົດຈະຖືກລຶບຖາວອນ ແລະ ບໍ່ສາມາດຍ້ອນໄດ້.",
-
   "commonGenericError": "ເກີດຂໍ້ຜິດພາດ! ກະລຸນາລອງໃໝ່ອີກຄັ້ງ",
   "commonActionFailed": "ບໍ່ສາມາດດຳເນີນການໄດ້",
   "commonLoadDataFailed": "ໂຫຼດຂໍ້ມູນບໍ່ສຳເລັດ",
   "commonAddFailed": "ເພີ່ມບໍ່ສຳເລັດ",
   "commonUpdateFailed": "ອັບເດດບໍ່ສຳເລັດ",
   "commonDeleteFailed": "ລຶບບໍ່ສຳເລັດ",
-
   "loginFailed": "ເຂົ້າສູ່ລະບົບບໍ່ສຳເລັດ",
-
   "registerLoadServicesFailed": "ໂຫຼດບໍລິການບໍ່ສຳເລັດ",
   "registerSelectProfilePhoto": "ກະລຸນາເລືອກຮູບໂປຮໄຟລ໌",
   "registerFailed": "ລົງທະບຽນບໍ່ສຳເລັດ",
@@ -99,7 +110,6 @@
   "registerVerifyOtpFailed": "ກວດສອບ OTP ບໍ່ສຳເລັດ",
   "registerResendOtpFailed": "ສົ່ງ OTP ໃໝ່ບໍ່ສຳເລັດ",
   "registerResendOtpSuccess": "ສົ່ງລະຫັດ OTP ໃໝ່ແລ້ວ",
-
   "meetUpsCancelSuccess": "ຍົກເລີກການຈອງສຳເລັດ",
   "meetUpsReleasePaymentSuccess": "ປ່ອຍເງີນສຳເລັດ",
   "meetUpsDisputeSuccess": "ສົ່ງຄຳຮ້ອງຂໍສຳເລັດ",
@@ -107,7 +117,6 @@
   "meetUpsRejectSuccess": "ປະຕິເສດການຈອງສຳເລັດ",
   "meetUpsReceiveMoneySuccess": "ຮັບເງີນສຳເລັດ",
   "meetUpsDeleteSuccess": "ລຶບລາຍການສຳເລັດ",
-
   "postsFeedLoadFailed": "ໂຫຼດຟີດບໍ່ສຳເລັດ",
   "postsMyLoadFailed": "ໂຫຼດໂພສຂ້ອຍບໍ່ສຳເລັດ",
   "postsCreateSuccess": "ສ້າງໂພສສຳເລັດ",
@@ -116,7 +125,6 @@
   "postsDisableFailed": "ປິດໃຊ້ງານໂພສບໍ່ສຳເລັດ",
   "postsDeleteSuccess": "ລຶບໂພສສຳເລັດ",
   "postsDeleteFailed": "ລຶບໂພສບໍ່ສຳເລັດ",
-
   "authWelcome": "ຍິນດີຕ້ອນຮັບ 👋",
   "authRolePrompt": "ທ່ານເຂົ້າໃນຖານະໃດ?",
   "authTagline": "ບໍລິການທ້ອງຖິ່ນ ທຸກທີ່ ທຸກເວລາ",
@@ -132,9 +140,7 @@
   "authCreateCompanionAccount": "ສ້າງບັນຊີຜູ້ໃຫ້ບໍລິການ",
   "authValidPhoneRequired": "ກະລຸນາໃສ່ເບີໂທລະສັບໃຫ້ຖືກຕ້ອງ",
   "authPasswordRequired": "ກະລຸນາໃສ່ລະຫັດຜ່ານ",
-
   "commonCurrencyKip": "ກີບ",
-
   "monthShortJan": "ມ.ກ",
   "monthShortFeb": "ກ.ພ",
   "monthShortMar": "ມ.ນ",
@@ -147,7 +153,6 @@
   "monthShortOct": "ຕ.ລ",
   "monthShortNov": "ພ.ຈ",
   "monthShortDec": "ທ.ວ",
-
   "walletTitle": "ກະເປົ໋າເງິນ",
   "walletSubtitle": "ຍອດ ແລະ ປະຫວັດ",
   "walletFilterAll": "ທັງໝົດ",
@@ -157,16 +162,19 @@
   "walletRechargeHistory": "ປະຫວັດການເຕີມ",
   "walletEmptyTitle": "ຍັງບໍ່ມີລາຍການ",
   "walletEmptySubtitle": "ລາຍການເຕີມເງິນຂອງທ່ານ\nຈະສະແດງຢູ່ທີ່ນີ້",
-
   "walletTxStatusCompleted": "ສຳເລັດ",
   "walletTxStatusPending": "ລໍຖ້າ",
   "walletTxStatusProcessing": "ກຳລັງດຳເນີນ",
   "walletTxStatusCancelled": "ຍົກເລີກ",
-
   "walletBalanceUpdated": "ຍອດຄົງເຫຼືອ, ອັບເດດ {time}",
-  "@walletBalanceUpdated": {"placeholders": {"time": {"type": "String"}}},
+  "@walletBalanceUpdated": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
   "walletUsed": "ໃຊ້ໄປແລ້ວ",
-
   "walletTxTypeRecharge": "ເຕີມເງິນ",
   "walletTxTypeSubscription": "ຊື້ Package",
   "walletTxTypeGift": "ສົ່ງຂອງຂວັນ",
@@ -179,23 +187,25 @@
   "walletTxTypeBookingReferral": "ຄ່ານາຍໜ້າ (ການຈອງ)",
   "walletTxTypeSubscriptionReferral": "ຄ່ານາຍໜ້າ (Package)",
   "walletTxTypeGeneric": "ທຸລະກຳ",
-
   "commonNext": "ຕໍ່ໄປ",
   "commonAmount": "ຈຳນວນ",
   "commonDate": "ວັນທີ",
   "commonErrorDetail": "ເກີດຂໍ້ຜິດພາດ: {error}",
-  "@commonErrorDetail": {"placeholders": {"error": {"type": "String"}}},
-
+  "@commonErrorDetail": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
   "topupAmountSubtitle": "ເລືອກ ຫຼື ປ້ອນຈຳນວນ",
   "topupOther": "ອື່ນໆ",
   "topupCustomAmount": "ກຳນົດເອງ",
   "topupOrEnterYourself": "ຫຼື ປ້ອນເອງ",
   "topupEnterAmount": "ປ້ອນຈຳນວນ",
-
   "topupQrLoadFailed": "ບໍ່ສາມາດໂຫຼດ QR ໄດ້",
   "topupPackageFailed": "ການຊື້ Package ບໍ່ສຳເລັດ",
   "topupSlipUploadFailed": "ບໍ່ສາມາດສົ່ງໃບຈ່າຍໄດ້",
-
   "topupUploadTitle": "ອັບໂຫຼດ Slip",
   "topupUploadSubtitle": "ຢືນຢັນການຊຳລະ",
   "topupUploadFileTypes": "ຮອງຮັບຮູບແບບ: JPG, PNG, PDF (ຂຸງສຸດ 10MB)",
@@ -206,12 +216,10 @@
   "topupAddMoreSlip": "ເພີ່ມ slip ອີກ",
   "topupExampleReceipt": "ຕົວຢ່າງໃບບິນການຊຳລະ",
   "topupThankYouMessage": "ຂອບໃຈສຳລັບຄວາມໄວ້ວາງໃຈ: ທີມງານຈະກວດສອບ ແລະ ດຳເນີນການ ພາຍໃນ 1–2 ຊົ່ວໂມງ. ຫຼັງຈາກໄດ້ຮັບໃບຍືນຢັນແລ້ວ.",
-
   "topupBackToWallet": "ກັບໜ້າກະເປົ໋າ",
   "topupSuccessTitle": "ເຕີມສຳເລັດ!",
   "topupSuccessSubtitle": "ກຳລັງລໍຖ້າການກວດສອບຈາກ Admin",
   "topupWaitingReview": "ລໍຖ້າການກວດສອບ",
-
   "topupQrTitle": "ສະແກນ QR",
   "topupQrSubtitle": "ຊຳລະຜ່ານ app ທະນາຄານ",
   "topupQrPaidUploadSlip": "ຊຳລະແລ້ວ — ອັບ slip",
@@ -219,15 +227,12 @@
   "topupQrInstructions": "ສະແກນ QR ດ້ວຍ app ທະນາຄານ\nຈາກນັ້ນກົດ \"ຊຳລະແລ້ວ\" ເພື່ອອັບ slip",
   "topupQrSaving": "ກຳລັງບັນທຶກ...",
   "topupQrDownload": "ດາວໂຫຼດ QR",
-
   "commonAll": "ທັງໝົດ",
   "commonRetry": "ລອງໃໝ່",
   "commonPleaseRetry": "ກະລຸນາລອງໃໝ່ອີກຄັ້ງ",
-
   "serviceTypeSocial": "ເພື່ອນສັງຄົມ",
   "serviceTypeMassage": "ນວດ",
   "serviceTypeTravel": "ເພື່ອນທ່ອງທ່ຽວ",
-
   "viewCompanionPageTitle": "ຜູ້ໃຫ້ບໍລິການທັງໝົດ",
   "viewCompanionFilterLikedByMe": "ຂ້ອຍ Like",
   "viewCompanionFilterWhoLikedMe": "Like ຂ້ອຍ",
@@ -237,10 +242,8 @@
   "viewCompanionEmptyTitle": "ບໍ່ພົບຂໍ້ມູນ",
   "viewCompanionEmptySubtitle": "ລອງປ່ຽນ filter ຫຼືຄົ້ນຫາໃໝ່",
   "viewCompanionSearchHint": "ຄົ້ນຫາຊື່...",
-
   "genderMale": "ຜູ້ຊາຍ",
   "genderFemale": "ຜູ້ຍິງ",
-
   "homeSearch": "ຄົ້ນຫາ",
   "homeFindCompanion": "ຄົ້ນຫາຜູ້ໃຫ້ບໍລິການໃນທ້ອງຖິ່ນ",
   "homeSearchHint": "ຄົ້ນຫາດ້ວຍຊື່...",
@@ -254,21 +257,23 @@
   "homeClearFilter": "ລ້າງ",
   "homeApplyFilter": "ນຳໃຊ້ Filter",
   "homeFilterNearby": "ໃກ້ຄຽງ",
-
   "homeServiceSocial": "ກິດຈະກຳທ້ອງຖິ່ນ",
   "homeServiceTravel": "ປະສົບການທ້ອງຖິ່ນ",
   "homeCardSubtitleSocial": "ທ່ຽວ, ງານລ້ຽງ, ທຸກໂອກາດ",
   "homeCardSubtitleMassage": "ນວດສຸຂະພາບໂດຍມືອາຊີບ",
   "homeCardSubtitleTravel": "Guide ໃນ ແລະ ຕ່າງປະເທດ",
-
   "homeLoadRecommendationsFailed": "ໂຫຼດຂໍ້ມູນແນະນຳບໍ່ສຳເລັດ",
   "homeLoadOnlineFailed": "ໂຫຼດຂໍ້ມູນອອນລາຍບໍ່ສຳເລັດ",
-
   "commonAgeYears": "{years} ປີ",
-  "@commonAgeYears": {"placeholders": {"years": {"type": "int"}}},
+  "@commonAgeYears": {
+    "placeholders": {
+      "years": {
+        "type": "int"
+      }
+    }
+  },
   "commonConfirm": "ຢືນຢັນ",
   "commonPleaseTitle": "ກະລຸນາ",
-
   "bookingStatusConfirmed": "ຢືນຢັນ",
   "bookingStatusConfirmedShort": "ຮັບເເລ້ວ",
   "bookingStatusInProgress": "ກຳລັງດຳເນີນ",
@@ -278,20 +283,26 @@
   "bookingStatusCancelledFull": "ຍົກເລີກເເລ້ວ",
   "bookingStatusRejected": "ຖືກປະຕິເສດ",
   "bookingStatusDisputed": "ຂໍ້ຂັດແຍ້ງ",
-
   "paymentStatusPaid": "ຊຳລະແລ້ວ",
   "paymentStatusPending": "ລໍຖ້າຊຳລະ",
   "paymentStatusReleased": "ປ່ອຍເງີນແລ້ວ",
   "paymentStatusRefunded": "ຄືນເງີນແລ້ວ",
-
   "meetUpsTitle": "ນັດພົບ",
   "meetUpsAllHistory": "ປະຫວັດການຈອງທັງໝົດ",
   "meetUpsItemsWithStatus": "{count} ລາຍການ · {status}",
-  "@meetUpsItemsWithStatus": {"placeholders": {"count": {"type": "int"}, "status": {"type": "String"}}},
+  "@meetUpsItemsWithStatus": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "status": {
+        "type": "String"
+      }
+    }
+  },
   "meetUpsEmptyTitle": "ບໍ່ມີລາຍການ",
   "meetUpsEmptySubtitle": "ລາຍການຈອງຈະສະແດງທີ່ນີ້",
   "meetUpsLoadMore": "ໂຫຼດເພີ່ມ",
-
   "bookingDetailTitle": "ລາຍລະອຽດການຈອງ",
   "bookingLocation": "ສະຖານທີ່",
   "bookingPhone": "ເບີໂທລະສັບ",
@@ -302,13 +313,11 @@
   "bookingCreatedAt": "ເວລາຈອງ",
   "bookingNoName": "ບໍ່ມີຊື່",
   "bookingTotalPrice": "ລາຄາທັງໝົດ",
-
   "bookingActionChat": "ເເຊັດ",
   "bookingActionReleasePayment": "ປ່ອຍເງີນ",
   "bookingActionRefund": "ເງິນຄືນ",
   "bookingActionReject": "ປະຕິເສດ",
   "bookingActionReceiveMoney": "ຮັບເງີນ",
-
   "cancelBookingTitle": "ຍົກເລີກການຈອງ",
   "cancelBookingMessage": "ທ່ານຕ້ອງການຍົກເລີກການຈອງນີ້ແທ້ບໍ່?\nການຍົກເລີກນີ້ບໍ່ສາມາດຖືກຄືນໄດ້.",
   "cancelBookingMessageShort": "ທ່ານຕ້ອງການຍົກເລີກການຈອງນີ້ແທ້ບໍ່?",
@@ -318,7 +327,6 @@
   "rejectReasonTitle": "ເຫດຜົນການປະຕິເສດ",
   "reasonMinLength": "ເຫດຜົນຕ້ອງມີຢ່າງໜ້ອຍ 10 ຕົວອັກສອນ",
   "reasonHint": "ກະລຸນາລະບຸເຫດຜົນ (ຢ່າງໜ້ອຍ 10 ຕົວອັກສອນ)",
-
   "cancellationPolicyCanCancel": "ຍົກເລີກໄດ້",
   "cancellationPolicyTitle": "ນະໂຍບາຍຍົກເລີກ & ຄືນເງິນ",
   "cancellationPolicyExpand": "ດູເພີ່ມ",
@@ -330,22 +338,24 @@
   "cancellationTier3Title": "ຍົກເລີກຫຼັງເລີ່ມນັດ",
   "cancellationTier3Subtitle": "ບໍ່ສາມາດຄືນເງິນໄດ້",
   "cancellationRefundInfo": "ເງິນຈະຖືກໂອນຄືນໄປຍັງຊ່ອງທາງທີ່ທ່ານຊຳລະ ພາຍໃນ 24 ຊົ່ວໂມງ",
-
   "bookingSummaryActive": "ກຳລັງມາ",
-
   "commonAdd": "ເພີ່ມ",
   "commonUpdate": "ອັບເດດ",
   "commonEnable": "ເປີດໃຊ້",
-
   "billingPerHourShort": "/ຊ.ມ",
   "billingPerDayShort": "/ມື້",
   "billingPerNightShort": "/ຄືນ",
   "billingPerSession": "/ຄັ້ງ",
   "billingPerMinute": "/ນາທີ",
-
   "servicesManageSubtitle": "ຈັດການ ແລະ ຕັ້ງລາຄາບໍລິການ",
   "servicesManageDeleteTitle": "ລຶບ {name}",
-  "@servicesManageDeleteTitle": {"placeholders": {"name": {"type": "String"}}},
+  "@servicesManageDeleteTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "servicesManageDeleteMessage": "ທ່ານຕ້ອງການລຶບບໍລິການນີ້ອອກຈາກໂປຣໄຟຂອງທ່ານແທ້ບໍ່?",
   "servicesManageYourRate": "ລາຄາທ່ານກຳນົດ",
   "servicesManageFeePerSession": "ຄ່າບໍລິການ/ຄັ້ງ",
@@ -361,9 +371,21 @@
   "servicesManageVariantName": "ຊື່ປະເພດ",
   "servicesManagePriceKipPerHour": "ລາຄາ (ກີບ/ຊມ)",
   "servicesManagePriceKipPerHourShort": "{amount} ກີບ/ຊມ",
-  "@servicesManagePriceKipPerHourShort": {"placeholders": {"amount": {"type": "String"}}},
+  "@servicesManagePriceKipPerHourShort": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
   "servicesManageMinimum": "ຕ່ຳສຸດ {amount}",
-  "@servicesManageMinimum": {"placeholders": {"amount": {"type": "String"}}},
+  "@servicesManageMinimum": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
   "servicesManageAddVariant": "ເພີ່ມປະເພດ",
   "servicesManageAddressLabel": "ທີ່ຢູ່/ສະຖານທີ່",
   "servicesManageAddressHint": "ເຊັ່ນ: ນະຄອນຫຼວງວຽງຈັນ, ສີສັດຕະນາກ",
@@ -371,12 +393,23 @@
   "servicesManageNoData": "ບໍ່ມີຂໍ້ມູນບໍລິການ",
   "servicesManageValidRateRequired": "ກະລຸນາໃສ່ລາຄາທີ່ຖືກຕ້ອງ",
   "servicesManageMinRate": "ລາຄາຕ່ຳສຸດ: {amount} ກີບ",
-  "@servicesManageMinRate": {"placeholders": {"amount": {"type": "String"}}},
+  "@servicesManageMinRate": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
   "servicesManageUpdatePrice": "ອັບເດດລາຄາ",
   "servicesManageAddService": "ເພີ່ມບໍລິການ",
   "servicesManagePriceWithBilling": "ລາຄາ{billing} (ກີບ)",
-  "@servicesManagePriceWithBilling": {"placeholders": {"billing": {"type": "String"}}},
-
+  "@servicesManagePriceWithBilling": {
+    "placeholders": {
+      "billing": {
+        "type": "String"
+      }
+    }
+  },
   "registerCompanionTitle": "ສ້າງບັນຊີ ສຳລັບຜູ້ໃຫ້ບໍລິການ",
   "registerCustomerTitle": "ສ້າງບັນຊີ ສຳລັບລູກຄ້າ",
   "registerFillInfo": "ກະລຸນາຕື່ມຂໍ້ມູນໃຫ້ຄົບ",
@@ -398,14 +431,11 @@
   "registerTermsAnd": " ແລະ ",
   "registerPrivacyPolicy": "ນະໂຍບາຍຄວາມເປັນສ່ວນຕົວ",
   "registerTermsSuffix": " ຂອງ XAOSAO",
-
   "registerAvatarChange": "ກົດເພື່ອປ່ຽນຮູບ",
   "registerAvatarPick": "ກົດເພື່ອເລືອກຮູບ",
-
   "registerStepInfo": "ຂໍ້ມູນ",
   "registerStepServices": "ບໍລິການ",
   "registerStepOtp": "OTP",
-
   "registerServicesTitle": "ເລືອກບໍລິການ",
   "registerServicesSubtitle": "ກຳນົດປະເພດ ແລະ ລາຄາບໍລິການຂອງທ່ານ",
   "registerNoServices": "ບໍ່ມີບໍລິການ",
@@ -416,17 +446,28 @@
   "registerServicesInfoDot": ".",
   "registerPriceRequired": "ກະລຸນາໃສ່ລາຄາ",
   "registerMinPrice": "ລາຄາຕ່ຳສຸດ {amount} ກີບ",
-  "@registerMinPrice": {"placeholders": {"amount": {"type": "String"}}},
+  "@registerMinPrice": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
   "registerPricePerHourLabel": "ລາຄາ (ກີບ/ຊົ່ວໂມງ) *",
   "registerMinPriceKip": "ຕ່ຳສຸດ {amount} ກີບ",
-  "@registerMinPriceKip": {"placeholders": {"amount": {"type": "String"}}},
+  "@registerMinPriceKip": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
   "registerAllVariants": "ເພີ່ມໄດ້ທຸກປະເພດ",
   "registerServiceLocation": "ສະຖານທີ່ໃຫ້ບໍລິການ *",
   "registerServiceLocationHint": "ເຊັ່ນ: ເຮືອນ, ໂຮງແຮມ, ສະຖານທີ່ລູກຄ້າ",
   "registerVariantsPriceLabel": "ປະເພດ ແລະ ລາຄາ (ກີບ/ຊົ່ວໂມງ) *",
   "registerContinueCta": "ດຳເນີນການຕໍ່",
   "registerCurrencyPerHour": "ກີບ/ຊມ",
-
   "registerOtpSmsInfo": "ກະລຸນາກວດເບິ່ງ SMS ຂອງທ່ານ\nລະຫັດໃຊ້ໄດ້ 5 ນາທີ ເທົ່ານັ້ນ",
   "registerOtpInvalid": "ລະຫັດ OTP ບໍ່ຖືກຕ້ອງ — ລອງໃໝ່",
   "registerOtpInvalidRetry": "ລະຫັດ OTP ບໍ່ຖືກຕ້ອງ ກະລຸນາລອງໃໝ່",
@@ -438,11 +479,9 @@
   "registerOtpConfirmPhone": "ຢືນຢັນເບີໂທ",
   "registerOtpEnter6Digits": "ໃສ່ລະຫັດ 6 ໂຕທີ່ສົ່ງໄປຫາ",
   "registerOtpVerify": "ຢືນຢັນ OTP",
-
   "commonEdit": "ແກ້ໄຂ",
   "commonConnectionRetry": "ກວດສອບການເຊື່ອມຕໍ່ແລ້ວລອງໃໝ່",
   "commonBank": "ທະນາຄານ",
-
   "qrTitle": "QR ໂອນເງິນ",
   "qrSubtitle": "ຈັດການ QR Code ຂອງຂ້ອຍ",
   "qrDeleteTitle": "ລຶບ QR Code",
@@ -455,16 +494,13 @@
   "qrSetPrimary": "ຕັ້ງເປັນ QR ຫຼັກ",
   "qrAddNew": "ເພີ່ມ QR ໃໝ່",
   "qrInfoBanner": "QR ທີ່ຕັ້ງເປັນ ຫຼັກ ຈະໂຊໃນໜ້າ Profile ຂອງທ່ານ ເພື່ອໃຫ້ລູກຄ້າສາມາດສະແກນໂອນເງິນໄດ້ທັນທີ.",
-
   "qrAddFailed": "ເພີ່ມ QR ບໍ່ສຳເລັດ",
   "qrUpdateFailed": "ອັບເດດ QR ບໍ່ສຳເລັດ",
   "qrDeleteFailed": "ລຶບ QR ບໍ່ສຳເລັດ",
   "qrSetDefaultFailed": "ຕັ້ງ QR ຫຼັກບໍ່ສຳເລັດ",
-
   "genderMaleShort": "ຊາຍ",
   "genderFemaleShort": "ຍິງ",
   "genderOther": "ອື່ນໆ",
-
   "monthLongJan": "ມັງກອນ",
   "monthLongFeb": "ກຸມພາ",
   "monthLongMar": "ມີນາ",
@@ -477,7 +513,6 @@
   "monthLongOct": "ຕຸລາ",
   "monthLongNov": "ພະຈິກ",
   "monthLongDec": "ທັນວາ",
-
   "profileTitle": "ໂປຣໄຟລ໌",
   "profileSectionGeneralInfo": "ຂໍ້ມູນທົ່ວໄປ",
   "profileSectionAccountInfo": "ຂໍ້ມູນບັນຊີ",
@@ -489,7 +524,6 @@
   "profileNoServices": "ຍັງບໍ່ມີບໍລິການ",
   "profileVerifiedCustomer": "ຢືນຢັງແລ້ວ",
   "profileVerifiedCompanion": "ຜູ້ໃຫ້ບໍລິການທີ່ຢືນຢັນ",
-
   "profileUpdateSuccess": "ອັບເດດຂໍ້ມູນສຳເລັດ",
   "profileUpdateFailed": "ອັບເດດຂໍ້ມູນບໍ່ສຳເລັດ",
   "profileEditTitle": "ແກ້ໄຂຂໍ້ມູນ",
@@ -497,12 +531,8 @@
   "profileAddressHint": "ເຊັ່ນ: ໂຊນ 1, ວຽງຈັນ",
   "profileEditNote": "ການປ່ຽນລະຫັດຜ່ານ ແລະ ເລກໂທ, ຕ້ອງໄປທີ່ ໜ້າຕັ້ງຄ່າ",
   "profileSave": "ບັນທຶກ",
-
-  "commonError": "ເກີດຂໍ້ຜິດພາດ, ກະລຸນາລອງໃໝ່",
   "commonErrorTryAgain": "ເກີດຂໍ້ຜິດພາດ! ກະລຸນາລອງໃໝ່ອີກຄັ້ງ",
   "commonUploadFailed": "ອັບໂຫຼດບໍ່ສຳເລັດ",
-  "commonDeleteFailed": "ລຶບບໍ່ສຳເລັດ",
-
   "changePasswordTitle": "ປ່ຽນລະຫັດຜ່ານ",
   "changePasswordSubtitle": "ຕ້ອງໃສ່ລະຫັດທຳກ່ອນ",
   "changePasswordSectionCurrent": "ລະຫັດຜ່ານ",
@@ -521,61 +551,128 @@
   "changePasswordStrengthStrong": "ແຂງແຮງ",
   "changePasswordSuccess": "ປ່ຽນລະຫັດຜ່ານສຳເລັດ",
   "changePasswordFailed": "ປ່ຽນລະຫັດຜ່ານບໍ່ສຳເລັດ",
-
   "profileToggleStatusFailed": "ປ່ຽນສະຖານະບໍ່ສຳເລັດ",
   "profileUploadPhotoFailed": "ອັບໂຫຼດຮູບໂປຣໄຟບໍ່ສຳເລັດ",
-
   "profileNoPhotos": "ຍັງບໍ່ມີຮູບ",
   "profileGalleryTitle": "ຮູບພາບທັງໝົດ",
   "profileGalleryCount": "{count} / {max} ຮູບ",
-  "@profileGalleryCount": {"placeholders": {"count": {"type": "int"}, "max": {"type": "int"}}},
+  "@profileGalleryCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "max": {
+        "type": "int"
+      }
+    }
+  },
   "profileDeletePhotoTitle": "ລຶບຮູບ",
   "profileDeletePhotoMessage": "ທ່ານຕ້ອງການລຶບຮູບນີ້ແທ້ບໍ່?",
   "profileAddPhoto": "ເພີ່ມຮູບ",
-
   "profileHiddenShowSuccess": "ສະແດງໂປຣໄຟສຳເລັດ",
   "profileHiddenBannerBody": "ລູກຄ້າບໍ່ສາມາດເຫັນໂປຣໄຟຂອງທ່ານໃນຕອນນີ້. ເມື່ອທ່ານພ້ອມຮັບການຈອງອີກຄັ້ງ, ກົດສະແດງໂປຣໄຟຂອງທ່ານ.",
   "profileHiddenClose": "ປິດ",
   "profileHiddenShow": "ສະແດງໂປຣໄຟ",
   "profileHiddenHeaderTitle": "ໂປຣໄຟຂອງທ່ານຖືກຊ່ອນຢູ່",
   "profileHiddenHeaderSubtitle": "ທ່ານຈະບໍ່ສະແດງໃນຜົນຄົ້ນຫາ",
-
   "profileShareLink": "ແຊຣ໌ລິ້ງແນະນຳຂອງທ່ານ",
   "profileHideYourProfile": "ເຊື່ອງໂປຣໄຟຂອງທ່ານ",
-
   "qrRowScanToTransfer": "ສະແກນເພື່ອໂອນເງິນ",
   "servicesEditAddLabel": "ແກ້ໄຂ / ເພີ່ມ ບໍລິການ",
   "servicesEditAddSub": "ຕັ້ງລາຄາ ແລະ ຄຳອະທິບາຍ",
-
   "timeJustNow": "ໃໝ່ໆ",
   "timeJustNowShort": "ຫາກໍ່",
   "timeMinutesAgo": "{n} ນາທີກ່ອນ",
-  "@timeMinutesAgo": {"placeholders": {"n": {"type": "int"}}},
+  "@timeMinutesAgo": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
   "timeHoursAgo": "{n} ຊົ່ວໂມງກ່ອນ",
-  "@timeHoursAgo": {"placeholders": {"n": {"type": "int"}}},
+  "@timeHoursAgo": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
   "timeDaysAgo": "{n} ວັນກ່ອນ",
-  "@timeDaysAgo": {"placeholders": {"n": {"type": "int"}}},
+  "@timeDaysAgo": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
   "timeWeeksAgo": "{n} ອາທິດກ່ອນ",
-  "@timeWeeksAgo": {"placeholders": {"n": {"type": "int"}}},
+  "@timeWeeksAgo": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
   "timeMinutesShort": "{n}ນາທີ",
-  "@timeMinutesShort": {"placeholders": {"n": {"type": "int"}}},
+  "@timeMinutesShort": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
   "timeHoursShort": "{n}ຊົ່ວໂມງ",
-  "@timeHoursShort": {"placeholders": {"n": {"type": "int"}}},
+  "@timeHoursShort": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
   "timeDaysShort": "{n}ວັນ",
-  "@timeDaysShort": {"placeholders": {"n": {"type": "int"}}},
+  "@timeDaysShort": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
   "timeWeeksShort": "{n}ອາທິດ",
-  "@timeWeeksShort": {"placeholders": {"n": {"type": "int"}}},
+  "@timeWeeksShort": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
   "timeDaysShortSpaced": "{n} ວັນ",
-  "@timeDaysShortSpaced": {"placeholders": {"n": {"type": "int"}}},
+  "@timeDaysShortSpaced": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
   "timeWeeksShortSpaced": "{n} ອາທິດ",
-  "@timeWeeksShortSpaced": {"placeholders": {"n": {"type": "int"}}},
-
+  "@timeWeeksShortSpaced": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
   "commonUser": "ຜູ້ໃຊ້",
   "commonYou": "ທ່ານ",
   "commonLoadMore": "ໂຫຼດເພີ່ມ",
   "commonAmountKip": "{amount} ກີບ",
-  "@commonAmountKip": {"placeholders": {"amount": {"type": "String"}}},
-
+  "@commonAmountKip": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
   "postsTitle": "ໂພສ",
   "postsSubtitle": "ຄົ້ນຫາຜູ້ໃຫ້ບໍລິການທີ່ໃຊ້ຂອງທ່ານ",
   "postsCantLoad": "ບໍ່ສາມາດໂຫຼດຂໍ້ມູນ",
@@ -616,18 +713,28 @@
   "postStatusFulfilled": "ປິດໃຊ້ງານເເລ້ວ",
   "postActionBook": "ຈອງ",
   "postActionChat": "ແຊັດ",
-
   "commentsTitle": "ຄໍາເຫັນ",
   "commentsEmptyTitle": "ຍັງບໍ່ມີຄໍາເຫັນ",
   "commentsEmptySubtitle": "ເປັນຄົນທໍາອິດທີ່ຄອມເມັນ!",
   "commentReply": "ຕອບກັບ",
   "commentCollapseReplies": "ຫຍໍ້ຄໍາຕອບ",
   "commentViewReplies": "ເບິ່ງ {count} ຄໍາຕອບ",
-  "@commentViewReplies": {"placeholders": {"count": {"type": "int"}}},
+  "@commentViewReplies": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "commentReplyToHint": "ຕອບ {name}...",
-  "@commentReplyToHint": {"placeholders": {"name": {"type": "String"}}},
+  "@commentReplyToHint": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "commentWriteHint": "ຂຽນຄໍາເຫັນ...",
-
   "postDetailTitle": "ລາຍລະອຽດໂພສ",
   "postDetailActive": "ກຳລັງເປີດ",
   "postDetailClosed": "ປິດເເລ້ວ",
@@ -636,12 +743,10 @@
   "postDetailInterested": "ສົນໃຈ",
   "postDetailGift": "ຂອງຂວັນ",
   "postDetailComment": "ຄຳເຫັນ",
-
   "interestTitle": "ຜູ້ສົນໃຈ",
   "interestSubtitle": "ລາຍຊື່ຜູ້ທີ່ສົນໃຈໂພສຂອງທ່ານ",
   "interestEmptyTitle": "ຍັງບໍ່ມີຜູ້ສົນໃຈ",
   "interestEmptySubtitle": "ເມື່ອມີຜູ້ກົດໃຈໂພສນີ້,\nຊື່ຂອງພວກເຂົາຈະສະແດງຢູ່ນີ້",
-
   "giftReceivedTitle": "ຂອງຂວັນ",
   "giftReceivedSubtitle": "ຂອງຂວັນທີ່ທ່ານໄດ້ຮັບ",
   "giftEmptyReceivedTitle": "ຍັງບໍ່ມີຂອງຂວັນ",
@@ -656,11 +761,15 @@
   "giftDetailsTitle": "ລາຍລະອຽດຂອງຂວັນ",
   "giftHistorySentTimes": "ຄັ້ງທີ່ທ່ານສົ່ງຂອງຂວັນ",
   "giftHistorySpent": "ໃຊ້ຈ່າຍ {amount} ກີບ",
-  "@giftHistorySpent": {"placeholders": {"amount": {"type": "String"}}},
-
+  "@giftHistorySpent": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
   "commonErrorOccurred": "ມີຂໍ້ຜິດພາດເກີດຂຶ້ນ",
   "commonCantLoadData": "ບໍ່ສາມາດໂຫຼດຂໍ້ມູນໄດ້",
-
   "packageHistoryTitle": "ປະຫວັດ Package",
   "packageHistorySubtitle": "ລາຍການຊື້ທັງໝົດ",
   "packageHistoryEmpty": "ບໍ່ມີລາຍການ",
@@ -676,10 +785,21 @@
   "packageStatusSuperseded": "ຖືກແທນທີ່",
   "packageAmount": "ຈຳນວນ",
   "packageDaysRemaining": "ຍັງເຫຼືອ {days} ວັນ",
-  "@packageDaysRemaining": {"placeholders": {"days": {"type": "int"}}},
+  "@packageDaysRemaining": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
   "packageExpiresShort": "ໝົດ {date}",
-  "@packageExpiresShort": {"placeholders": {"date": {"type": "String"}}},
-
+  "@packageExpiresShort": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
   "subscriptionPrice": "ລາຄາ",
   "subscriptionDuration": "ໄລຍະເວລາ",
   "subscriptionBenefits": "ສິ່ງທີ່ທ່ານຈະໄດ້ຮັບ:",
@@ -688,18 +808,36 @@
   "subscriptionBuyNow": "ຊື້ເລີຍ",
   "subscriptionTopUp": "ຕື່ມເງິນ",
   "subscriptionDurationHours": "{hours} ຊ.ມ",
-  "@subscriptionDurationHours": {"placeholders": {"hours": {"type": "int"}}},
+  "@subscriptionDurationHours": {
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      }
+    }
+  },
   "subscriptionDuration1Day": "1 ວັນ",
   "subscriptionDuration1Week": "1 ອາທິດ",
   "subscriptionDuration1Month": "1 ເດືອນ",
   "subscriptionDuration3Months": "3 ເດືອນ",
   "subscriptionDuration1Year": "1 ປີ",
   "subscriptionDurationDays": "{days} ວັນ",
-  "@subscriptionDurationDays": {"placeholders": {"days": {"type": "int"}}},
+  "@subscriptionDurationDays": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
   "subscriptionSpecialPack": "ແພັກພິເສດ",
   "subscriptionYourBalance": "ຍອດເງິນຂອງທ່ານ",
   "subscriptionNeedMore": "ຕ້ອງການ +{amount} KIP",
-  "@subscriptionNeedMore": {"placeholders": {"amount": {"type": "String"}}},
+  "@subscriptionNeedMore": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
   "subscriptionCanPay": "ຊຳລະໄດ້ເລີຍ",
   "subscriptionNeedPackageBody": "ກະລຸນາຊື້ Package ກ່ອນ ຈຶ່ງສາມາດຈອງບໍລິການໄດ້. Package ຈະໃຫ້ທ່ານສິດໃນການຈອງ ແລະ ໃຊ້ງານຕ່າງໆ.",
   "subscriptionViewPackage": "ເບິ່ງ Package",
@@ -708,7 +846,13 @@
   "subscriptionServicePrice": "ລາຄາບໍລິການ",
   "subscriptionShortfall": "ຂາດຢູ່",
   "subscriptionTopUpAmount": "ຕື່ມ {amount} KIP",
-  "@subscriptionTopUpAmount": {"placeholders": {"amount": {"type": "String"}}},
+  "@subscriptionTopUpAmount": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
   "subscriptionInsufficient": "ຍອດເງິນບໍ່ພຽງພໍ",
   "subscriptionPleaseTopup": "ກະລຸນາຕື່ມເງິນກ່ອນຈອງ",
   "subscriptionPendingVerification": "ລໍຖ້າການຢືນຢັນ",
@@ -719,7 +863,6 @@
   "subscriptionCallAdmin": "ໂທຫາ Admin",
   "subscriptionWaitingVerification": "ກຳລັງລໍຖ້າການຢືນຢັນ",
   "subscriptionAdminChecking": "Package ຂອງທ່ານລໍຖ້າ Admin ກວດສອບ",
-
   "packagePurchaseFailed": "ການຊື້ບໍ່ສຳເລັດ",
   "packageFeature1": "ຈອງບໍລິການຈາກຜູ້ໃຫ້ບໍລິການໃນທ້ອງຖິ່ນໄດ້ບໍ່ຈຳກັດຕໍ່ວັນ",
   "packageFeature2": "ຕິດຕໍ່ຜູ້ໃຫ້ບໍລິການເພື່ອປະສານງານການຈອງ ແລະ ກິດຈະກຳ",
@@ -741,7 +884,13 @@
   "packageActive": "ກຳລັງໃຊ້ງານ",
   "packageProcessingVerification": "ກຳລັງດຳເນີນການຢືນຢັນ...",
   "packageExpiresOn": "ໝົດອາຍຸ {date}",
-  "@packageExpiresOn": {"placeholders": {"date": {"type": "String"}}},
+  "@packageExpiresOn": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
   "packageDays": "ວັນ",
   "packageRemainingLabel": "ຄົງເຫຼືອ",
   "packageChooseYourPlan": "ເລືອກແຜນຂອງທ່ານ",
@@ -752,16 +901,27 @@
   "packageRequestProcessing": "ຄຳຮ້ອງຂໍຂອງທ່ານກຳລັງຖືກດຳເນີນການ · ກະລຸນາລໍຖ້າ",
   "packageCurrent": "ແພັກເກດປັດຈຸບັນ",
   "packageSelectPlan": "ເລືອກແຜນນີ້",
-
   "checkoutPurchaseSuccess": "ຊື້ Package ສຳເລັດ",
   "checkoutUpgradeTitle": "ອັບເກຣດ Package",
   "checkoutUpgradeSubtitle": "ກວດສອບ ແລະ ຢືນຢັນການຊຳລະ",
   "checkoutProcessPayment": "ດຳເນີນການຊຳລະ",
   "checkoutAlreadySubscribed": "Wallet Package ໃຊ້ງານຢູ່ແລ້ວ",
   "checkoutPillPlan": "ແຜນ {name}",
-  "@checkoutPillPlan": {"placeholders": {"name": {"type": "String"}}},
+  "@checkoutPillPlan": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "checkoutPillRemainingDays": "ເຫຼືອ {days} ວັນ",
-  "@checkoutPillRemainingDays": {"placeholders": {"days": {"type": "int"}}},
+  "@checkoutPillRemainingDays": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
   "checkoutUpgradeInfo": "ການຊຳລະໃໝ່ຈະເລີ່ມຕໍ່ຈາກ Package ປັດຈຸບັນ ແລະ ວັນທີ່ຍັງເຫຼືອຈະຖືກນຳໃສ່ Package ໃໝ່.",
   "checkoutPackageDuration": "ໄລຍະ Package",
   "checkoutNewPackageDuration": "ໄລຍະ Package ໃໝ່",
@@ -773,7 +933,6 @@
   "checkoutRemaining": "ຍອດຄົງເຫຼືອ",
   "checkoutShortfallSuffix": " (ຂາດ)",
   "checkoutWalletDeductInfo": "ຍອດ Wallet ຈະຖືກຕັດທັນທີ. Package ຈະເປີດໃຊ້ງານຫຼັງຈາກການຊຳລະສຳເລັດ.",
-
   "onboardingTopCompanions": "ຜູ້ໃຫ້ບໍລິການຍອດນິຍົມ",
   "onboardingTopCompanionsSubtitle": "ຄົ້ນພົບຜູ້ໃຫ້ບໍລິການທີ່ໄດ້ຮັບຄະແນນສູງ",
   "onboardingWelcome": "ຍິນດີຕ້ອນຮັບ 👋",
@@ -801,7 +960,6 @@
   "onboardingReadyToEarn": "ພ້ອມເລີ່ມຫາລາຍຮັບບໍ?",
   "onboardingRegisterUnlock": "ລົງທະບຽນຕອນນີ້ ແລະ ເພີ່ມລາງວັນຂອງທ່ານ ໂດຍການແນະນຳຜູ້ອື່ນ",
   "onboardingGetStarted": "ເລີ່ມຕົ້ນ",
-
   "notifSettingTitle": "ຕັ້ງຄ່າລະບົບ",
   "notifSettingSubtitle": "ຈັດການການແຈ້ງເຕືອນຂອງທ່ານ",
   "notifSettingChannelsSection": "ຊ່ອງທາງການແຈ້ງເຕືອນ",
@@ -811,26 +969,53 @@
   "notifSettingBannerBody": "ເລືອກຊ່ອງທາງທີ່ທ່ານຕ້ອງການຮັບຂໍ້ຄວາມ\nການປ່ຽນແປງຈະຖືກບັນທຶກໂດຍອັດຕະໂນມັດ",
   "notifSettingFooterNote": "ການປ່ຽນແປງຈະຖືກບັນທຶກທັນທີ. ທ່ານສາມາດປ່ຽນການຕັ້ງຄ່າໄດ້ຕະຫຼອດເວລາ.",
   "notifSettingUpdateFailed": "ອັບເດດບໍ່ສຳເລັດ",
-
   "notifListTitle": "ການແຈ້ງເຕືອນ",
   "notifListSubtitle": "ລາຍການແຈ້ງເຕືອນທັງໝົດຂອງທ່ານ",
   "notifListMarkAllRead": "ອ່ານທັງໝົດ",
   "notifListEmptyTitle": "ຍັງບໍ່ມີການແຈ້ງເຕືອນ",
   "notifListEmptySubtitle": "ການແຈ້ງເຕືອນຈະສະແດງທີ່ນີ້",
-
   "notifTimeJustNow": "ຫາກໍ່ນີ້",
   "notifTimeMinutes": "{n} ນາທີ",
-  "@notifTimeMinutes": {"placeholders": {"n": {"type": "int"}}},
+  "@notifTimeMinutes": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
   "notifTimeHours": "{n} ຊົ່ວໂມງ",
-  "@notifTimeHours": {"placeholders": {"n": {"type": "int"}}},
+  "@notifTimeHours": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
   "notifTimeYesterday": "ມື້ວານ",
   "notifTimeDaysAgo": "{n} ມື້ກ່ອນ",
-  "@notifTimeDaysAgo": {"placeholders": {"n": {"type": "int"}}},
+  "@notifTimeDaysAgo": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
   "notifTimeWeeksAgo": "{n} ອາທິດຜ່ານມາ",
-  "@notifTimeWeeksAgo": {"placeholders": {"n": {"type": "int"}}},
+  "@notifTimeWeeksAgo": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
   "notifTimeMonthsAgo": "{n} ເດືອນກ່ອນ",
-  "@notifTimeMonthsAgo": {"placeholders": {"n": {"type": "int"}}},
-
+  "@notifTimeMonthsAgo": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
   "welcomeTitle": "ຍິນດີຕ້ອນຮັບ!",
   "welcomeBody": "ບັນຊີຂອງທ່ານສ້າງສຳເລັດແລ້ວ.\nຂໍໃຫ້ທ່ານມີຄວາມສຸກໃນການໃຊ້ງານ!",
   "welcomeCanDoTitle": "ສິ່ງທີ່ທ່ານສາມາດເຮັດໄດ້",
@@ -838,7 +1023,6 @@
   "welcomeBook": "ຈອງ",
   "welcomeExplore": "ຄົ້ນຫາ",
   "welcomeGetStartedCta": "ເລີ່ມໃຊ້ງານເລີຍ",
-
   "modelWalletAvailableBalance": "ຍອດເງິນສາມາດຖອນໄດ້",
   "modelWalletStatPending": "ລໍຖ້າ",
   "modelWalletStatWithdrawn": "ຖອນແລ້ວ",
@@ -848,7 +1032,6 @@
   "modelWalletEmptyTitle": "ຍັງບໍ່ມີລາຍການ",
   "modelWalletEmptySubtitle": "ລາຍການລາຍຮັບຂອງທ່ານ\nຈະສະແດງຢູ່ທີ່ນີ້",
   "modelWalletWithdrawFailed": "ບໍ່ສາມາດຖອນເງິນໄດ້",
-
   "withdrawTitle": "ຖອນເງິນ",
   "withdrawSubtitle": "ຈ່າຍໃຫ້ບັນຊີທະນາຄານ",
   "withdrawSelectBank": "ເລືອກບັນຊີທະນາຄານ",
@@ -857,9 +1040,21 @@
   "withdrawHintMin": "ຕ່ຳສຸດ",
   "withdrawHintMax": "ສູງສຸດ",
   "withdrawBelowMin": "ຈໍານວນຕ່ຳກວ່າຂີດຈໍາກັດ ({amount})",
-  "@withdrawBelowMin": {"placeholders": {"amount": {"type": "String"}}},
+  "@withdrawBelowMin": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
   "withdrawAboveMax": "ເກີນຍອດທີ່ສາມາດຖອນໄດ້ ({amount})",
-  "@withdrawAboveMax": {"placeholders": {"amount": {"type": "String"}}},
+  "@withdrawAboveMax": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
   "withdrawConfirmBtn": "ຢືນຢັນການຖອນ",
   "withdrawableBalance": "ຍອດທີ່ຖອນໄດ້",
   "withdrawAll": "ຖອນທັງໝົດ",
@@ -867,7 +1062,6 @@
   "withdrawNoBankTitle": "ຍັງບໍ່ມີບັນຊີທະນາຄານ",
   "withdrawNoBankSubtitle": "ກະລຸນາເພີ່ມບັນຊີກ່ອນທີ່ຈະຖອນເງິນ",
   "withdrawAddBank": "ເພີ່ມບັນຊີທະນາຄານ",
-
   "discoverTitle": "ຄົ້ນພົບ",
   "discoverSubtitle": "ຄົ້ນຫາຜູ້ໃຊ້ທີ່ທ່ານໃຈ",
   "discoverSearchHint": "ຄົ້ນຫາດ້ວຍຊື່...",
@@ -882,7 +1076,6 @@
   "discoverEmptyWhoLikedMeSubtitle": "ສ້າງໂປຣໄຟລ໌ທີ່ດີເພື່ອດຶງດູດ",
   "discoverEmptyILikedTitle": "ທ່ານຍັງບໍ່ໄດ້ຖືກໃຈໃຜ",
   "discoverEmptyILikedSubtitle": "ຄົ້ນຫາແລ້ວກົດ ♥ ເພື່ອສະແດງຄວາມສົນໃຈ",
-
   "detailPersonalInfo": "ຂໍ້ມູນຜູ້ໃຫ້ບໍລິການ",
   "detailStatAge": "ອາຍຸ",
   "detailStatMemberSince": "ສະມາຊິກຕັ້ງແຕ່",
@@ -893,7 +1086,6 @@
   "detailStatPosts": "ໂພສ",
   "detailStatGifts": "ຂອງຂວັນ",
   "detailStatCount": "ຈໍານວນ",
-
   "meetupsEntryFromMeetUps": "ຈາກໜ້ານັດພົບ",
   "meetupsEntryFromChat": "ຈາກ Chat",
   "meetupsDayShortSun": "ອາ",
@@ -905,13 +1097,46 @@
   "meetupsDayShortSat": "ສ",
   "meetupsClockSuffix": "ໂມງ",
   "meetupsCountdownDays": "ເຫຼືອອີກ {days} ວັນ {hours} ຊ.ມ.",
-  "@meetupsCountdownDays": {"placeholders": {"days": {"type": "int"}, "hours": {"type": "int"}}},
+  "@meetupsCountdownDays": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      },
+      "hours": {
+        "type": "int"
+      }
+    }
+  },
   "meetupsCountdownHours": "ເຫຼືອອີກ {hours} ຊ.ມ.",
-  "@meetupsCountdownHours": {"placeholders": {"hours": {"type": "int"}}},
+  "@meetupsCountdownHours": {
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      }
+    }
+  },
   "meetupsCountdownMinutes": "ເຫຼືອ {minutes} ນາທີ",
-  "@meetupsCountdownMinutes": {"placeholders": {"minutes": {"type": "int"}}},
+  "@meetupsCountdownMinutes": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
   "meetupsServiceMultiplier": "{name} × {n} {unit}",
-  "@meetupsServiceMultiplier": {"placeholders": {"name": {"type": "String"}, "n": {"type": "int"}, "unit": {"type": "String"}}},
+  "@meetupsServiceMultiplier": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "n": {
+        "type": "int"
+      },
+      "unit": {
+        "type": "String"
+      }
+    }
+  },
   "meetupsUnitDays": "ມື້",
   "meetupsUnitHours": "ຊົ່ວໂມງ",
   "meetupsServiceFallback": "ບໍລິການ",
@@ -936,7 +1161,13 @@
   "meetupsPriceTotal": "ລວມທັງໝົດ",
   "meetupsYourReview": "ຄຳຕິຊົມຂອງທ່ານ",
   "meetupsYouRated": "ທ່ານໃຫ້ຄະແນນ {name}",
-  "@meetupsYouRated": {"placeholders": {"name": {"type": "String"}}},
+  "@meetupsYouRated": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "meetupsProgress": "ຄວາມຄືບໜ້າ",
   "meetupsCancellationPolicy": "ນະໂຍບາຍຍົກເລີກ",
   "meetupsCancelBefore": "ຍົກເລີກກ່ອນ ",
@@ -949,12 +1180,10 @@
   "meetupsActionReport": "ລາຍງານ",
   "meetupsActionConfirmShort": "ຢືນຢັນ",
   "meetupsSnackPleaseTitle": "ກະລຸນາ",
-
   "loginRoleCustomerLabel": "ຜູ້ຈອງ",
   "loginRoleCustomerSub": "ຄົ້ນຫາ ແລະ ຈອງບໍລິການ",
   "loginRoleCompanionLabel": "ຜູ້ໃຫ້ບໍລິການ",
   "loginRoleCompanionSub": "ໂພສບໍລິການ ແລະ ຮັບການຈອງ",
-
   "forgotTitle": "ລືມລະຫັດຜ່ານ",
   "forgotEnterRegistered": "ໃສ່ເບີໂທທີ່ລົງທະບຽນ",
   "forgotOtpWillSendHere": "ລະຫັດ OTP ຈະຖືກສົ່ງໄປຫາເບີນີ້",
@@ -966,7 +1195,6 @@
   "forgotSavePassword": "ບັນທຶກລະຫັດຜ່ານ",
   "forgotStepPhone": "ໂທລະສັບ",
   "forgotConfirmPassword": "ຢືນຢັນລະຫັດຜ່ານ",
-
   "feedbackTitle": "ຄຳຕິຊົມ",
   "feedbackSubtitle": "ສົ່ງຄຳຄິດເຫັນ ຫຼື ລາຍງານບັນຫາ",
   "feedbackSendNew": "ສົ່ງຄຳຕິຊົມໃໝ່",
@@ -983,24 +1211,27 @@
   "feedbackEmptyTitle": "ຍັງບໍ່ມີຄຳຕິຊົມ",
   "feedbackEmptySubtitle": "ສົ່ງຄຳຕິຊົມຂອງທ່ານດ້ານເທິງ",
   "feedbackStatusResolved": "ແກ້ໄຂແລ້ວ",
-
   "feedbackTypeBug": "ຂໍ້ຜິດພາດ (Bug)",
   "feedbackTypeFeature": "ຂໍ້ສະເໜີ (Feature)",
   "feedbackTypeGeneral": "ທົ່ວໄປ (General)",
   "feedbackTypePayment": "ບັນຫາການຊຳລະ (Payment)",
   "feedbackTypePerformance": "ປະສິດທິພາບ (Performance)",
   "feedbackTypeOther": "ອື່ນໆ (Other)",
-
   "dashboardTabChat": "ຄູ່ເເຊັດ",
   "dashboardTabPosts": "ໂພສຫາຄູ່",
-
   "reviewRatingRequired": "ກະລຸນາໃຫ້ຄະແນນ",
   "reviewTextRequired": "ກະລຸນາຂຽນລີວິວ",
   "reviewSubmitSuccess": "ສົ່ງລີວິວສຳເລັດ",
   "reviewSubmitFailed": "ສົ່ງລີວິວບໍ່ສຳເລັດ",
   "reviewWriteTitle": "ຂຽນລີວິວ",
   "reviewForCompanion": "ສຳລັບ {name}",
-  "@reviewForCompanion": {"placeholders": {"name": {"type": "String"}}},
+  "@reviewForCompanion": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "reviewGiveRating": "ໃຫ້ຄະແນນ",
   "reviewSubjectLabel": "ຫົວຂໍ້ (ທາງເລືອກ)",
   "reviewSubjectHint": "ໃສ່ຫົວຂໍ້ລີວິວ...",
@@ -1013,7 +1244,6 @@
   "reviewRatingVeryGood": "ດີຫຼາຍ",
   "reviewRatingExcellent": "ດີເລີດ!",
   "reviewRatingPick": "ເລືອກຄະແນນ",
-
   "cpRatingsSection": "ຄະແນນ ແລະ ລີວິວ",
   "cpStatusAvailable": "ຮັບຈອງ",
   "cpStatusUnavailable": "ບໍ່ຮັບຈອງ",
@@ -1022,31 +1252,66 @@
   "cpNoReviewsBeFirst": "ຍັງບໍ່ມີລີວິວ ເປັນຄົນທຳອິດ!",
   "cpLoadMoreReviews": "ໂຫຼດລີວິວເພີ່ມ",
   "cpReviewsCount": "{count} ລີວິວ",
-  "@cpReviewsCount": {"placeholders": {"count": {"type": "int"}}},
+  "@cpReviewsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "cpOnline": "ອອນລາຍ",
   "cpStatReviews": "ລີວິວ",
   "cpStatFollowers": "ຕິດຕາມ",
   "cpAnonymous": "ນິລະນາມ",
   "cpBookNow": "ຈອງດຽວນີ້",
-
   "chatTitle": "ສົນທະນາ",
   "chatNewMessages": "{count} ຂໍ້ຄວາມໃໝ່",
-  "@chatNewMessages": {"placeholders": {"count": {"type": "int"}}},
+  "@chatNewMessages": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "chatSearchHint": "ຄົ້ນຫາ...",
   "chatFallbackName": "ການສົນທະນານີ້",
   "chatDeleteConvTitle": "ລຶບການສົນທະນາ",
   "chatDeleteConvMessage": "ລຶບການສົນທະນາກັບ {name}?\nຂໍ້ຄວາມຍັງສາມາດເຫັນໄດ້ຈາກອີກຝ່າຍ",
-  "@chatDeleteConvMessage": {"placeholders": {"name": {"type": "String"}}},
+  "@chatDeleteConvMessage": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "chatCantEnter": "ບໍ່ສາມາດເຂົ້າໄດ້",
   "chatBlockedByYou": "ທ່ານໄດ້ບລັອກການສົນທະນານີ້",
   "chatBlockedByOther": "ການສົນທະນານີ້ຖືກບລັອກ",
   "chatUnblockName": "ຍົກເລີກການບລັອກ {name}",
-  "@chatUnblockName": {"placeholders": {"name": {"type": "String"}}},
+  "@chatUnblockName": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "chatBlockName": "ບລັອກ {name}",
-  "@chatBlockName": {"placeholders": {"name": {"type": "String"}}},
+  "@chatBlockName": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "chatUnblockConfirmMsg": "ຍົກເລີກການບລັອກ ແລະ ສືບຕໍ່ສົນທະນາ?",
   "chatBlockConfirmMsg": "ທ່ານ ແລະ {name} ຈະບໍ່ສາມາດສົ່ງຂໍ້ຄວາມຫາກັນໄດ້",
-  "@chatBlockConfirmMsg": {"placeholders": {"name": {"type": "String"}}},
+  "@chatBlockConfirmMsg": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "chatUnblock": "ຍົກເລີກການບລັອກ",
   "chatBlock": "ບລັອກ",
   "chatEmpty": "ບໍ່ພົບການສົນທະນາ",
@@ -1066,7 +1331,13 @@
   "chatLocationOpenHint": "ແຕະເພື່ອເປີດແຜນທີ່",
   "chatSendLocationTitle": "ສົ່ງຕຳແໜ່ງປັດຈຸບັນ?",
   "chatSendLocationBody": "{name} ຈະເຫັນຕຳແໜ່ງປັດຈຸບັນຂອງທ່ານ",
-  "@chatSendLocationBody": {"placeholders": {"name": {"type": "String"}}},
+  "@chatSendLocationBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "chatSendLocationConfirm": "ສົ່ງຕຳແໜ່ງ",
   "chatLocationGpsOffTitle": "GPS ປິດໄວ້",
   "chatLocationGpsOffBody": "ກະລຸນາເປີດ GPS ເພື່ອສົ່ງຕຳແໜ່ງຂອງທ່ານ",
@@ -1074,7 +1345,6 @@
   "chatLocationPermBody": "ເປີດການເຂົ້າເຖິງສະຖານທີ່ໃນການຕັ້ງຄ່າ ເພື່ອສົ່ງຕຳແໜ່ງຂອງທ່ານ",
   "chatLocationFixFailed": "ບໍ່ສາມາດຫາຕຳແໜ່ງໄດ້ ກະລຸນາລອງໃໝ່",
   "chatLocationOpenFailed": "ບໍ່ສາມາດເປີດແຜນທີ່ໄດ້",
-
   "bookingLabelDate": "ວັນທີ",
   "bookingTotalPriceShort": "ລາຄາລວມ",
   "bookingGoToMeetups": "ໄປໜ້າການນັດພົບ",
@@ -1091,16 +1361,43 @@
   "bookingAttireHint": "ຕົວຢ່າງ: ແຕ່ງຕົວເຊັກຊີ(ທາງເລືອກ)",
   "bookingTipService": "ທິບ / ບໍລິການ",
   "bookingAddTipTo": "ເພີ່ມທິບໃຫ້ {name}",
-  "@bookingAddTipTo": {"placeholders": {"name": {"type": "String"}}},
+  "@bookingAddTipTo": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "bookingRatePerUnit": "{rate} ກີບ / {unit}",
-  "@bookingRatePerUnit": {"placeholders": {"rate": {"type": "String"}, "unit": {"type": "String"}}},
+  "@bookingRatePerUnit": {
+    "placeholders": {
+      "rate": {
+        "type": "String"
+      },
+      "unit": {
+        "type": "String"
+      }
+    }
+  },
   "bookingCountUnit": "ຈຳນວນ{unit}",
-  "@bookingCountUnit": {"placeholders": {"unit": {"type": "String"}}},
+  "@bookingCountUnit": {
+    "placeholders": {
+      "unit": {
+        "type": "String"
+      }
+    }
+  },
   "bookingSelectTime": "ເລືອກເວລາ",
   "bookingSlotBooked": "ຈອງແລ້ວ",
   "bookingSelectMassageType": "ເລືອກປະເພດນວດ",
   "bookingVariantsCount": "{count} ປະເພດ",
-  "@bookingVariantsCount": {"placeholders": {"count": {"type": "int"}}},
+  "@bookingVariantsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "bookingDateAppointment": "ວັນທີນັດໝາຍ",
   "bookingTimeMeeting": "ເວລາພົບກັນ",
   "bookingTimeFormat": "ຊົ່ວໂມງ:ນາທີ",
@@ -1108,7 +1405,6 @@
   "bookingMassageTypeLabel": "ປະເພດນວດ",
   "bookingSelectVariant": "ເລືອກປະເພດ",
   "bookingCreationFailed": "ການຈອງລົ້ມເຫຼວ",
-
   "shareTitle": "ແນະນຳໝູ່",
   "shareAppbarSubtitle": "ແບ່ງປັນລິ້ງ ແລະ ເພີ່ມລາຍຮັບຂອງທ່ານ",
   "shareSubtitleGeneral": "ຮັບ 10,000 ກີບ ຕໍ່ການແນະນຳ",
@@ -1117,7 +1413,13 @@
   "shareTierSpecial": "ພິເສດ",
   "shareTierPartner": "ພາກຮ່ວມ",
   "shareTierBadge": "ລະດັບ {tier}",
-  "@shareTierBadge": {"placeholders": {"tier": {"type": "String"}}},
+  "@shareTierBadge": {
+    "placeholders": {
+      "tier": {
+        "type": "String"
+      }
+    }
+  },
   "shareTabModel": "ລິ້ງແນະນຳໂມເດວ",
   "shareTabCustomer": "ລິ້ງແນະນຳລູກຄ້າ",
   "shareLinkModelDesc": "ແບ່ງປັນລິ້ງນີ້ໃຫ້ໝູ່ທີ່ຢາກເປັນໂມເດວ",
@@ -1136,22 +1438,58 @@
   "shareLearnMore": "ຮຽນຮູ້ເພີ່ມກ່ຽວກັບລະດັບ",
   "shareProgressToNext": "ຄວາມຄືບໜ້າສູ່ລະດັບຕໍ່ໄປ",
   "shareUpgradeToSpecialRemaining": "ອີກ {n} ຄົນ ຈຶ່ງໄດ້ລະດັບພິເສດ",
-  "@shareUpgradeToSpecialRemaining": {"placeholders": {"n": {"type": "int"}}},
+  "@shareUpgradeToSpecialRemaining": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
   "shareUpgradeToPartnerRemainingModels": "ອີກ {n} ຄົນ ຈຶ່ງໄດ້ລະດັບພາກຮ່ວມ",
-  "@shareUpgradeToPartnerRemainingModels": {"placeholders": {"n": {"type": "int"}}},
+  "@shareUpgradeToPartnerRemainingModels": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
   "shareUpgradeToPartnerRemainingEarnings": "ອີກ {amount} ກີບ ຈຶ່ງໄດ້ລະດັບພາກຮ່ວມ",
-  "@shareUpgradeToPartnerRemainingEarnings": {"placeholders": {"amount": {"type": "String"}}},
+  "@shareUpgradeToPartnerRemainingEarnings": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
   "shareTierMaxed": "ທ່ານໄດ້ຮັບລະດັບສູງສຸດແລ້ວ",
   "shareCurrentTier": "ລະດັບປັດຈຸບັນ",
   "shareEarnPerReferral": "ຮັບ {amount} ກີບ/ຄົນ",
-  "@shareEarnPerReferral": {"placeholders": {"amount": {"type": "String"}}},
+  "@shareEarnPerReferral": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
   "shareInviteMessage": "ສະໝັກກັບ Xaosao ຜ່ານລິ້ງຂອງຂ້ອຍ!",
   "shareInviteSubject": "ເຂົ້າຮ່ວມ Xaosao",
   "appName": "Xaosao",
   "bookingThankYouFor": "ຂໍຂອບໃຈທີ່ໃຊ້ບໍລິການຜ່ານ {appName}",
-  "@bookingThankYouFor": {"placeholders": {"appName": {"type": "String"}}},
+  "@bookingThankYouFor": {
+    "placeholders": {
+      "appName": {
+        "type": "String"
+      }
+    }
+  },
   "bookingSupportContact": "ສອບຖາມເພີ່ມເຕີມ ໂທ {phone}",
-  "@bookingSupportContact": {"placeholders": {"phone": {"type": "String"}}},
+  "@bookingSupportContact": {
+    "placeholders": {
+      "phone": {
+        "type": "String"
+      }
+    }
+  },
   "shareCommissionReferral": "ການແນະນຳ",
   "shareQrBrandName": "xaosao — ບໍລິການທ້ອງຖິ່ນ",
   "shareQrBrandTagline": "ບໍລິການທ້ອງຖິ່ນທີ່ຄັດສັນມາຢ່າງດີ ພ້ອມສະເໝີເມື່ອທ່ານຕ້ອງການ.",
@@ -1160,7 +1498,6 @@
   "shareQrSaved": "ບັນທຶກ QR ລົງຄັງຮູບແລ້ວ",
   "shareQrSaveFailed": "ບໍ່ສາມາດບັນທຶກໄດ້ ກະລຸນາລອງໃໝ່",
   "shareQrErrorGeneric": "ເກີດຂໍ້ຜິດພາດ ກະລຸນາລອງໃໝ່",
-
   "analyticsTitle": "ການວິເຄາະການແນະນຳ",
   "analyticsSubtitle": "ສະຖິຕິ ແລະ ລາຍໄດ້ຂອງທ່ານ",
   "analyticsLoadFailed": "ໂຫຼດຂໍ້ມູນບໍ່ສຳເລັດ",
@@ -1188,9 +1525,14 @@
   "analyticsActiveCustomers": "ລູກຄ້າໃຊ້ງານ",
   "analyticsReady": "ພ້ອມແລ້ວ!",
   "analyticsSpecialCondition": "ແນະນຳໂມເດວໃຫ້ຄົບ {n} ທ່ານ",
-  "@analyticsSpecialCondition": {"placeholders": {"n": {"type": "int"}}},
+  "@analyticsSpecialCondition": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
   "analyticsPartnerCondition": "ຕ້ອງການທັງໂມເດວ ແລະ ລາຍໄດ້",
-
   "snackbarErrorTitle": "ຜິດພາດ",
   "snackbarSuccessTitle": "ສຳເລັດ",
   "snackbarInfoTitle": "ຂໍ້ມູນ",
@@ -1207,13 +1549,24 @@
   "phoneMustStartWith20": "ເບີໂທຕ້ອງເລີ່ມດ້ວຍ 20",
   "phonePrefixInvalid": "ຕ້ອງເປັນ: 202, 205, 206, 207 ຫຼື 209",
   "phoneLength": "ເບີໂທຕ້ອງມີ {n} ຕົວເລກ",
-  "@phoneLength": {"placeholders": {"n": {"type": "int"}}},
+  "@phoneLength": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
   "deepLinkShareSelf": "ມາເບິ່ງໂປຣໄຟລ໌ໃນ Xaosao",
   "deepLinkShareOther": "ມາເບິ່ງໂປຣໄຟລ໌ຂອງ {name} ໃນ Xaosao",
-  "@deepLinkShareOther": {"placeholders": {"name": {"type": "String"}}},
+  "@deepLinkShareOther": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "dateToday": "ມື້ນີ້",
   "dateYesterday": "ມື້ວານ",
-
   "commonSearch": "ຄົ້ນຫາ...",
   "commonPasswordHint": "ລະຫັດຜ່ານ",
   "commonImageLoadFailed": "ໂຫຼດຮູບບໍ່ໄດ້",
@@ -1229,14 +1582,28 @@
   "updateWhatsNew": "ມີຫຍັງໃໝ່",
   "giftSheetTitle": "🎁 ສົ່ງຂອງຂວັນ",
   "giftSheetPickFor": "ເລືອກຂອງຂວັນໃຫ້ {name}",
-  "@giftSheetPickFor": {"placeholders": {"name": {"type": "String"}}},
+  "@giftSheetPickFor": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "giftEmpty": "ບໍ່ມີຂອງຂວັນໃນຂະນະນີ້",
   "giftPickFirst": "ເລືອກຂອງຂວັນກ່ອນ",
   "giftSendFailed": "ສ່ງຂອງຂວັນບໍ່ສຳເລັດ",
   "giftSendSuccess": "ສ່ງຂອງຂວັນສຳເລັດ!",
   "giftSendButton": "ສົ່ງ {name} · {price}",
-  "@giftSendButton": {"placeholders": {"name": {"type": "String"}, "price": {"type": "String"}}},
-
+  "@giftSendButton": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "price": {
+        "type": "String"
+      }
+    }
+  },
   "tiersTitle": "ລະດັບ Referral ໂມເດວ",
   "tiersSubtitle": "ຮຽນຮູ້ວິທີການເພີ່ມລາຍໄດ້ຂອງທ່ານ",
   "tiersOverview": "ໂຕແຊຣ໌ Referral link ຂອງໂມເດວ ຈະແບ່ງອອກເປັນ 3 ລະດັບ",
@@ -1258,5 +1625,130 @@
   "announcementTitle": "ຂ່າວສານ",
   "announcementBadge": "ປະກາດທາງການ",
   "announcementFrom": "ຈາກທີມງານ Xaosao",
-  "announcementGotIt": "ເຂົ້າໃຈແລ້ວ"
+  "announcementGotIt": "ເຂົ້າໃຈແລ້ວ",
+  "checkinTitle": "ເຊັກອິນປະຈຳວັນ",
+  "checkinStreak": "{count} ວັນ",
+  "@checkinStreak": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "checkinNextIn": "ເຊັກອິນຄັ້ງຕໍ່ໄປ",
+  "checkinNextHint": "ຈົນກວ່າຈະໄດ້ຮັບລາງວັນມື້ຖັດໄປ",
+  "checkinTodayPays": "ມື້ນີ້ໄດ້ຮັບ",
+  "checkinTodayHint": "ເຂົ້າກະເປົາເງິນຂອງທ່ານ",
+  "checkinClaim": "ເຊັກອິນຮັບ {amount} ₭",
+  "@checkinClaim": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "checkinClaimed": "ເຊັກອິນສຳເລັດ. ໄດ້ຮັບ {amount} ₭ ເຂົ້າກະເປົາເງິນແລ້ວ.",
+  "@checkinClaimed": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "checkinDoneToday": "ທ່ານເຊັກອິນມື້ນີ້ແລ້ວ. ກັບມາໃໝ່ມື້ອື່ນ.",
+  "checkinFinished": "ລາງວັນເຊັກອິນຂອງມື້ນີ້ໝົດແລ້ວ.",
+  "checkinClosedToday": "ມື້ນີ້ບໍ່ມີການເຊັກອິນ. ກັບມາໃໝ່ມື້ອື່ນ.",
+  "checkinMon": "ຈັນ",
+  "checkinTue": "ອັງຄານ",
+  "checkinWed": "ພຸດ",
+  "checkinThu": "ພະຫັດ",
+  "checkinFri": "ສຸກ",
+  "checkinSat": "ເສົາ",
+  "checkinSun": "ອາທິດ",
+  "assistantTitle": "ຖາມແອັດມີນ",
+  "assistantHint": "ບອກຂ້ອຍວ່າທ່ານຊອກຫາໃຜ",
+  "assistantGreeting": "ສະບາຍດີ! ທ່ານກຳລັງຊອກຫາໃຜ? ບອກອາຍຸ, ເຂດ ຫຼື ບໍລິການທີ່ຕ້ອງການ.",
+  "assistantPlaceholder": "ເຊັ່ນ: ສາວອາຍຸ 20-25 ຢູ່ໃກ້ໆ",
+  "assistantTryAsking": "ລອງຖາມ",
+  "assistantQ1": "ຄົນທີ່ຢູ່ໃກ້ຂ້ອຍ",
+  "assistantQ2": "ອາຍຸ 20 ຫາ 25 ປີ",
+  "assistantQ3": "ຄົນທີ່ນວດໄດ້",
+  "assistantQ4": "ຄະແນນສູງສຸດ",
+  "assistantThinking": "ກຳລັງຊອກຫາ...",
+  "assistantAge": "ອາຍຸ",
+  "callTitle": "ໂທ",
+  "callName": "ໂທຫາ {name}",
+  "@callName": {
+    "placeholders": {"name": {"type": "String"}}
+  },
+  "callVoice": "ສຽງ",
+  "callVideo": "ວິດີໂອ",
+  "callPerMinute": "ຕໍ່ນາທີ",
+  "callYourBalance": "ຍອດເງິນຂອງທ່ານ",
+  "callCoversMinutes": "ພຽງພໍປະມານ {minutes} ນາທີ",
+  "@callCoversMinutes": {
+    "placeholders": {"minutes": {"type": "String"}}
+  },
+  "callNeedTwoMinutes": "ທ່ານຕ້ອງມີຢ່າງໜ້ອຍ {amount} ₭ ເພື່ອເລີ່ມການໂທ",
+  "@callNeedTwoMinutes": {
+    "placeholders": {"amount": {"type": "String"}}
+  },
+  "callTopUp": "ເຕີມເງິນ",
+  "callBillingNote": "ຄິດໄລ່ຕາມນາທີ, ປັດຂຶ້ນ. 10 ວິນາທີທຳອິດບໍ່ເສຍຄ່າ, ແລະ ສ່ວນທີ່ບໍ່ໄດ້ໃຊ້ຈະຄືນເຂົ້າກະເປົາເງິນຂອງທ່ານ.",
+  "callNotAvailable": "ຜູ້ໃຊ້ນີ້ບໍ່ຮັບການໂທໃນຕອນນີ້.",
+  "callIncoming": "ສາຍໂທເຂົ້າ",
+  "callAnswer": "ຮັບສາຍ",
+  "callDecline": "ປະຕິເສດ",
+  "callSomeone": "ຜູ້ໃຊ້",
+  "callEnded": "ການໂທສິ້ນສຸດ",
+  "callDuration": "ໄລຍະເວລາ",
+  "callMinutes": "ນາທີ",
+  "callCharged": "ຄິດໄລ່ແລ້ວ",
+  "callReturned": "ຄືນເຂົ້າກະເປົາເງິນ",
+  "callYouEarned": "ທ່ານໄດ້ຮັບ",
+  "callNoAnswer": "ບໍ່ມີຜູ້ຮັບສາຍ. ບໍ່ໄດ້ຄິດຄ່າບໍລິການ.",
+  "callDeclined": "ການໂທຖືກປະຕິເສດ. ບໍ່ໄດ້ຄິດຄ່າບໍລິການ.",
+  "callCancelled": "ທ່ານໄດ້ຍົກເລີກການໂທ. ບໍ່ໄດ້ຄິດຄ່າບໍລິການ.",
+  "callNotConnected": "ການໂທບໍ່ສຳເລັດ. ບໍ່ໄດ້ຄິດຄ່າບໍລິການ.",
+  "callNotConnectedModel": "ການໂທບໍ່ສຳເລັດ.",
+  "callEndedNoFunds": "ຍອດເງິນໝົດ, ການໂທຈຶ່ງສິ້ນສຸດ.",
+  "callEndedMaxDuration": "ຄົບກຳນົດ 60 ນາທີຕໍ່ການໂທ.",
+  "callEndedNetwork": "ການເຊື່ອມຕໍ່ຂາດ, ການໂທຈຶ່ງສິ້ນສຸດ.",
+  "callErrorAlreadyOnCall": "ການໂທຄັ້ງກ່ອນຂອງທ່ານຍັງເປີດຢູ່. ມັນຈະສິ້ນສຸດເອງພາຍໃນບໍ່ເຖິງ 1 ນາທີ — ຈາກນັ້ນລອງໃໝ່.",
+  "callErrorPeerBusy": "ຜູ້ໃຊ້ນີ້ກຳລັງໂທກັບຄົນອື່ນຢູ່.",
+  "callErrorPeerUnavailable": "ຜູ້ໃຊ້ນີ້ບໍ່ພ້ອມໃຫ້ບໍລິການ.",
+  "callErrorServiceDown": "ການໂທບໍ່ສາມາດໃຊ້ໄດ້ໃນຕອນນີ້. ກະລຸນາລອງໃໝ່ພາຍຫຼັງ.",
+  "callWentOffline": "ລາວຫາກໍອອບລາຍໄປ. ພວກເຮົາໄດ້ແຈ້ງລາວແລ້ວ — ລອງໃໝ່ໃນອີກບໍ່ດົນ ຫຼື ຫາຄົນທີ່ອອນລາຍຢູ່.",
+  "callMicDenied": "ການໂທຕ້ອງການສິດເຂົ້າເຖິງໄມໂຄຣໂຟນ. ກະລຸນາອະນຸຍາດໃນການຕັ້ງຄ່າ ແລ້ວລອງໃໝ່.",
+  "callConnectFailed": "ບໍ່ສາມາດເຊື່ອມຕໍ່ການໂທໄດ້. ກະລຸນາລອງໃໝ່.",
+  "callTimeLeft": "ເຫຼືອ {time}",
+  "@callTimeLeft": {
+    "placeholders": {"time": {"type": "String"}}
+  },
+  "callRinging": "ກຳລັງໂທ…",
+  "callConnecting": "ກຳລັງເຊື່ອມຕໍ່…",
+  "callCostSoFar": "ຄ່າໃຊ້ຈ່າຍຮອດຕອນນີ້",
+  "callEarningSoFar": "ລາຍໄດ້ຮອດຕອນນີ້",
+  "callLowBalance": "ຍອດເງິນເຫຼືອບໍ່ເຖິງ 1 ນາທີ",
+  "callOfflineTitle": "{name} ບໍ່ໄດ້ອອນລາຍ",
+  "@callOfflineTitle": {
+    "placeholders": {"name": {"type": "String"}}
+  },
+  "callOfflineBody": "ຈະຕິດຕໍ່ໄດ້ສະເພາະເວລາທີ່ລາວເປີດແອັບຢູ່. ທ່ານສາມາດແຈ້ງໃຫ້ລາວຮູ້ວ່າທ່ານຢາກໂທຫາ — ບໍ່ມີການຫັກເງິນ.",
+  "callOfflineNotified": "ແຈ້ງ {name} ແລ້ວວ່າທ່ານຢາກໂທຫາ. ລາວຈະເຫັນເມື່ອເປີດແອັບຄັ້ງຕໍ່ໄປ — ຍັງບໍ່ໄດ້ຫັກເງິນ.",
+  "@callOfflineNotified": {
+    "placeholders": {"name": {"type": "String"}}
+  },
+  "callNotifyHer": "ແຈ້ງໃຫ້ລາວຮູ້ວ່າທ່ານຢາກໂທຫາ",
+  "callNoticeSent": "ແຈ້ງລາວແລ້ວ",
+  "callFindOnline": "ຫາຄົນທີ່ອອນລາຍຢູ່",
+  "callOnlineNow": "ອອນລາຍ",
+  "callHangUp": "ວາງສາຍ",
+  "callEndConfirm": "ວາງສາຍການໂທນີ້ບໍ?",
+  "callMute": "ປິດສຽງ",
+  "callSpeaker": "ລຳໂພງ",
+  "callCamera": "ກ້ອງ",
+  "callFlipCamera": "ສະຫຼັບກ້ອງ",
+  "callNoLongerRinging": "ສາຍນີ້ບໍ່ໄດ້ໂທຢູ່ແລ້ວ.",
+  "callDone": "ຕົກລົງ"
 }

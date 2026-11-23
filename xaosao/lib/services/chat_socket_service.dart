@@ -9,6 +9,9 @@ typedef SocketEventCallback = void Function(dynamic data);
 class ChatSocketService extends GetxService {
   IO.Socket? _socket;
 
+  /// The token the current socket authenticated with.
+  String? _authToken;
+
   final RxBool isConnected = false.obs;
   final RxString connectedUserId = ''.obs;
 
@@ -19,23 +22,52 @@ class ChatSocketService extends GetxService {
   SocketEventCallback? onMessageNotification;
   VoidCallback? onReconnect;
 
+  /// Extra listeners for events the chat screens don't own (calls).
+  ///
+  /// Static so a service can subscribe before this one has finished its
+  /// async registration, and so subscriptions survive the socket being
+  /// recreated on reconnect or on a change of account.
+  static final Map<String, List<SocketEventCallback>> _extraHandlers = {};
+
+  static void addHandler(String event, SocketEventCallback handler) {
+    (_extraHandlers[event] ??= []).add(handler);
+  }
+
+  static void removeHandler(String event, SocketEventCallback handler) {
+    _extraHandlers[event]?.remove(handler);
+  }
+
   Future<ChatSocketService> init() async => this;
 
   // ── Connect ────────────────────────────────────────────────
   void connect() {
-    if (_socket != null && _socket!.connected) {
+    final token = Get.find<StorageService>().read<String>('token') ?? '';
+
+    // The socket is how the backend knows who is online — a model counts
+    // as callable only while she holds one. It must therefore always be
+    // signed in as the account that is logged in now. This service is
+    // permanent, so after a logout and a login as someone else the old
+    // socket (still authenticated as the previous account) would
+    // otherwise be reused, and the new account would look offline.
+    if (_socket != null && _socket!.connected && token == _authToken) {
       // debugPrint('[Socket] Already connected, skipping');
       return;
     }
 
-    final token = Get.find<StorageService>().read<String>('token') ?? '';
+    // A socket for another account, or one stuck reconnecting: drop it
+    // before opening a fresh one so it can't keep retrying in the
+    // background with stale credentials.
+    if (_socket != null) disconnect();
+
+    if (token.isEmpty) return;
+    _authToken = token;
     // debugPrint('[Socket] Connecting to ${ApiConstants.chatSocketUrl} ...');
-    // debugPrint('[Socket] Token present: ${token.isNotEmpty}');
 
     _socket = IO.io(
       ApiConstants.chatSocketUrl,
       IO.OptionBuilder()
           .setTransports(['websocket'])
+          .enableForceNew()
           .setAuth({'token': token})
           .enableReconnection()
           .setReconnectionDelay(1000)
@@ -78,6 +110,12 @@ class ChatSocketService extends GetxService {
         onMessageNotification?.call(data);
       })
       ..onAny((event, data) {
+        final handlers = _extraHandlers[event];
+        if (handlers != null) {
+          for (final h in List.of(handlers)) {
+            h(data);
+          }
+        }
         // Log every event to surface unexpected event names from the server
         // if (event != 'user_typing') {
         //   // debugPrint('[Socket] ← event "$event": $data');
@@ -91,6 +129,7 @@ class ChatSocketService extends GetxService {
     _socket?.disconnect();
     _socket?.dispose();
     _socket = null;
+    _authToken = null;
     isConnected.value = false;
   }
 

@@ -1,6 +1,53 @@
+import 'package:flutter/foundation.dart'
+    show defaultTargetPlatform, kDebugMode, TargetPlatform;
+
 class ApiConstants {
-  static String baseUrl = "https://api.xaosao.com/api/v1/";
-  // static String baseUrl = ";
+  /// Where the backend lives.
+  ///
+  /// Debug builds talk to the backend running on this machine; release
+  /// builds always talk to production. The split is deliberate: a
+  /// hardcoded `localhost` that reaches the App Store is an app that
+  /// does nothing at all, and that mistake is only ever caught by a
+  /// human remembering to change a line back.
+  ///
+  /// To point a debug build somewhere else — a colleague's machine, a
+  /// staging box, or production:
+  ///
+  ///     flutter run --dart-define=API_HOST=https://api.xaosao.com
+  ///     flutter run --dart-define=API_HOST=http://192.168.1.50:3055
+  ///
+  /// A physical phone cannot reach your Mac on `localhost`; give it the
+  /// Mac's LAN address with the define above.
+  static const String _hostOverride = String.fromEnvironment('API_HOST');
+
+  static const String _productionHost = 'https://api.xaosao.com';
+
+  /// The port xs_backend listens on (see its `.env`).
+  static const int _localPort = 3055;
+
+  static String get _host {
+    if (_hostOverride.isNotEmpty) return _hostOverride;
+    if (!kDebugMode) return _productionHost;
+    // The Android emulator cannot see the host's loopback — 10.0.2.2 is
+    // the alias it provides for the machine it runs on. The iOS
+    // simulator shares the host's network, so localhost is literal.
+    if (defaultTargetPlatform == TargetPlatform.android) {
+      return 'http://10.0.2.2:$_localPort';
+    }
+    return 'http://localhost:$_localPort';
+  }
+
+  static String get baseUrl => '$_host/api/v1/';
+
+  // ── Per-minute calls (xs_backend CallsController) ───────────
+  static const String calls = 'calls';
+  static String callRate(String modelId) => 'calls/rate/$modelId';
+  static String callNotify(String modelId) => 'calls/notify/$modelId';
+  static String callState(String sessionId) => 'calls/$sessionId';
+  static String callToken(String sessionId) => 'calls/$sessionId/token';
+  static String callAnswer(String sessionId) => 'calls/$sessionId/answer';
+  static String callDecline(String sessionId) => 'calls/$sessionId/decline';
+  static String callHangup(String sessionId) => 'calls/$sessionId/hangup';
   static const String cleintRefreshToken = 'client/auth/token/refresh';
   static const String modelRefreshToken = 'model/auth/token/refresh';
   // authen
@@ -113,10 +160,16 @@ class ApiConstants {
   // location
   static const String meLocation = 'me/location';
   // chat
-  static const String chatSocketUrl = 'https://api.xaosao.com/chat';
+  static String get chatSocketUrl => '$_host/chat';
   static const String chatConversations = 'chat/conversations';
   static const String chatMessages = 'chat/messages';
   static const String bages = 'me/badges';
+  // "ask admin" assistant (customer only)
+  static const String assistantAsk = 'assistant/ask';
+  static const String assistantHistory = 'assistant/history';
+  // daily check-in (model only)
+  static const String rewardsCheckin = 'rewards/checkin';
+  static const String rewardsCheckinClaim = 'rewards/checkin/claim';
   // referral
   static const String referral = 'model/referrals';
   static const String referralValidate = 'referrals/validate';

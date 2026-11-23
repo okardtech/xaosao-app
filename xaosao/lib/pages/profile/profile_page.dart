@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:xaosao/l10n/app_localizations.dart';
+import 'package:xaosao/pages/checkin/components/checkin_card.dart';
 import 'package:xaosao/pages/feedback/getx/feedback_logic.dart';
 import 'package:xaosao/pages/home/getx/home_logic.dart';
 import 'package:xaosao/pages/login/getx/login_logic.dart';
@@ -23,7 +24,9 @@ import '../../constants/app_color.dart';
 import '../../constants/app_icons.dart';
 import '../../constants/app_routes.dart';
 import '../../models/profile_model.dart';
+import '../../services/chat_socket_service.dart';
 import '../../services/storage_service.dart';
+import '../chat/getx/chat_logic.dart';
 import '../package/package_page.dart';
 import '../qr_manage/qr_mange_page.dart';
 import '../services_manage/services_mange_page.dart';
@@ -268,6 +271,11 @@ class _ProfilePageState extends State<ProfilePage> {
     Get.delete<NotifSettingLogic>(force: true);
     Get.delete<PackageLogic>(force: true);
     Get.delete<ModelWalletLogic>(force: true);
+    Get.delete<ChatLogic>(force: true);
+    // Close the chat socket: it is what marks this account online.
+    if (Get.isRegistered<ChatSocketService>()) {
+      Get.find<ChatSocketService>().disconnect();
+    }
   }
 
   Future<void> _confirmDelete(BuildContext context) async {
@@ -499,6 +507,10 @@ class _ProfilePageState extends State<ProfilePage> {
             );
           }),
           SizedBox(height: 16.h),
+          // Daily check-in. Draws nothing for a model with no weekdays
+          // configured, so it costs an empty SizedBox when it has
+          // nothing to say.
+          const CheckinCard(),
           Obx(() {
             final st = _profileLogic.state;
             return Column(

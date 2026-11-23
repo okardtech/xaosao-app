@@ -5,6 +5,7 @@ import 'package:xaosao/services/language_service.dart';
 import 'package:xaosao/services/location_manager.dart';
 import 'package:xaosao/pages/forgot_password/getx/forgot_logic.dart';
 import 'package:xaosao/services/chat_socket_service.dart';
+import 'package:xaosao/services/call_service.dart';
 import 'package:xaosao/pages/home/getx/home_logic.dart';
 import 'package:xaosao/pages/login/getx/login_logic.dart';
 import 'package:xaosao/pages/meet_ups/getx/meet_ups_logic.dart';
@@ -39,6 +40,8 @@ class InitialBinding extends Bindings {
     Get.put<DeepLinkService>(DeepLinkService(), permanent: true);
     Get.putAsync<AppsFlyerService>(() => AppsFlyerService().init(), permanent: true);
     Get.putAsync<ChatSocketService>(() => ChatSocketService().init(), permanent: true);
+    // Rings, answers and hang-ups for per-minute calls, on both sides.
+    Get.put<CallService>(CallService(), permanent: true);
     Get.lazyPut<AuthService>(() => AuthService(), fenix: true);
 
     Get.lazyPut<LoginLogic>(() => LoginLogic(), fenix: true);

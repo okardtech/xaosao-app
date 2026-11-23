@@ -6,6 +6,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:xaosao/constants/app_color.dart';
 import 'package:xaosao/l10n/app_localizations.dart';
+import 'package:xaosao/pages/assistant/assistant_sheet.dart';
 import 'package:xaosao/models/Recommended_model.dart';
 import 'package:xaosao/models/service_model.dart';
 import 'package:xaosao/pages/home/components/companion_card.dart';
@@ -88,8 +89,23 @@ class _ExplorePageState extends State<ExplorePage> {
   // ═══════════════════════════════════════════════════════════════════════════
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       backgroundColor: const Color(0xFFF8F8FC),
+      // "Ask admin": describe who you want in your own words rather
+      // than working the filters. Floating, because it has to be
+      // reachable from anywhere in a long scroll of profiles.
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () => AssistantSheet.open(context),
+        backgroundColor: AppColors.primary,
+        foregroundColor: Colors.white,
+        elevation: 2,
+        icon: Icon(Icons.support_agent_rounded, size: 19.sp),
+        label: Text(
+          l10n.assistantTitle,
+          style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.w600),
+        ),
+      ),
       body: SafeArea(
         child: Column(
           children: [
