@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:xaosao/repository/notification_repo.dart';
 import 'package:xaosao/l10n/app_localizations.dart';
 import 'package:xaosao/pages/checkin/components/checkin_card.dart';
 import 'package:xaosao/pages/feedback/getx/feedback_logic.dart';
@@ -253,6 +254,13 @@ class _ProfilePageState extends State<ProfilePage> {
       isDanger: true,
     );
     if (confirmed != true || !mounted) return;
+    // Unregister this phone from push before the login is cleared, so a
+    // logged-out phone is not rung for calls. Bounded so logout never hangs.
+    await NotificationRepo()
+        .unregisterThisDevice()
+        .timeout(const Duration(seconds: 4), onTimeout: () {})
+        .catchError((_) {});
+    if (!mounted) return;
     Get.find<LoginLogic>().clearState();
     _deleteUserControllers();
     final storage = Get.find<StorageService>();

@@ -11,6 +11,7 @@ import 'package:xaosao/constants/app_routes.dart';
 import 'package:xaosao/models/notification_item_model.dart';
 import 'package:xaosao/repository/notification_repo.dart';
 import 'package:xaosao/services/api_service.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:xaosao/services/android_call_ringer.dart';
 import 'package:xaosao/services/call_service.dart';
 import 'package:xaosao/services/storage_service.dart';
@@ -104,7 +105,14 @@ class NotificationService {
     // full-screen even with the app closed. Everything else is a normal
     // notification that the FCM SDK puts in the tray by itself.
     if (message.data['type'] == 'incoming_call') {
-      await AndroidCallRinger.show(Map<String, dynamic>.from(message.data));
+      // Ring only if a model is logged in on this phone. A phone that was
+      // logged out but somehow still registered must stay silent.
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.reload();
+      final loggedIn = (prefs.getString('token') ?? '').isNotEmpty;
+      if (loggedIn && prefs.getString('role') == 'model') {
+        await AndroidCallRinger.show(Map<String, dynamic>.from(message.data));
+      }
     }
   }
 
@@ -204,7 +212,12 @@ class NotificationService {
       await _awaitApiService();
 
       if (Platform.isAndroid) {
-        await syncTokenToServer();
+        // Forced: the local "already registered" mark can outlive the
+        // server's row (a logout on this phone, a dead-token purge, the
+        // token moving to another account). For a model that row is what
+        // makes her phone ring for calls, so re-send it on every launch;
+        // the backend treats a known token as a no-op.
+        await syncTokenToServer(force: true);
         return;
       }
 

@@ -13,6 +13,7 @@ import '../repository/call_repo.dart';
 import '../utils/app_snackbar.dart';
 import 'android_call_ringer.dart';
 import 'chat_socket_service.dart';
+import 'notification_service.dart';
 import 'storage_service.dart';
 
 /// A call event the backend pushed over the socket.
@@ -166,6 +167,9 @@ class CallService extends GetxService {
   /// the Android 14 full-screen permission the ringer needs.
   Future<void> onModelHome() async {
     if (!_isModel || !Platform.isAndroid) return;
+    // Her registered phone is what lets customers call her directly and
+    // ring it while the app is closed: make sure the server has it.
+    unawaited(NotificationService.syncTokenToServer(force: true));
     final accepted = await AndroidCallRinger.acceptedWhileClosed();
     if (accepted != null) {
       await answerFromRinger(accepted);
