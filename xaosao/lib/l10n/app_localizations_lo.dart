@@ -578,6 +578,30 @@ class AppLocalizationsLo extends AppLocalizations {
   String get serviceTypeSocial => 'ເພື່ອນສັງຄົມ';
 
   @override
+  String get serviceNameDrinking => 'ຄູ່ດື່ມ';
+
+  @override
+  String get serviceNameTravel => 'ຄູ່ທ່ຽວ';
+
+  @override
+  String get serviceNameMassage => 'ນວດ';
+
+  @override
+  String get serviceNamePimai => 'ຄູ່ບຸນປີໃໝ່';
+
+  @override
+  String get serviceNameThatLuang => 'ຄູ່ບຸນທາດຫຼວງ';
+
+  @override
+  String get serviceNameHmongNewYear => 'ຄູ່ບຸນກິນຈຽງ';
+
+  @override
+  String get serviceNameCountdown => 'ຄູ່ເຄົ້າດາວ';
+
+  @override
+  String get serviceNameCall => 'ໂທລົມເປັນໝູ່';
+
+  @override
   String get serviceTypeMassage => 'ນວດ';
 
   @override

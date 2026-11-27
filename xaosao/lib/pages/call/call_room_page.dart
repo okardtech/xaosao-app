@@ -9,6 +9,7 @@ import '../../constants/app_color.dart';
 import '../../l10n/app_localizations.dart';
 import '../../models/call_models.dart';
 import '../../repository/call_repo.dart';
+import '../../services/android_call_ringer.dart';
 import '../../services/call_service.dart';
 import '../../services/call_sounds.dart';
 import '../../utils/app_snackbar.dart';
@@ -116,6 +117,7 @@ class _CallRoomPageState extends State<CallRoomPage> {
     // Leaving without hanging up (the route was removed underneath us)
     // must not leave the customer's money held until the sweep notices.
     if (!_finished) _repo.hangup(_sessionId);
+    AndroidCallRinger.end(_sessionId);
     super.dispose();
   }
 
@@ -164,6 +166,13 @@ class _CallRoomPageState extends State<CallRoomPage> {
         });
 
       await room.connect(join.serverUrl, join.token);
+      if (_reconnects == 0) {
+        AndroidCallRinger.showOngoing(
+          sessionId: _sessionId,
+          peerName: widget.args.peerName,
+          isVideo: join.isVideo,
+        );
+      }
       final local = room.localParticipant;
       await local?.setMicrophoneEnabled(_micOn);
       if (widget.args.join.isVideo && _camOn) {
@@ -233,6 +242,10 @@ class _CallRoomPageState extends State<CallRoomPage> {
       case 'call_ended':
         _finish(CallSummary.fromJson(e.data));
         break;
+      case 'local_hangup':
+        // Hang up from the "call in progress" notification.
+        _hangUp();
+        break;
     }
   }
 
@@ -258,6 +271,7 @@ class _CallRoomPageState extends State<CallRoomPage> {
     if (_finished) return;
     _finished = true;
     CallSounds.stop();
+    AndroidCallRinger.end(_sessionId);
     _poll?.cancel();
     _tick?.cancel();
     try {
@@ -393,38 +407,115 @@ class _CallRoomPageState extends State<CallRoomPage> {
                 ),
               ),
             SafeArea(
-              child: Column(
-                children: [
-                  SizedBox(height: showRemoteVideo ? 12.h : 60.h),
-                  if (!showRemoteVideo) _avatar(),
-                  SizedBox(height: 16.h),
-                  Text(
-                    widget.args.peerName,
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 22.sp,
-                      fontWeight: FontWeight.w800,
+              child: showRemoteVideo
+                  ? _videoOverlay(isVideo, earning)
+                  : Column(
+                      children: [
+                        SizedBox(height: 60.h),
+                        _avatar(),
+                        SizedBox(height: 16.h),
+                        Text(
+                          widget.args.peerName,
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 22.sp,
+                            fontWeight: FontWeight.w800,
+                          ),
+                        ),
+                        SizedBox(height: 6.h),
+                        Text(
+                          _statusLine,
+                          style: TextStyle(
+                            color: Colors.white70,
+                            fontSize: 16.sp,
+                            fontFeatures: const [FontFeature.tabularFigures()],
+                          ),
+                        ),
+                        SizedBox(height: 14.h),
+                        if (_status == 'active') _meter(earning),
+                        if (_isCustomer && _lowBalance) _lowBalanceBanner(),
+                        const Spacer(),
+                        _controls(isVideo),
+                        SizedBox(height: 24.h),
+                      ],
                     ),
-                  ),
-                  SizedBox(height: 6.h),
-                  Text(
-                    _statusLine,
-                    style: TextStyle(
-                      color: Colors.white70,
-                      fontSize: 16.sp,
-                      fontFeatures: const [FontFeature.tabularFigures()],
-                    ),
-                  ),
-                  SizedBox(height: 14.h),
-                  if (_status == 'active') _meter(earning),
-                  if (_isCustomer && _lowBalance) _lowBalanceBanner(),
-                  const Spacer(),
-                  _controls(isVideo),
-                  SizedBox(height: 24.h),
-                ],
-              ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+
+  /// The layout over the other person's video: nothing in the middle of
+  /// the picture. Name and timer sit top-left, clear of her own preview in
+  /// the top-right corner, and the money is a small pill above the buttons.
+  Widget _videoOverlay(bool isVideo, int earning) {
+    const shadow = [Shadow(color: Colors.black54, blurRadius: 6)];
+    return Column(
+      children: [
+        Padding(
+          // Keep clear of the 100-wide self preview on the right.
+          padding: EdgeInsets.fromLTRB(16.w, 12.h, 124.w, 0),
+          child: Align(
+            alignment: Alignment.centerLeft,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  widget.args.peerName,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 18.sp,
+                    fontWeight: FontWeight.w800,
+                    shadows: shadow,
+                  ),
+                ),
+                SizedBox(height: 2.h),
+                Text(
+                  _statusLine,
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 14.sp,
+                    shadows: shadow,
+                    fontFeatures: const [FontFeature.tabularFigures()],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+        const Spacer(),
+        if (_status == 'active') _meterPill(earning),
+        if (_isCustomer && _lowBalance) _lowBalanceBanner(),
+        SizedBox(height: 14.h),
+        _controls(isVideo),
+        SizedBox(height: 24.h),
+      ],
+    );
+  }
+
+  /// The money and time left, small, for over a video picture.
+  Widget _meterPill(int earning) {
+    final label = _isCustomer ? _l10n.callCostSoFar : _l10n.callEarningSoFar;
+    final value = _isCustomer ? _spent : earning;
+    final left = _isCustomer && _remaining > 0
+        ? ' · ${_l10n.callTimeLeft(CallUi.clock(_remaining))}'
+        : '';
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 6.h),
+      decoration: BoxDecoration(
+        color: Colors.black.withValues(alpha: 0.45),
+        borderRadius: BorderRadius.circular(20.r),
+      ),
+      child: Text(
+        '$label ${CallUi.kip(value)}$left',
+        style: TextStyle(
+          color: Colors.white,
+          fontSize: 12.sp,
+          fontWeight: FontWeight.w600,
+          fontFeatures: const [FontFeature.tabularFigures()],
         ),
       ),
     );

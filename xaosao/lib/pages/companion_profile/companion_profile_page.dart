@@ -679,6 +679,54 @@ class _CompanionProfilePageState extends State<CompanionProfilePage> {
               );
             }),
           ),
+          // Call, beside Chat, for a model who sells per-minute calls.
+          // Customers only: a model never places a call.
+          Obx(() {
+            // Read the (reactive) services first: Obx must always touch
+            // an observable, even when the viewer is not a customer.
+            final sellsCalls = _logic.state.services
+                .any((s) => s.billingType == 'per_minute');
+            final takesCalls = sellsCalls && _viewerIsCustomer;
+            if (!takesCalls) return const SizedBox.shrink();
+            return Expanded(
+              child: Padding(
+                padding: EdgeInsets.only(left: 8.w),
+                child: GestureDetector(
+                  onTap: _startCall,
+                  child: Container(
+                    height: 44.h,
+                    decoration: BoxDecoration(
+                      color: AppColors.primary,
+                      borderRadius: BorderRadius.circular(13.r),
+                      boxShadow: [
+                        BoxShadow(
+                          color: AppColors.primary.withValues(alpha: 0.25),
+                          blurRadius: 16,
+                          offset: const Offset(0, 6),
+                        ),
+                      ],
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.call_rounded,
+                            size: 15.r, color: Colors.white),
+                        SizedBox(width: 6.w),
+                        Text(
+                          _l10n.callTitle,
+                          style: TextStyle(
+                            fontSize: 12.sp,
+                            fontWeight: FontWeight.w700,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            );
+          }),
           SizedBox(width: 8.w),
           Obx(() {
             final profile = _logic.state.profile;
@@ -788,6 +836,27 @@ class _CompanionProfilePageState extends State<CompanionProfilePage> {
     }
   }
 
+  bool get _viewerIsCustomer =>
+      Get.find<StorageService>().read<String>('role') == 'customer';
+
+  /// Open the call screen for this model. Only customers place calls; a
+  /// model only answers them (the backend refuses a model with 403 too).
+  void _startCall() {
+    final profile = _logic.state.profile;
+    if (profile == null || !_viewerIsCustomer) return;
+    final callName = [
+      profile.firstName,
+      profile.lastName,
+    ].where((s) => s != null && s.isNotEmpty).join(' ');
+    Get.to(
+      () => CallConfirmPage(
+        modelId: profile.id ?? '',
+        modelName: callName.isEmpty ? 'Unknown' : callName,
+        modelPhoto: profile.profile,
+      ),
+    );
+  }
+
   Future<void> _onBook() async {
     final svc = _logic.selectedService;
     if (svc == null) return;
@@ -800,22 +869,7 @@ class _CompanionProfilePageState extends State<CompanionProfilePage> {
     // whether she takes calls, is online, and whether the wallet covers
     // two minutes. Same rule as the website (profile.tsx handleBookClick).
     if (svc.billingType == 'per_minute') {
-      // Only customers place calls; a model only answers them (the
-      // backend refuses a model with 403 as well).
-      if (Get.find<StorageService>().read<String>('role') != 'customer') {
-        return;
-      }
-      final callName = [
-        profile.firstName,
-        profile.lastName,
-      ].where((s) => s != null && s.isNotEmpty).join(' ');
-      Get.to(
-        () => CallConfirmPage(
-          modelId: profile.id ?? '',
-          modelName: callName.isEmpty ? 'Unknown' : callName,
-          modelPhoto: profile.profile,
-        ),
-      );
+      _startCall();
       return;
     }
 

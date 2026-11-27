@@ -1,9 +1,12 @@
+import 'dart:io';
+
 import 'package:xaosao/models/login_model.dart';
 import 'package:xaosao/utils/date_time_formatter.dart';
 import '../constants/api_constants.dart';
 import '../models/api_response.dart';
 import '../models/profile_model.dart';
 import '../services/base_repo.dart';
+import '../services/notification_service.dart';
 
 class LoginRepo extends BaseRepository {
   Future<ApiResponse<LoginModel>> login({
@@ -15,13 +18,35 @@ class LoginRepo extends BaseRepository {
       "whatsapp": phoneNumber,
       "password": password,
     };
-    return safeCall(
-      () => api.post(
-        isCustomer ? ApiConstants.clientLogin : ApiConstants.modelLogin,
-        data: bodyRequest,
-      ),
-      fromJson: (json) => LoginModel.fromJson(json),
-    );
+    // Send this phone's push token with the login, so the server registers
+    // the phone in the same step: a model who signs in here can then be
+    // called and rung straight away.
+    final pushToken = await NotificationService.deviceTokenForLogin();
+    if (pushToken != null) {
+      bodyRequest["device_token"] = pushToken;
+      bodyRequest["platform"] = Platform.isAndroid ? 'android' : 'ios';
+    }
+    Future<ApiResponse<LoginModel>> send() => safeCall(
+          () => api.post(
+            isCustomer ? ApiConstants.clientLogin : ApiConstants.modelLogin,
+            data: bodyRequest,
+          ),
+          fromJson: (json) => LoginModel.fromJson(json),
+        );
+    final res = await send();
+    // A server older than this app rejects the unknown push fields; sign
+    // in without them rather than lock the user out (the app registers
+    // the phone separately after login anyway).
+    final msg = res.message ?? '';
+    if (!res.success &&
+        bodyRequest.containsKey('device_token') &&
+        (msg.contains('device_token') || msg.contains('platform'))) {
+      bodyRequest
+        ..remove('device_token')
+        ..remove('platform');
+      return send();
+    }
+    return res;
   }
 
   Future<ApiResponse<CustomerProfileModel>> customProfile() async {

@@ -10,6 +10,7 @@ import 'package:xaosao/l10n/app_localizations.dart';
 import 'package:xaosao/services/initial_binding.dart';
 import 'package:xaosao/services/language_service.dart';
 import 'package:xaosao/services/notification_service.dart';
+import 'package:xaosao/services/android_call_ringer.dart';
 import 'package:xaosao/services/storage_service.dart';
 import 'constants/app_color.dart';
 
@@ -23,6 +24,8 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   FirebaseMessaging.onBackgroundMessage(_onBackgroundMessage);
+  // Decline on the Android ringing screen while the app is closed.
+  await AndroidCallRinger.registerBackgroundHandler();
   await Get.putAsync(() => StorageService().init(), permanent: true);
   InitialBinding().dependencies();
   await NotificationService.initialize();

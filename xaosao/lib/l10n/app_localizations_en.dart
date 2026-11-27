@@ -579,6 +579,30 @@ class AppLocalizationsEn extends AppLocalizations {
   String get serviceTypeSocial => 'Local Activities';
 
   @override
+  String get serviceNameDrinking => 'Drinking Buddy';
+
+  @override
+  String get serviceNameTravel => 'Travel Buddy';
+
+  @override
+  String get serviceNameMassage => 'Massage';
+
+  @override
+  String get serviceNamePimai => 'Pi Mai Buddy';
+
+  @override
+  String get serviceNameThatLuang => 'That Luang Buddy';
+
+  @override
+  String get serviceNameHmongNewYear => 'Hmong New Year Buddy';
+
+  @override
+  String get serviceNameCountdown => 'Countdown Buddy';
+
+  @override
+  String get serviceNameCall => 'Call Buddy';
+
+  @override
   String get serviceTypeMassage => 'Massage';
 
   @override

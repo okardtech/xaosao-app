@@ -12,6 +12,7 @@ import 'package:xaosao/models/notification_item_model.dart';
 import 'package:xaosao/repository/notification_repo.dart';
 import 'package:xaosao/services/api_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:xaosao/models/call_models.dart';
 import 'package:xaosao/services/android_call_ringer.dart';
 import 'package:xaosao/services/call_service.dart';
 import 'package:xaosao/services/storage_service.dart';
@@ -110,11 +111,42 @@ class NotificationService {
       final prefs = await SharedPreferences.getInstance();
       await prefs.reload();
       final loggedIn = (prefs.getString('token') ?? '').isNotEmpty;
-      if (loggedIn && prefs.getString('role') == 'model') {
-        await AndroidCallRinger.show(Map<String, dynamic>.from(message.data));
+      final role = prefs.getString('role');
+      String outcome;
+      if (!loggedIn) {
+        outcome = 'logged_out';
+      } else if (role != 'model') {
+        outcome = 'not_model:$role';
+      } else {
+        try {
+          await AndroidCallRinger.show(
+            Map<String, dynamic>.from(message.data),
+          );
+          outcome = 'shown';
+        } catch (e) {
+          outcome = 'error:$e';
+        }
+      }
+      // What happened to this ring, for the model's app to report next
+      // time it opens: a closed phone has no other way to tell us whether
+      // the push arrived and whether the ringer came up.
+      await prefs.setString(
+        lastCallPushKey,
+        '${DateTime.now().toIso8601String()}|$outcome',
+      );
+      // Stay up for the ring so a Decline on the ringing screen reaches
+      // the server even with the app closed.
+      if (outcome == 'shown') {
+        final call = IncomingCall.tryParse(
+          Map<String, dynamic>.from(message.data),
+        );
+        if (call != null) await AndroidCallRinger.watchRing(call);
       }
     }
   }
+
+  /// SharedPreferences key for [handleBackgroundMessage]'s ring report.
+  static const String lastCallPushKey = 'last_call_push';
 
   // ── Main initialisation (call once from main()) ────────────────────────────
   //
@@ -274,7 +306,7 @@ class NotificationService {
       final token = await _fetchToken();
       // debugPrint('device token is here ==>$token');
       if (token == null || token.isEmpty) {
-        lastSyncError = 'no device token';
+        lastSyncError = 'no device token: ${_tokenError ?? 'unknown'}';
         return false;
       }
       _fcmToken = token;
@@ -311,6 +343,24 @@ class NotificationService {
     }
   }
 
+  /// This phone's push token, for the login request to carry, or null if
+  /// it cannot be had quickly. Bounded so a slow or missing Google service
+  /// never holds up signing in; the post-login sync retries regardless.
+  static Future<String?> deviceTokenForLogin() async {
+    try {
+      final token = await _fetchToken().timeout(const Duration(seconds: 6));
+      if (token == null || token.isEmpty) {
+        lastSyncError = 'no device token: ${_tokenError ?? 'unknown'}';
+        return null;
+      }
+      _fcmToken = token;
+      return token;
+    } catch (_) {
+      lastSyncError = 'no device token (timeout)';
+      return null;
+    }
+  }
+
   /// Backwards-compatible alias — kept so existing call sites keep working.
   /// Prefer [syncTokenToServer].
   static Future<void> refreshToken() => syncTokenToServer();
@@ -334,11 +384,36 @@ class NotificationService {
           return null;
         }
       }
-      return await FirebaseMessaging.instance.getToken();
+      // Google's token service often fails for a moment right after the
+      // app starts (SERVICE_NOT_AVAILABLE), so give it a few tries.
+      Object? lastError;
+      for (var attempt = 1; attempt <= 3; attempt++) {
+        try {
+          final token = await FirebaseMessaging.instance.getToken();
+          if (token != null && token.isNotEmpty) return token;
+          lastError = 'empty token';
+        } catch (e) {
+          lastError = e;
+        }
+        if (attempt < 3) await Future.delayed(Duration(seconds: attempt));
+      }
+      // Keep Google's own reason (e.g. SERVICE_NOT_AVAILABLE,
+      // MISSING_INSTANCEID_SERVICE) so the "can't take calls" message
+      // says why rather than just "no token".
+      _tokenError = _shortError(lastError);
+      return null;
     } catch (e) {
-      // debugPrint('[fcm] getToken failed: $e');
+      _tokenError = _shortError(e);
       return null;
     }
+  }
+
+  /// Why the last token fetch failed, in Google's words.
+  static String? _tokenError;
+
+  static String _shortError(Object? e) {
+    final text = (e ?? 'unknown').toString().replaceAll('\n', ' ');
+    return text.length > 160 ? '${text.substring(0, 160)}…' : text;
   }
 
   static StorageService? _storageOrNull() {

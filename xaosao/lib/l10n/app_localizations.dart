@@ -1204,6 +1204,54 @@ abstract class AppLocalizations {
   /// **'ເພື່ອນສັງຄົມ'**
   String get serviceTypeSocial;
 
+  /// No description provided for @serviceNameDrinking.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຄູ່ດື່ມ'**
+  String get serviceNameDrinking;
+
+  /// No description provided for @serviceNameTravel.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຄູ່ທ່ຽວ'**
+  String get serviceNameTravel;
+
+  /// No description provided for @serviceNameMassage.
+  ///
+  /// In lo, this message translates to:
+  /// **'ນວດ'**
+  String get serviceNameMassage;
+
+  /// No description provided for @serviceNamePimai.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຄູ່ບຸນປີໃໝ່'**
+  String get serviceNamePimai;
+
+  /// No description provided for @serviceNameThatLuang.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຄູ່ບຸນທາດຫຼວງ'**
+  String get serviceNameThatLuang;
+
+  /// No description provided for @serviceNameHmongNewYear.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຄູ່ບຸນກິນຈຽງ'**
+  String get serviceNameHmongNewYear;
+
+  /// No description provided for @serviceNameCountdown.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຄູ່ເຄົ້າດາວ'**
+  String get serviceNameCountdown;
+
+  /// No description provided for @serviceNameCall.
+  ///
+  /// In lo, this message translates to:
+  /// **'ໂທລົມເປັນໝູ່'**
+  String get serviceNameCall;
+
   /// No description provided for @serviceTypeMassage.
   ///
   /// In lo, this message translates to:

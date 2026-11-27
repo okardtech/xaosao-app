@@ -912,6 +912,33 @@ _ServiceVisual _serviceVisual(String? name, int index) {
         AppColors.travelFg,
         AppColors.travelBg,
       );
+    case 'ເພື່ອນປີໃຫ່ມລາວ':
+    case 'ເພື່ອນປີໃໝ່ລາວ':
+    case 'ເປັນຄູ່ບຸນທາດຫຼວງ':
+    case 'ເປັນຄູ່ບຸນກີນຈຽງ':
+    case 'ເປັນຄູ່ບຸນກິນຈຽງ':
+    case 'hmongNewYear':
+    case 'pimaiPatner':
+    case 'thatlungParter':
+    case 'thatLuangParter':
+    case 'pimaiPartner':
+    case 'thatLuangPartner':
+    case 'hmongNewYearPartner':
+    case 'countdownFriend':
+    case 'ຄູ່ເຄົ້າດາວປີໃໝ່':
+    case 'ຄູ່ເຄົ້າດາວ':
+    case 'countdownPartner':
+      return const _ServiceVisual(
+        Icons.celebration_outlined,
+        AppColors.travelFg,
+        AppColors.travelBg,
+      );
+    case 'call':
+      return const _ServiceVisual(
+        Icons.call_outlined,
+        AppColors.socialFg,
+        AppColors.socialBg,
+      );
     default:
       final i = index % _serviceVisualCycleIcons.length;
       return _ServiceVisual(

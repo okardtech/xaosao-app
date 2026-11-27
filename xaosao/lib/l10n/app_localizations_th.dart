@@ -578,6 +578,30 @@ class AppLocalizationsTh extends AppLocalizations {
   String get serviceTypeSocial => 'เพื่อนสังคม';
 
   @override
+  String get serviceNameDrinking => 'เพื่อนดื่ม';
+
+  @override
+  String get serviceNameTravel => 'เพื่อนเที่ยว';
+
+  @override
+  String get serviceNameMassage => 'นวด';
+
+  @override
+  String get serviceNamePimai => 'เพื่อนงานปีใหม่ลาว';
+
+  @override
+  String get serviceNameThatLuang => 'เพื่อนงานบุญธาตุหลวง';
+
+  @override
+  String get serviceNameHmongNewYear => 'เพื่อนงานปีใหม่ม้ง';
+
+  @override
+  String get serviceNameCountdown => 'เพื่อนเคาท์ดาวน์';
+
+  @override
+  String get serviceNameCall => 'เพื่อนคุยโทร';
+
+  @override
   String get serviceTypeMassage => 'นวด';
 
   @override

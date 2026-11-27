@@ -5,6 +5,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_callkit_incoming/entities/entities.dart' as ck;
 import 'package:flutter_callkit_incoming/flutter_callkit_incoming.dart';
 import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/call_models.dart';
 import '../pages/call/call_room_page.dart';
@@ -35,11 +36,14 @@ class CallEvent {
 ///
 /// It also relays `call_answered`, `call_ended` and `call_low_balance` to
 /// whichever call screen is open, via [events].
-class CallService extends GetxService {
+class CallService extends GetxService with WidgetsBindingObserver {
   static CallService? get instance =>
       Get.isRegistered<CallService>() ? Get.find<CallService>() : null;
 
-  final _repo = CallRepo();
+  // Lazy: this service is created at startup, before ApiService (which
+  // the repo looks up) has finished registering. Building the repo here
+  // would throw and stop the app from starting.
+  late final _repo = CallRepo();
   final _events = StreamController<CallEvent>.broadcast();
   Stream<CallEvent> get events => _events.stream;
   StreamSubscription<ck.CallEvent?>? _ringerEvents;
@@ -50,6 +54,12 @@ class CallService extends GetxService {
 
   /// Sessions already shown, so the copies of one ring open one screen.
   final Set<String> _shownRings = {};
+
+  /// A ring that arrived while the app was in the background, kept so it
+  /// can still be answered in the app when she comes back to it within
+  /// the ring time, rather than being lost.
+  IncomingCall? _pendingRing;
+  DateTime? _pendingUntil;
 
   @override
   void onInit() {
@@ -65,10 +75,34 @@ class CallService extends GetxService {
     if (Platform.isAndroid) {
       _ringerEvents = FlutterCallkitIncoming.onEvent.listen(_handleRinger);
     }
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) _showPendingRing();
+  }
+
+  /// She came back to the app: if a call rang while she was away and is
+  /// still ringing, show it now.
+  Future<void> _showPendingRing() async {
+    final call = _pendingRing;
+    final until = _pendingUntil;
+    _pendingRing = null;
+    _pendingUntil = null;
+    if (call == null || until == null || DateTime.now().isAfter(until)) return;
+    if (_shownRings.contains(call.sessionId)) return;
+    final res = await _repo.state(call.sessionId);
+    if (res.data?.status != 'ringing') return;
+    // The in-app screen rings now; drop the system ringer for this call
+    // so the phone does not ring twice.
+    await AndroidCallRinger.end(call.sessionId);
+    _showIncoming(call);
   }
 
   @override
   void onClose() {
+    WidgetsBinding.instance.removeObserver(this);
     ChatSocketService.removeHandler('incoming_call', _onIncomingSocket);
     _ringerEvents?.cancel();
     _events.close();
@@ -111,9 +145,20 @@ class CallService extends GetxService {
     if (_shownRings.contains(call.sessionId)) return;
     if (activeSessionId != null) return; // already on a call
     // In the background the full-screen Android ringer (raised by the
-    // push) is the ring; opening a page behind it would ring twice.
+    // push) is the ring; opening a page behind it would ring twice. Keep
+    // the call, though, and show it if she returns while it still rings.
+    //
+    // `inactive` is NOT background: it is the app still on screen under
+    // a system dialog (a permission prompt, the notification shade). A
+    // ring then must open the answer screen like any other time.
     final lifecycle = WidgetsBinding.instance.lifecycleState;
-    if (lifecycle != null && lifecycle != AppLifecycleState.resumed) return;
+    if (lifecycle == AppLifecycleState.paused ||
+        lifecycle == AppLifecycleState.hidden ||
+        lifecycle == AppLifecycleState.detached) {
+      _pendingRing = call;
+      _pendingUntil = DateTime.now().add(Duration(seconds: call.expiresIn));
+      return;
+    }
     _shownRings.add(call.sessionId);
     Get.to(
       () => IncomingCallPage(call: call),
@@ -130,7 +175,16 @@ class CallService extends GetxService {
       final call = _fromParams(event.callKitParams);
       if (call != null) answerFromRinger(call);
     } else if (event is ck.CallEventActionCallDecline) {
-      _repo.decline(event.callKitParams.id);
+      final id = event.callKitParams.id;
+      // The app taking its own ringer down reads as a Decline; only a
+      // real press should decline.
+      if (AndroidCallRinger.wasEndedByApp(id)) return;
+      _repo.decline(id);
+    } else if (event is ck.CallEventActionCallEnded) {
+      final id = event.callKitParams.id;
+      if (AndroidCallRinger.wasEndedByApp(id)) return;
+      // Hang up pressed on the "call in progress" notification.
+      _events.add(CallEvent('local_hangup', id, const {}));
     }
   }
 
@@ -162,14 +216,53 @@ class CallService extends GetxService {
     );
   }
 
+  /// Tell the model what happened to the last call push that reached this
+  /// phone while the app was closed. It answers the question a missed
+  /// call leaves open — did the phone get the call at all?
+  Future<void> _reportLastRing() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.reload();
+    final raw = prefs.getString(NotificationService.lastCallPushKey);
+    if (raw == null) return;
+    await prefs.remove(NotificationService.lastCallPushKey);
+    final cut = raw.indexOf('|');
+    if (cut < 0) return;
+    final at = DateTime.tryParse(raw.substring(0, cut));
+    if (at == null || DateTime.now().difference(at).inHours >= 12) return;
+    final outcome = raw.substring(cut + 1);
+    final time = '${at.hour.toString().padLeft(2, '0')}:'
+        '${at.minute.toString().padLeft(2, '0')}';
+    if (outcome == 'shown') {
+      AppSnackbar.info('ສາຍເຂົ້າ $time: ໂທລະສັບໄດ້ຮັບ ແລະ ສະແດງໜ້າຈໍຮັບສາຍແລ້ວ');
+    } else {
+      AppSnackbar.error(
+        'ສາຍເຂົ້າ $time: ໄດ້ຮັບແຕ່ສະແດງບໍ່ໄດ້ ($outcome)',
+        title: 'ຮັບສາຍບໍ່ໄດ້',
+      );
+    }
+  }
+
+  Future<void> _registerForCalls() async {
+    final ok = await NotificationService.syncTokenToServer(force: true);
+    if (ok) return;
+    final reason = NotificationService.lastSyncError ?? 'unknown';
+    AppSnackbar.error(
+      'ໂທລະສັບນີ້ຍັງບໍ່ໄດ້ລົງທະບຽນຮັບສາຍ ($reason)',
+      title: 'ຮັບສາຍບໍ່ໄດ້',
+    );
+  }
+
   /// Called once the model's dashboard is up: answers a call she accepted
   /// from the ringing screen while the app was closed, and asks (once) for
   /// the Android 14 full-screen permission the ringer needs.
   Future<void> onModelHome() async {
     if (!_isModel || !Platform.isAndroid) return;
     // Her registered phone is what lets customers call her directly and
-    // ring it while the app is closed: make sure the server has it.
-    unawaited(NotificationService.syncTokenToServer(force: true));
+    // ring it while the app is closed: make sure the server has it, and
+    // say so if it could not, since otherwise nothing shows that her
+    // phone will never ring.
+    unawaited(_registerForCalls());
+    unawaited(_reportLastRing());
     final accepted = await AndroidCallRinger.acceptedWhileClosed();
     if (accepted != null) {
       await answerFromRinger(accepted);

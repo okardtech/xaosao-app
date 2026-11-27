@@ -63,16 +63,47 @@ class ServiceHelper {
     }
   }
 
+  /// The name a service is shown under, in the app's language.
+  ///
+  /// Keyed by the service's stored name. Some services are stored under
+  /// their old Lao names (e.g. ເປັນຄູ່ບຸນທາດຫຼວງ), so those map here too,
+  /// as do the English keys they may be renamed to in admin.
   static String serviceOriginalName(String? name) {
-    switch (name) {
+    switch (name?.trim()) {
       case 'drinkingFriend':
-        return l10n.serviceTypeSocial;
+        return l10n.serviceNameDrinking;
       case 'travelingFriend':
-        return l10n.serviceTypeTravel;
+      case 'travellingFriend':
+      case 'travelingPartner':
+      case 'travellingPartner':
+        return l10n.serviceNameTravel;
       case 'massage':
-        return l10n.serviceTypeMassage;
+        return l10n.serviceNameMassage;
+      case 'pimaiPartner':
+      case 'ເພື່ອນປີໃຫ່ມລາວ':
+      case 'ເພື່ອນປີໃໝ່ລາວ':
+      case 'pimaiPatner':
+        return l10n.serviceNamePimai;
+      case 'thatLuangPartner':
+      case 'ເປັນຄູ່ບຸນທາດຫຼວງ':
+      case 'thatlungParter':
+      case 'thatLuangParter':
+        return l10n.serviceNameThatLuang;
+      case 'hmongNewYearPartner':
+      case 'ເປັນຄູ່ບຸນກີນຈຽງ':
+      case 'ເປັນຄູ່ບຸນກິນຈຽງ':
+      case 'hmongNewYear':
+        return l10n.serviceNameHmongNewYear;
+      case 'countdownFriend':
+      case 'ຄູ່ເຄົ້າດາວປີໃໝ່':
+      case 'ຄູ່ເຄົ້າດາວ':
+      case 'countdownPartner':
+        return l10n.serviceNameCountdown;
+      case 'call':
+        return l10n.serviceNameCall;
       default:
         return name ?? '';
     }
   }
+
 }
