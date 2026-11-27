@@ -695,7 +695,7 @@ class _MassageVariantsSheetState extends State<_MassageVariantsSheet> {
         ));
       }
     } else {
-      _rows.add(_VRow());
+      _rows.add(_newRow());
     }
   }
 
@@ -704,6 +704,12 @@ class _MassageVariantsSheetState extends State<_MassageVariantsSheet> {
     _locationCtrl.dispose();
     for (final r in _rows) r.dispose();
     super.dispose();
+  }
+
+  /// A new variant row, priced at the base price to start with.
+  _VRow _newRow() {
+    final base = (widget.baseRate ?? 0).toInt();
+    return _VRow(price: base > 0 ? _fmtInt(base) : '');
   }
 
   bool get _canSubmit {
@@ -868,7 +874,7 @@ class _MassageVariantsSheetState extends State<_MassageVariantsSheet> {
 
                   // Add row button
                   GestureDetector(
-                    onTap: () => setSheetState(() => _rows.add(_VRow())),
+                    onTap: () => setSheetState(() => _rows.add(_newRow())),
                     child: Padding(
                       padding: EdgeInsets.symmetric(vertical: 6.h),
                       child: Row(
@@ -1379,10 +1385,18 @@ class _RateInputSheetState extends State<_RateInputSheet> {
   @override
   void initState() {
     super.initState();
-    _ctrl = TextEditingController(
-      text: widget.initialRate != null
-          ? _fmt(widget.initialRate!.toStringAsFixed(0))
-          : '',
+    // A new service starts at the base price — the lowest she may charge
+    // — rather than empty, and the cursor goes to the end so she can type
+    // straight on or adjust it.
+    final start = widget.initialRate ?? widget.baseRate;
+    final text = start != null && start > 0
+        ? _fmt(start.toStringAsFixed(0))
+        : '';
+    _ctrl = TextEditingController.fromValue(
+      TextEditingValue(
+        text: text,
+        selection: TextSelection.collapsed(offset: text.length),
+      ),
     );
   }
 
@@ -1614,6 +1628,7 @@ class _ThousandsSeparatorFormatter extends TextInputFormatter {
 // ═══════════════════════════════════════════════════════════════
 IconData _iconFor(String name) {
   final n = name.toLowerCase();
+  if (n == 'call' || n.contains('ໂທ')) return Icons.call_outlined;
   if (n.contains('social') || n.contains('ສັງຄົມ') || n.contains('ເພື່ອນ')) {
     return Icons.people_outline_rounded;
   }

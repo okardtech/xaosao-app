@@ -1,30 +1,25 @@
 {
   "@@locale": "th",
-
   "english": "English",
   "lao": "ພາສາລາວ",
   "thai": "ภาษาไทย",
-
   "languageTitle": "ภาษา",
   "languageSubtitle": "เลือกภาษาที่คุณต้องการใช้",
-
   "commonCancel": "ยกเลิก",
   "commonOk": "ตกลง",
   "commonSave": "บันทึก",
   "commonClose": "ปิด",
   "commonLater": "ภายหลัง",
   "commonSuccess": "สำเร็จ",
-  "commonError": "ผิดพลาด",
+  "commonError": "เกิดข้อผิดพลาด กรุณาลองใหม่",
   "commonDelete": "ลบ",
   "commonBack": "ย้อนกลับ",
   "commonYes": "ใช่",
   "commonNo": "ไม่",
-
   "profileInfoSection": "ข้อมูล",
   "profileSecuritySection": "ความปลอดภัย",
   "profileSettingsSection": "ตั้งค่า",
   "profileHelpSection": "ช่วยเหลือ",
-
   "profilePersonalInfo": "ข้อมูลส่วนตัว",
   "profilePersonalInfoSubtitle": "ชื่อ, นามสกุล, วันเดือนปีเกิด",
   "profileFinance": "ข้อมูลทางการเงิน",
@@ -33,7 +28,6 @@
   "profileVerifyPhone": "ยืนยันเบอร์โทร",
   "profileVerifiedBadge": "ยืนยันแล้ว",
   "profileVerifiedIdentity": "ยืนยันตัวตนแล้ว",
-
   "profileLanguage": "ภาษา",
   "profileNotifications": "การแจ้งเตือน",
   "profileNotificationsSubtitle": "Push, อีเมล, SMS, WhatsApp",
@@ -41,54 +35,67 @@
   "profileFeedback": "คำติชม",
   "profileFeedbackSubtitle": "รายงานปัญหา หรือ ส่งความคิดเห็น",
   "profileTerms": "ข้อกำหนดและนโยบาย",
-
   "profileDeleteAccount": "ลบบัญชี",
   "profileDeleteAccountSubtitle": "การดำเนินการนี้ไม่สามารถย้อนกลับได้",
   "profileDeleteAccountShortSubtitle": "ไม่สามารถย้อนกลับได้",
   "profileLogout": "ออกจากระบบ",
   "profileAppVersion": "XAOSAO v{version}",
-  "@profileAppVersion": {"placeholders": {"version": {"type": "String"}}},
-
+  "@profileAppVersion": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
   "profilePhotos": "รูปภาพ",
   "profilePhotosCount": "รูปภาพ ({count}/{max})",
-  "@profilePhotosCount": {"placeholders": {"count": {"type": "int"}, "max": {"type": "int"}}},
+  "@profilePhotosCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "max": {
+        "type": "int"
+      }
+    }
+  },
   "profilePhotosMissingWarning": "ต้องเพิ่มให้ครบ {max} รูป — ยังขาดอีก {missing} รูป",
-  "@profilePhotosMissingWarning": {"placeholders": {"max": {"type": "int"}, "missing": {"type": "int"}}},
-
+  "@profilePhotosMissingWarning": {
+    "placeholders": {
+      "max": {
+        "type": "int"
+      },
+      "missing": {
+        "type": "int"
+      }
+    }
+  },
   "profileMyServices": "บริการของฉัน",
   "profileMyQr": "QR ของฉัน",
-
   "profileStatLikes": "ถูกใจ",
   "profileStatFriends": "เพื่อน",
   "profileStatReferrals": "แนะนำ",
   "profileStatBookings": "จอง",
-
   "profileHiddenEnabled": "โปรไฟล์ของคุณถูกซ่อนอยู่ — ลูกค้าไม่สามารถเห็นคุณได้",
   "profileHiddenDisabled": "ซ่อนโปรไฟล์ของคุณไม่ให้ลูกค้าเห็น สามารถเปิด-ปิดได้ตลอดเวลา",
-
   "customerProfileBuyPackage": "ซื้อแพ็กเกจ",
   "customerProfileBuyPackageSubtitle": "รายชั่วโมง, รายวัน และรายเดือน",
   "customerProfileTopupHistory": "ประวัติเติมเงิน",
-
   "walletBalanceTitle": "ยอดคงเหลือในกระเป๋า",
   "walletTopup": "เติมเงิน",
   "walletHistory": "ประวัติ",
-
   "confirmLogoutTitle": "ออกจากระบบ",
   "confirmLogoutMessage": "คุณต้องการออกจากระบบใช่หรือไม่?",
   "confirmLogoutConfirm": "ออก",
   "confirmDeleteTitle": "ลบบัญชี",
   "confirmDeleteMessage": "คุณแน่ใจหรือไม่ที่ต้องการลบบัญชี?\nข้อมูลทั้งหมดจะถูกลบถาวรและไม่สามารถกู้คืนได้",
-
   "commonGenericError": "เกิดข้อผิดพลาด! กรุณาลองใหม่อีกครั้ง",
   "commonActionFailed": "ไม่สามารถดำเนินการได้",
   "commonLoadDataFailed": "โหลดข้อมูลไม่สำเร็จ",
   "commonAddFailed": "เพิ่มไม่สำเร็จ",
   "commonUpdateFailed": "อัปเดตไม่สำเร็จ",
   "commonDeleteFailed": "ลบไม่สำเร็จ",
-
   "loginFailed": "เข้าสู่ระบบไม่สำเร็จ",
-
   "registerLoadServicesFailed": "โหลดบริการไม่สำเร็จ",
   "registerSelectProfilePhoto": "กรุณาเลือกรูปโปรไฟล์",
   "registerFailed": "ลงทะเบียนไม่สำเร็จ",
@@ -97,7 +104,6 @@
   "registerVerifyOtpFailed": "ตรวจสอบ OTP ไม่สำเร็จ",
   "registerResendOtpFailed": "ส่ง OTP ใหม่ไม่สำเร็จ",
   "registerResendOtpSuccess": "ส่งรหัส OTP ใหม่แล้ว",
-
   "meetUpsCancelSuccess": "ยกเลิกการจองสำเร็จ",
   "meetUpsReleasePaymentSuccess": "ปล่อยเงินสำเร็จ",
   "meetUpsDisputeSuccess": "ส่งคำร้องขอสำเร็จ",
@@ -105,7 +111,6 @@
   "meetUpsRejectSuccess": "ปฏิเสธการจองสำเร็จ",
   "meetUpsReceiveMoneySuccess": "รับเงินสำเร็จ",
   "meetUpsDeleteSuccess": "ลบรายการสำเร็จ",
-
   "postsFeedLoadFailed": "โหลดฟีดไม่สำเร็จ",
   "postsMyLoadFailed": "โหลดโพสต์ของฉันไม่สำเร็จ",
   "postsCreateSuccess": "สร้างโพสต์สำเร็จ",
@@ -114,7 +119,6 @@
   "postsDisableFailed": "ปิดใช้งานโพสต์ไม่สำเร็จ",
   "postsDeleteSuccess": "ลบโพสต์สำเร็จ",
   "postsDeleteFailed": "ลบโพสต์ไม่สำเร็จ",
-
   "authWelcome": "ยินดีต้อนรับ 👋",
   "authRolePrompt": "คุณต้องการเข้าใช้งานในฐานะใด?",
   "authTagline": "บริการท้องถิ่น ทุกที่ ทุกเวลา",
@@ -130,9 +134,7 @@
   "authCreateCompanionAccount": "สร้างบัญชีผู้ให้บริการ",
   "authValidPhoneRequired": "กรุณาใส่เบอร์โทรศัพท์ให้ถูกต้อง",
   "authPasswordRequired": "กรุณาใส่รหัสผ่าน",
-
   "commonCurrencyKip": "กีบ",
-
   "monthShortJan": "ม.ค.",
   "monthShortFeb": "ก.พ.",
   "monthShortMar": "มี.ค.",
@@ -145,7 +147,6 @@
   "monthShortOct": "ต.ค.",
   "monthShortNov": "พ.ย.",
   "monthShortDec": "ธ.ค.",
-
   "walletTitle": "กระเป๋าเงิน",
   "walletSubtitle": "ยอดคงเหลือและประวัติ",
   "walletFilterAll": "ทั้งหมด",
@@ -155,16 +156,19 @@
   "walletRechargeHistory": "ประวัติการเติม",
   "walletEmptyTitle": "ยังไม่มีรายการ",
   "walletEmptySubtitle": "รายการเติมเงินของคุณ\nจะแสดงที่นี่",
-
   "walletTxStatusCompleted": "สำเร็จ",
   "walletTxStatusPending": "รอดำเนินการ",
   "walletTxStatusProcessing": "กำลังดำเนินการ",
   "walletTxStatusCancelled": "ยกเลิก",
-
   "walletBalanceUpdated": "ยอดคงเหลือ อัปเดต {time}",
-  "@walletBalanceUpdated": {"placeholders": {"time": {"type": "String"}}},
+  "@walletBalanceUpdated": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
   "walletUsed": "ใช้ไปแล้ว",
-
   "walletTxTypeRecharge": "เติมเงิน",
   "walletTxTypeSubscription": "ซื้อแพ็กเกจ",
   "walletTxTypeGift": "ส่งของขวัญ",
@@ -177,23 +181,25 @@
   "walletTxTypeBookingReferral": "ค่านายหน้า (การจอง)",
   "walletTxTypeSubscriptionReferral": "ค่านายหน้า (แพ็กเกจ)",
   "walletTxTypeGeneric": "ธุรกรรม",
-
   "commonNext": "ถัดไป",
   "commonAmount": "จำนวน",
   "commonDate": "วันที่",
   "commonErrorDetail": "เกิดข้อผิดพลาด: {error}",
-  "@commonErrorDetail": {"placeholders": {"error": {"type": "String"}}},
-
+  "@commonErrorDetail": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
   "topupAmountSubtitle": "เลือกหรือใส่จำนวน",
   "topupOther": "อื่นๆ",
   "topupCustomAmount": "กำหนดเอง",
   "topupOrEnterYourself": "หรือใส่เอง",
   "topupEnterAmount": "ใส่จำนวน",
-
   "topupQrLoadFailed": "ไม่สามารถโหลด QR ได้",
   "topupPackageFailed": "ซื้อแพ็กเกจไม่สำเร็จ",
   "topupSlipUploadFailed": "ไม่สามารถส่งใบชำระได้",
-
   "topupUploadTitle": "อัปโหลดสลิป",
   "topupUploadSubtitle": "ยืนยันการชำระ",
   "topupUploadFileTypes": "รองรับ: JPG, PNG, PDF (สูงสุด 10MB)",
@@ -204,12 +210,10 @@
   "topupAddMoreSlip": "เพิ่มสลิปอีก",
   "topupExampleReceipt": "ตัวอย่างใบเสร็จการชำระ",
   "topupThankYouMessage": "ขอบคุณที่ไว้วางใจ: ทีมงานจะตรวจสอบและดำเนินการภายใน 1–2 ชั่วโมง แล้วจะได้รับใบยืนยัน",
-
   "topupBackToWallet": "กลับหน้ากระเป๋า",
   "topupSuccessTitle": "เติมสำเร็จ!",
   "topupSuccessSubtitle": "กำลังรอการตรวจสอบจาก Admin",
   "topupWaitingReview": "รอการตรวจสอบ",
-
   "topupQrTitle": "สแกน QR",
   "topupQrSubtitle": "ชำระผ่านแอปธนาคาร",
   "topupQrPaidUploadSlip": "ชำระแล้ว — อัปสลิป",
@@ -217,15 +221,20 @@
   "topupQrInstructions": "สแกน QR ด้วยแอปธนาคาร\nจากนั้นกด \"ชำระแล้ว\" เพื่ออัปสลิป",
   "topupQrSaving": "กำลังบันทึก...",
   "topupQrDownload": "ดาวน์โหลด QR",
-
   "commonAll": "ทั้งหมด",
   "commonRetry": "ลองใหม่",
   "commonPleaseRetry": "กรุณาลองใหม่อีกครั้ง",
-
   "serviceTypeSocial": "เพื่อนสังคม",
+  "serviceNameDrinking": "เพื่อนดื่ม",
+  "serviceNameTravel": "เพื่อนเที่ยว",
+  "serviceNameMassage": "นวด",
+  "serviceNamePimai": "เพื่อนงานปีใหม่ลาว",
+  "serviceNameThatLuang": "เพื่อนงานบุญธาตุหลวง",
+  "serviceNameHmongNewYear": "เพื่อนงานปีใหม่ม้ง",
+  "serviceNameCountdown": "เพื่อนเคาท์ดาวน์",
+  "serviceNameCall": "เพื่อนคุยโทร",
   "serviceTypeMassage": "นวด",
   "serviceTypeTravel": "เพื่อนท่องเที่ยว",
-
   "viewCompanionPageTitle": "ผู้ให้บริการทั้งหมด",
   "viewCompanionFilterLikedByMe": "ที่ฉันไลค์",
   "viewCompanionFilterWhoLikedMe": "ไลค์ฉัน",
@@ -235,10 +244,8 @@
   "viewCompanionEmptyTitle": "ไม่พบข้อมูล",
   "viewCompanionEmptySubtitle": "ลองเปลี่ยนตัวกรองหรือค้นหาใหม่",
   "viewCompanionSearchHint": "ค้นหาชื่อ...",
-
   "genderMale": "ผู้ชาย",
   "genderFemale": "ผู้หญิง",
-
   "homeSearch": "ค้นหา",
   "homeFindCompanion": "ค้นหาผู้ให้บริการในท้องถิ่น",
   "homeSearchHint": "ค้นหาด้วยชื่อ...",
@@ -252,21 +259,23 @@
   "homeClearFilter": "ล้าง",
   "homeApplyFilter": "ใช้ตัวกรอง",
   "homeFilterNearby": "ใกล้เคียง",
-
   "homeServiceSocial": "กิจกรรมท้องถิ่น",
   "homeServiceTravel": "ประสบการณ์ท้องถิ่น",
   "homeCardSubtitleSocial": "เที่ยว งานเลี้ยง ทุกโอกาส",
   "homeCardSubtitleMassage": "นวดสุขภาพโดยมืออาชีพ",
   "homeCardSubtitleTravel": "ไกด์ในและต่างประเทศ",
-
   "homeLoadRecommendationsFailed": "โหลดข้อมูลแนะนำไม่สำเร็จ",
   "homeLoadOnlineFailed": "โหลดข้อมูลออนไลน์ไม่สำเร็จ",
-
   "commonAgeYears": "{years} ปี",
-  "@commonAgeYears": {"placeholders": {"years": {"type": "int"}}},
+  "@commonAgeYears": {
+    "placeholders": {
+      "years": {
+        "type": "int"
+      }
+    }
+  },
   "commonConfirm": "ยืนยัน",
   "commonPleaseTitle": "กรุณา",
-
   "bookingStatusConfirmed": "ยืนยัน",
   "bookingStatusConfirmedShort": "รับแล้ว",
   "bookingStatusInProgress": "กำลังดำเนินการ",
@@ -276,20 +285,26 @@
   "bookingStatusCancelledFull": "ยกเลิกแล้ว",
   "bookingStatusRejected": "ถูกปฏิเสธ",
   "bookingStatusDisputed": "ข้อพิพาท",
-
   "paymentStatusPaid": "ชำระแล้ว",
   "paymentStatusPending": "รอชำระ",
   "paymentStatusReleased": "ปล่อยเงินแล้ว",
   "paymentStatusRefunded": "คืนเงินแล้ว",
-
   "meetUpsTitle": "นัดพบ",
   "meetUpsAllHistory": "ประวัติการจองทั้งหมด",
   "meetUpsItemsWithStatus": "{count} รายการ · {status}",
-  "@meetUpsItemsWithStatus": {"placeholders": {"count": {"type": "int"}, "status": {"type": "String"}}},
+  "@meetUpsItemsWithStatus": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "status": {
+        "type": "String"
+      }
+    }
+  },
   "meetUpsEmptyTitle": "ไม่มีรายการ",
   "meetUpsEmptySubtitle": "รายการจองของคุณจะแสดงที่นี่",
   "meetUpsLoadMore": "โหลดเพิ่ม",
-
   "bookingDetailTitle": "รายละเอียดการจอง",
   "bookingLocation": "สถานที่",
   "bookingPhone": "เบอร์โทรศัพท์",
@@ -300,13 +315,11 @@
   "bookingCreatedAt": "เวลาจอง",
   "bookingNoName": "ไม่มีชื่อ",
   "bookingTotalPrice": "ราคารวม",
-
   "bookingActionChat": "แชท",
   "bookingActionReleasePayment": "ปล่อยเงิน",
   "bookingActionRefund": "คืนเงิน",
   "bookingActionReject": "ปฏิเสธ",
   "bookingActionReceiveMoney": "รับเงิน",
-
   "cancelBookingTitle": "ยกเลิกการจอง",
   "cancelBookingMessage": "คุณต้องการยกเลิกการจองนี้ใช่หรือไม่?\nการยกเลิกนี้ไม่สามารถกู้คืนได้",
   "cancelBookingMessageShort": "คุณต้องการยกเลิกการจองนี้ใช่หรือไม่?",
@@ -316,7 +329,6 @@
   "rejectReasonTitle": "เหตุผลในการปฏิเสธ",
   "reasonMinLength": "เหตุผลต้องมีอย่างน้อย 10 ตัวอักษร",
   "reasonHint": "กรุณาระบุเหตุผล (อย่างน้อย 10 ตัวอักษร)",
-
   "cancellationPolicyCanCancel": "ยกเลิกได้",
   "cancellationPolicyTitle": "นโยบายยกเลิก & คืนเงิน",
   "cancellationPolicyExpand": "ดูเพิ่ม",
@@ -328,22 +340,24 @@
   "cancellationTier3Title": "ยกเลิกหลังเริ่มนัด",
   "cancellationTier3Subtitle": "ไม่สามารถคืนเงินได้",
   "cancellationRefundInfo": "เงินจะถูกโอนคืนไปยังช่องทางที่คุณชำระภายใน 24 ชั่วโมง",
-
   "bookingSummaryActive": "กำลังมา",
-
   "commonAdd": "เพิ่ม",
   "commonUpdate": "อัปเดต",
   "commonEnable": "เปิดใช้",
-
   "billingPerHourShort": "/ชม.",
   "billingPerDayShort": "/มื้อ",
   "billingPerNightShort": "/คืน",
   "billingPerSession": "/ครั้ง",
   "billingPerMinute": "/นาที",
-
   "servicesManageSubtitle": "จัดการและตั้งราคาบริการ",
   "servicesManageDeleteTitle": "ลบ {name}",
-  "@servicesManageDeleteTitle": {"placeholders": {"name": {"type": "String"}}},
+  "@servicesManageDeleteTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "servicesManageDeleteMessage": "คุณต้องการลบบริการนี้ออกจากโปรไฟล์ของคุณใช่หรือไม่?",
   "servicesManageYourRate": "ราคาที่คุณกำหนด",
   "servicesManageFeePerSession": "ค่าบริการ/ครั้ง",
@@ -359,9 +373,21 @@
   "servicesManageVariantName": "ชื่อประเภท",
   "servicesManagePriceKipPerHour": "ราคา (กีบ/ชม.)",
   "servicesManagePriceKipPerHourShort": "{amount} กีบ/ชม.",
-  "@servicesManagePriceKipPerHourShort": {"placeholders": {"amount": {"type": "String"}}},
+  "@servicesManagePriceKipPerHourShort": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
   "servicesManageMinimum": "ต่ำสุด {amount}",
-  "@servicesManageMinimum": {"placeholders": {"amount": {"type": "String"}}},
+  "@servicesManageMinimum": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
   "servicesManageAddVariant": "เพิ่มประเภท",
   "servicesManageAddressLabel": "ที่อยู่/สถานที่",
   "servicesManageAddressHint": "เช่น: นครหลวงเวียงจันทน์, สีสัตตะนาก",
@@ -369,12 +395,23 @@
   "servicesManageNoData": "ไม่มีข้อมูลบริการ",
   "servicesManageValidRateRequired": "กรุณาใส่ราคาที่ถูกต้อง",
   "servicesManageMinRate": "ราคาต่ำสุด: {amount} กีบ",
-  "@servicesManageMinRate": {"placeholders": {"amount": {"type": "String"}}},
+  "@servicesManageMinRate": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
   "servicesManageUpdatePrice": "อัปเดตราคา",
   "servicesManageAddService": "เพิ่มบริการ",
   "servicesManagePriceWithBilling": "ราคา{billing} (กีบ)",
-  "@servicesManagePriceWithBilling": {"placeholders": {"billing": {"type": "String"}}},
-
+  "@servicesManagePriceWithBilling": {
+    "placeholders": {
+      "billing": {
+        "type": "String"
+      }
+    }
+  },
   "registerCompanionTitle": "สร้างบัญชีสำหรับผู้ให้บริการ",
   "registerCustomerTitle": "สร้างบัญชีสำหรับลูกค้า",
   "registerFillInfo": "กรุณากรอกข้อมูลให้ครบ",
@@ -396,14 +433,11 @@
   "registerTermsAnd": " และ ",
   "registerPrivacyPolicy": "นโยบายความเป็นส่วนตัว",
   "registerTermsSuffix": " ของ XAOSAO",
-
   "registerAvatarChange": "กดเพื่อเปลี่ยนรูป",
   "registerAvatarPick": "กดเพื่อเลือกรูป",
-
   "registerStepInfo": "ข้อมูล",
   "registerStepServices": "บริการ",
   "registerStepOtp": "OTP",
-
   "registerServicesTitle": "เลือกบริการ",
   "registerServicesSubtitle": "กำหนดประเภทและราคาบริการของคุณ",
   "registerNoServices": "ไม่มีบริการ",
@@ -414,17 +448,28 @@
   "registerServicesInfoDot": ".",
   "registerPriceRequired": "กรุณาใส่ราคา",
   "registerMinPrice": "ราคาต่ำสุด {amount} กีบ",
-  "@registerMinPrice": {"placeholders": {"amount": {"type": "String"}}},
+  "@registerMinPrice": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
   "registerPricePerHourLabel": "ราคา (กีบ/ชั่วโมง) *",
   "registerMinPriceKip": "ต่ำสุด {amount} กีบ",
-  "@registerMinPriceKip": {"placeholders": {"amount": {"type": "String"}}},
+  "@registerMinPriceKip": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
   "registerAllVariants": "เพิ่มได้ทุกประเภท",
   "registerServiceLocation": "สถานที่ให้บริการ *",
   "registerServiceLocationHint": "เช่น: บ้าน, โรงแรม, สถานที่ลูกค้า",
   "registerVariantsPriceLabel": "ประเภทและราคา (กีบ/ชั่วโมง) *",
   "registerContinueCta": "ดำเนินการต่อ",
   "registerCurrencyPerHour": "กีบ/ชม.",
-
   "registerOtpSmsInfo": "กรุณาตรวจสอบ SMS ของคุณ\nรหัสใช้ได้ 5 นาทีเท่านั้น",
   "registerOtpInvalid": "รหัส OTP ไม่ถูกต้อง — ลองใหม่",
   "registerOtpInvalidRetry": "รหัส OTP ไม่ถูกต้อง กรุณาลองใหม่",
@@ -436,11 +481,9 @@
   "registerOtpConfirmPhone": "ยืนยันเบอร์โทร",
   "registerOtpEnter6Digits": "ใส่รหัส 6 หลักที่ส่งไปยัง",
   "registerOtpVerify": "ยืนยัน OTP",
-
   "commonEdit": "แก้ไข",
   "commonConnectionRetry": "ตรวจสอบการเชื่อมต่อแล้วลองใหม่",
   "commonBank": "ธนาคาร",
-
   "qrTitle": "QR โอนเงิน",
   "qrSubtitle": "จัดการ QR Code ของฉัน",
   "qrDeleteTitle": "ลบ QR Code",
@@ -453,16 +496,13 @@
   "qrSetPrimary": "ตั้งเป็น QR หลัก",
   "qrAddNew": "เพิ่ม QR ใหม่",
   "qrInfoBanner": "QR ที่ตั้งเป็นหลักจะแสดงในหน้า Profile ของคุณ เพื่อให้ลูกค้าสามารถสแกนโอนเงินได้ทันที",
-
   "qrAddFailed": "เพิ่ม QR ไม่สำเร็จ",
   "qrUpdateFailed": "อัปเดต QR ไม่สำเร็จ",
   "qrDeleteFailed": "ลบ QR ไม่สำเร็จ",
   "qrSetDefaultFailed": "ตั้ง QR หลักไม่สำเร็จ",
-
   "genderMaleShort": "ชาย",
   "genderFemaleShort": "หญิง",
   "genderOther": "อื่นๆ",
-
   "monthLongJan": "มกราคม",
   "monthLongFeb": "กุมภาพันธ์",
   "monthLongMar": "มีนาคม",
@@ -475,7 +515,6 @@
   "monthLongOct": "ตุลาคม",
   "monthLongNov": "พฤศจิกายน",
   "monthLongDec": "ธันวาคม",
-
   "profileTitle": "โปรไฟล์",
   "profileSectionGeneralInfo": "ข้อมูลทั่วไป",
   "profileSectionAccountInfo": "ข้อมูลบัญชี",
@@ -487,7 +526,6 @@
   "profileNoServices": "ยังไม่มีบริการ",
   "profileVerifiedCustomer": "ยืนยันแล้ว",
   "profileVerifiedCompanion": "ผู้ให้บริการที่ยืนยันแล้ว",
-
   "profileUpdateSuccess": "อัปเดตข้อมูลสำเร็จ",
   "profileUpdateFailed": "อัปเดตข้อมูลไม่สำเร็จ",
   "profileEditTitle": "แก้ไขข้อมูล",
@@ -495,12 +533,8 @@
   "profileAddressHint": "เช่น: โซน 1, เวียงจันทน์",
   "profileEditNote": "การเปลี่ยนรหัสผ่านและเบอร์โทร ต้องไปที่หน้าตั้งค่า",
   "profileSave": "บันทึก",
-
-  "commonError": "เกิดข้อผิดพลาด กรุณาลองใหม่",
   "commonErrorTryAgain": "เกิดข้อผิดพลาด! กรุณาลองใหม่อีกครั้ง",
   "commonUploadFailed": "อัปโหลดไม่สำเร็จ",
-  "commonDeleteFailed": "ลบไม่สำเร็จ",
-
   "changePasswordTitle": "เปลี่ยนรหัสผ่าน",
   "changePasswordSubtitle": "ต้องใส่รหัสผ่านปัจจุบันก่อน",
   "changePasswordSectionCurrent": "รหัสผ่าน",
@@ -519,61 +553,128 @@
   "changePasswordStrengthStrong": "แข็งแรง",
   "changePasswordSuccess": "เปลี่ยนรหัสผ่านสำเร็จ",
   "changePasswordFailed": "เปลี่ยนรหัสผ่านไม่สำเร็จ",
-
   "profileToggleStatusFailed": "เปลี่ยนสถานะไม่สำเร็จ",
   "profileUploadPhotoFailed": "อัปโหลดรูปโปรไฟล์ไม่สำเร็จ",
-
   "profileNoPhotos": "ยังไม่มีรูป",
   "profileGalleryTitle": "รูปภาพทั้งหมด",
   "profileGalleryCount": "{count} / {max} รูป",
-  "@profileGalleryCount": {"placeholders": {"count": {"type": "int"}, "max": {"type": "int"}}},
+  "@profileGalleryCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "max": {
+        "type": "int"
+      }
+    }
+  },
   "profileDeletePhotoTitle": "ลบรูป",
   "profileDeletePhotoMessage": "คุณต้องการลบรูปนี้ใช่หรือไม่?",
   "profileAddPhoto": "เพิ่มรูป",
-
   "profileHiddenShowSuccess": "แสดงโปรไฟล์สำเร็จ",
   "profileHiddenBannerBody": "ลูกค้าไม่สามารถเห็นโปรไฟล์ของคุณตอนนี้ เมื่อคุณพร้อมรับการจองอีกครั้ง กดแสดงโปรไฟล์ของคุณ",
   "profileHiddenClose": "ปิด",
   "profileHiddenShow": "แสดงโปรไฟล์",
   "profileHiddenHeaderTitle": "โปรไฟล์ของคุณถูกซ่อนอยู่",
   "profileHiddenHeaderSubtitle": "คุณจะไม่แสดงในผลค้นหา",
-
   "profileShareLink": "แชร์ลิงก์แนะนำของคุณ",
   "profileHideYourProfile": "ซ่อนโปรไฟล์ของคุณ",
-
   "qrRowScanToTransfer": "สแกนเพื่อโอนเงิน",
   "servicesEditAddLabel": "แก้ไข / เพิ่ม บริการ",
   "servicesEditAddSub": "ตั้งราคาและคำอธิบาย",
-
   "timeJustNow": "เมื่อสักครู่",
   "timeJustNowShort": "เมื่อกี้",
   "timeMinutesAgo": "{n} นาทีที่แล้ว",
-  "@timeMinutesAgo": {"placeholders": {"n": {"type": "int"}}},
+  "@timeMinutesAgo": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
   "timeHoursAgo": "{n} ชั่วโมงที่แล้ว",
-  "@timeHoursAgo": {"placeholders": {"n": {"type": "int"}}},
+  "@timeHoursAgo": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
   "timeDaysAgo": "{n} วันที่แล้ว",
-  "@timeDaysAgo": {"placeholders": {"n": {"type": "int"}}},
+  "@timeDaysAgo": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
   "timeWeeksAgo": "{n} สัปดาห์ที่แล้ว",
-  "@timeWeeksAgo": {"placeholders": {"n": {"type": "int"}}},
+  "@timeWeeksAgo": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
   "timeMinutesShort": "{n}นาที",
-  "@timeMinutesShort": {"placeholders": {"n": {"type": "int"}}},
+  "@timeMinutesShort": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
   "timeHoursShort": "{n}ชั่วโมง",
-  "@timeHoursShort": {"placeholders": {"n": {"type": "int"}}},
+  "@timeHoursShort": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
   "timeDaysShort": "{n}วัน",
-  "@timeDaysShort": {"placeholders": {"n": {"type": "int"}}},
+  "@timeDaysShort": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
   "timeWeeksShort": "{n}สัปดาห์",
-  "@timeWeeksShort": {"placeholders": {"n": {"type": "int"}}},
+  "@timeWeeksShort": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
   "timeDaysShortSpaced": "{n} วัน",
-  "@timeDaysShortSpaced": {"placeholders": {"n": {"type": "int"}}},
+  "@timeDaysShortSpaced": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
   "timeWeeksShortSpaced": "{n} สัปดาห์",
-  "@timeWeeksShortSpaced": {"placeholders": {"n": {"type": "int"}}},
-
+  "@timeWeeksShortSpaced": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
   "commonUser": "ผู้ใช้",
   "commonYou": "คุณ",
   "commonLoadMore": "โหลดเพิ่ม",
   "commonAmountKip": "{amount} กีบ",
-  "@commonAmountKip": {"placeholders": {"amount": {"type": "String"}}},
-
+  "@commonAmountKip": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
   "postsTitle": "โพสต์",
   "postsSubtitle": "ค้นหาผู้ให้บริการใกล้คุณ",
   "postsCantLoad": "ไม่สามารถโหลดข้อมูล",
@@ -614,18 +715,28 @@
   "postStatusFulfilled": "ปิดใช้งานแล้ว",
   "postActionBook": "จอง",
   "postActionChat": "แชท",
-
   "commentsTitle": "ความคิดเห็น",
   "commentsEmptyTitle": "ยังไม่มีความคิดเห็น",
   "commentsEmptySubtitle": "เป็นคนแรกที่คอมเมนต์!",
   "commentReply": "ตอบกลับ",
   "commentCollapseReplies": "ย่อคำตอบ",
   "commentViewReplies": "ดู {count} คำตอบ",
-  "@commentViewReplies": {"placeholders": {"count": {"type": "int"}}},
+  "@commentViewReplies": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "commentReplyToHint": "ตอบ {name}...",
-  "@commentReplyToHint": {"placeholders": {"name": {"type": "String"}}},
+  "@commentReplyToHint": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "commentWriteHint": "เขียนความคิดเห็น...",
-
   "postDetailTitle": "รายละเอียดโพสต์",
   "postDetailActive": "กำลังเปิด",
   "postDetailClosed": "ปิดแล้ว",
@@ -634,12 +745,10 @@
   "postDetailInterested": "สนใจ",
   "postDetailGift": "ของขวัญ",
   "postDetailComment": "ความคิดเห็น",
-
   "interestTitle": "ผู้สนใจ",
   "interestSubtitle": "รายชื่อผู้ที่สนใจโพสต์ของคุณ",
   "interestEmptyTitle": "ยังไม่มีผู้สนใจ",
   "interestEmptySubtitle": "เมื่อมีคนกดสนใจโพสต์นี้\nชื่อของพวกเขาจะแสดงที่นี่",
-
   "giftReceivedTitle": "ของขวัญ",
   "giftReceivedSubtitle": "ของขวัญที่คุณได้รับ",
   "giftEmptyReceivedTitle": "ยังไม่มีของขวัญ",
@@ -654,11 +763,15 @@
   "giftDetailsTitle": "รายละเอียดของขวัญ",
   "giftHistorySentTimes": "ครั้งที่คุณส่งของขวัญ",
   "giftHistorySpent": "ใช้จ่าย {amount} กีบ",
-  "@giftHistorySpent": {"placeholders": {"amount": {"type": "String"}}},
-
+  "@giftHistorySpent": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
   "commonErrorOccurred": "มีข้อผิดพลาดเกิดขึ้น",
   "commonCantLoadData": "ไม่สามารถโหลดข้อมูลได้",
-
   "packageHistoryTitle": "ประวัติ Package",
   "packageHistorySubtitle": "รายการซื้อทั้งหมด",
   "packageHistoryEmpty": "ไม่มีรายการ",
@@ -674,10 +787,21 @@
   "packageStatusSuperseded": "ถูกแทนที่",
   "packageAmount": "จำนวน",
   "packageDaysRemaining": "เหลืออีก {days} วัน",
-  "@packageDaysRemaining": {"placeholders": {"days": {"type": "int"}}},
+  "@packageDaysRemaining": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
   "packageExpiresShort": "หมด {date}",
-  "@packageExpiresShort": {"placeholders": {"date": {"type": "String"}}},
-
+  "@packageExpiresShort": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
   "subscriptionPrice": "ราคา",
   "subscriptionDuration": "ระยะเวลา",
   "subscriptionBenefits": "สิ่งที่คุณจะได้รับ:",
@@ -686,18 +810,36 @@
   "subscriptionBuyNow": "ซื้อเลย",
   "subscriptionTopUp": "เติมเงิน",
   "subscriptionDurationHours": "{hours} ชม.",
-  "@subscriptionDurationHours": {"placeholders": {"hours": {"type": "int"}}},
+  "@subscriptionDurationHours": {
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      }
+    }
+  },
   "subscriptionDuration1Day": "1 วัน",
   "subscriptionDuration1Week": "1 สัปดาห์",
   "subscriptionDuration1Month": "1 เดือน",
   "subscriptionDuration3Months": "3 เดือน",
   "subscriptionDuration1Year": "1 ปี",
   "subscriptionDurationDays": "{days} วัน",
-  "@subscriptionDurationDays": {"placeholders": {"days": {"type": "int"}}},
+  "@subscriptionDurationDays": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
   "subscriptionSpecialPack": "แพ็กพิเศษ",
   "subscriptionYourBalance": "ยอดเงินของคุณ",
   "subscriptionNeedMore": "ต้องการ +{amount} KIP",
-  "@subscriptionNeedMore": {"placeholders": {"amount": {"type": "String"}}},
+  "@subscriptionNeedMore": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
   "subscriptionCanPay": "ชำระได้เลย",
   "subscriptionNeedPackageBody": "กรุณาซื้อ Package ก่อน จึงสามารถจองบริการได้ Package จะให้สิทธิ์ในการจองและใช้งานต่างๆ",
   "subscriptionViewPackage": "ดู Package",
@@ -706,7 +848,13 @@
   "subscriptionServicePrice": "ราคาบริการ",
   "subscriptionShortfall": "ขาดอยู่",
   "subscriptionTopUpAmount": "เติม {amount} KIP",
-  "@subscriptionTopUpAmount": {"placeholders": {"amount": {"type": "String"}}},
+  "@subscriptionTopUpAmount": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
   "subscriptionInsufficient": "ยอดเงินไม่เพียงพอ",
   "subscriptionPleaseTopup": "กรุณาเติมเงินก่อนจอง",
   "subscriptionPendingVerification": "รอการยืนยัน",
@@ -717,7 +865,6 @@
   "subscriptionCallAdmin": "โทรหา Admin",
   "subscriptionWaitingVerification": "กำลังรอการยืนยัน",
   "subscriptionAdminChecking": "Package ของคุณรอ Admin ตรวจสอบ",
-
   "packagePurchaseFailed": "การซื้อไม่สำเร็จ",
   "packageFeature1": "จองบริการจากผู้ให้บริการในท้องถิ่นได้ไม่จำกัดต่อวัน",
   "packageFeature2": "ติดต่อผู้ให้บริการเพื่อประสานงานการจองและกิจกรรม",
@@ -739,7 +886,13 @@
   "packageActive": "กำลังใช้งาน",
   "packageProcessingVerification": "กำลังดำเนินการยืนยัน...",
   "packageExpiresOn": "หมดอายุ {date}",
-  "@packageExpiresOn": {"placeholders": {"date": {"type": "String"}}},
+  "@packageExpiresOn": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
   "packageDays": "วัน",
   "packageRemainingLabel": "คงเหลือ",
   "packageChooseYourPlan": "เลือกแผนของคุณ",
@@ -750,16 +903,27 @@
   "packageRequestProcessing": "คำร้องขอของคุณกำลังถูกดำเนินการ · กรุณารอ",
   "packageCurrent": "แพ็กเกจปัจจุบัน",
   "packageSelectPlan": "เลือกแผนนี้",
-
   "checkoutPurchaseSuccess": "ซื้อ Package สำเร็จ",
   "checkoutUpgradeTitle": "อัปเกรด Package",
   "checkoutUpgradeSubtitle": "ตรวจสอบและยืนยันการชำระ",
   "checkoutProcessPayment": "ดำเนินการชำระ",
   "checkoutAlreadySubscribed": "Wallet Package ใช้งานอยู่แล้ว",
   "checkoutPillPlan": "แผน {name}",
-  "@checkoutPillPlan": {"placeholders": {"name": {"type": "String"}}},
+  "@checkoutPillPlan": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "checkoutPillRemainingDays": "เหลือ {days} วัน",
-  "@checkoutPillRemainingDays": {"placeholders": {"days": {"type": "int"}}},
+  "@checkoutPillRemainingDays": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
   "checkoutUpgradeInfo": "การชำระใหม่จะเริ่มต่อจาก Package ปัจจุบัน และวันที่ยังเหลือจะถูกนำใส่ Package ใหม่",
   "checkoutPackageDuration": "ระยะ Package",
   "checkoutNewPackageDuration": "ระยะ Package ใหม่",
@@ -771,7 +935,6 @@
   "checkoutRemaining": "ยอดคงเหลือ",
   "checkoutShortfallSuffix": " (ขาด)",
   "checkoutWalletDeductInfo": "ยอด Wallet จะถูกตัดทันที Package จะเปิดใช้งานหลังจากการชำระสำเร็จ",
-
   "onboardingTopCompanions": "ผู้ให้บริการยอดนิยม",
   "onboardingTopCompanionsSubtitle": "ค้นพบผู้ให้บริการที่ได้รับคะแนนสูง",
   "onboardingWelcome": "ยินดีต้อนรับ 👋",
@@ -799,7 +962,6 @@
   "onboardingReadyToEarn": "พร้อมเริ่มหารายได้หรือยัง?",
   "onboardingRegisterUnlock": "ลงทะเบียนตอนนี้ และเพิ่มรางวัลของคุณด้วยการแนะนำผู้อื่น",
   "onboardingGetStarted": "เริ่มต้น",
-
   "notifSettingTitle": "ตั้งค่าระบบ",
   "notifSettingSubtitle": "จัดการการแจ้งเตือนของคุณ",
   "notifSettingChannelsSection": "ช่องทางการแจ้งเตือน",
@@ -809,26 +971,53 @@
   "notifSettingBannerBody": "เลือกช่องทางที่คุณต้องการรับข้อความ\nการเปลี่ยนแปลงจะถูกบันทึกอัตโนมัติ",
   "notifSettingFooterNote": "การเปลี่ยนแปลงจะถูกบันทึกทันที คุณสามารถเปลี่ยนการตั้งค่าได้ตลอดเวลา",
   "notifSettingUpdateFailed": "อัปเดตไม่สำเร็จ",
-
   "notifListTitle": "การแจ้งเตือน",
   "notifListSubtitle": "รายการแจ้งเตือนทั้งหมดของคุณ",
   "notifListMarkAllRead": "อ่านทั้งหมด",
   "notifListEmptyTitle": "ยังไม่มีการแจ้งเตือน",
   "notifListEmptySubtitle": "การแจ้งเตือนจะแสดงที่นี่",
-
   "notifTimeJustNow": "เมื่อสักครู่",
   "notifTimeMinutes": "{n} นาที",
-  "@notifTimeMinutes": {"placeholders": {"n": {"type": "int"}}},
+  "@notifTimeMinutes": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
   "notifTimeHours": "{n} ชั่วโมง",
-  "@notifTimeHours": {"placeholders": {"n": {"type": "int"}}},
+  "@notifTimeHours": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
   "notifTimeYesterday": "เมื่อวาน",
   "notifTimeDaysAgo": "{n} วันที่แล้ว",
-  "@notifTimeDaysAgo": {"placeholders": {"n": {"type": "int"}}},
+  "@notifTimeDaysAgo": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
   "notifTimeWeeksAgo": "{n} สัปดาห์ที่แล้ว",
-  "@notifTimeWeeksAgo": {"placeholders": {"n": {"type": "int"}}},
+  "@notifTimeWeeksAgo": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
   "notifTimeMonthsAgo": "{n} เดือนที่แล้ว",
-  "@notifTimeMonthsAgo": {"placeholders": {"n": {"type": "int"}}},
-
+  "@notifTimeMonthsAgo": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
   "welcomeTitle": "ยินดีต้อนรับ!",
   "welcomeBody": "บัญชีของคุณสร้างสำเร็จแล้ว\nขอให้คุณมีความสุขในการใช้งาน!",
   "welcomeCanDoTitle": "สิ่งที่คุณสามารถทำได้",
@@ -836,7 +1025,6 @@
   "welcomeBook": "จอง",
   "welcomeExplore": "ค้นหา",
   "welcomeGetStartedCta": "เริ่มใช้งานเลย",
-
   "modelWalletAvailableBalance": "ยอดเงินที่ถอนได้",
   "modelWalletStatPending": "รอ",
   "modelWalletStatWithdrawn": "ถอนแล้ว",
@@ -846,7 +1034,6 @@
   "modelWalletEmptyTitle": "ยังไม่มีรายการ",
   "modelWalletEmptySubtitle": "รายการรายได้ของคุณ\nจะแสดงที่นี่",
   "modelWalletWithdrawFailed": "ไม่สามารถถอนเงินได้",
-
   "withdrawTitle": "ถอนเงิน",
   "withdrawSubtitle": "จ่ายให้บัญชีธนาคาร",
   "withdrawSelectBank": "เลือกบัญชีธนาคาร",
@@ -855,9 +1042,21 @@
   "withdrawHintMin": "ต่ำสุด",
   "withdrawHintMax": "สูงสุด",
   "withdrawBelowMin": "จำนวนต่ำกว่าขีดจำกัด ({amount})",
-  "@withdrawBelowMin": {"placeholders": {"amount": {"type": "String"}}},
+  "@withdrawBelowMin": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
   "withdrawAboveMax": "เกินยอดที่สามารถถอนได้ ({amount})",
-  "@withdrawAboveMax": {"placeholders": {"amount": {"type": "String"}}},
+  "@withdrawAboveMax": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
   "withdrawConfirmBtn": "ยืนยันการถอน",
   "withdrawableBalance": "ยอดที่ถอนได้",
   "withdrawAll": "ถอนทั้งหมด",
@@ -865,7 +1064,6 @@
   "withdrawNoBankTitle": "ยังไม่มีบัญชีธนาคาร",
   "withdrawNoBankSubtitle": "กรุณาเพิ่มบัญชีก่อนที่จะถอนเงิน",
   "withdrawAddBank": "เพิ่มบัญชีธนาคาร",
-
   "discoverTitle": "ค้นพบ",
   "discoverSubtitle": "ค้นหาผู้ใช้ที่คุณชอบ",
   "discoverSearchHint": "ค้นหาด้วยชื่อ...",
@@ -880,7 +1078,6 @@
   "discoverEmptyWhoLikedMeSubtitle": "สร้างโปรไฟล์ที่ดีเพื่อดึงดูด",
   "discoverEmptyILikedTitle": "คุณยังไม่ได้ถูกใจใคร",
   "discoverEmptyILikedSubtitle": "ค้นหาแล้วกด ♥ เพื่อแสดงความสนใจ",
-
   "detailPersonalInfo": "ข้อมูลผู้ให้บริการ",
   "detailStatAge": "อายุ",
   "detailStatMemberSince": "สมาชิกตั้งแต่",
@@ -891,7 +1088,6 @@
   "detailStatPosts": "โพสต์",
   "detailStatGifts": "ของขวัญ",
   "detailStatCount": "จำนวน",
-
   "meetupsEntryFromMeetUps": "จากหน้านัดพบ",
   "meetupsEntryFromChat": "จาก Chat",
   "meetupsDayShortSun": "อา",
@@ -903,13 +1099,46 @@
   "meetupsDayShortSat": "ส",
   "meetupsClockSuffix": "น.",
   "meetupsCountdownDays": "เหลืออีก {days} วัน {hours} ชม.",
-  "@meetupsCountdownDays": {"placeholders": {"days": {"type": "int"}, "hours": {"type": "int"}}},
+  "@meetupsCountdownDays": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      },
+      "hours": {
+        "type": "int"
+      }
+    }
+  },
   "meetupsCountdownHours": "เหลืออีก {hours} ชม.",
-  "@meetupsCountdownHours": {"placeholders": {"hours": {"type": "int"}}},
+  "@meetupsCountdownHours": {
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      }
+    }
+  },
   "meetupsCountdownMinutes": "เหลือ {minutes} นาที",
-  "@meetupsCountdownMinutes": {"placeholders": {"minutes": {"type": "int"}}},
+  "@meetupsCountdownMinutes": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
   "meetupsServiceMultiplier": "{name} × {n} {unit}",
-  "@meetupsServiceMultiplier": {"placeholders": {"name": {"type": "String"}, "n": {"type": "int"}, "unit": {"type": "String"}}},
+  "@meetupsServiceMultiplier": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "n": {
+        "type": "int"
+      },
+      "unit": {
+        "type": "String"
+      }
+    }
+  },
   "meetupsUnitDays": "มื้อ",
   "meetupsUnitHours": "ชั่วโมง",
   "meetupsServiceFallback": "บริการ",
@@ -934,7 +1163,13 @@
   "meetupsPriceTotal": "รวมทั้งหมด",
   "meetupsYourReview": "คำวิจารณ์ของคุณ",
   "meetupsYouRated": "คุณให้คะแนน {name}",
-  "@meetupsYouRated": {"placeholders": {"name": {"type": "String"}}},
+  "@meetupsYouRated": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "meetupsProgress": "ความคืบหน้า",
   "meetupsCancellationPolicy": "นโยบายยกเลิก",
   "meetupsCancelBefore": "ยกเลิกก่อน ",
@@ -947,12 +1182,10 @@
   "meetupsActionReport": "รายงาน",
   "meetupsActionConfirmShort": "ยืนยัน",
   "meetupsSnackPleaseTitle": "กรุณา",
-
   "loginRoleCustomerLabel": "ลูกค้า",
   "loginRoleCustomerSub": "ค้นหาและจองบริการ",
   "loginRoleCompanionLabel": "ผู้ให้บริการ",
   "loginRoleCompanionSub": "โพสต์บริการและรับการจอง",
-
   "forgotTitle": "ลืมรหัสผ่าน",
   "forgotEnterRegistered": "ใส่เบอร์โทรที่ลงทะเบียน",
   "forgotOtpWillSendHere": "รหัส OTP จะถูกส่งไปยังเบอร์นี้",
@@ -964,7 +1197,6 @@
   "forgotSavePassword": "บันทึกรหัสผ่าน",
   "forgotStepPhone": "โทรศัพท์",
   "forgotConfirmPassword": "ยืนยันรหัสผ่าน",
-
   "feedbackTitle": "คำติชม",
   "feedbackSubtitle": "ส่งความคิดเห็นหรือรายงานปัญหา",
   "feedbackSendNew": "ส่งคำติชมใหม่",
@@ -981,24 +1213,27 @@
   "feedbackEmptyTitle": "ยังไม่มีคำติชม",
   "feedbackEmptySubtitle": "ส่งคำติชมของคุณด้านบน",
   "feedbackStatusResolved": "แก้ไขแล้ว",
-
   "feedbackTypeBug": "ข้อผิดพลาด (Bug)",
   "feedbackTypeFeature": "ข้อเสนอ (Feature)",
   "feedbackTypeGeneral": "ทั่วไป (General)",
   "feedbackTypePayment": "ปัญหาการชำระ (Payment)",
   "feedbackTypePerformance": "ประสิทธิภาพ (Performance)",
   "feedbackTypeOther": "อื่นๆ (Other)",
-
   "dashboardTabChat": "คู่แชท",
   "dashboardTabPosts": "โพสต์หาคู่",
-
   "reviewRatingRequired": "กรุณาให้คะแนน",
   "reviewTextRequired": "กรุณาเขียนรีวิว",
   "reviewSubmitSuccess": "ส่งรีวิวสำเร็จ",
   "reviewSubmitFailed": "ส่งรีวิวไม่สำเร็จ",
   "reviewWriteTitle": "เขียนรีวิว",
   "reviewForCompanion": "สำหรับ {name}",
-  "@reviewForCompanion": {"placeholders": {"name": {"type": "String"}}},
+  "@reviewForCompanion": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "reviewGiveRating": "ให้คะแนน",
   "reviewSubjectLabel": "หัวข้อ (ทางเลือก)",
   "reviewSubjectHint": "ใส่หัวข้อรีวิว...",
@@ -1011,7 +1246,6 @@
   "reviewRatingVeryGood": "ดีมาก",
   "reviewRatingExcellent": "ยอดเยี่ยม!",
   "reviewRatingPick": "เลือกคะแนน",
-
   "cpRatingsSection": "คะแนนและรีวิว",
   "cpStatusAvailable": "รับจอง",
   "cpStatusUnavailable": "ไม่รับจอง",
@@ -1020,31 +1254,66 @@
   "cpNoReviewsBeFirst": "ยังไม่มีรีวิว เป็นคนแรก!",
   "cpLoadMoreReviews": "โหลดรีวิวเพิ่ม",
   "cpReviewsCount": "{count} รีวิว",
-  "@cpReviewsCount": {"placeholders": {"count": {"type": "int"}}},
+  "@cpReviewsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "cpOnline": "ออนไลน์",
   "cpStatReviews": "รีวิว",
   "cpStatFollowers": "ติดตาม",
   "cpAnonymous": "นิรนาม",
   "cpBookNow": "จองเลย",
-
   "chatTitle": "สนทนา",
   "chatNewMessages": "{count} ข้อความใหม่",
-  "@chatNewMessages": {"placeholders": {"count": {"type": "int"}}},
+  "@chatNewMessages": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "chatSearchHint": "ค้นหา...",
   "chatFallbackName": "การสนทนานี้",
   "chatDeleteConvTitle": "ลบการสนทนา",
   "chatDeleteConvMessage": "ลบการสนทนากับ {name}?\nข้อความยังคงมองเห็นได้จากอีกฝ่าย",
-  "@chatDeleteConvMessage": {"placeholders": {"name": {"type": "String"}}},
+  "@chatDeleteConvMessage": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "chatCantEnter": "ไม่สามารถเข้าได้",
   "chatBlockedByYou": "คุณได้บล็อกการสนทนานี้",
   "chatBlockedByOther": "การสนทนานี้ถูกบล็อก",
   "chatUnblockName": "ยกเลิกการบล็อก {name}",
-  "@chatUnblockName": {"placeholders": {"name": {"type": "String"}}},
+  "@chatUnblockName": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "chatBlockName": "บล็อก {name}",
-  "@chatBlockName": {"placeholders": {"name": {"type": "String"}}},
+  "@chatBlockName": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "chatUnblockConfirmMsg": "ยกเลิกการบล็อกและสนทนาต่อ?",
   "chatBlockConfirmMsg": "คุณและ {name} จะไม่สามารถส่งข้อความหากันได้",
-  "@chatBlockConfirmMsg": {"placeholders": {"name": {"type": "String"}}},
+  "@chatBlockConfirmMsg": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "chatUnblock": "ยกเลิกการบล็อก",
   "chatBlock": "บล็อก",
   "chatEmpty": "ไม่พบการสนทนา",
@@ -1071,7 +1340,6 @@
   "chatLocationPermBody": "เปิดการเข้าถึงตำแหน่งในการตั้งค่า เพื่อส่งตำแหน่งของคุณ",
   "chatLocationFixFailed": "ไม่สามารถหาตำแหน่งได้ กรุณาลองใหม่",
   "chatLocationOpenFailed": "ไม่สามารถเปิดแผนที่ได้",
-
   "bookingLabelDate": "วันที่",
   "bookingTotalPriceShort": "ราคารวม",
   "bookingGoToMeetups": "ไปหน้าการนัดพบ",
@@ -1088,16 +1356,43 @@
   "bookingAttireHint": "ตัวอย่าง: แต่งตัวเซ็กซี่ (ทางเลือก)",
   "bookingTipService": "ทิป / บริการ",
   "bookingAddTipTo": "เพิ่มทิปให้ {name}",
-  "@bookingAddTipTo": {"placeholders": {"name": {"type": "String"}}},
+  "@bookingAddTipTo": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "bookingRatePerUnit": "{rate} กีบ / {unit}",
-  "@bookingRatePerUnit": {"placeholders": {"rate": {"type": "String"}, "unit": {"type": "String"}}},
+  "@bookingRatePerUnit": {
+    "placeholders": {
+      "rate": {
+        "type": "String"
+      },
+      "unit": {
+        "type": "String"
+      }
+    }
+  },
   "bookingCountUnit": "จำนวน{unit}",
-  "@bookingCountUnit": {"placeholders": {"unit": {"type": "String"}}},
+  "@bookingCountUnit": {
+    "placeholders": {
+      "unit": {
+        "type": "String"
+      }
+    }
+  },
   "bookingSelectTime": "เลือกเวลา",
   "bookingSlotBooked": "จองแล้ว",
   "bookingSelectMassageType": "เลือกประเภทนวด",
   "bookingVariantsCount": "{count} ประเภท",
-  "@bookingVariantsCount": {"placeholders": {"count": {"type": "int"}}},
+  "@bookingVariantsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "bookingDateAppointment": "วันที่นัดหมาย",
   "bookingTimeMeeting": "เวลาพบกัน",
   "bookingTimeFormat": "ชั่วโมง:นาที",
@@ -1105,7 +1400,6 @@
   "bookingMassageTypeLabel": "ประเภทนวด",
   "bookingSelectVariant": "เลือกประเภท",
   "bookingCreationFailed": "การจองล้มเหลว",
-
   "shareTitle": "ชวนเพื่อน",
   "shareAppbarSubtitle": "แชร์ลิงก์และเพิ่มรายได้ของคุณ",
   "shareSubtitleGeneral": "รับ 10,000 กีบ ต่อการแนะนำ",
@@ -1114,7 +1408,13 @@
   "shareTierSpecial": "พิเศษ",
   "shareTierPartner": "พาร์ทเนอร์",
   "shareTierBadge": "ระดับ {tier}",
-  "@shareTierBadge": {"placeholders": {"tier": {"type": "String"}}},
+  "@shareTierBadge": {
+    "placeholders": {
+      "tier": {
+        "type": "String"
+      }
+    }
+  },
   "shareTabModel": "ลิงก์แนะนำโมเดล",
   "shareTabCustomer": "ลิงก์แนะนำลูกค้า",
   "shareLinkModelDesc": "แชร์ลิงก์นี้ให้เพื่อนที่ต้องการเป็นโมเดล",
@@ -1133,22 +1433,58 @@
   "shareLearnMore": "เรียนรู้เพิ่มเติมเกี่ยวกับระดับ",
   "shareProgressToNext": "ความคืบหน้าสู่ระดับต่อไป",
   "shareUpgradeToSpecialRemaining": "อีก {n} คน ถึงจะได้ระดับพิเศษ",
-  "@shareUpgradeToSpecialRemaining": {"placeholders": {"n": {"type": "int"}}},
+  "@shareUpgradeToSpecialRemaining": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
   "shareUpgradeToPartnerRemainingModels": "อีก {n} คน ถึงจะได้ระดับพาร์ทเนอร์",
-  "@shareUpgradeToPartnerRemainingModels": {"placeholders": {"n": {"type": "int"}}},
+  "@shareUpgradeToPartnerRemainingModels": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
   "shareUpgradeToPartnerRemainingEarnings": "อีก {amount} กีบ ถึงจะได้ระดับพาร์ทเนอร์",
-  "@shareUpgradeToPartnerRemainingEarnings": {"placeholders": {"amount": {"type": "String"}}},
+  "@shareUpgradeToPartnerRemainingEarnings": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
   "shareTierMaxed": "คุณได้ระดับสูงสุดแล้ว",
   "shareCurrentTier": "ระดับปัจจุบัน",
   "shareEarnPerReferral": "รับ {amount} กีบ / คน",
-  "@shareEarnPerReferral": {"placeholders": {"amount": {"type": "String"}}},
+  "@shareEarnPerReferral": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
   "shareInviteMessage": "สมัคร Xaosao ผ่านลิงก์ของฉัน!",
   "shareInviteSubject": "เข้าร่วม Xaosao",
   "appName": "Xaosao",
   "bookingThankYouFor": "ขอบคุณที่ใช้บริการผ่าน {appName}",
-  "@bookingThankYouFor": {"placeholders": {"appName": {"type": "String"}}},
+  "@bookingThankYouFor": {
+    "placeholders": {
+      "appName": {
+        "type": "String"
+      }
+    }
+  },
   "bookingSupportContact": "สอบถามเพิ่มเติม โทร {phone}",
-  "@bookingSupportContact": {"placeholders": {"phone": {"type": "String"}}},
+  "@bookingSupportContact": {
+    "placeholders": {
+      "phone": {
+        "type": "String"
+      }
+    }
+  },
   "shareCommissionReferral": "การแนะนำ",
   "shareQrBrandName": "xaosao — บริการท้องถิ่น",
   "shareQrBrandTagline": "บริการท้องถิ่นที่คัดสรรมาอย่างดี พร้อมเสมอเมื่อคุณต้องการ",
@@ -1157,7 +1493,6 @@
   "shareQrSaved": "บันทึก QR ลงคลังรูปภาพแล้ว",
   "shareQrSaveFailed": "ไม่สามารถบันทึกได้ กรุณาลองใหม่",
   "shareQrErrorGeneric": "เกิดข้อผิดพลาด กรุณาลองใหม่",
-
   "analyticsTitle": "การวิเคราะห์การแนะนำ",
   "analyticsSubtitle": "สถิติและรายได้ของคุณ",
   "analyticsLoadFailed": "โหลดข้อมูลไม่สำเร็จ",
@@ -1185,9 +1520,14 @@
   "analyticsActiveCustomers": "ลูกค้าที่ใช้งาน",
   "analyticsReady": "พร้อมแล้ว!",
   "analyticsSpecialCondition": "แนะนำโมเดลให้ครบ {n} คน",
-  "@analyticsSpecialCondition": {"placeholders": {"n": {"type": "int"}}},
+  "@analyticsSpecialCondition": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
   "analyticsPartnerCondition": "ต้องมีทั้งโมเดลและรายได้",
-
   "snackbarErrorTitle": "ผิดพลาด",
   "snackbarSuccessTitle": "สำเร็จ",
   "snackbarInfoTitle": "ข้อมูล",
@@ -1204,13 +1544,24 @@
   "phoneMustStartWith20": "เบอร์โทรต้องขึ้นต้นด้วย 20",
   "phonePrefixInvalid": "ต้องเป็น: 202, 205, 206, 207 หรือ 209",
   "phoneLength": "เบอร์โทรต้องมี {n} หลัก",
-  "@phoneLength": {"placeholders": {"n": {"type": "int"}}},
+  "@phoneLength": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
   "deepLinkShareSelf": "ดูโปรไฟล์ของฉันบน Xaosao",
   "deepLinkShareOther": "ดูโปรไฟล์ของ {name} บน Xaosao",
-  "@deepLinkShareOther": {"placeholders": {"name": {"type": "String"}}},
+  "@deepLinkShareOther": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "dateToday": "วันนี้",
   "dateYesterday": "เมื่อวาน",
-
   "commonSearch": "ค้นหา...",
   "commonPasswordHint": "รหัสผ่าน",
   "commonImageLoadFailed": "โหลดรูปไม่ได้",
@@ -1226,14 +1577,28 @@
   "updateWhatsNew": "มีอะไรใหม่",
   "giftSheetTitle": "🎁 ส่งของขวัญ",
   "giftSheetPickFor": "เลือกของขวัญให้ {name}",
-  "@giftSheetPickFor": {"placeholders": {"name": {"type": "String"}}},
+  "@giftSheetPickFor": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "giftEmpty": "ไม่มีของขวัญในขณะนี้",
   "giftPickFirst": "โปรดเลือกของขวัญก่อน",
   "giftSendFailed": "ส่งของขวัญไม่สำเร็จ",
   "giftSendSuccess": "ส่งของขวัญสำเร็จ!",
   "giftSendButton": "ส่ง {name} · {price}",
-  "@giftSendButton": {"placeholders": {"name": {"type": "String"}, "price": {"type": "String"}}},
-
+  "@giftSendButton": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "price": {
+        "type": "String"
+      }
+    }
+  },
   "tiersTitle": "ระดับ Referral โมเดล",
   "tiersSubtitle": "เรียนรู้วิธีเพิ่มรายได้ของคุณ",
   "tiersOverview": "ลิงก์ Referral ของโมเดล แบ่งออกเป็น 3 ระดับ",
@@ -1255,5 +1620,91 @@
   "announcementTitle": "ข่าวสาร",
   "announcementBadge": "ประกาศทางการ",
   "announcementFrom": "จากทีมงาน Xaosao",
-  "announcementGotIt": "เข้าใจแล้ว"
+  "announcementGotIt": "เข้าใจแล้ว",
+  "checkinTitle": "เช็คอินประจำวัน",
+  "checkinStreak": "{count} วัน",
+  "checkinNextIn": "เช็คอินครั้งถัดไป",
+  "checkinNextHint": "จนกว่าจะได้รางวัลวันถัดไป",
+  "checkinTodayPays": "วันนี้ได้รับ",
+  "checkinTodayHint": "เข้ากระเป๋าเงินของคุณ",
+  "checkinClaim": "เช็คอินรับ {amount} ₭",
+  "checkinClaimed": "เช็คอินสำเร็จ ได้รับ {amount} ₭ เข้ากระเป๋าเงินแล้ว",
+  "checkinDoneToday": "คุณเช็คอินวันนี้แล้ว กลับมาใหม่พรุ่งนี้",
+  "checkinFinished": "รางวัลเช็คอินของวันนี้หมดแล้ว",
+  "checkinClosedToday": "วันนี้ไม่มีการเช็คอิน กลับมาใหม่พรุ่งนี้",
+  "checkinMon": "จ.",
+  "checkinTue": "อ.",
+  "checkinWed": "พ.",
+  "checkinThu": "พฤ.",
+  "checkinFri": "ศ.",
+  "checkinSat": "ส.",
+  "checkinSun": "อา.",
+  "assistantTitle": "ถามแอดมิน",
+  "assistantHint": "บอกฉันว่าคุณกำลังมองหาใคร",
+  "assistantGreeting": "สวัสดี! คุณกำลังมองหาใคร บอกอายุ พื้นที่ หรือบริการที่ต้องการได้เลย",
+  "assistantPlaceholder": "เช่น คนอายุ 20-25 ใกล้ฉัน",
+  "assistantTryAsking": "ลองถาม",
+  "assistantQ1": "คนที่อยู่ใกล้ฉัน",
+  "assistantQ2": "อายุ 20 ถึง 25 ปี",
+  "assistantQ3": "คนที่นวดได้",
+  "assistantQ4": "คะแนนสูงสุด",
+  "assistantThinking": "กำลังค้นหา...",
+  "assistantAge": "อายุ",
+  "callTitle": "โทร",
+  "callName": "โทรหา {name}",
+  "callVoice": "เสียง",
+  "callVideo": "วิดีโอ",
+  "callPerMinute": "ต่อนาที",
+  "callYourBalance": "ยอดเงินของคุณ",
+  "callCoversMinutes": "เพียงพอประมาณ {minutes} นาที",
+  "callNeedTwoMinutes": "คุณต้องมีอย่างน้อย {amount} ₭ เพื่อเริ่มการโทร",
+  "callTopUp": "เติมเงิน",
+  "callBillingNote": "คิดค่าบริการต่อนาที ปัดขึ้น 10 วินาทีแรกฟรี และส่วนที่ไม่ได้ใช้จะคืนเข้ากระเป๋าเงินของคุณ",
+  "callNotAvailable": "ผู้ใช้นี้ไม่รับสายในขณะนี้",
+  "callIncoming": "สายเรียกเข้า",
+  "callAnswer": "รับสาย",
+  "callDecline": "ปฏิเสธ",
+  "callSomeone": "ผู้ใช้",
+  "callEnded": "การโทรสิ้นสุด",
+  "callDuration": "ระยะเวลา",
+  "callMinutes": "นาที",
+  "callCharged": "คิดค่าบริการแล้ว",
+  "callReturned": "คืนเข้ากระเป๋าเงิน",
+  "callYouEarned": "คุณได้รับ",
+  "callNoAnswer": "ไม่มีผู้รับสาย ไม่มีการคิดค่าบริการ",
+  "callDeclined": "การโทรถูกปฏิเสธ ไม่มีการคิดค่าบริการ",
+  "callCancelled": "คุณยกเลิกการโทร ไม่มีการคิดค่าบริการ",
+  "callNotConnected": "การโทรไม่สำเร็จ ไม่มีการคิดค่าบริการ",
+  "callNotConnectedModel": "การโทรไม่สำเร็จ",
+  "callEndedNoFunds": "ยอดเงินหมด การโทรจึงสิ้นสุด",
+  "callEndedMaxDuration": "ครบกำหนด 60 นาทีต่อการโทร",
+  "callEndedNetwork": "การเชื่อมต่อขาดหาย การโทรจึงสิ้นสุด",
+  "callErrorAlreadyOnCall": "การโทรครั้งก่อนของคุณยังเปิดอยู่ จะสิ้นสุดเองภายในไม่ถึง 1 นาที แล้วลองใหม่",
+  "callErrorPeerBusy": "ผู้ใช้นี้กำลังคุยสายกับคนอื่นอยู่",
+  "callErrorPeerUnavailable": "ผู้ใช้นี้ไม่พร้อมให้บริการ",
+  "callErrorServiceDown": "การโทรไม่สามารถใช้ได้ในขณะนี้ กรุณาลองใหม่ภายหลัง",
+  "callWentOffline": "เธอเพิ่งออฟไลน์ไป เราแจ้งเธอแล้วว่าคุณอยากโทรหา — ลองใหม่อีกสักครู่ หรือหาคนที่ออนไลน์อยู่",
+  "callMicDenied": "การโทรต้องการสิทธิ์เข้าถึงไมโครโฟน กรุณาอนุญาตในการตั้งค่าแล้วลองใหม่",
+  "callConnectFailed": "ไม่สามารถเชื่อมต่อการโทรได้ กรุณาลองใหม่",
+  "callTimeLeft": "เหลือ {time}",
+  "callRinging": "กำลังโทร…",
+  "callConnecting": "กำลังเชื่อมต่อ…",
+  "callCostSoFar": "ค่าใช้จ่ายถึงตอนนี้",
+  "callEarningSoFar": "รายได้ถึงตอนนี้",
+  "callLowBalance": "ยอดเงินเหลือไม่ถึง 1 นาที",
+  "callOfflineTitle": "{name} ออฟไลน์อยู่",
+  "callOfflineBody": "ติดต่อได้เฉพาะตอนที่เธอเปิดแอปอยู่ คุณสามารถแจ้งให้เธอรู้ว่าคุณอยากโทรหา — ไม่มีการคิดเงิน",
+  "callOfflineNotified": "แจ้ง {name} แล้วว่าคุณอยากโทรหา เธอจะเห็นเมื่อเปิดแอปครั้งถัดไป — ยังไม่มีการคิดเงิน",
+  "callNotifyHer": "แจ้งให้เธอรู้ว่าคุณอยากโทรหา",
+  "callNoticeSent": "แจ้งเธอแล้ว",
+  "callFindOnline": "หาคนที่ออนไลน์อยู่",
+  "callOnlineNow": "ออนไลน์",
+  "callHangUp": "วางสาย",
+  "callEndConfirm": "วางสายการโทรนี้ไหม?",
+  "callMute": "ปิดเสียง",
+  "callSpeaker": "ลำโพง",
+  "callCamera": "กล้อง",
+  "callFlipCamera": "สลับกล้อง",
+  "callNoLongerRinging": "สายนี้ไม่ได้เรียกเข้าแล้ว",
+  "callDone": "ตกลง"
 }

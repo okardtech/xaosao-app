@@ -71,7 +71,9 @@ dependencies:
   # Guideline 5.1.2(i) so AppsFlyer can collect IDFA for attribution.
   # No-op on Android.
   app_tracking_transparency: ^2.0.6+1
-
+  livekit_client: ^2.14.0
+  flutter_callkit_incoming: ^3.1.6
+  audioplayers: ^6.8.1
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -101,6 +103,7 @@ flutter:
     - assets/images/
     - assets/icons/
     - assets/fonts/
+    - assets/sounds/
     - shorebird.yaml
 
   # An image asset can refer to one or more resolution-specific "variants", see
@@ -130,3 +133,13 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package
+
+dependency_overrides:
+  # livekit_client >=2.4 needs device_info_plus >=11; new_version_plus 1.0.1
+  # pins ^10 but only reads androidInfo.id / iosInfo.identifierForVendor,
+  # which are unchanged in 12.
+  device_info_plus: ">=12.3.0 <12.4.0"
+  # connectivity_plus 7.1+ (via livekit_client) uses an iOS 26-only API
+  # (NWPath.isUltraConstrained) that Xcode 16 cannot compile. Remove this
+  # once the build machine is on Xcode 26.
+  connectivity_plus: ">=7.0.0 <7.1.0"

@@ -1,4 +1,5 @@
 ﻿import 'package:flutter/material.dart';
+import 'package:xaosao/pages/call/call_confirm_page.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -678,6 +679,54 @@ class _CompanionProfilePageState extends State<CompanionProfilePage> {
               );
             }),
           ),
+          // Call, beside Chat, for a model who sells per-minute calls.
+          // Customers only: a model never places a call.
+          Obx(() {
+            // Read the (reactive) services first: Obx must always touch
+            // an observable, even when the viewer is not a customer.
+            final sellsCalls = _logic.state.services
+                .any((s) => s.billingType == 'per_minute');
+            final takesCalls = sellsCalls && _viewerIsCustomer;
+            if (!takesCalls) return const SizedBox.shrink();
+            return Expanded(
+              child: Padding(
+                padding: EdgeInsets.only(left: 8.w),
+                child: GestureDetector(
+                  onTap: _startCall,
+                  child: Container(
+                    height: 44.h,
+                    decoration: BoxDecoration(
+                      color: AppColors.primary,
+                      borderRadius: BorderRadius.circular(13.r),
+                      boxShadow: [
+                        BoxShadow(
+                          color: AppColors.primary.withValues(alpha: 0.25),
+                          blurRadius: 16,
+                          offset: const Offset(0, 6),
+                        ),
+                      ],
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.call_rounded,
+                            size: 15.r, color: Colors.white),
+                        SizedBox(width: 6.w),
+                        Text(
+                          _l10n.callTitle,
+                          style: TextStyle(
+                            fontSize: 12.sp,
+                            fontWeight: FontWeight.w700,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            );
+          }),
           SizedBox(width: 8.w),
           Obx(() {
             final profile = _logic.state.profile;
@@ -787,11 +836,42 @@ class _CompanionProfilePageState extends State<CompanionProfilePage> {
     }
   }
 
+  bool get _viewerIsCustomer =>
+      Get.find<StorageService>().read<String>('role') == 'customer';
+
+  /// Open the call screen for this model. Only customers place calls; a
+  /// model only answers them (the backend refuses a model with 403 too).
+  void _startCall() {
+    final profile = _logic.state.profile;
+    if (profile == null || !_viewerIsCustomer) return;
+    final callName = [
+      profile.firstName,
+      profile.lastName,
+    ].where((s) => s != null && s.isNotEmpty).join(' ');
+    Get.to(
+      () => CallConfirmPage(
+        modelId: profile.id ?? '',
+        modelName: callName.isEmpty ? 'Unknown' : callName,
+        modelPhoto: profile.profile,
+      ),
+    );
+  }
+
   Future<void> _onBook() async {
     final svc = _logic.selectedService;
     if (svc == null) return;
     final profile = _logic.state.profile;
     if (profile == null) return;
+
+    // A call is not booked. Per-minute services ring the model now, so
+    // they skip the booking screen and its subscription gate — calling is
+    // paid from the wallet by the minute. The call screen itself checks
+    // whether she takes calls, is online, and whether the wallet covers
+    // two minutes. Same rule as the website (profile.tsx handleBookClick).
+    if (svc.billingType == 'per_minute') {
+      _startCall();
+      return;
+    }
 
     // 1. Check subscription status first
     final activeRes = await PackageRepo().packageActive();
@@ -1807,9 +1887,14 @@ class _BookingBar extends StatelessWidget {
     final l10n = AppLocalizations.of(context)!;
     final svc = selectedService;
     final hasService = svc != null;
-    final price = svc?.customRate ?? svc?.customHourlyRate;
+    final price = svc?.effectiveRate;
     final priceStr = price != null ? CurrFormatter.format(price.toInt()) : '0';
     final billing = svc?.billingType ?? '';
+    final isCall = billing == 'per_minute';
+    // Only customers place calls; for anyone else the Call button is off.
+    final isCustomer =
+        Get.find<StorageService>().read<String>('role') == 'customer';
+    final canTap = hasService && (!isCall || isCustomer);
 
     return Container(
       padding: EdgeInsets.fromLTRB(
@@ -1905,22 +1990,22 @@ class _BookingBar extends StatelessWidget {
 
           // Book button
           GestureDetector(
-            onTap: hasService ? onBook : null,
+            onTap: canTap ? onBook : null,
             child: AnimatedContainer(
               duration: const Duration(milliseconds: 220),
               height: 48.h,
               padding: EdgeInsets.symmetric(horizontal: 28.w),
               decoration: BoxDecoration(
-                gradient: hasService
+                gradient: canTap
                     ? const LinearGradient(
                         colors: AppColors.pinkGradient,
                         begin: Alignment.centerLeft,
                         end: Alignment.centerRight,
                       )
                     : null,
-                color: hasService ? null : const Color(0xFFE5E5EF),
+                color: canTap ? null : const Color(0xFFE5E5EF),
                 borderRadius: BorderRadius.circular(16.r),
-                boxShadow: hasService
+                boxShadow: canTap
                     ? [
                         BoxShadow(
                           color: AppColors.primary.withValues(alpha: 0.35),
@@ -1936,21 +2021,28 @@ class _BookingBar extends StatelessWidget {
                   // Icon(
                   //   Icons.calendar_today_rounded,
                   //   size: 14.r,
-                  //   color: hasService ? Colors.white : AppColors.textHint,
+                  //   color: canTap ? Colors.white : AppColors.textHint,
                   // ),
-                  AppSvgIcon(
-                    assetName: AppIcons.calendar,
-                    width: 14.w,
-                    height: 14.h,
-                    color: hasService ? Colors.white : AppColors.textHint,
-                  ),
+                  if (isCall)
+                    Icon(
+                      Icons.call,
+                      size: 16.r,
+                      color: canTap ? Colors.white : AppColors.textHint,
+                    )
+                  else
+                    AppSvgIcon(
+                      assetName: AppIcons.calendar,
+                      width: 14.w,
+                      height: 14.h,
+                      color: canTap ? Colors.white : AppColors.textHint,
+                    ),
                   SizedBox(width: 7.w),
                   Text(
-                    l10n.cpBookNow,
+                    isCall ? l10n.callTitle : l10n.cpBookNow,
                     style: TextStyle(
                       fontSize: 14.sp,
                       fontWeight: FontWeight.w800,
-                      color: hasService ? Colors.white : AppColors.textHint,
+                      color: canTap ? Colors.white : AppColors.textHint,
                       letterSpacing: 0.2,
                     ),
                   ),

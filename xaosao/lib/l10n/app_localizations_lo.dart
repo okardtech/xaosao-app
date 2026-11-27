@@ -578,6 +578,30 @@ class AppLocalizationsLo extends AppLocalizations {
   String get serviceTypeSocial => 'ເພື່ອນສັງຄົມ';
 
   @override
+  String get serviceNameDrinking => 'ຄູ່ດື່ມ';
+
+  @override
+  String get serviceNameTravel => 'ຄູ່ທ່ຽວ';
+
+  @override
+  String get serviceNameMassage => 'ນວດ';
+
+  @override
+  String get serviceNamePimai => 'ຄູ່ບຸນປີໃໝ່';
+
+  @override
+  String get serviceNameThatLuang => 'ຄູ່ບຸນທາດຫຼວງ';
+
+  @override
+  String get serviceNameHmongNewYear => 'ຄູ່ບຸນກິນຈຽງ';
+
+  @override
+  String get serviceNameCountdown => 'ຄູ່ເຄົ້າດາວ';
+
+  @override
+  String get serviceNameCall => 'ໂທລົມເປັນໝູ່';
+
+  @override
   String get serviceTypeMassage => 'ນວດ';
 
   @override
@@ -3443,4 +3467,287 @@ class AppLocalizationsLo extends AppLocalizations {
 
   @override
   String get announcementGotIt => 'ເຂົ້າໃຈແລ້ວ';
+
+  @override
+  String get checkinTitle => 'ເຊັກອິນປະຈຳວັນ';
+
+  @override
+  String checkinStreak(int count) {
+    return '$count ວັນ';
+  }
+
+  @override
+  String get checkinNextIn => 'ເຊັກອິນຄັ້ງຕໍ່ໄປ';
+
+  @override
+  String get checkinNextHint => 'ຈົນກວ່າຈະໄດ້ຮັບລາງວັນມື້ຖັດໄປ';
+
+  @override
+  String get checkinTodayPays => 'ມື້ນີ້ໄດ້ຮັບ';
+
+  @override
+  String get checkinTodayHint => 'ເຂົ້າກະເປົາເງິນຂອງທ່ານ';
+
+  @override
+  String checkinClaim(String amount) {
+    return 'ເຊັກອິນຮັບ $amount ₭';
+  }
+
+  @override
+  String checkinClaimed(String amount) {
+    return 'ເຊັກອິນສຳເລັດ. ໄດ້ຮັບ $amount ₭ ເຂົ້າກະເປົາເງິນແລ້ວ.';
+  }
+
+  @override
+  String get checkinDoneToday => 'ທ່ານເຊັກອິນມື້ນີ້ແລ້ວ. ກັບມາໃໝ່ມື້ອື່ນ.';
+
+  @override
+  String get checkinFinished => 'ລາງວັນເຊັກອິນຂອງມື້ນີ້ໝົດແລ້ວ.';
+
+  @override
+  String get checkinClosedToday => 'ມື້ນີ້ບໍ່ມີການເຊັກອິນ. ກັບມາໃໝ່ມື້ອື່ນ.';
+
+  @override
+  String get checkinMon => 'ຈັນ';
+
+  @override
+  String get checkinTue => 'ອັງຄານ';
+
+  @override
+  String get checkinWed => 'ພຸດ';
+
+  @override
+  String get checkinThu => 'ພະຫັດ';
+
+  @override
+  String get checkinFri => 'ສຸກ';
+
+  @override
+  String get checkinSat => 'ເສົາ';
+
+  @override
+  String get checkinSun => 'ອາທິດ';
+
+  @override
+  String get assistantTitle => 'ຖາມແອັດມີນ';
+
+  @override
+  String get assistantHint => 'ບອກຂ້ອຍວ່າທ່ານຊອກຫາໃຜ';
+
+  @override
+  String get assistantGreeting =>
+      'ສະບາຍດີ! ທ່ານກຳລັງຊອກຫາໃຜ? ບອກອາຍຸ, ເຂດ ຫຼື ບໍລິການທີ່ຕ້ອງການ.';
+
+  @override
+  String get assistantPlaceholder => 'ເຊັ່ນ: ສາວອາຍຸ 20-25 ຢູ່ໃກ້ໆ';
+
+  @override
+  String get assistantTryAsking => 'ລອງຖາມ';
+
+  @override
+  String get assistantQ1 => 'ຄົນທີ່ຢູ່ໃກ້ຂ້ອຍ';
+
+  @override
+  String get assistantQ2 => 'ອາຍຸ 20 ຫາ 25 ປີ';
+
+  @override
+  String get assistantQ3 => 'ຄົນທີ່ນວດໄດ້';
+
+  @override
+  String get assistantQ4 => 'ຄະແນນສູງສຸດ';
+
+  @override
+  String get assistantThinking => 'ກຳລັງຊອກຫາ...';
+
+  @override
+  String get assistantAge => 'ອາຍຸ';
+
+  @override
+  String get callTitle => 'ໂທ';
+
+  @override
+  String callName(String name) {
+    return 'ໂທຫາ $name';
+  }
+
+  @override
+  String get callVoice => 'ສຽງ';
+
+  @override
+  String get callVideo => 'ວິດີໂອ';
+
+  @override
+  String get callPerMinute => 'ຕໍ່ນາທີ';
+
+  @override
+  String get callYourBalance => 'ຍອດເງິນຂອງທ່ານ';
+
+  @override
+  String callCoversMinutes(String minutes) {
+    return 'ພຽງພໍປະມານ $minutes ນາທີ';
+  }
+
+  @override
+  String callNeedTwoMinutes(String amount) {
+    return 'ທ່ານຕ້ອງມີຢ່າງໜ້ອຍ $amount ₭ ເພື່ອເລີ່ມການໂທ';
+  }
+
+  @override
+  String get callTopUp => 'ເຕີມເງິນ';
+
+  @override
+  String get callBillingNote =>
+      'ຄິດໄລ່ຕາມນາທີ, ປັດຂຶ້ນ. 10 ວິນາທີທຳອິດບໍ່ເສຍຄ່າ, ແລະ ສ່ວນທີ່ບໍ່ໄດ້ໃຊ້ຈະຄືນເຂົ້າກະເປົາເງິນຂອງທ່ານ.';
+
+  @override
+  String get callNotAvailable => 'ຜູ້ໃຊ້ນີ້ບໍ່ຮັບການໂທໃນຕອນນີ້.';
+
+  @override
+  String get callIncoming => 'ສາຍໂທເຂົ້າ';
+
+  @override
+  String get callAnswer => 'ຮັບສາຍ';
+
+  @override
+  String get callDecline => 'ປະຕິເສດ';
+
+  @override
+  String get callSomeone => 'ຜູ້ໃຊ້';
+
+  @override
+  String get callEnded => 'ການໂທສິ້ນສຸດ';
+
+  @override
+  String get callDuration => 'ໄລຍະເວລາ';
+
+  @override
+  String get callMinutes => 'ນາທີ';
+
+  @override
+  String get callCharged => 'ຄິດໄລ່ແລ້ວ';
+
+  @override
+  String get callReturned => 'ຄືນເຂົ້າກະເປົາເງິນ';
+
+  @override
+  String get callYouEarned => 'ທ່ານໄດ້ຮັບ';
+
+  @override
+  String get callNoAnswer => 'ບໍ່ມີຜູ້ຮັບສາຍ. ບໍ່ໄດ້ຄິດຄ່າບໍລິການ.';
+
+  @override
+  String get callDeclined => 'ການໂທຖືກປະຕິເສດ. ບໍ່ໄດ້ຄິດຄ່າບໍລິການ.';
+
+  @override
+  String get callCancelled => 'ທ່ານໄດ້ຍົກເລີກການໂທ. ບໍ່ໄດ້ຄິດຄ່າບໍລິການ.';
+
+  @override
+  String get callNotConnected => 'ການໂທບໍ່ສຳເລັດ. ບໍ່ໄດ້ຄິດຄ່າບໍລິການ.';
+
+  @override
+  String get callNotConnectedModel => 'ການໂທບໍ່ສຳເລັດ.';
+
+  @override
+  String get callEndedNoFunds => 'ຍອດເງິນໝົດ, ການໂທຈຶ່ງສິ້ນສຸດ.';
+
+  @override
+  String get callEndedMaxDuration => 'ຄົບກຳນົດ 60 ນາທີຕໍ່ການໂທ.';
+
+  @override
+  String get callEndedNetwork => 'ການເຊື່ອມຕໍ່ຂາດ, ການໂທຈຶ່ງສິ້ນສຸດ.';
+
+  @override
+  String get callErrorAlreadyOnCall =>
+      'ການໂທຄັ້ງກ່ອນຂອງທ່ານຍັງເປີດຢູ່. ມັນຈະສິ້ນສຸດເອງພາຍໃນບໍ່ເຖິງ 1 ນາທີ — ຈາກນັ້ນລອງໃໝ່.';
+
+  @override
+  String get callErrorPeerBusy => 'ຜູ້ໃຊ້ນີ້ກຳລັງໂທກັບຄົນອື່ນຢູ່.';
+
+  @override
+  String get callErrorPeerUnavailable => 'ຜູ້ໃຊ້ນີ້ບໍ່ພ້ອມໃຫ້ບໍລິການ.';
+
+  @override
+  String get callErrorServiceDown =>
+      'ການໂທບໍ່ສາມາດໃຊ້ໄດ້ໃນຕອນນີ້. ກະລຸນາລອງໃໝ່ພາຍຫຼັງ.';
+
+  @override
+  String get callWentOffline =>
+      'ລາວຫາກໍອອບລາຍໄປ. ພວກເຮົາໄດ້ແຈ້ງລາວແລ້ວ — ລອງໃໝ່ໃນອີກບໍ່ດົນ ຫຼື ຫາຄົນທີ່ອອນລາຍຢູ່.';
+
+  @override
+  String get callMicDenied =>
+      'ການໂທຕ້ອງການສິດເຂົ້າເຖິງໄມໂຄຣໂຟນ. ກະລຸນາອະນຸຍາດໃນການຕັ້ງຄ່າ ແລ້ວລອງໃໝ່.';
+
+  @override
+  String get callConnectFailed => 'ບໍ່ສາມາດເຊື່ອມຕໍ່ການໂທໄດ້. ກະລຸນາລອງໃໝ່.';
+
+  @override
+  String callTimeLeft(String time) {
+    return 'ເຫຼືອ $time';
+  }
+
+  @override
+  String get callRinging => 'ກຳລັງໂທ…';
+
+  @override
+  String get callConnecting => 'ກຳລັງເຊື່ອມຕໍ່…';
+
+  @override
+  String get callCostSoFar => 'ຄ່າໃຊ້ຈ່າຍຮອດຕອນນີ້';
+
+  @override
+  String get callEarningSoFar => 'ລາຍໄດ້ຮອດຕອນນີ້';
+
+  @override
+  String get callLowBalance => 'ຍອດເງິນເຫຼືອບໍ່ເຖິງ 1 ນາທີ';
+
+  @override
+  String callOfflineTitle(String name) {
+    return '$name ບໍ່ໄດ້ອອນລາຍ';
+  }
+
+  @override
+  String get callOfflineBody =>
+      'ຈະຕິດຕໍ່ໄດ້ສະເພາະເວລາທີ່ລາວເປີດແອັບຢູ່. ທ່ານສາມາດແຈ້ງໃຫ້ລາວຮູ້ວ່າທ່ານຢາກໂທຫາ — ບໍ່ມີການຫັກເງິນ.';
+
+  @override
+  String callOfflineNotified(String name) {
+    return 'ແຈ້ງ $name ແລ້ວວ່າທ່ານຢາກໂທຫາ. ລາວຈະເຫັນເມື່ອເປີດແອັບຄັ້ງຕໍ່ໄປ — ຍັງບໍ່ໄດ້ຫັກເງິນ.';
+  }
+
+  @override
+  String get callNotifyHer => 'ແຈ້ງໃຫ້ລາວຮູ້ວ່າທ່ານຢາກໂທຫາ';
+
+  @override
+  String get callNoticeSent => 'ແຈ້ງລາວແລ້ວ';
+
+  @override
+  String get callFindOnline => 'ຫາຄົນທີ່ອອນລາຍຢູ່';
+
+  @override
+  String get callOnlineNow => 'ອອນລາຍ';
+
+  @override
+  String get callHangUp => 'ວາງສາຍ';
+
+  @override
+  String get callEndConfirm => 'ວາງສາຍການໂທນີ້ບໍ?';
+
+  @override
+  String get callMute => 'ປິດສຽງ';
+
+  @override
+  String get callSpeaker => 'ລຳໂພງ';
+
+  @override
+  String get callCamera => 'ກ້ອງ';
+
+  @override
+  String get callFlipCamera => 'ສະຫຼັບກ້ອງ';
+
+  @override
+  String get callNoLongerRinging => 'ສາຍນີ້ບໍ່ໄດ້ໂທຢູ່ແລ້ວ.';
+
+  @override
+  String get callDone => 'ຕົກລົງ';
 }

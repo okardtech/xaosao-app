@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:xaosao/constants/app_color.dart';
 import 'package:xaosao/constants/app_icons.dart';
 import 'package:xaosao/l10n/app_localizations.dart';
+import 'package:xaosao/services/call_service.dart';
 import 'package:xaosao/services/notification_service.dart';
 import 'package:xaosao/services/permission_coordinator.dart';
 import 'package:xaosao/services/storage_service.dart';
@@ -124,6 +125,9 @@ class _DashboardPageState extends State<DashboardPage>
         final isHidden =
             Get.find<LoginLogic>().state.modelProfile?.isProfileHidden ?? false;
         if (isHidden) showHiddenProfileBanner(context);
+        // Answer a call accepted on the Android ringing screen while the
+        // app was closed, or ask once for the full-screen ring permission.
+        CallService.instance?.onModelHome();
       });
     }
 

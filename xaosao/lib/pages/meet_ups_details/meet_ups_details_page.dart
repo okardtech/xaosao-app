@@ -140,7 +140,10 @@ class _MeetUpsDetailsPageState extends State<MeetUpsDetailsPage> {
       countdown = start.difference(DateTime.now());
     }
 
-    final svcName = m.modelService?.service?.name ?? l10n.meetupsServiceFallback;
+    final rawSvc = m.modelService?.service?.name;
+    final svcName = rawSvc != null && rawSvc.isNotEmpty
+        ? ServiceHelper.serviceOriginalName(rawSvc)
+        : l10n.meetupsServiceFallback;
     final price = m.price ?? 0;
     // Unit noun comes from the service's billingType, so per_night and
     // per_minute services don't get mislabelled as days/hours.

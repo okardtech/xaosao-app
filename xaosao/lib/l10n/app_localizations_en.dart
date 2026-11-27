@@ -579,6 +579,30 @@ class AppLocalizationsEn extends AppLocalizations {
   String get serviceTypeSocial => 'Local Activities';
 
   @override
+  String get serviceNameDrinking => 'Drinking Buddy';
+
+  @override
+  String get serviceNameTravel => 'Travel Buddy';
+
+  @override
+  String get serviceNameMassage => 'Massage';
+
+  @override
+  String get serviceNamePimai => 'Pi Mai Buddy';
+
+  @override
+  String get serviceNameThatLuang => 'That Luang Buddy';
+
+  @override
+  String get serviceNameHmongNewYear => 'Hmong New Year Buddy';
+
+  @override
+  String get serviceNameCountdown => 'Countdown Buddy';
+
+  @override
+  String get serviceNameCall => 'Call Buddy';
+
+  @override
   String get serviceTypeMassage => 'Massage';
 
   @override
@@ -3453,4 +3477,291 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get announcementGotIt => 'Got it';
+
+  @override
+  String get checkinTitle => 'Daily check-in';
+
+  @override
+  String checkinStreak(int count) {
+    return '$count day';
+  }
+
+  @override
+  String get checkinNextIn => 'Next check-in';
+
+  @override
+  String get checkinNextHint => 'Until tomorrow\'s reward';
+
+  @override
+  String get checkinTodayPays => 'Today pays';
+
+  @override
+  String get checkinTodayHint => 'Credited to your wallet';
+
+  @override
+  String checkinClaim(String amount) {
+    return 'Check in and get $amount ₭';
+  }
+
+  @override
+  String checkinClaimed(String amount) {
+    return 'Checked in. $amount ₭ added to your wallet.';
+  }
+
+  @override
+  String get checkinDoneToday =>
+      'You have already checked in today. Come back tomorrow.';
+
+  @override
+  String get checkinFinished => 'Today\'s check-ins are finished.';
+
+  @override
+  String get checkinClosedToday => 'No check-in today. Come back tomorrow.';
+
+  @override
+  String get checkinMon => 'Mon';
+
+  @override
+  String get checkinTue => 'Tue';
+
+  @override
+  String get checkinWed => 'Wed';
+
+  @override
+  String get checkinThu => 'Thu';
+
+  @override
+  String get checkinFri => 'Fri';
+
+  @override
+  String get checkinSat => 'Sat';
+
+  @override
+  String get checkinSun => 'Sun';
+
+  @override
+  String get assistantTitle => 'Ask admin';
+
+  @override
+  String get assistantHint => 'Tell me who you\'re looking for';
+
+  @override
+  String get assistantGreeting =>
+      'Hi! Who are you looking for? Tell me the age, area, or service you want.';
+
+  @override
+  String get assistantPlaceholder => 'e.g. someone 20-25 near me';
+
+  @override
+  String get assistantTryAsking => 'Try asking';
+
+  @override
+  String get assistantQ1 => 'Someone near me';
+
+  @override
+  String get assistantQ2 => 'Age 20 to 25';
+
+  @override
+  String get assistantQ3 => 'Who does massage';
+
+  @override
+  String get assistantQ4 => 'Top rated';
+
+  @override
+  String get assistantThinking => 'Looking...';
+
+  @override
+  String get assistantAge => 'Age';
+
+  @override
+  String get callTitle => 'Call';
+
+  @override
+  String callName(String name) {
+    return 'Call $name';
+  }
+
+  @override
+  String get callVoice => 'Voice';
+
+  @override
+  String get callVideo => 'Video';
+
+  @override
+  String get callPerMinute => 'per minute';
+
+  @override
+  String get callYourBalance => 'Your balance';
+
+  @override
+  String callCoversMinutes(String minutes) {
+    return 'Enough for about $minutes minutes';
+  }
+
+  @override
+  String callNeedTwoMinutes(String amount) {
+    return 'You need at least $amount ₭ to start a call';
+  }
+
+  @override
+  String get callTopUp => 'Add money';
+
+  @override
+  String get callBillingNote =>
+      'Charged by the minute, rounded up. The first 10 seconds are free, and anything unused goes back to your wallet.';
+
+  @override
+  String get callNotAvailable => 'This person does not take calls right now.';
+
+  @override
+  String get callIncoming => 'Incoming call';
+
+  @override
+  String get callAnswer => 'Answer';
+
+  @override
+  String get callDecline => 'Decline';
+
+  @override
+  String get callSomeone => 'Someone';
+
+  @override
+  String get callEnded => 'Call ended';
+
+  @override
+  String get callDuration => 'Duration';
+
+  @override
+  String get callMinutes => 'min';
+
+  @override
+  String get callCharged => 'Charged';
+
+  @override
+  String get callReturned => 'Returned to wallet';
+
+  @override
+  String get callYouEarned => 'You earned';
+
+  @override
+  String get callNoAnswer => 'No answer. Nothing was charged.';
+
+  @override
+  String get callDeclined => 'The call was declined. Nothing was charged.';
+
+  @override
+  String get callCancelled => 'You cancelled the call. Nothing was charged.';
+
+  @override
+  String get callNotConnected =>
+      'The call did not connect. Nothing was charged.';
+
+  @override
+  String get callNotConnectedModel => 'The call did not connect.';
+
+  @override
+  String get callEndedNoFunds => 'The balance ran out, so the call ended.';
+
+  @override
+  String get callEndedMaxDuration =>
+      'The 60-minute limit for one call was reached.';
+
+  @override
+  String get callEndedNetwork => 'The connection was lost, so the call ended.';
+
+  @override
+  String get callErrorAlreadyOnCall =>
+      'Your last call is still open. It ends on its own in under a minute — then try again.';
+
+  @override
+  String get callErrorPeerBusy => 'This person is on another call.';
+
+  @override
+  String get callErrorPeerUnavailable => 'This person is not available.';
+
+  @override
+  String get callErrorServiceDown =>
+      'Calling is unavailable right now. Please try later.';
+
+  @override
+  String get callWentOffline =>
+      'She just went offline. We\'ve let her know you want to call — try again shortly, or find someone who is online now.';
+
+  @override
+  String get callMicDenied =>
+      'Microphone access is needed for a call. Allow it in Settings and try again.';
+
+  @override
+  String get callConnectFailed =>
+      'Could not connect the call. Please try again.';
+
+  @override
+  String callTimeLeft(String time) {
+    return '$time left';
+  }
+
+  @override
+  String get callRinging => 'Ringing…';
+
+  @override
+  String get callConnecting => 'Connecting…';
+
+  @override
+  String get callCostSoFar => 'Cost so far';
+
+  @override
+  String get callEarningSoFar => 'Earning so far';
+
+  @override
+  String get callLowBalance => 'Less than a minute of balance left';
+
+  @override
+  String callOfflineTitle(String name) {
+    return '$name is offline';
+  }
+
+  @override
+  String get callOfflineBody =>
+      'She can only be reached while the app is open. You can let her know you want to call — nothing is charged either way.';
+
+  @override
+  String callOfflineNotified(String name) {
+    return '$name has been told you want to call. She will see it when she next opens the app — nothing has been charged.';
+  }
+
+  @override
+  String get callNotifyHer => 'Let her know you want to call';
+
+  @override
+  String get callNoticeSent => 'She has been notified';
+
+  @override
+  String get callFindOnline => 'Find someone online';
+
+  @override
+  String get callOnlineNow => 'Online now';
+
+  @override
+  String get callHangUp => 'End call';
+
+  @override
+  String get callEndConfirm => 'End this call?';
+
+  @override
+  String get callMute => 'Mute';
+
+  @override
+  String get callSpeaker => 'Speaker';
+
+  @override
+  String get callCamera => 'Camera';
+
+  @override
+  String get callFlipCamera => 'Flip';
+
+  @override
+  String get callNoLongerRinging => 'This call is no longer ringing.';
+
+  @override
+  String get callDone => 'Done';
 }

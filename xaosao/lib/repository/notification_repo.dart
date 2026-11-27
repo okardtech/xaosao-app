@@ -40,6 +40,27 @@ class NotificationRepo extends BaseRepository {
   /// Registers this device's push token with the backend so the server can
   /// target it. Called from [NotificationService.syncTokenToServer] — the
   /// single place that owns token acquisition + registration.
+  /// Remove this phone's push registration for the logged-in account.
+  ///
+  /// The backend keeps one row per (account, platform), so deleting the
+  /// row for this platform is deleting this phone. Called on logout: a
+  /// registered Android phone counts as reachable for calls, so a logged-out
+  /// phone left registered would keep ringing for an account no longer on it.
+  Future<void> unregisterThisDevice() async {
+    final platform = Platform.isAndroid ? 'android' : 'ios';
+    final res = await safeCall<List<dynamic>>(
+      () => api.get('${ApiConstants.myNotificaiton}/devices'),
+      fromJson: (j) => j is List ? j : (j is Map ? (j['devices'] as List? ?? []) : []),
+    );
+    for (final d in res.data ?? const []) {
+      if (d is Map && d['platform'] == platform && d['id'] != null) {
+        await safeCall(
+          () => api.delete('${ApiConstants.myNotificaiton}/devices/${d['id']}'),
+        );
+      }
+    }
+  }
+
   Future<ApiResponse<bool>> registerDevice({required String deviceToken}) {
     return safeCall(
       () => api.post(

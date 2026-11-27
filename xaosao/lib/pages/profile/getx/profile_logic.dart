@@ -6,6 +6,8 @@ import 'package:xaosao/pages/login/getx/login_logic.dart';
 import 'package:xaosao/pages/profile/getx/profile_state.dart';
 import 'package:xaosao/repository/gallery_repo.dart';
 import 'package:xaosao/repository/login_repo.dart';
+import 'package:xaosao/pages/chat/getx/chat_logic.dart';
+import 'package:xaosao/services/chat_socket_service.dart';
 import 'package:xaosao/services/storage_service.dart';
 import 'package:xaosao/utils/app_snackbar.dart';
 import 'package:xaosao/utils/image_picker_util.dart';
@@ -190,6 +192,11 @@ class ProfileLogic extends GetxController {
     Get.delete<FeedbackLogic>(force: true);
     Get.delete<NotifSettingLogic>(force: true);
     Get.delete<ModelDiscoverLogic>(force: true);
+    Get.delete<ChatLogic>(force: true);
+    // Close the chat socket: it is what marks this account online.
+    if (Get.isRegistered<ChatSocketService>()) {
+      Get.find<ChatSocketService>().disconnect();
+    }
   }
 
   Future<void> deleteAccount() async {

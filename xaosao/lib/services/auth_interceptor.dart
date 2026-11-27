@@ -6,6 +6,8 @@ import 'package:xaosao/pages/model_discover/getx/model_discover_logic.dart';
 import 'package:xaosao/pages/notification/getx/notification_setting_logic.dart';
 import 'package:xaosao/pages/profile/getx/profile_logic.dart';
 import 'package:xaosao/pages/services_manage/getx/service_logic.dart';
+import 'package:xaosao/pages/chat/getx/chat_logic.dart';
+import 'package:xaosao/services/chat_socket_service.dart';
 import 'package:xaosao/services/storage_service.dart';
 import '../constants/api_constants.dart';
 
@@ -81,5 +83,10 @@ class AuthInterceptor extends Interceptor {
     Get.delete<FeedbackLogic>(force: true);
     Get.delete<NotifSettingLogic>(force: true);
     Get.delete<ModelDiscoverLogic>(force: true);
+    Get.delete<ChatLogic>(force: true);
+    // Close the chat socket: it is what marks this account online.
+    if (Get.isRegistered<ChatSocketService>()) {
+      Get.find<ChatSocketService>().disconnect();
+    }
   }
 }

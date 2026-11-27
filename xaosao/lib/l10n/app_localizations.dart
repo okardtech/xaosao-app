@@ -1204,6 +1204,54 @@ abstract class AppLocalizations {
   /// **'ເພື່ອນສັງຄົມ'**
   String get serviceTypeSocial;
 
+  /// No description provided for @serviceNameDrinking.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຄູ່ດື່ມ'**
+  String get serviceNameDrinking;
+
+  /// No description provided for @serviceNameTravel.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຄູ່ທ່ຽວ'**
+  String get serviceNameTravel;
+
+  /// No description provided for @serviceNameMassage.
+  ///
+  /// In lo, this message translates to:
+  /// **'ນວດ'**
+  String get serviceNameMassage;
+
+  /// No description provided for @serviceNamePimai.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຄູ່ບຸນປີໃໝ່'**
+  String get serviceNamePimai;
+
+  /// No description provided for @serviceNameThatLuang.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຄູ່ບຸນທາດຫຼວງ'**
+  String get serviceNameThatLuang;
+
+  /// No description provided for @serviceNameHmongNewYear.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຄູ່ບຸນກິນຈຽງ'**
+  String get serviceNameHmongNewYear;
+
+  /// No description provided for @serviceNameCountdown.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຄູ່ເຄົ້າດາວ'**
+  String get serviceNameCountdown;
+
+  /// No description provided for @serviceNameCall.
+  ///
+  /// In lo, this message translates to:
+  /// **'ໂທລົມເປັນໝູ່'**
+  String get serviceNameCall;
+
   /// No description provided for @serviceTypeMassage.
   ///
   /// In lo, this message translates to:
@@ -6549,6 +6597,522 @@ abstract class AppLocalizations {
   /// In lo, this message translates to:
   /// **'ເຂົ້າໃຈແລ້ວ'**
   String get announcementGotIt;
+
+  /// No description provided for @checkinTitle.
+  ///
+  /// In lo, this message translates to:
+  /// **'ເຊັກອິນປະຈຳວັນ'**
+  String get checkinTitle;
+
+  /// No description provided for @checkinStreak.
+  ///
+  /// In lo, this message translates to:
+  /// **'{count} ວັນ'**
+  String checkinStreak(int count);
+
+  /// No description provided for @checkinNextIn.
+  ///
+  /// In lo, this message translates to:
+  /// **'ເຊັກອິນຄັ້ງຕໍ່ໄປ'**
+  String get checkinNextIn;
+
+  /// No description provided for @checkinNextHint.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຈົນກວ່າຈະໄດ້ຮັບລາງວັນມື້ຖັດໄປ'**
+  String get checkinNextHint;
+
+  /// No description provided for @checkinTodayPays.
+  ///
+  /// In lo, this message translates to:
+  /// **'ມື້ນີ້ໄດ້ຮັບ'**
+  String get checkinTodayPays;
+
+  /// No description provided for @checkinTodayHint.
+  ///
+  /// In lo, this message translates to:
+  /// **'ເຂົ້າກະເປົາເງິນຂອງທ່ານ'**
+  String get checkinTodayHint;
+
+  /// No description provided for @checkinClaim.
+  ///
+  /// In lo, this message translates to:
+  /// **'ເຊັກອິນຮັບ {amount} ₭'**
+  String checkinClaim(String amount);
+
+  /// No description provided for @checkinClaimed.
+  ///
+  /// In lo, this message translates to:
+  /// **'ເຊັກອິນສຳເລັດ. ໄດ້ຮັບ {amount} ₭ ເຂົ້າກະເປົາເງິນແລ້ວ.'**
+  String checkinClaimed(String amount);
+
+  /// No description provided for @checkinDoneToday.
+  ///
+  /// In lo, this message translates to:
+  /// **'ທ່ານເຊັກອິນມື້ນີ້ແລ້ວ. ກັບມາໃໝ່ມື້ອື່ນ.'**
+  String get checkinDoneToday;
+
+  /// No description provided for @checkinFinished.
+  ///
+  /// In lo, this message translates to:
+  /// **'ລາງວັນເຊັກອິນຂອງມື້ນີ້ໝົດແລ້ວ.'**
+  String get checkinFinished;
+
+  /// No description provided for @checkinClosedToday.
+  ///
+  /// In lo, this message translates to:
+  /// **'ມື້ນີ້ບໍ່ມີການເຊັກອິນ. ກັບມາໃໝ່ມື້ອື່ນ.'**
+  String get checkinClosedToday;
+
+  /// No description provided for @checkinMon.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຈັນ'**
+  String get checkinMon;
+
+  /// No description provided for @checkinTue.
+  ///
+  /// In lo, this message translates to:
+  /// **'ອັງຄານ'**
+  String get checkinTue;
+
+  /// No description provided for @checkinWed.
+  ///
+  /// In lo, this message translates to:
+  /// **'ພຸດ'**
+  String get checkinWed;
+
+  /// No description provided for @checkinThu.
+  ///
+  /// In lo, this message translates to:
+  /// **'ພະຫັດ'**
+  String get checkinThu;
+
+  /// No description provided for @checkinFri.
+  ///
+  /// In lo, this message translates to:
+  /// **'ສຸກ'**
+  String get checkinFri;
+
+  /// No description provided for @checkinSat.
+  ///
+  /// In lo, this message translates to:
+  /// **'ເສົາ'**
+  String get checkinSat;
+
+  /// No description provided for @checkinSun.
+  ///
+  /// In lo, this message translates to:
+  /// **'ອາທິດ'**
+  String get checkinSun;
+
+  /// No description provided for @assistantTitle.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຖາມແອັດມີນ'**
+  String get assistantTitle;
+
+  /// No description provided for @assistantHint.
+  ///
+  /// In lo, this message translates to:
+  /// **'ບອກຂ້ອຍວ່າທ່ານຊອກຫາໃຜ'**
+  String get assistantHint;
+
+  /// No description provided for @assistantGreeting.
+  ///
+  /// In lo, this message translates to:
+  /// **'ສະບາຍດີ! ທ່ານກຳລັງຊອກຫາໃຜ? ບອກອາຍຸ, ເຂດ ຫຼື ບໍລິການທີ່ຕ້ອງການ.'**
+  String get assistantGreeting;
+
+  /// No description provided for @assistantPlaceholder.
+  ///
+  /// In lo, this message translates to:
+  /// **'ເຊັ່ນ: ສາວອາຍຸ 20-25 ຢູ່ໃກ້ໆ'**
+  String get assistantPlaceholder;
+
+  /// No description provided for @assistantTryAsking.
+  ///
+  /// In lo, this message translates to:
+  /// **'ລອງຖາມ'**
+  String get assistantTryAsking;
+
+  /// No description provided for @assistantQ1.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຄົນທີ່ຢູ່ໃກ້ຂ້ອຍ'**
+  String get assistantQ1;
+
+  /// No description provided for @assistantQ2.
+  ///
+  /// In lo, this message translates to:
+  /// **'ອາຍຸ 20 ຫາ 25 ປີ'**
+  String get assistantQ2;
+
+  /// No description provided for @assistantQ3.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຄົນທີ່ນວດໄດ້'**
+  String get assistantQ3;
+
+  /// No description provided for @assistantQ4.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຄະແນນສູງສຸດ'**
+  String get assistantQ4;
+
+  /// No description provided for @assistantThinking.
+  ///
+  /// In lo, this message translates to:
+  /// **'ກຳລັງຊອກຫາ...'**
+  String get assistantThinking;
+
+  /// No description provided for @assistantAge.
+  ///
+  /// In lo, this message translates to:
+  /// **'ອາຍຸ'**
+  String get assistantAge;
+
+  /// No description provided for @callTitle.
+  ///
+  /// In lo, this message translates to:
+  /// **'ໂທ'**
+  String get callTitle;
+
+  /// No description provided for @callName.
+  ///
+  /// In lo, this message translates to:
+  /// **'ໂທຫາ {name}'**
+  String callName(String name);
+
+  /// No description provided for @callVoice.
+  ///
+  /// In lo, this message translates to:
+  /// **'ສຽງ'**
+  String get callVoice;
+
+  /// No description provided for @callVideo.
+  ///
+  /// In lo, this message translates to:
+  /// **'ວິດີໂອ'**
+  String get callVideo;
+
+  /// No description provided for @callPerMinute.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຕໍ່ນາທີ'**
+  String get callPerMinute;
+
+  /// No description provided for @callYourBalance.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຍອດເງິນຂອງທ່ານ'**
+  String get callYourBalance;
+
+  /// No description provided for @callCoversMinutes.
+  ///
+  /// In lo, this message translates to:
+  /// **'ພຽງພໍປະມານ {minutes} ນາທີ'**
+  String callCoversMinutes(String minutes);
+
+  /// No description provided for @callNeedTwoMinutes.
+  ///
+  /// In lo, this message translates to:
+  /// **'ທ່ານຕ້ອງມີຢ່າງໜ້ອຍ {amount} ₭ ເພື່ອເລີ່ມການໂທ'**
+  String callNeedTwoMinutes(String amount);
+
+  /// No description provided for @callTopUp.
+  ///
+  /// In lo, this message translates to:
+  /// **'ເຕີມເງິນ'**
+  String get callTopUp;
+
+  /// No description provided for @callBillingNote.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຄິດໄລ່ຕາມນາທີ, ປັດຂຶ້ນ. 10 ວິນາທີທຳອິດບໍ່ເສຍຄ່າ, ແລະ ສ່ວນທີ່ບໍ່ໄດ້ໃຊ້ຈະຄືນເຂົ້າກະເປົາເງິນຂອງທ່ານ.'**
+  String get callBillingNote;
+
+  /// No description provided for @callNotAvailable.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຜູ້ໃຊ້ນີ້ບໍ່ຮັບການໂທໃນຕອນນີ້.'**
+  String get callNotAvailable;
+
+  /// No description provided for @callIncoming.
+  ///
+  /// In lo, this message translates to:
+  /// **'ສາຍໂທເຂົ້າ'**
+  String get callIncoming;
+
+  /// No description provided for @callAnswer.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຮັບສາຍ'**
+  String get callAnswer;
+
+  /// No description provided for @callDecline.
+  ///
+  /// In lo, this message translates to:
+  /// **'ປະຕິເສດ'**
+  String get callDecline;
+
+  /// No description provided for @callSomeone.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຜູ້ໃຊ້'**
+  String get callSomeone;
+
+  /// No description provided for @callEnded.
+  ///
+  /// In lo, this message translates to:
+  /// **'ການໂທສິ້ນສຸດ'**
+  String get callEnded;
+
+  /// No description provided for @callDuration.
+  ///
+  /// In lo, this message translates to:
+  /// **'ໄລຍະເວລາ'**
+  String get callDuration;
+
+  /// No description provided for @callMinutes.
+  ///
+  /// In lo, this message translates to:
+  /// **'ນາທີ'**
+  String get callMinutes;
+
+  /// No description provided for @callCharged.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຄິດໄລ່ແລ້ວ'**
+  String get callCharged;
+
+  /// No description provided for @callReturned.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຄືນເຂົ້າກະເປົາເງິນ'**
+  String get callReturned;
+
+  /// No description provided for @callYouEarned.
+  ///
+  /// In lo, this message translates to:
+  /// **'ທ່ານໄດ້ຮັບ'**
+  String get callYouEarned;
+
+  /// No description provided for @callNoAnswer.
+  ///
+  /// In lo, this message translates to:
+  /// **'ບໍ່ມີຜູ້ຮັບສາຍ. ບໍ່ໄດ້ຄິດຄ່າບໍລິການ.'**
+  String get callNoAnswer;
+
+  /// No description provided for @callDeclined.
+  ///
+  /// In lo, this message translates to:
+  /// **'ການໂທຖືກປະຕິເສດ. ບໍ່ໄດ້ຄິດຄ່າບໍລິການ.'**
+  String get callDeclined;
+
+  /// No description provided for @callCancelled.
+  ///
+  /// In lo, this message translates to:
+  /// **'ທ່ານໄດ້ຍົກເລີກການໂທ. ບໍ່ໄດ້ຄິດຄ່າບໍລິການ.'**
+  String get callCancelled;
+
+  /// No description provided for @callNotConnected.
+  ///
+  /// In lo, this message translates to:
+  /// **'ການໂທບໍ່ສຳເລັດ. ບໍ່ໄດ້ຄິດຄ່າບໍລິການ.'**
+  String get callNotConnected;
+
+  /// No description provided for @callNotConnectedModel.
+  ///
+  /// In lo, this message translates to:
+  /// **'ການໂທບໍ່ສຳເລັດ.'**
+  String get callNotConnectedModel;
+
+  /// No description provided for @callEndedNoFunds.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຍອດເງິນໝົດ, ການໂທຈຶ່ງສິ້ນສຸດ.'**
+  String get callEndedNoFunds;
+
+  /// No description provided for @callEndedMaxDuration.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຄົບກຳນົດ 60 ນາທີຕໍ່ການໂທ.'**
+  String get callEndedMaxDuration;
+
+  /// No description provided for @callEndedNetwork.
+  ///
+  /// In lo, this message translates to:
+  /// **'ການເຊື່ອມຕໍ່ຂາດ, ການໂທຈຶ່ງສິ້ນສຸດ.'**
+  String get callEndedNetwork;
+
+  /// No description provided for @callErrorAlreadyOnCall.
+  ///
+  /// In lo, this message translates to:
+  /// **'ການໂທຄັ້ງກ່ອນຂອງທ່ານຍັງເປີດຢູ່. ມັນຈະສິ້ນສຸດເອງພາຍໃນບໍ່ເຖິງ 1 ນາທີ — ຈາກນັ້ນລອງໃໝ່.'**
+  String get callErrorAlreadyOnCall;
+
+  /// No description provided for @callErrorPeerBusy.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຜູ້ໃຊ້ນີ້ກຳລັງໂທກັບຄົນອື່ນຢູ່.'**
+  String get callErrorPeerBusy;
+
+  /// No description provided for @callErrorPeerUnavailable.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຜູ້ໃຊ້ນີ້ບໍ່ພ້ອມໃຫ້ບໍລິການ.'**
+  String get callErrorPeerUnavailable;
+
+  /// No description provided for @callErrorServiceDown.
+  ///
+  /// In lo, this message translates to:
+  /// **'ການໂທບໍ່ສາມາດໃຊ້ໄດ້ໃນຕອນນີ້. ກະລຸນາລອງໃໝ່ພາຍຫຼັງ.'**
+  String get callErrorServiceDown;
+
+  /// No description provided for @callWentOffline.
+  ///
+  /// In lo, this message translates to:
+  /// **'ລາວຫາກໍອອບລາຍໄປ. ພວກເຮົາໄດ້ແຈ້ງລາວແລ້ວ — ລອງໃໝ່ໃນອີກບໍ່ດົນ ຫຼື ຫາຄົນທີ່ອອນລາຍຢູ່.'**
+  String get callWentOffline;
+
+  /// No description provided for @callMicDenied.
+  ///
+  /// In lo, this message translates to:
+  /// **'ການໂທຕ້ອງການສິດເຂົ້າເຖິງໄມໂຄຣໂຟນ. ກະລຸນາອະນຸຍາດໃນການຕັ້ງຄ່າ ແລ້ວລອງໃໝ່.'**
+  String get callMicDenied;
+
+  /// No description provided for @callConnectFailed.
+  ///
+  /// In lo, this message translates to:
+  /// **'ບໍ່ສາມາດເຊື່ອມຕໍ່ການໂທໄດ້. ກະລຸນາລອງໃໝ່.'**
+  String get callConnectFailed;
+
+  /// No description provided for @callTimeLeft.
+  ///
+  /// In lo, this message translates to:
+  /// **'ເຫຼືອ {time}'**
+  String callTimeLeft(String time);
+
+  /// No description provided for @callRinging.
+  ///
+  /// In lo, this message translates to:
+  /// **'ກຳລັງໂທ…'**
+  String get callRinging;
+
+  /// No description provided for @callConnecting.
+  ///
+  /// In lo, this message translates to:
+  /// **'ກຳລັງເຊື່ອມຕໍ່…'**
+  String get callConnecting;
+
+  /// No description provided for @callCostSoFar.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຄ່າໃຊ້ຈ່າຍຮອດຕອນນີ້'**
+  String get callCostSoFar;
+
+  /// No description provided for @callEarningSoFar.
+  ///
+  /// In lo, this message translates to:
+  /// **'ລາຍໄດ້ຮອດຕອນນີ້'**
+  String get callEarningSoFar;
+
+  /// No description provided for @callLowBalance.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຍອດເງິນເຫຼືອບໍ່ເຖິງ 1 ນາທີ'**
+  String get callLowBalance;
+
+  /// No description provided for @callOfflineTitle.
+  ///
+  /// In lo, this message translates to:
+  /// **'{name} ບໍ່ໄດ້ອອນລາຍ'**
+  String callOfflineTitle(String name);
+
+  /// No description provided for @callOfflineBody.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຈະຕິດຕໍ່ໄດ້ສະເພາະເວລາທີ່ລາວເປີດແອັບຢູ່. ທ່ານສາມາດແຈ້ງໃຫ້ລາວຮູ້ວ່າທ່ານຢາກໂທຫາ — ບໍ່ມີການຫັກເງິນ.'**
+  String get callOfflineBody;
+
+  /// No description provided for @callOfflineNotified.
+  ///
+  /// In lo, this message translates to:
+  /// **'ແຈ້ງ {name} ແລ້ວວ່າທ່ານຢາກໂທຫາ. ລາວຈະເຫັນເມື່ອເປີດແອັບຄັ້ງຕໍ່ໄປ — ຍັງບໍ່ໄດ້ຫັກເງິນ.'**
+  String callOfflineNotified(String name);
+
+  /// No description provided for @callNotifyHer.
+  ///
+  /// In lo, this message translates to:
+  /// **'ແຈ້ງໃຫ້ລາວຮູ້ວ່າທ່ານຢາກໂທຫາ'**
+  String get callNotifyHer;
+
+  /// No description provided for @callNoticeSent.
+  ///
+  /// In lo, this message translates to:
+  /// **'ແຈ້ງລາວແລ້ວ'**
+  String get callNoticeSent;
+
+  /// No description provided for @callFindOnline.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຫາຄົນທີ່ອອນລາຍຢູ່'**
+  String get callFindOnline;
+
+  /// No description provided for @callOnlineNow.
+  ///
+  /// In lo, this message translates to:
+  /// **'ອອນລາຍ'**
+  String get callOnlineNow;
+
+  /// No description provided for @callHangUp.
+  ///
+  /// In lo, this message translates to:
+  /// **'ວາງສາຍ'**
+  String get callHangUp;
+
+  /// No description provided for @callEndConfirm.
+  ///
+  /// In lo, this message translates to:
+  /// **'ວາງສາຍການໂທນີ້ບໍ?'**
+  String get callEndConfirm;
+
+  /// No description provided for @callMute.
+  ///
+  /// In lo, this message translates to:
+  /// **'ປິດສຽງ'**
+  String get callMute;
+
+  /// No description provided for @callSpeaker.
+  ///
+  /// In lo, this message translates to:
+  /// **'ລຳໂພງ'**
+  String get callSpeaker;
+
+  /// No description provided for @callCamera.
+  ///
+  /// In lo, this message translates to:
+  /// **'ກ້ອງ'**
+  String get callCamera;
+
+  /// No description provided for @callFlipCamera.
+  ///
+  /// In lo, this message translates to:
+  /// **'ສະຫຼັບກ້ອງ'**
+  String get callFlipCamera;
+
+  /// No description provided for @callNoLongerRinging.
+  ///
+  /// In lo, this message translates to:
+  /// **'ສາຍນີ້ບໍ່ໄດ້ໂທຢູ່ແລ້ວ.'**
+  String get callNoLongerRinging;
+
+  /// No description provided for @callDone.
+  ///
+  /// In lo, this message translates to:
+  /// **'ຕົກລົງ'**
+  String get callDone;
 }
 
 class _AppLocalizationsDelegate
